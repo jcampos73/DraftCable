@@ -1,0 +1,92 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: DraftDraw - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0xc0a /fo"Debug/DraftDraw.res" /d "_DEBUG" "H:\2002\DraftCable\Src\DraftDraw.rc"" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\CONFIG~1\Temp\RSP184.tmp" with contents
+[
+GdiPlus.lib DIBAPIDLL.lib UtilsCPP.lib htmlhelp.lib mpiwin32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/DraftCable.pdb" /debug /machine:I386 /out:"Debug/DraftCable.exe" /pdbtype:sept /libpath:"..\SrcBoost\UtilsCPP\Debug" /libpath:"..\Lib\lib" 
+.\Debug\_recordset.obj
+.\Debug\adodc.obj
+.\Debug\ArchiveDb.obj
+.\Debug\ButtonStates.obj
+.\Debug\CableEdit.obj
+.\Debug\CDib.obj
+.\Debug\ChildFrm.obj
+.\Debug\ChildFrmPP.obj
+.\Debug\column.obj
+.\Debug\columns.obj
+.\Debug\COMItfCore.obj
+.\Debug\dataformatdisp.obj
+.\Debug\datagrid.obj
+.\Debug\DdxCustom.obj
+.\Debug\dftEllipseCore.obj
+.\Debug\DialogConfig.obj
+.\Debug\DialogDebugShpInfo.obj
+.\Debug\DialogGraphDen.obj
+.\Debug\DialogNetList.obj
+.\Debug\DialogPageProperties.obj
+.\Debug\DialogPartProp.obj
+.\Debug\DialogPatchPProperties.obj
+.\Debug\DialogPin.obj
+.\Debug\DialogPlacePart.obj
+.\Debug\DialogSaveas.obj
+.\Debug\DialogSaveasDB.obj
+.\Debug\DialogText.obj
+.\Debug\DraftDraw.obj
+.\Debug\DraftDrawDoc.obj
+.\Debug\DraftDrawView.obj
+.\Debug\field.obj
+.\Debug\fields.obj
+.\Debug\fileCore.obj
+.\Debug\FolderFrame.obj
+.\Debug\font.obj
+.\Debug\Ftab.obj
+.\Debug\GbrioFile.obj
+.\Debug\Globals.obj
+.\Debug\GraphDView.obj
+.\Debug\LeftView.obj
+.\Debug\ListCtrlCable.obj
+.\Debug\ListCtrlCR.obj
+.\Debug\MainFrm.obj
+.\Debug\NameDlg.obj
+.\Debug\NetAlias.obj
+.\Debug\OMParser.obj
+.\Debug\PageGrid.obj
+.\Debug\PageSize.obj
+.\Debug\PartEdit.obj
+.\Debug\PartPView.obj
+.\Debug\picture.obj
+.\Debug\PLexdoc.obj
+.\Debug\PreviewFrame.obj
+.\Debug\properties.obj
+.\Debug\property.obj
+.\Debug\selbookmarks.obj
+.\Debug\Shape.obj
+.\Debug\ShapeUnit.obj
+.\Debug\ShArray.obj
+.\Debug\split.obj
+.\Debug\splits.obj
+.\Debug\StdAfx.obj
+.\Debug\stddataformatsdisp.obj
+.\Debug\TBEditView.obj
+.\Debug\Tipography.obj
+.\Debug\WndSplitter.obj
+.\Debug\DraftDraw.res
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\CONFIG~1\Temp\RSP184.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Linking...
+
+
+
+<h3>Results</h3>
+DraftCable.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

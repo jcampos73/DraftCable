@@ -1,0 +1,52 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./editor_planos_archivos/filelist.xml">
+<title>Generador de planos</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>chus</o:Author>
+  <o:LastAuthor>chus</o:LastAuthor>
+  <o:Revision>8</o:Revision>
+  <o:TotalTime>8</o:TotalTime>
+  <o:Created>2004-12-30T23:42:00Z</o:Created>
+  <o:LastSaved>2005-06-04T16:26:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>97</o:Words>
+  <o:Characters>555</o:Characters>
+  <o:Company>chus</o:Company>
+  <o:Lines>4</o:Lines>
+  <o:Paragraphs>1</o:Paragraphs>
+  <o:CharactersWithSpaces>681</o:CharactersWithSpaces>
+  <o:Version>9.2812</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:HyphenationZone>21</w:HyphenationZone>
+ </w:WordDocument>
+</xml><![endif]-->
+<LINK REL = "stylesheet" TYPE = "text/css" HREF = "style.css">
+</head>
+
+<body lang=ES link=blue vlink=purple style='tab-interval:35.4pt'>
+
+<div class=Section1>
+
+<h1><a name="_Toc85799027">Empezar a Dise&ntilde;ar un Cableado... </a></h1>
+<p class=MsoNormal>Pulsar el bot&oacute;n <img src=.\images\FileNew.gif>.</p>
+<p class=MsoNormal>Insertar componentes, distribuy&eacute;ndolos por el diseños. Si es necesario, usar el zoom para aumentar o reducir la perspectiva. Tambi&eacute;n puede cambiarse el tama&ntilde;o del plano sobre la marcha.</p>
+<p class=MsoNormal>Una vez localizados los componentes principales, situar los puertos que comunican con otras hojas o bloques jer&aacute;rquicos en los bordes de la hoja.</p>
+<p class=MsoNormal>Despu&eacute;s trazar los mazos de cables o buses como agrupaci&oacute;n de cables.</p>
+<p class=MsoNormal>Por &uacute;ltimo, interconectar todos los elementos utilizando la herramienta trazar cables. </p>
+<p class=MsoNormal>Una vez etiquetados todos los cables, puede generarse las hojas de cableado de manera autom&aacute;tica.</p>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,60 @@
+DraftCable 1.07
+20/02/2013
+==========
+
+ENGINE
+
+1.Solved bugs when clicking outside schematic drawing area
+2.Solved bug to allow change connector of parts placed in schematics
+3.Solved bug generating cable sheets
+
+DraftCable 1.04
+30/04/2013
+==========
+
+ENGINE
+
+1.Solves problem when double-click a wire.
+
+SETUP
+
+1.Associates .dd1 file type with application.
+
+DraftCable 1.03
+23/04/2013
+==========
+
+ENGINE
+
+1.Improvements working with Telephony Bridges (TB)
+2.Improvements at generating Netlist
+
+DRAWING ENGINE
+
+1.Improved buffer when moving labels
+
+DraftCable 1.02
+01/04/2013
+==========
+
+ENGINE
+1.Solves crass when pressing CTRL+z after placing one shape
+2.Solves problem when going into rack editing mode
+
+DRAWING ENGINE
+
+1.Improved border
+2.Improved part edit border appearance
+3.Improved erasing engine (when moving parts), less full repaint
+
+DraftCable 1.01
+16/03/2008
+==========
+
+1.This version has some improvements in rotations.
+2.Also added sample projects to installer version & help file.
+
+
+
+
+

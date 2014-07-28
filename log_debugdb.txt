@@ -1,0 +1,5 @@
+UPDATE tbPart SET nTextPart='[rectangle]
+0,0,20,20
+[ellipse]
+4,4,16,16,0x00ff0000
+' WHERE nNamePart='busjunc.ddw'

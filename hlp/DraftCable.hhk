@@ -1,0 +1,61 @@
+<HTML>
+<!-- Sitemap 1.0 -->
+<OBJECT type="text/site properties">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="archivos">
+		<param name="See Also" value="archivos">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="administración">
+			<param name="Name" value="Comando Nuevo (menú Archivo)">
+			<param name="Local" value="html/afxc72d3.htm">
+			<param name="Name" value="Comando Abrir (menú Archivo)">
+			<param name="Local" value="html/afxc8rhq.htm">
+			<param name="Name" value="Comando Cerrar (menú Archivo)">
+			<param name="Local" value="html/afxc45r9.htm">
+			<param name="Name" value="Comando Guardar (menú Archivo)">
+			<param name="Local" value="html/afxc9y05.htm">
+			<param name="Name" value="Comando Guardar como (menú Archivo)">
+			<param name="Local" value="html/afxc30hf.htm">
+			<param name="Name" value="Comando 1, 2, 3, 4 (menú Archivo)">
+			<param name="Local" value="html/afxc590x.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="administrar">
+			<param name="Local" value="html/afxc0c4l.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="barra de estado">
+		<param name="Name" value="Comando Barra de estado (menú Ver)">
+		<param name="Local" value="html/afxc6tv6.htm">
+		<param name="Name" value="Barra de estado">
+		<param name="Local" value="html/afxc72ya.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="barra de herramientas">
+		<param name="Name" value="Comando Barra de herramientas (menú Ver)">
+		<param name="Local" value="html/afxc8ble.htm">
+		<param name="Name" value="Barra de herramientas">
+		<param name="Local" value="html/afxc9jci.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="impresión y presentación preliminar">
+		<param name="Name" value="Comando Imprimir (menú Archivo)">
+		<param name="Local" value="html/afxp225w.htm">
+		<param name="Name" value="Comando Configurar impresora (menú Archivo)">
+		<param name="Local" value="html/afxp0434.htm">
+		<param name="Name" value="Comando Presentación preliminar (menú Archivo)">
+		<param name="Local" value="html/afxp7q2f.htm">
+		<param name="Name" value="Barra de herramientas de la presentación preliminar">
+		<param name="Local" value="html/afxp3i9e.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="salir">
+		<param name="Name" value="Comando Salir (menú Archivo)">
+		<param name="Local" value="html/afxc7d4k.htm">
+		</OBJECT>
+</UL></HTML>
