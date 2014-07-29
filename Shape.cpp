@@ -1088,7 +1088,7 @@ void CShape::Select(BOOL bSelect/*=TRUE*/){
 //Is shape selected?
 BOOL CShape::IsSelected(){
 
-	return (m_Mode==_DRAFTDRAW_MODE_SEL|m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT|m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT);
+	return ((m_Mode==_DRAFTDRAW_MODE_SEL)|(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT)|(m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT));
 }
 
 //Unselect shape
@@ -1913,6 +1913,10 @@ BOOL CShapeContainer::OnCommand( WPARAM wParam, LPARAM lParam ){
 }
 
 void CShapeContainer::SerializeGbr(CGbrioFile &gbrfile){
+
+}
+
+void CShapeContainer::SerializeSvg(CSvgioFile &svgfile){
 
 }
 
@@ -3145,6 +3149,11 @@ void CShape::SerializeGbr(CGbrioFile &gbrfile)
 }
 
 void CShape::SerializeDdw(CDdwioFile &ddwfile)
+{
+
+}
+
+void CShape::SerializeSvg(CSvgioFile &svgfile)
 {
 
 }

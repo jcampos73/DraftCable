@@ -257,9 +257,13 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 	{
 		//Storing code
 
+		//Svg file (under development)
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
+
+		}
 		//Gerber file.
 		//**********************************************************************
-		if(nFilterIndex==_DRAFTCABLE_DOC_FILTER_GERBER){
+		else if(nFilterIndex==_DRAFTCABLE_DOC_FILTER_GERBER){
 
 			CGbrioFile gbrfile(&ar);
 
@@ -4519,10 +4523,6 @@ BOOL CDraftDrawDoc::OnSaveDocument(LPCTSTR lpszPathName)
 			UpdateAllViews(NULL,4);//!!!MAGIC NUMBER
 
 		}
-		
-
-
-
 
 		return TRUE;        // success
 	}

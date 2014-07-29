@@ -8,6 +8,7 @@
 //
 
 #include "GbrioFile.h"
+#include "SvgioFile.h"
 #include "OMParser.h"		//Object model parser
 
 
@@ -204,6 +205,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 
 	HCURSOR * m_pCursorArray;
 	int m_Mode;
@@ -569,6 +571,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeGbr(CGbrioFile &gbrfile)/*=0*/;
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 	virtual BOOL OnCommand( WPARAM wParam, LPARAM lParam );
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnMouseMove(UINT nFlags, CPoint point);

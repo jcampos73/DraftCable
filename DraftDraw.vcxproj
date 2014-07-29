@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Markup.cpp" />
+    <ClCompile Include="SvgioFile.cpp" />
     <ClCompile Include="_recordset.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -498,6 +499,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Markup.h" />
+    <ClInclude Include="SvgioFile.h" />
     <ClInclude Include="_recordset.h" />
     <ClInclude Include="adodc.h" />
     <ClInclude Include="ArchiveDb.h" />
