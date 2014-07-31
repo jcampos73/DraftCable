@@ -25,9 +25,12 @@ class CSvgioFile :
 	public CStdioFile
 {
 protected:
-	const CString _HEADER_TPL_SVG = "<svg width=\"600px\" height=\"450px\"/>";
-	const CString _PATH_TPL_SVG = "<path d=\"%sZ\" stroke=\"#000\" fill=\"none\"/>";
-	const CString _END_TPL_SVG = "</svg>";
+	const CString _ENDL_SVG = "\r\n";
+
+	const CString _HEADER_TPL_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"600px\" height=\"450px\">\r\n";
+	const CString _PATH_TPL_SVG = "<path d=\"%sZ\" stroke=\"#000\" fill=\"none\"/>\r\n";
+	const CString _TEXT_TPL_SVG = "<text x=\"%i\" y=\"%i\" font-family=\"sans - serif\" font-size=\"%ipx\" fill=\"black\">%s</text>\r\n";
+	const CString _END_TPL_SVG = "</svg>\r\n";
 	CString coorStr = "";
 public:
 	CArchive * m_par;
@@ -35,6 +38,7 @@ public:
 	void WriteLineTo(CPoint point);
 	void OpenPath();
 	void ClosePath();
+	void WriteText(CPoint point, CString text, CFont * pFont);
 	CSvgioFile(CArchive *par);
 	~CSvgioFile();
 };

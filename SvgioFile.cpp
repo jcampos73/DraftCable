@@ -43,3 +43,15 @@ void CSvgioFile::ClosePath()
 
 	m_par->WriteString(strCommand1);
 }
+
+void CSvgioFile::WriteText(CPoint point, CString text, CFont * pFont)
+{
+	CString strCommand1;
+
+	LOGFONT lf;
+	pFont->GetLogFont(&lf);
+
+	strCommand1.Format(_TEXT_TPL_SVG, point.x, point.y, -lf.lfHeight-3 ,text);
+
+	m_par->WriteString(strCommand1);
+}

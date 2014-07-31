@@ -1232,7 +1232,7 @@ END
 STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "DraftCable"
-    IDR_DRAFTDTYPE          "\nDraftD\nDraftD\nArchivos DraftD (*.drw)\n.drw\nDraftDraw.Document\nDraftD Document"
+    IDR_DRAFTDTYPE          "\nDraftD\nDraftD\nArchivos DraftD (*.dd1)\n.dd1\nDraftDraw.Document\nDraftD Document"
 END
 
 STRINGTABLE

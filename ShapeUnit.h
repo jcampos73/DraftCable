@@ -92,6 +92,7 @@ public:
 	void Serialize( CArchive& archive );
 	void SerializeGbr(CGbrioFile &gbrfile);
 	void SerializeDdw(CDdwioFile &ddwfile);
+	void SerializeSvg(CSvgioFile &svgfile);
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnLButtonDblClk(UINT nFlags, CPoint point);
 	//virtual void OnLButtonDown(UINT nFlags, CPoint point);
@@ -260,6 +261,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnLButtonDblClk(UINT nFlags, CPoint point);
 	//virtual void OnLButtonDown(UINT nFlags, CPoint point);

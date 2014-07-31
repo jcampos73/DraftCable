@@ -802,6 +802,36 @@ void CShapeUnit::SerializeGbr(CGbrioFile &gbrfile)
 
 }
 
+void CShapeUnit::SerializeSvg(CSvgioFile &svgfile)
+{
+	CShapeContainer::SerializeSvg(svgfile);
+
+	if (m_bNoResize){
+		g_aShBuffer.SetSize(g_aShBuffer.GetSize() + m_PointspCount + m_LabelsCount);
+	}
+	else{
+		g_aShBuffer.SetSize(g_aShBuffer.GetSize() + 2 * m_PointspCount + m_LabelsCount);
+	}
+
+	int indexpline;
+	for (indexpline = 0; indexpline<m_PointspCount; indexpline++){
+		g_aShBuffer[g_aShBufIndex + indexpline] = new CShapePolyline();
+		int idata = m_pPoints[indexpline][0];
+		((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->Create((LPPOINT)&m_pPoints[indexpline][1], idata);
+		//archive << g_aShBuffer[g_aShBufIndex + indexpline];
+	}
+	g_aShBufIndex += indexpline;
+
+	int indexlabel;
+	for (indexlabel = 0; indexlabel<m_LabelsCount; indexlabel++){
+		label lbl = *m_pLabels[indexlabel];
+		g_aShBuffer[g_aShBufIndex + indexlabel] = new CShapeLabel(&lbl);
+		//archive << g_aShBuffer[g_aShBufIndex + indexlabel];
+		((CShapeLabel*)g_aShBuffer[g_aShBufIndex + indexlabel])->SerializeSvg(svgfile);
+	}
+	g_aShBufIndex += indexlabel;
+}
+
 void CShapeUnit::SerializeDdw(CDdwioFile &ddwfile)
 {
 	ddwfile.WriteUnit(m_sUnitName,&m_Rect);
@@ -3095,6 +3125,13 @@ void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)
 void CShapeLabel::SerializeGbr(CGbrioFile &gbrfile)
 {
 
+}
+
+void CShapeLabel::SerializeSvg(CSvgioFile &svgfile)
+{
+	CPoint p1 = m_Label.rect->TopLeft();
+
+	svgfile.WriteText(p1, *m_Label.slabel, m_Label.font);
 }
 
 void CShapeLabel::OnLButtonDblClk(UINT nFlags, CPoint point)

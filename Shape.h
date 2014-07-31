@@ -307,6 +307,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 
 	virtual void OnDraw(CDC* pDC);
 	//void OnLButtonUp(UINT nFlags, CPoint point);
@@ -393,6 +394,7 @@ public:
 public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 	virtual void OnDraw(CDC* pDC);
 	//void OnMouseMove(UINT nFlags, CPoint point);
 	//void OnLButtonUp(UINT nFlags, CPoint point);
@@ -686,6 +688,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
 	//virtual void OnMouseMove(UINT nFlags, CPoint point);

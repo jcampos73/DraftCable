@@ -37,9 +37,9 @@
 #define _TOOLTYPEPOLY_DRAFTCABLE				20
 
 //Constants
-#define _DRAFTCABLE_DOC_ARCHIVED_COUNT			5
+#define _DRAFTCABLE_DOC_ARCHIVED_COUNT			6
 //'all files' is omitted from filter string, as is added in run time.
-#define _DRAFTCABLE_DOC_FILTER_STR				"Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|ACAD Interchange (*.dxf)|*.dxf|Draft Draw Files 1 (*.dd1)|*.dd1|"
+#define _DRAFTCABLE_DOC_FILTER_STR				"Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|ACAD Interchange (*.dxf)|*.dxf|Draft Draw Files 1 (*.dd1)|*.dd1|Scalable Vector Graphics (*.svg)|*.svg|"
 //Filters
 #define _DRAFTCABLE_DOC_FILTER_DDW				1
 #define _DRAFTCABLE_DOC_FILTER_GERBER			2

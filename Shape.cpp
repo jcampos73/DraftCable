@@ -1485,6 +1485,17 @@ void CShapeLine::SerializeDdw(CDdwioFile &ddwfile)
 	ddwfile.WritePolyline(p,2);
 }
 
+void CShapeLine::SerializeSvg(CSvgioFile &svgfile)
+{
+	CPoint p[2];
+	p[0] = m_Rect.TopLeft();//0;
+	p[1] = m_Rect.BottomRight();//-m_Rect.TopLeft();
+
+	svgfile.OpenPath();
+	svgfile.WriteMoveTo(p[0]);
+	svgfile.WriteLineTo(p[1]);
+	svgfile.ClosePath();
+}
 void CShapeLine::OnDraw(CDC *pDC)
 {
 
@@ -1917,7 +1928,12 @@ void CShapeContainer::SerializeGbr(CGbrioFile &gbrfile){
 }
 
 void CShapeContainer::SerializeSvg(CSvgioFile &svgfile){
+	for (int i = 0; i<m_obarrShapearr.GetSize(); i++){
 
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+
+		psh->SerializeSvg(svgfile);
+	}
 }
 
 //Connection is allways implemented in CShapeContainer
@@ -2944,6 +2960,29 @@ void CShapePolyline::SerializeGbr(CGbrioFile &gbrfile)
 
 }
 
+void CShapePolyline::SerializeSvg(CSvgioFile &svgfile)
+{
+	int count = m_dwarrPointarr.GetSize();
+
+	CPoint *p = new CPoint[count];
+
+	for (int i = 0; i < count; i++){
+
+		p[i] = CPoint(m_dwarrPointarr[i]) + m_Rect.TopLeft();
+	}
+
+	if (count > 1){
+		svgfile.OpenPath();
+		svgfile.WriteMoveTo(p[0]);
+		for (int i = 1; i < count; i++){
+			svgfile.WriteLineTo(p[i]);
+		}
+		svgfile.ClosePath();
+	}
+
+	delete(p);
+}
+
 void CShapePolyline::OnDraw(CDC *pDC){
 
 	if(m_Mode==_DRAFTDRAW_MODE_SEL){
@@ -3197,6 +3236,23 @@ void CShapeRect::SerializeGbr(CGbrioFile &gbrfile)
 	gbrfile.WriteLineTo(p3);
 	gbrfile.WriteLineTo(p4);
 	gbrfile.WriteLineTo(p1);
+}
+
+void CShapeRect::SerializeSvg(CSvgioFile &svgfile)
+{
+	CPoint p1 = m_Rect.TopLeft();
+	CPoint p3 = m_Rect.BottomRight();
+
+	CPoint p2 = CPoint(p3.x, p1.y);
+	CPoint p4 = CPoint(p1.x, p3.y);
+
+	svgfile.OpenPath();
+	svgfile.WriteMoveTo(p1);
+	svgfile.WriteLineTo(p2);
+	svgfile.WriteLineTo(p3);
+	svgfile.WriteLineTo(p4);
+	svgfile.WriteLineTo(p1);
+	svgfile.ClosePath();
 }
 
 void CShapeRect::SerializeDdw(CDdwioFile &ddwfile)

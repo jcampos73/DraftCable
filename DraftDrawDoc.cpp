@@ -259,7 +259,17 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 		//Svg file (under development)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
+			CSvgioFile svgfile(&ar);
 
+			int index;
+			CShape *pSh = (CShape *)FirstObject(index);
+			pSh = (CShape *)NextObject(index);
+
+			while (pSh != NULL){
+
+				pSh->SerializeSvg(svgfile);
+				pSh = (CShape *)NextObject(index);
+			}
 		}
 		//Gerber file.
 		//**********************************************************************
@@ -4527,41 +4537,51 @@ BOOL CDraftDrawDoc::OnSaveDocument(LPCTSTR lpszPathName)
 		return TRUE;        // success
 	}
 
+	CFile* pFile = NULL;
+	CFile* pFileOle = NULL;
+	CFileException fe;
+	LPSTORAGE pStgRoot = NULL;
+	LPSTREAM pStream = NULL;
 
 	//Copied from MFC's: doccore.cpp
 	//--------------------------------------------------------------------------
-#ifdef DCABLE_COMPOUNDFILE
-	CFileException fe;
-	COleStreamFile* pFile = NULL;
-	USES_CONVERSION;
-	LPSTORAGE pStgRoot = NULL;
-	int g_nIndent = 0;
-	VERIFY(::StgCreateDocfile(T2COLE(lpszPathName),
-		STGM_READWRITE|STGM_SHARE_EXCLUSIVE|STGM_CREATE,
-		0,&pStgRoot)==S_OK);
-	//Create a new stream
-	LPSTREAM pStream=NULL;
-	VERIFY(pStgRoot->CreateStream(T2COLE("maindoc"),
-		STGM_READWRITE|STGM_SHARE_EXCLUSIVE|STGM_CREATE,
-		0,0,&pStream)==S_OK);
-	ASSERT(pStream!=NULL);
-	//construct COleStreamFile
-	pFile=new COleStreamFile(pStream);
-#else
-	CFileException fe;
-	CFile* pFile = NULL;
-	pFile = GetFile(lpszPathName, CFile::modeCreate |
-		CFile::modeReadWrite | CFile::shareExclusive, &fe);
-#endif
+	if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1)
+	{
+//#ifdef DCABLE_COMPOUNDFILE
+		//CFileException fe;
+		//COleStreamFile* pFile = NULL;
+		USES_CONVERSION;
+		//LPSTORAGE pStgRoot = NULL;
+		int g_nIndent = 0;
+		VERIFY(::StgCreateDocfile(T2COLE(lpszPathName),
+			STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_CREATE,
+			0, &pStgRoot) == S_OK);
+		//Create a new stream
+		//LPSTREAM pStream = NULL;
+		VERIFY(pStgRoot->CreateStream(T2COLE("maindoc"),
+			STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_CREATE,
+			0, 0, &pStream) == S_OK);
+		ASSERT(pStream != NULL);
+		//construct COleStreamFile
+		pFileOle = new COleStreamFile(pStream);
+//#else
+	}
+	else{
+		//CFileException fe;
+		//CFile* pFile = NULL;
+		pFileOle = GetFile(lpszPathName, CFile::modeCreate |
+			CFile::modeReadWrite | CFile::shareExclusive, &fe);
+	}
+//#endif
 
-	if (pFile == NULL)
+	if (pFileOle == NULL)
 	{
 		ReportSaveLoadException(lpszPathName, &fe,
 			TRUE, AFX_IDP_INVALID_FILENAME);
 		return FALSE;
 	}
 
-	CArchiveDb saveArchive(pFile, CArchive::store | CArchive::bNoFlushOnDelete);
+	CArchiveDb saveArchive(pFileOle, CArchive::store | CArchive::bNoFlushOnDelete);
 	if(m_bFlagPartEdit){
 		saveArchive.m_bFlagDb=TRUE;
 	}
@@ -4577,26 +4597,38 @@ BOOL CDraftDrawDoc::OnSaveDocument(LPCTSTR lpszPathName)
 		CWaitCursor wait;
 		Serialize(saveArchive);     // save me
 		saveArchive.Close();
-#ifdef DCABLE_COMPOUNDFILE
-		WriteStorage(pStgRoot);		// save persistent objects
-		//release method
-		delete(pFile);
-		pStream->Release();
-		pStgRoot->Release();
-#else
-		ReleaseFile(pFile, FALSE);
-#endif
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1)
+		{
+//#ifdef DCABLE_COMPOUNDFILE
+			WriteStorage(pStgRoot);		// save persistent objects
+			//release method
+			delete(pFileOle);
+			pStream->Release();
+			pStgRoot->Release();
+		}
+		else
+		{
+//#else
+			ReleaseFile(pFileOle, FALSE);
+//#endif
+		}
 	}
 	CATCH_ALL(e)
 	{
-#ifdef DCABLE_COMPOUNDFILE
-		//release method
-		delete(pFile);
-		pStream->Release();
-		pStgRoot->Release();
-#else
-		ReleaseFile(pFile, TRUE);
-#endif
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1)
+		{
+//#ifdef DCABLE_COMPOUNDFILE
+			//release method
+			delete(pFileOle);
+			pStream->Release();
+			pStgRoot->Release();
+		}
+		else
+		{
+//#else
+			ReleaseFile(pFileOle, TRUE);
+//#endif
+		}
 
 		TRY
 		{
@@ -6058,6 +6090,8 @@ void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtens
 	saExtensions.Add("cut");
 	saExtensions.Add("dxf");
 	saExtensions.Add("dd1");
+	saExtensions.Add("svg");
+	saCodecs.Add(L"none");
 	saCodecs.Add(L"none");
 	saCodecs.Add(L"none");
 	saCodecs.Add(L"none");
