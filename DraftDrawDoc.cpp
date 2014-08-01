@@ -259,12 +259,23 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 		//Svg file (under development)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
-			CSvgioFile svgfile(&ar);
 
+			//First loop for calculate sheet size dynamically
+			CRect rect_tot;
 			int index;
 			CShape *pSh = (CShape *)FirstObject(index);
 			pSh = (CShape *)NextObject(index);
+			while (pSh != NULL){
 
+				rect_tot.UnionRect(rect_tot, CRect(CPoint(0,0), pSh->m_Rect.BottomRight()));
+				pSh = (CShape *)NextObject(index);
+			}
+
+			CSvgioFile svgfile(&ar, rect_tot.Size());
+
+			//Serilize every shapes
+			pSh = (CShape *)FirstObject(index);
+			pSh = (CShape *)NextObject(index);
 			while (pSh != NULL){
 
 				pSh->SerializeSvg(svgfile);

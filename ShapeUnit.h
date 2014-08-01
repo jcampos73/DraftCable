@@ -132,6 +132,7 @@ public:
 
 // Attributes
 public:
+	enum{ PIN_UNIT = 0, PIN_WIRE = 1 };
 
 // Operations
 public:

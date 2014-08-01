@@ -27,7 +27,7 @@ class CSvgioFile :
 protected:
 	const CString _ENDL_SVG = "\r\n";
 
-	const CString _HEADER_TPL_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"600px\" height=\"450px\">\r\n";
+	const CString _HEADER_TPL_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%ipx\" height=\"%ipx\">\r\n";
 	const CString _PATH_TPL_SVG = "<path d=\"%sZ\" stroke=\"#000\" fill=\"none\"/>\r\n";
 	const CString _TEXT_TPL_SVG = "<text x=\"%i\" y=\"%i\" font-family=\"sans - serif\" font-size=\"%ipx\" fill=\"black\">%s</text>\r\n";
 	const CString _END_TPL_SVG = "</svg>\r\n";
@@ -39,7 +39,7 @@ public:
 	void OpenPath();
 	void ClosePath();
 	void WriteText(CPoint point, CString text, CFont * pFont);
-	CSvgioFile(CArchive *par);
+	CSvgioFile(CArchive *par, CSize szDesign =  CSize(600, 450));
 	~CSvgioFile();
 };
 

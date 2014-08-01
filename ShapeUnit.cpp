@@ -145,10 +145,7 @@ CShape& CShapeUnit::operator=( const CShape& Sh ){
 		}
 	}
 
-
-
-
-
+	m_ShapeNumber = pShUnit->m_ShapeNumber;
 	m_obarrShapearr.SetSize(pShUnit->m_obarrShapearr.GetSize());
 	for(int i=0;i<pShUnit->m_obarrShapearr.GetSize();i++){
 		CRuntimeClass *pRuntimeClass=pShUnit->m_obarrShapearr[i]->GetRuntimeClass( );
@@ -167,23 +164,16 @@ CShape& CShapeUnit::operator=( const CShape& Sh ){
 			//This is very important. In this design shapes allways are created in drag mode (neither selected neither normal).
 			((CShapePin*)m_obarrShapearr[i])->Select(FALSE);
 
-
 			//There is a problem with this assignement.
-			/*
+
 			*pSh1=*((CShape*)pShUnit->m_obarrShapearr[i]);
 			m_obarrShapearr[i]=pSh1;
-			*/
 
-
-			
 
 			CShapePin *pShPin=(CShapePin *)m_obarrShapearr[i];
-
-
 		}
+	}//end for
 
-
-	}
 	m_pLabels=(label **)GlobalAlloc(GMEM_ZEROINIT,sizeof(label*)*_DEFAULTMAXPLINE_DRAFTCABLE);
 	m_LabelsCount=pShUnit->m_LabelsCount;
 	for(int indexlabel=0;indexlabel<pShUnit->m_LabelsCount;indexlabel++){
@@ -818,7 +808,15 @@ void CShapeUnit::SerializeSvg(CSvgioFile &svgfile)
 		g_aShBuffer[g_aShBufIndex + indexpline] = new CShapePolyline();
 		int idata = m_pPoints[indexpline][0];
 		((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->Create((LPPOINT)&m_pPoints[indexpline][1], idata);
-		//archive << g_aShBuffer[g_aShBufIndex + indexpline];
+
+		//Save previous bounding rectangle
+		CRect rect_prev = ((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->m_Rect;
+		//Offset shape with parent
+		((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->m_Rect += this->m_Rect.TopLeft();
+		//Serialize
+		((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->SerializeSvg(svgfile);
+		//Restore previous rectangle
+		((CShapePolyline*)g_aShBuffer[g_aShBufIndex + indexpline])->m_Rect = rect_prev;
 	}
 	g_aShBufIndex += indexpline;
 
@@ -826,8 +824,15 @@ void CShapeUnit::SerializeSvg(CSvgioFile &svgfile)
 	for (indexlabel = 0; indexlabel<m_LabelsCount; indexlabel++){
 		label lbl = *m_pLabels[indexlabel];
 		g_aShBuffer[g_aShBufIndex + indexlabel] = new CShapeLabel(&lbl);
-		//archive << g_aShBuffer[g_aShBufIndex + indexlabel];
+
+		//Save previous bounding rectangle
+		CRect rect_prev = ((CShapeLabel*)g_aShBuffer[g_aShBufIndex + indexlabel])->m_Label.rect;
+		//Offset shape with parent
+		*((CShapeLabel*)g_aShBuffer[g_aShBufIndex + indexlabel])->m_Label.rect += this->m_Rect.TopLeft();
+		//Serialize
 		((CShapeLabel*)g_aShBuffer[g_aShBufIndex + indexlabel])->SerializeSvg(svgfile);
+		//Restore previous rectangle
+		*((CShapeLabel*)g_aShBuffer[g_aShBufIndex + indexlabel])->m_Label.rect = rect_prev;
 	}
 	g_aShBufIndex += indexlabel;
 }
@@ -1489,12 +1494,9 @@ BOOL CShapePin::OnCommand( WPARAM wParam, LPARAM lParam ){
 
 void CShapePin::OnDraw(CDC *pDC){
 
-/*	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){*/
-
 	CShape::OnDraw(pDC);
 
-/*	}*/
-/*	else */if(!m_Rect.IsRectEmpty()){
+	if(!m_Rect.IsRectEmpty()){
 
 		int offset_x;
 		int offset_y;
@@ -1508,7 +1510,7 @@ void CShapePin::OnDraw(CDC *pDC){
 
 
 		switch(m_dwStyle&SHAPEUNIT_PINTYPE_MASK){
-		case 0://unit pins
+		case PIN_UNIT://unit pins
 			//border rectangle
 			pDC->Rectangle(rect);
 
@@ -1546,7 +1548,7 @@ void CShapePin::OnDraw(CDC *pDC){
 			}
 				
 
-			if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK/*m_bJack*/){
+			if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
 				CString str=strlabel1;
 				strlabel1=strlabel2;
 				strlabel2=str;
@@ -1620,7 +1622,7 @@ void CShapePin::OnDraw(CDC *pDC){
 
 		break;
 
-		case 1://wire pins
+		case PIN_WIRE://wire pins
 
 			//debuggin
 			//******************************************************************
@@ -1650,9 +1652,7 @@ void CShapePin::OnDraw(CDC *pDC){
 		//to draw selections
 		CShape::OnDraw(pDC);
 
-	}
-
-
+	}//rect is not empty
 
 }
 
@@ -3129,7 +3129,7 @@ void CShapeLabel::SerializeGbr(CGbrioFile &gbrfile)
 
 void CShapeLabel::SerializeSvg(CSvgioFile &svgfile)
 {
-	CPoint p1 = m_Label.rect->TopLeft();
+	CPoint p1 = CPoint(m_Label.rect->TopLeft().x, m_Label.rect->CenterPoint().y);
 
 	svgfile.WriteText(p1, *m_Label.slabel, m_Label.font);
 }

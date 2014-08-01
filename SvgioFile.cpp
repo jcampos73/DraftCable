@@ -2,10 +2,14 @@
 #include "SvgioFile.h"
 
 
-CSvgioFile::CSvgioFile(CArchive *par)
+CSvgioFile::CSvgioFile(CArchive *par, CSize szDesign /*= CSize(600, 450)*/)
 {
+	CString strCommand1;
+	
 	m_par = par;
-	m_par->WriteString(_HEADER_TPL_SVG);
+
+	strCommand1.Format(_HEADER_TPL_SVG, szDesign.cx, szDesign.cy);
+	m_par->WriteString(strCommand1);
 }
 
 

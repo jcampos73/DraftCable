@@ -1928,11 +1928,23 @@ void CShapeContainer::SerializeGbr(CGbrioFile &gbrfile){
 }
 
 void CShapeContainer::SerializeSvg(CSvgioFile &svgfile){
+	//Iretare child shapes
 	for (int i = 0; i<m_obarrShapearr.GetSize(); i++){
 
+		//Get pointer to current child shape
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
 
+		//Save previous bounding rectangle
+		CRect rect_prev = psh->m_Rect;
+
+		//Offset shape with parent
+		psh->m_Rect += this->m_Rect.TopLeft();
+
+		//Serialize to file
 		psh->SerializeSvg(svgfile);
+
+		//Restore previous rectangle
+		psh->m_Rect = rect_prev;
 	}
 }
 
