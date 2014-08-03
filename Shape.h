@@ -190,6 +190,7 @@ public:
 	BOOL m_bLineResize;//flag for line type shapes
 	//07/12/2004
 	BOOL m_bAllowsPartialDraw;//flag for shapes that are drawn in segments: polylines, buses.
+	BOOL m_bDrawDashedRect;//Used by default when sizing a shape. Default value is TRUE
 
 	//pointer to a child shape to stablish a conection
 	//---------------------------------------------------------------------
@@ -265,7 +266,6 @@ protected:
 	//24/03/2004
 	CRect m_Rect0;	
 	virtual void GetData(CStringArray& saData){return;};
-	BOOL m_bDrawDashedRect;//Used by default when sizing a shape. Default value is TRUE
 
 	// Generated message map functions
 protected:

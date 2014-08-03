@@ -165,10 +165,10 @@ CShape& CShapeUnit::operator=( const CShape& Sh ){
 			((CShapePin*)m_obarrShapearr[i])->Select(FALSE);
 
 			//There is a problem with this assignement.
-
+			/*
 			*pSh1=*((CShape*)pShUnit->m_obarrShapearr[i]);
 			m_obarrShapearr[i]=pSh1;
-
+			*/
 
 			CShapePin *pShPin=(CShapePin *)m_obarrShapearr[i];
 		}
@@ -1336,7 +1336,7 @@ CShapePin::CShapePin(CShapePin& ShPin):CShapeContainer(ShPin){
 		DEFAULT_QUALITY,           // nQuality
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
 		"Arial");                  // lpszFacename
-
+	m_TypePin = ShPin.m_TypePin;
 }
 
 CShapePin::~CShapePin()

@@ -999,6 +999,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	int idata_deb=pDoc->m_pObArray->GetSize();
 	bool flag_return=false,flag_return1=false;
 	bool flag_nodeselect=false;
+	bool flag_atleast_one_selected = false;
 	int index;
 	int index_keep=-1;
 	CShape *pShconn=NULL;
@@ -1034,22 +1035,14 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	   //but this didn't work properly, so it was replaced by
 	   //(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
 		while(pSh){
-
-			/*if(pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE){
-
-				pSh->OnLButtonDown(nFlags,pDoc->m_pSh->m_Rect);
-				flag_return1=true;
-			}
-			else{*/
 			
 			int TypeSelectLast=pSh->m_TypeSelect;
-
 
 			//15/08/2004
 			//Added to prevent pines get connected on selections.
 			//---------------------------------------------------
 			if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE){
-				if( (pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))   ){
+				if( (pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer)) ){
 
 					CShapeContainer *pShContainer=(CShapeContainer *)pSh;
 					pShContainer->m_bConnectMake=TRUE;
@@ -1082,6 +1075,9 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 
 			if(!pSh->m_Mode){
+
+				flag_atleast_one_selected = true;
+
 	#ifdef DRAFTDRAW_RECTMUL_DELETE
 				//This if solves the problem of moving serveral selected shapes, but it causes
 				//the dragging of big shapes under a current selected one, in this manner:
@@ -1093,11 +1089,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 					flag_nodeselect=true;				
 				}
 	#endif
-				//When selected object is extracted a pushed on top
-	/*
-				pDoc->DeleteObject(index-1);
-				pDoc->AddObject(pSh);
-	*/
+
 				flag_return=true;
 				if(DRAFTCABLE_SELECT_INV){
 					index_keep=index-1;
@@ -1137,7 +1129,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//FILTER
 	//This filter may be obsolete.
 	//=======================================================
-
+	   /*
 	if(pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE){
 		if(m_RectMul.PtInRect(point)){
 			return;
@@ -1148,6 +1140,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			pDoc->DeleteObject(-1);
 		}
 	}
+	*/
 	//=======================================================
 
 	//2nd LOOP
@@ -1201,6 +1194,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_RectMul=CRect(0,0,0,0);
 		CShapeRect *pShRect=(CShapeRect *)pDoc->m_pSh;
 		pShRect->m_bGroup=TRUE;
+		pShRect->m_bDrawDashedRect = TRUE;
 		pDoc->AddObject(pDoc->m_pSh);
 		pDoc->m_pSh->OnLButtonDown(nFlags, point);
 	}
@@ -1841,9 +1835,11 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 		(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
 	{
 		while(pSh){
-
-			if((!pSh->m_Mode) || ( (pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE)
-				) ){
+			POSITION pos = m_ObListSel.Find(pSh);
+			if((!pSh->m_Mode) ||
+				(pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE) /*||
+				pos != NULL*/
+				){
 				
 				pShMove=pSh;
 				int prev_mode=pSh->m_Mode;
