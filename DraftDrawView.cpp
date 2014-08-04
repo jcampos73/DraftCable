@@ -915,14 +915,14 @@ void CDraftDrawView::OnStyleChanged(int nStyleType, LPSTYLESTRUCT lpStyleStruct)
 	//TODO: add code to react to the user changing the view style of your window
 }
 
-void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point) 
+void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	//Message handler follows
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
 	//Get size of grid
-	CSize m_szGrid=pDoc->m_szGrid;
+	CSize m_szGrid = pDoc->m_szGrid;
 
 	//Store hit point for pan tool
 	m_PointLBD0 = point;
@@ -933,7 +933,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//Scale point
-	CPoint point_ns=point;
+	CPoint point_ns = point;
 	ClientToSchematic(&point);
 
 	//Snap to grid
@@ -949,13 +949,13 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 	//ZOOM CURSOR ENGINE
 	//=======================================================
-	if(pDoc->m_iToolSel==_TOOLSELECT_ZOOMPLUS){
-		CPoint pscrollpos=point;
+	if (pDoc->m_iToolSel == _TOOLSELECT_ZOOMPLUS){
+		CPoint pscrollpos = point;
 		DoZoomIn(point);
 		return;
 	}
-	else if(pDoc->m_iToolSel==_TOOLSELECT_ZOOMMINUS){
-		CPoint pscrollpos=point;
+	else if (pDoc->m_iToolSel == _TOOLSELECT_ZOOMMINUS){
+		CPoint pscrollpos = point;
 		DoZoomOut(point);
 		return;
 	}
@@ -965,12 +965,12 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 	//PLACE IN CHAIN ENGINE
 	//=======================================================
-	if(pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE){
+	if (pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE){
 
 		//15/08/2004
 		//This line has been commented becouse it caused a curious bug:
 		//A 0 length wire was introduced at the end of each wire segment.
-//		OnLButtonUp(nFlags,point_ns);
+		//		OnLButtonUp(nFlags,point_ns);
 		return;
 	}
 
@@ -979,41 +979,46 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 	//SELECTING-DESELECTING ENGINE
 	//=======================================================
-	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE ||
-		pDoc->m_iToolSel==_TOOLTYPECHAININI_DRAFTCABLE){
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE ||
+		pDoc->m_iToolSel == _TOOLTYPECHAININI_DRAFTCABLE){
 		POSITION pos = m_ObListSel.GetHeadPosition();
-		while(pos != NULL)
+		while (pos != NULL)
 		{
-		   CShape* pSh = (CShape*)m_ObListSel.GetNext(pos);
-		   pSh->Unselect();
+			CShape* pSh = (CShape*)m_ObListSel.GetNext(pos);
+			pSh->Unselect();
 		}
 	}
 
 	//Flag for multiple select operation:
 	//1.Normal: shape stack is walked from last to first
 	//2.Inverse: when multiple select tool is selected stack is walked backwards
-	int DRAFTCABLE_SELECT_INV=(pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE);
+	int DRAFTCABLE_SELECT_INV = (pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE);
 	//CShape *pSh=new CShape();
 	//add a member function to perform this action
 	//pSh->m_TypeSelect=pDoc->m_pSh->m_TypeSelect;
-	int idata_deb=pDoc->m_pObArray->GetSize();
-	bool flag_return=false,flag_return1=false;
-	bool flag_nodeselect=false;
+	int idata_deb = pDoc->m_pObArray->GetSize();
+	bool flag_return = false, flag_return1 = false;
+	bool flag_nodeselect = false;
 	bool flag_atleast_one_selected = false;
 	int index;
-	int index_keep=-1;
-	CShape *pShconn=NULL;
-	CShape *pShchild=NULL;
+	int index_keep = -1;
+	CShape *pShconn = NULL;
+	CShape *pShchild = NULL;
 	CShape *pSh;
-	if(DRAFTCABLE_SELECT_INV){
-		pSh=(CShape *)pDoc->FirstObject(index);
-		pSh=(CShape *)pDoc->NextObject(index);
+	CShape *pShSelected = NULL;
+	if (DRAFTCABLE_SELECT_INV){
+		pSh = (CShape *)pDoc->FirstObject(index);
+		pSh = (CShape *)pDoc->NextObject(index);
 	}
 	else{
-		pSh=(CShape *)pDoc->LastObject(index);
-		pSh=(CShape *)pDoc->PrevObject(index);
+		pSh = (CShape *)pDoc->LastObject(index);
+		pSh = (CShape *)pDoc->PrevObject(index);
 	}
 
+	//debug
+	if (pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE){
+		int _dummy = 1;
+	}
 
 	//1st LOOP
 	//SELECTING/CONNECTING LOOP
@@ -1022,125 +1027,111 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//Filters:
 	//_TOOLSELECT_DRAFTCABLE-->To select shapes
 	//19/01/2005: new connecting mechanism
-	BOOL bConnectionTmp=FALSE;//set when a connection is pending
-	CShapeContainer *pShContConnect=NULL;
+	BOOL bConnectionTmp = FALSE;//set when a connection is pending
+	CShapeContainer *pShContConnect = NULL;
 	//=======================================================
-	if((pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE)||
-	   (pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE)||
-	   (pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
-	   //There was a bug and instead of previous line appeared
-	   //(pDoc->m_iToolSel==_TOOLTYPECHAININI_DRAFTCABLE))
-	   //that should be replaced by
-	   //(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE))
-	   //but this didn't work properly, so it was replaced by
-	   //(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
-		while(pSh){
-			
-			int TypeSelectLast=pSh->m_TypeSelect;
+	if ((pDoc->m_iToolSel == _TOOLSELECT_DRAFTCABLE) ||
+		(pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE) ||
+		(pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE))
+		//There was a bug and instead of previous line appeared
+		//(pDoc->m_iToolSel==_TOOLTYPECHAININI_DRAFTCABLE))
+		//that should be replaced by
+		//(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE))
+		//but this didn't work properly, so it was replaced by
+		//(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
+		while (pSh){
 
-			//15/08/2004
-			//Added to prevent pines get connected on selections.
-			//---------------------------------------------------
-			if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE){
-				if( (pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer)) ){
+		int TypeSelectLast = pSh->m_TypeSelect;
 
-					CShapeContainer *pShContainer=(CShapeContainer *)pSh;
-					pShContainer->m_bConnectMake=TRUE;
+		//15/08/2004
+		//Added to prevent pines get connected on selections.
+		//---------------------------------------------------
+		if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE){
+			if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
 
-					//19/01/2005: new connecting mechanism
-					if(!bConnectionTmp)
-						bConnectionTmp=pShContainer->PtInRect(&point,&pShContConnect);
-				}
+				CShapeContainer *pShContainer = (CShapeContainer *)pSh;
+				pShContainer->m_bConnectMake = TRUE;
+
+				//19/01/2005: new connecting mechanism
+				if (!bConnectionTmp)
+					bConnectionTmp = pShContainer->PtInRect(&point, &pShContConnect);
 			}
-			//---------------------------------------------------
+		}
+		//---------------------------------------------------
 
+		//23/10/2004
+		//This if prevents selecting shapes when drawing over them.
+		//The event is passed to shapes in place mode when starting wires
+		//to connect origin pin. When polylines are drawed the event is also passed.
+		//So the if not solves the problem because underlying shapes
+		//continue to be selected when inserting wire / polylines.
+		if (pDoc->m_iToolSel != _TOOLPLACE_DRAFTCABLE/*||
+			(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE&&(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE||pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE))*/){
 			//23/10/2004
-			//This if prevents selecting shapes when drawing over them.
-			//The event is passed to shapes in place mode when starting wires
-			//to connect origin pin. When polylines are drawed the event is also passed.
-			//So the if not solves the problem because underlying shapes
-			//continue to be selected when inserting wire / polylines.
-			if(pDoc->m_iToolSel!=_TOOLPLACE_DRAFTCABLE/*||
-				(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE&&(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE||pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE))*/){
-				//23/10/2004
-				//This if prevent selecting big shapes under small ones
-				//in multiple selections.
-				//flag_nodeselect is used to move shapes in multiple selections.
-				if(!flag_nodeselect||TypeSelectLast==_DRAFTDRAW_SEL_MOVING_RECT)
-					pSh->OnLButtonDown(nFlags, point);
-					//Add to selected shapes array
-					if(pSh->IsSelected()){
-						m_ObListSel.AddTail(pSh);
-					}
+			//This if prevent selecting big shapes under small ones
+			//in multiple selections.
+			//flag_nodeselect is used to move shapes in multiple selections.
+			if (!flag_nodeselect || TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT)
+				pSh->OnLButtonDown(nFlags, point);
+			//Add to selected shapes array
+			if (pSh->IsSelected()){
+				POSITION pos = m_ObListSel.Find(pSh);
+				if (pos==NULL)
+					m_ObListSel.AddTail(pSh);
 			}
+		}
 
-			if(!pSh->m_Mode){
+		if (!pSh->m_Mode){
 
-				flag_atleast_one_selected = true;
+			flag_atleast_one_selected = true;
+			pShSelected = pSh;
 
-	#ifdef DRAFTDRAW_RECTMUL_DELETE
-				//This if solves the problem of moving serveral selected shapes, but it causes
-				//the dragging of big shapes under a current selected one, in this manner:
-				//1.Select a small shape with a big one under it.
-				//2.Release left button.
-				//3.Hit small shape (left click) and drag (do not release left button).
-				//4.Big shape is also dragged becouse program enter this if (small shape had TypeSelectLast=_DRAFTDRAW_SEL_MOVING_RECT).
-				if(TypeSelectLast==_DRAFTDRAW_SEL_MOVING_RECT){
-					flag_nodeselect=true;				
-				}
-	#endif
-
-				flag_return=true;
-				if(DRAFTCABLE_SELECT_INV){
-					index_keep=index-1;
-				}
-				else{
-					index_keep=index+1;
-				}
-	#ifndef DRAFTDRAW_RECTMUL_DELETE
-				break;
-	#else
-				//This line has been introduced by the fact that if rect mul is deleted,
-				//when some shapes are selected all must be hit with OnLButtonDown
-				//for proper OnMouseMove operation.
-				if(!flag_nodeselect){
-					break;
-				}
-	#endif
+#ifdef DRAFTDRAW_RECTMUL_DELETE
+			//This if solves the problem of moving serveral selected shapes, but it causes
+			//the dragging of big shapes under a current selected one, in this manner:
+			//1.Select a small shape with a big one under it.
+			//2.Release left button.
+			//3.Hit small shape (left click) and drag (do not release left button).
+			//4.Big shape is also dragged becouse program enter this if (small shape had TypeSelectLast=_DRAFTDRAW_SEL_MOVING_RECT).
+			if (TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT){
+				flag_nodeselect = true;
 			}
+#endif
 
-			//check temp conection
-			if(pSh->m_pshChildConn){
-				pShconn=pSh;
-				pShchild=pSh->m_pshChildConn;
-				//pSh->m_pshChildConn=NULL;
-
-			}
-
-			if(DRAFTCABLE_SELECT_INV){
-				pSh=(CShape *)pDoc->NextObject(index);
+			flag_return = true;
+			if (DRAFTCABLE_SELECT_INV){
+				index_keep = index - 1;
 			}
 			else{
-				pSh=(CShape *)pDoc->PrevObject(index);
+				index_keep = index + 1;
 			}
-		}//end while
-	//=======================================================
+#ifndef DRAFTDRAW_RECTMUL_DELETE
+			break;
+#else
+			//This line has been introduced by the fact that if rect mul is deleted,
+			//when some shapes are selected all must be hit with OnLButtonDown
+			//for proper OnMouseMove operation.
+			if (!flag_nodeselect){
+				break;
+			}
+#endif
+		}
 
-	//FILTER
-	//This filter may be obsolete.
-	//=======================================================
-	   /*
-	if(pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE){
-		if(m_RectMul.PtInRect(point)){
-			return;
+		//check temp conection
+		if (pSh->m_pshChildConn){
+			pShconn = pSh;
+			pShchild = pSh->m_pshChildConn;
+			//pSh->m_pshChildConn=NULL;
+
+		}
+
+		if (DRAFTCABLE_SELECT_INV){
+			pSh = (CShape *)pDoc->NextObject(index);
 		}
 		else{
-			pDoc->m_iToolSel=_TOOLSELECT_DRAFTCABLE;
-			index_keep=-1;
-			pDoc->DeleteObject(-1);
+			pSh = (CShape *)pDoc->PrevObject(index);
 		}
-	}
-	*/
+		}//end while
 	//=======================================================
 
 	//2nd LOOP
@@ -1148,15 +1139,33 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//Tasks:
 	//1.Put shapes beeing deselected in normal draw.
 	//=======================================================
+	//When rotate tool is selected, no deselecting occurs
+	if (pDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE)
+	{
+		flag_nodeselect = true;
+		flag_return = true;
+	}
+
+	//New de-selecting mechanism (under development)
+	if (flag_nodeselect==FALSE &&
+		//If we are in multiple selection mode
+		pDoc->m_iToolSel != _TOOLSELECTMUL_DRAFTCABLE
+		){
+		POSITION pos = m_ObListSel.GetHeadPosition();
+		while (pos != NULL)
+		{
+			CShape* pSh = (CShape*)m_ObListSel.GetNext(pos);
+			if (pSh != pShSelected){
+				int _dummy = 0;
+				pSh->Unselect();
+				//flag_return=true;
+			}
+		}
+	}
+
+	/*
 	pSh=(CShape *)pDoc->FirstObject(index);
 	pSh=(CShape *)pDoc->NextObject(index);
-
-	//When rotate tool is selected, no deselecting occurs
-	if(pDoc->m_iToolSel==_TOOLROTATE_DRAFTCABLE)
-	{
-		flag_nodeselect=true;
-		flag_return=true;
-	}
 
 	if(!flag_nodeselect){
 		while(pSh){
@@ -1170,17 +1179,21 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			pSh=(CShape *)pDoc->NextObject(index);
 		}
 	}
+	*/
 
+	/*
 	if(flag_return){
 		return;
 	}
+	*/
 	//=======================================================
 
 	//NEW SHAPE
 	//old code
 	//pDoc->AddObject(pSh);
 	//Check place tool
-	if(pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE){
+	if(pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE &&
+		pShSelected == NULL){
 		//-----------------------
 		if(pDoc->m_pSh){
 			if(pDoc->m_pSh != (CShape*)((*pDoc->m_pObArray)[pDoc->m_pObArray->GetSize()-1])){
