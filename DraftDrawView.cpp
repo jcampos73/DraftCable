@@ -920,6 +920,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//Message handler follows
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
+	CRect rect_union = CRect(0, 0, 0, 0);			//Rectangle for repainting
 
 	//Get size of grid
 	CSize m_szGrid = pDoc->m_szGrid;
@@ -1159,6 +1160,20 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 				int _dummy = 0;
 				pSh->Unselect();
 				//flag_return=true;
+				//Inflate update rectangle
+				CRect rect = pSh->m_Rect;
+				rect.InflateRect(DCABLE_GRIDX_DEFAULT * 4, DCABLE_GRIDY_DEFAULT * 4);//MAGIC NUMBER
+
+				//Intersect with sheet
+				//rect.IntersectRect(rect, rcSheet);
+
+				//debug
+				if (rect.IsRectEmpty()){
+					//	rect.InflateRect(10,10);//this line ensures actualization of sizing vert & horz lines
+				}
+
+				//Add to update rectangle
+				rect_union.UnionRect(rect_union, rect);
 			}
 		}
 	}
@@ -1235,6 +1250,29 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		//Add new shape
 		pDoc->AddObject(pDoc->m_pSh);
 		pDoc->m_pSh->OnLButtonDown(nFlags, point);
+	}
+	//=======================================================
+
+	//=======================================================
+	//DRAWING ENGINE
+	//=======================================================
+	if (rect_union.IsRectEmpty()==FALSE){
+
+		CRect rect = rect_union;
+
+		//debug
+		if (rect.IsRectEmpty()){
+			int i = 0;
+		}
+
+		//Scale update rectangle to current coordinates
+		CPoint point1 = CPoint(rect.TopLeft().x / m_xScale, rect.TopLeft().y / m_yScale) - GetScrollPosition();
+		//CPoint point1=rect.TopLeft();
+		CSize size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
+
+		m_RectDraw = rect;
+
+		InvalidateRect(CRect(point1, size), FALSE);
 	}
 	//=======================================================
 
