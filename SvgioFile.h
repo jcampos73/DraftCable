@@ -39,6 +39,7 @@ public:
 	void OpenPath();
 	void ClosePath();
 	void WriteText(CPoint point, CString text, CFont * pFont);
+	void WriteRectangle(CRect rect);
 	CSvgioFile(CArchive *par, CSize szDesign =  CSize(600, 450));
 	~CSvgioFile();
 };

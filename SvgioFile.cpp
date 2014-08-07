@@ -59,3 +59,19 @@ void CSvgioFile::WriteText(CPoint point, CString text, CFont * pFont)
 
 	m_par->WriteString(strCommand1);
 }
+
+void CSvgioFile::WriteRectangle(CRect rect)
+{
+	CPoint p1 = rect.TopLeft();
+	CPoint p3 = rect.BottomRight();
+	CPoint p2 = CPoint(p3.x, p1.y);
+	CPoint p4 = CPoint(p1.x, p3.y);
+
+	OpenPath();
+	WriteMoveTo(p1);
+	WriteLineTo(p2);
+	WriteLineTo(p3);
+	WriteLineTo(p4);
+	WriteLineTo(p1);
+	ClosePath();
+}
