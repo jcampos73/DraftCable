@@ -12,6 +12,7 @@
 #include "DraftDrawDoc.h"
 #include "ChildFrm.h"
 #include "TBEditView.h"
+#include "XMLArchive.h"
 
 //Dialog
 #include "NetAlias.h"
@@ -499,31 +500,6 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				nCounter=nCounter;
 
 
-
-				/*
-				pSh=(CShape *)FirstObject(index);
-				pSh=(CShape *)NextObject(index);
-
-				while(pSh!=NULL){
-
-					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeContainer))){
-						
-
-						CShapeContainer *pShContainer=(CShapeContainer *)pSh;
-
-						pShContainer->CShapeContainer::SerializeDdw(ddwfile);
-					}
-
-					pSh=(CShape *)NextObject(index);
-				}
-				*/
-
-				/*
-				//Sheet marker
-				if(GetSheetCount()>1&&i<GetSheetCount()-1){
-					ddwfile.WriteSheet(NULL);
-				}
-				*/
 			}
 
 			//05/04/2005
@@ -615,10 +591,17 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 	//Loading code here
 	else
 	{
+		//Svg file (under development)
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
+			//XMLCLASSNODE;
+			//XMLDATA(m_itemArray);
+			//XMLDATA(m_singleItem);
+			//XMLENDNODE;
+		}
 		//Binary format
 		//Loading for place is perfomed on CShapeUnit::LoadUnit()
 		//**********************************************************************
-		if(nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
+		else if(nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
 
 			int idata=1;
 			//02/07/2005
@@ -4692,96 +4675,106 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		TRACE0("Warning: OnOpenDocument replaces an unsaved document.\n");
 
 	//Parse file name to find out filter type.
-	//if(nFilterIndex<=0){
-		std::string str=_DRAFTCABLE_DOC_FILTER_STR;
-		CString cstr=_DRAFTCABLE_DOC_FILTER_STR;
+
+	std::string str=_DRAFTCABLE_DOC_FILTER_STR;
+	CString cstr=_DRAFTCABLE_DOC_FILTER_STR;
 	
-		//regex("...");
-		//int idata=split(str,NULL,0);
-		int idata=Split(cstr,NULL,0);
+	//regex("...");
+	//int idata=split(str,NULL,0);
+	int idata=Split(cstr,NULL,0);
 
-		LPTSTR *sa=new LPTSTR[idata];
-		int i;
-		for(i=0;i<idata;i++){
-			sa[i]=new TCHAR[255];
+	LPTSTR *sa=new LPTSTR[idata];
+	int i;
+	for(i=0;i<idata;i++){
+		sa[i]=new TCHAR[255];
+	}
+
+	//idata=split(str,sa,idata);
+	idata=Split(cstr,sa,idata);
+
+	for(i=0;i<idata;i++){
+		CString strName(lpszPathName);
+		CString strExt="(*."+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+")";
+		if(CString(sa[i]).Find(strExt)>=0){
+			nFilterIndex=(i>>1)+1;
+			break;
 		}
+	}
 
-		//idata=split(str,sa,idata);
-		idata=Split(cstr,sa,idata);
-
-		for(i=0;i<idata;i++){
-			CString strName(lpszPathName);
-			CString strExt="(*."+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+")";
-			if(CString(sa[i]).Find(strExt)>=0){
-				nFilterIndex=(i>>1)+1;
-				break;
-			}
-		}
-	//}
 
 
 #ifdef DCABLE_COMPOUNDFILE
 	CFileException fe;
-	COleStreamFile* pFile = NULL;
-	//Open storage
-	USES_CONVERSION;
-	LPSTORAGE pStgRoot=NULL;
-	if(::StgOpenStorage(T2OLE(lpszPathName), NULL,
-		STGM_READ | STGM_SHARE_EXCLUSIVE,
-		NULL,0,&pStgRoot)==S_OK){
-		ASSERT(pStgRoot!=NULL);
+	//COleStreamFile* pFile = NULL;
+	CFile* pFile = NULL;
+	LPSTREAM pStream = NULL;
+	LPSTORAGE pStgRoot = NULL;
 
-	}
-	else{
-		
-		if(!OnOpenDocument2(lpszPathName)){
+	if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
 
-			AfxMessageBox("Archivo de almacenamiento no disponible o no legible");
-			return FALSE;
+		//Open storage
+		USES_CONVERSION;
+		//LPSTORAGE pStgRoot = NULL;
+		if (::StgOpenStorage(T2OLE(lpszPathName), NULL,
+			STGM_READ | STGM_SHARE_EXCLUSIVE,
+			NULL, 0, &pStgRoot) == S_OK){
+			ASSERT(pStgRoot != NULL);
+
 		}
 		else{
-			return TRUE;
-		}
-	}
 
-	//Enumerate elements in storage
-	LPSTREAM pStream=NULL;
-	LPENUMSTATSTG pEnum;
-	LPMALLOC pMalloc=NULL;
-	STATSTG statstg;
-	::CoGetMalloc(MEMCTX_TASK,&pMalloc);
-	VERIFY(pStgRoot->EnumElements(0,NULL,0,&pEnum)==S_OK);
-	while(pEnum->Next(1,&statstg,NULL)==NOERROR){
+			if (!OnOpenDocument2(lpszPathName)){
 
-		if(statstg.type==STGTY_STREAM){
-			if(_wcsicmp(statstg.pwcsName,T2OLE("maindoc"))==0){
-				//Open stream
-				VERIFY(pStgRoot->OpenStream(statstg.pwcsName, NULL,
-					STGM_READ|STGM_SHARE_EXCLUSIVE,
-					0,&pStream)==S_OK);
-
-				ASSERT(pStream!=NULL);
-				pMalloc->Free(statstg.pwcsName);
-				break;
+				AfxMessageBox("Archivo de almacenamiento no disponible o no legible");
+				return FALSE;
+			}
+			else{
+				return TRUE;
 			}
 		}
-		pMalloc->Free(statstg.pwcsName);
-	}
-	//Release method
-	pMalloc->Release();
-	pEnum->Release();
 
+		//Enumerate elements in storage
+		//LPSTREAM pStream = NULL;
+		LPENUMSTATSTG pEnum;
+		LPMALLOC pMalloc = NULL;
+		STATSTG statstg;
+		::CoGetMalloc(MEMCTX_TASK, &pMalloc);
+		VERIFY(pStgRoot->EnumElements(0, NULL, 0, &pEnum) == S_OK);
+		while (pEnum->Next(1, &statstg, NULL) == NOERROR){
 
-	if(pStream==NULL){
-		AfxMessageBox("Archivo de almacenamiento con formato incorrecto.");
+			if (statstg.type == STGTY_STREAM){
+				if (_wcsicmp(statstg.pwcsName, T2OLE("maindoc")) == 0){
+					//Open stream
+					VERIFY(pStgRoot->OpenStream(statstg.pwcsName, NULL,
+						STGM_READ | STGM_SHARE_EXCLUSIVE,
+						0, &pStream) == S_OK);
+
+					ASSERT(pStream != NULL);
+					pMalloc->Free(statstg.pwcsName);
+					break;
+				}
+			}
+			pMalloc->Free(statstg.pwcsName);
+		}
 		//Release method
-		pStgRoot->Release();
-		return FALSE;
+		pMalloc->Release();
+		pEnum->Release();
+
+
+		if (pStream == NULL){
+			AfxMessageBox("Archivo de almacenamiento con formato incorrecto.");
+			//Release method
+			pStgRoot->Release();
+			return FALSE;
+		}
+
+		//Create stream file
+		pFile = new COleStreamFile(pStream);
 	}
-
-	//Create stream file
-	pFile=new COleStreamFile(pStream);
-
+	else{
+		pFile = GetFile(lpszPathName,
+			CFile::modeRead|CFile::shareDenyWrite, &fe);
+	}
 #else
 	CFileException fe;
 	CFile* pFile = GetFile(lpszPathName,
@@ -4797,6 +4790,17 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	DeleteContents();
 	SetModifiedFlag();  // dirty during de-serialize
 
+	CArchive *ploadArchive;
+	if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
+		ploadArchive = new CXMLArchive(pFile, CArchive::load | CArchive::bNoFlushOnDelete);
+	}
+	else
+	{
+		ploadArchive = new CArchive(pFile, CArchive::load | CArchive::bNoFlushOnDelete);
+	}
+	ploadArchive->m_pDocument = this;
+	ploadArchive->m_bForceFlat = FALSE;
+
 	CArchive loadArchive(pFile, CArchive::load | CArchive::bNoFlushOnDelete);
 	loadArchive.m_pDocument = this;
 	loadArchive.m_bForceFlat = FALSE;
@@ -4809,22 +4813,34 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 			Serialize(loadArchive);     // load me
 		loadArchive.Close();
 #ifdef DCABLE_COMPOUNDFILE
-		ReadStorage(pStgRoot);					// load persisted objects
-		delete(pFile);
-		//Release method
-		pStream->Release();
-		pStgRoot->Release();
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
+			ReadStorage(pStgRoot);			// load persisted objects
+			delete(pFile);
+			//Release method
+			pStream->Release();
+			pStgRoot->Release();
+		}
+		else{
+			ReleaseFile(pFile, FALSE);
+		}
 #else
 		ReleaseFile(pFile, FALSE);
 #endif
+		delete(ploadArchive);
 	}
 	CATCH_ALL(e)
 	{
 #ifdef DCABLE_COMPOUNDFILE
-		delete(pFile);
-		//Release method
-		pStream->Release();
-		pStgRoot->Release();
+		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
+			delete(pFile);
+			//Release method
+			pStream->Release();
+			pStgRoot->Release();
+		}
+		else
+		{
+			ReleaseFile(pFile, TRUE);
+		}
 #else
 		ReleaseFile(pFile, TRUE);
 #endif
