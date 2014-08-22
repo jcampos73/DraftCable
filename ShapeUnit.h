@@ -163,6 +163,7 @@ public:
 	virtual void Serialize( CArchive& archive );
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
+	virtual void SerializeSvg(CSvgioFile &svgfile);
 	virtual BOOL OnCommand( WPARAM wParam, LPARAM lParam );
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnMouseMove(UINT nFlags, CPoint point);
@@ -175,6 +176,7 @@ public:
 	// Generated message map functions
 protected:
 	void RotatePin();
+	void _DoCreateRectUnitPin(CPoint& point, CRect& rect1, CRect& rect2, CString& strlabel1, CString& strlabel2);
 	//{{AFX_MSG(CShape)
 		// NOTE - the ClassWizard will add and remove member functions here.
 	//}}AFX_MSG

@@ -1511,9 +1511,14 @@ void CShapePin::OnDraw(CDC *pDC){
 
 		switch(m_dwStyle&SHAPEUNIT_PINTYPE_MASK){
 		case PIN_UNIT://unit pins
+
+			//Create rectangles and labels needed for drawing
+			_DoCreateRectUnitPin(point, rect1, rect2, strlabel1, strlabel2);
+
 			//border rectangle
 			pDC->Rectangle(rect);
 
+			/*
 			switch(m_uiPos){
 			case _DRAFTDRAW_SEL_RESIZING_RECT_N:
 			case _DRAFTDRAW_SEL_RESIZING_RECT_S:
@@ -1553,15 +1558,18 @@ void CShapePin::OnDraw(CDC *pDC){
 				strlabel1=strlabel2;
 				strlabel2=str;
 			}
+			*/
 
-			def_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*&m_fontFont1*/);
+			//Draw pin
+
+			def_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
 
 			pDC->DrawText(strlabel1,rect1,DT_CENTER);
 			pDC->DrawText(strlabel2,rect2,DT_CENTER);
 
 			pDC->SelectObject(def_font);
 
-			//dividory line
+			//divisory line
 			switch(m_uiPos){
 			case _DRAFTDRAW_SEL_RESIZING_RECT_N:
 			case _DRAFTDRAW_SEL_RESIZING_RECT_S:
@@ -1595,8 +1603,6 @@ void CShapePin::OnDraw(CDC *pDC){
 				offset_x=-offset_x;
 				offset_y=0;
 				break;
-
-
 			}
 
 			//debuggin
@@ -1777,20 +1783,52 @@ void CShapePin::Serialize( CArchive& archive )
 
 void CShapePin::SerializeDdw(CDdwioFile &ddwfile){
 
-
 	ddwfile.WritePin(m_Rect.TopLeft(),
 		m_uiPinnumber,
 		m_uiPos,
 		m_dwStyle,
 		m_TypePin);
-
-
-
 }
 
 void CShapePin::SerializeGbr(CGbrioFile &gbrfile)
 {
 
+}
+
+void CShapePin::SerializeSvg(CSvgioFile &svgfile)
+{
+	int offset_x;
+	int offset_y;
+	CFont *def_font;
+	CString strlabel1;
+	CString strlabel2;
+	CPoint point;
+	CRect rect = m_rectPin + m_Rect.TopLeft();
+	CRect rect1;
+	CRect rect2;
+
+	//Create rectangles and labels needed for drawing
+	_DoCreateRectUnitPin(point, rect1, rect2, strlabel1, strlabel2);
+
+	svgfile.WriteRectangle(rect);
+
+	svgfile.WriteText(CPoint(rect1.TopLeft().x, rect1.BottomRight().y), strlabel1, AfxGetFont(AFX_FONT_SMALL));
+	svgfile.WriteText(CPoint(rect2.TopLeft().x, rect2.BottomRight().y), strlabel2, AfxGetFont(AFX_FONT_SMALL));
+
+	//divisory line
+	switch (m_uiPos){
+	case _DRAFTDRAW_SEL_RESIZING_RECT_N:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_S:
+		svgfile.WriteMoveTo(point);
+		svgfile.WriteLineTo(point + CPoint(rect.Width(), 0));
+		break;
+	case _DRAFTDRAW_SEL_RESIZING_RECT_E:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_W:
+		svgfile.WriteMoveTo(point);
+		svgfile.WriteLineTo(point + CPoint(0, rect.Height()));
+		break;
+	}
+	//conecting point
 }
 
 //Return a pointer to a shape that can be connect, but doesn´t connect anaything.
@@ -1809,6 +1847,50 @@ BOOL CShapePin::PtInRect(LPPOINT point,CShapeContainer** lpSh){
 	return FALSE;
 }
 
+void CShapePin::_DoCreateRectUnitPin(CPoint& point, CRect& rect1, CRect& rect2, CString& strlabel1, CString& strlabel2)
+{
+	//Local variables
+	CRect rect = m_rectPin + m_Rect.TopLeft();
+
+	switch (m_uiPos){
+	case _DRAFTDRAW_SEL_RESIZING_RECT_N:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_S:
+		point = rect.TopLeft() + CPoint(0, rect.Height()*0.5);
+		rect1 = CRect(rect.TopLeft(), point + CPoint(rect.Width(), 0));
+		rect1.DeflateRect(0, rect1.Height()*0.10);
+		rect2 = CRect(point, rect.BottomRight());
+		rect2.DeflateRect(0, rect2.Height()*0.10);
+		break;
+	case _DRAFTDRAW_SEL_RESIZING_RECT_E:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_W:
+		point = rect.TopLeft() + CPoint(rect.Width()*0.5, 0);
+		rect1 = CRect(rect.TopLeft(), point + CPoint(0, rect.Height()));
+		rect1.DeflateRect(rect1.Width()*0.10, rect1.Height()*0.10);
+		rect2 = CRect(point, rect.BottomRight());
+		rect2.DeflateRect(rect2.Width()*0.10, rect2.Height()*0.10);
+		break;
+	}
+
+	//label
+	switch (m_uiPos){
+	case _DRAFTDRAW_SEL_RESIZING_RECT_E:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_S:
+		strlabel1.Format("J%i", m_uiPinnumber);
+		strlabel2.Format("P%i", m_uiPinnumber);
+		break;
+	case _DRAFTDRAW_SEL_RESIZING_RECT_W:
+	case _DRAFTDRAW_SEL_RESIZING_RECT_N:
+		strlabel2.Format("J%i", m_uiPinnumber);
+		strlabel1.Format("P%i", m_uiPinnumber);
+		break;
+	}
+
+	if (m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
+		CString str = strlabel1;
+		strlabel1 = strlabel2;
+		strlabel2 = str;
+	}
+}
 /////////////////////////////////////////////////////////////////////////////
 // CShapeWire
 /*IMPLEMENT_DYNCREATE(CShapeWire, CShapeContainer)*/

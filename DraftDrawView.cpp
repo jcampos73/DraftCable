@@ -1095,7 +1095,8 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			//3.Hit small shape (left click) and drag (do not release left button).
 			//4.Big shape is also dragged becouse program enter this if (small shape had TypeSelectLast=_DRAFTDRAW_SEL_MOVING_RECT).
 			if (TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT){
-				flag_nodeselect = true;
+				//This is obsolete and complecated so is being deleted
+				//flag_nodeselect = true;
 			}
 #endif
 
@@ -1226,7 +1227,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		pDoc->AddObject(pDoc->m_pSh);
 		pDoc->m_pSh->OnLButtonDown(nFlags, point);
 	}
-	else{
+	else if (pDoc->m_iToolSel != _TOOLSELECT_DRAFTCABLE){
 		//Connect
 		//19/01/2005: new connecting mechanism
 		if(bConnectionTmp){
@@ -1271,7 +1272,6 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		CSize size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
 
 		m_RectDraw = rect;
-
 		InvalidateRect(CRect(point1, size), FALSE);
 	}
 	//=======================================================
@@ -1401,6 +1401,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		//Next shape
 		pSh=(CShape *)pDoc->NextObject(index);
 	}//end while and if (...) IsKindOf(RUNTIME_CLASS(CShapeWire)) (...)
+	//Disable rect for multiple selections
 	else if((pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE)&&(m_RectMul.IsRectEmpty())){
 
 		int sizeObArray=pDoc->m_pObArray->GetSize();
@@ -1425,17 +1426,12 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 #endif
 
 		if(!m_RectMul.IsRectEmpty()){
-			//Puts m_RectDraw to empty rect (OnMouseMove could set m_RectDraw)
-			m_RectDraw=m_RectMul;//CRect(0,0,0,0);
 
+			m_RectDraw=m_RectMul;
 			m_RectDraw.InflateRect(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT);
-
-			//RedrawWindow();
-
 			InvalidateRect(m_RectDraw,FALSE);
 		}
 
-		/*PostMessage(WM_LBUTTONDOWN,nFlags,MAKELPARAM(point.x,point.y));*/
 		return;
 	}
 
