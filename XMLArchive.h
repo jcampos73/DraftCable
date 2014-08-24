@@ -86,8 +86,8 @@ public:
 	virtual ~CXMLArchiveNode();
 //	MSXML::IXMLDOMNodePtr CreateDataNode(LPCTSTR attrName, CString attrValue);
 //	MSXML::IXMLDOMNodePtr CXMLArchiveNode::GetDataNode(LPCTSTR nodeName, CString& nodeText);
-//	int		GetNoChildren();
-//	CString GetChildName(int childIndex);
+	int		GetNoChildren();
+	CString GetChildName(int childIndex);
 //	int		GetNextChildIndex() { return m_childIndex++; };
 	void	Close();
 //	void DataNode(LPCTSTR attrName, CTime& attrValue);

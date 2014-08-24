@@ -290,11 +290,14 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			return NULL;
 		}
 
-		/*
+
 		if (IsStoring())
 		{
 			// Archive is storing
-			CMarkup* childnodep = m_pMarkup->AddChildElem(nodeName);
+			m_pMarkup->AddChildElem(nodeName);
+			CMarkup* childnodep = new CMarkup(m_pMarkup->GetDoc());
+			childnodep = m_pMarkup;
+			m_pMarkup->ResetChildPos();
 			CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, 
 				childnodep,
 				//m_xmlDocPtr->createElement(nodeNameBSTR),
@@ -306,7 +309,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 			return xmlArchiveNodePtr;
 		}
-		*/
+
 
 		// Archive is Loading
 		//MSXML::IXMLDOMNodeListPtr	nodeListPtr;
@@ -317,21 +320,43 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		// If child node list is not empty, we are loading using the tags to
 		// create CObject derived objects (CArray<Cobject* CObject*>, use child list
 
-		/*
 		if (m_nodeList.size() > 0)
 		{
 			CXMLArchiveNode* xmlNodePtr = m_nodeList.top();
 			nodeListPtr = xmlNodePtr->m_childNodeListPtr;
 
-			if (nodeListPtr != NULL && nodeListPtr->length > 0)
+			int length = 0;
+			while (nodeListPtr->FindElem())
+			{
+				length++;
+			}
+
+			nodeListPtr->ResetMainPos();
+
+			if (nodeListPtr != NULL && length/*nodeListPtr->length*/ > 0)
 			{
 				int childIndex = xmlNodePtr->m_childIndex;
 
-				if (childIndex < nodeListPtr->length)
+				if (childIndex < length/*nodeListPtr->length*/)
 				{
-					nodeListPtr->get_item(childIndex, &nodePtr);
+					//nodeListPtr->get_item(childIndex, &nodePtr);
+					int index = 0;
 
-					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, 0);// m_xmlDocPtr);
+					if (nodeListPtr->FindChildElem())
+					{
+						while (nodeListPtr->FindElem() && index < childIndex)
+						{
+							index++;
+						}
+
+						nodePtr = new CMarkup();
+						nodePtr = nodeListPtr;
+
+						nodeListPtr->ResetChildPos();
+					}
+
+
+					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_pMarkup);// m_xmlDocPtr);
 
 					m_nodeList.push(xmlArchiveNodePtr);
 
@@ -343,7 +368,6 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 				ASSERT(FALSE);
 			}
 		}
-		*/
 
 		// Get all nodes with this name
 		//if (MSXML::IXMLDOMDocumentPtr(fatherNodePtr) != NULL)
@@ -358,23 +382,47 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		//	nodeListPtr = MSXML::IXMLDOMElementPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
 		//}
 
-		/*nodeListPtr = fatherNodePtr->FindElem(nodeName);*/
+		fatherNodePtr->FindElem(nodeName);
+		nodeListPtr = new CMarkup();
+		nodeListPtr = fatherNodePtr;
+		fatherNodePtr->ResetMainPos();
 
 		//::SysFreeString(nodeNameBSTR);
 
-		/*
 		int childIndex = 0;
 		if (m_nodeList.size() > 0)
 		{
 			childIndex = m_nodeList.top()->m_childIndex;
 		}
 
-		if (childIndex < nodeListPtr->length)
+		int length = 0;
+		while (nodeListPtr->FindElem())
 		{
-			nodeListPtr->get_item(childIndex, &nodePtr);
+			length++;
 		}
 
-		*/
+		nodeListPtr->ResetMainPos();
+
+		if (childIndex < length/*nodeListPtr->length*/)
+		{
+			//nodeListPtr->get_item(childIndex, &nodePtr);
+			int index = 0;
+
+			if (nodeListPtr->FindChildElem())
+			{
+				while (nodeListPtr->FindElem() && index < childIndex)
+				{
+					index++;
+				}
+
+				nodePtr = new CMarkup();
+				nodePtr = nodeListPtr;
+
+				nodeListPtr->ResetChildPos();
+			}
+		}
+
+
 		CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_pMarkup);// m_xmlDocPtr);
 
 		m_nodeList.push(xmlArchiveNodePtr);
@@ -423,6 +471,77 @@ void CXMLArchiveNode::Close()
 	archivePtr->RemoveNode(this);
 }
 
+CString CXMLArchiveNode::GetChildName(int childIndex)
+{
+	ASSERT(m_nodePtr != NULL);
+
+	if (m_nodePtr == NULL)
+	{
+		return CString();
+	}
+
+	ASSERT(m_childNodeListPtr != NULL /*&& childIndex < m_childNodeListPtr->length*/);
+
+	//MSXML::IXMLDOMNodePtr nodePtr;
+	CMarkup* nodePtr;
+	//BSTR bstr;
+
+	//m_childNodeListPtr->get_item(childIndex, &nodePtr);
+
+	//nodePtr->get_nodeName(&bstr);
+
+	//CString childName(bstr);
+
+	CString childName;
+	int index = 0;
+
+	if (m_nodePtr->FindChildElem())
+	{
+		while (m_nodePtr->FindElem() && index < childIndex)
+		{
+			index++;
+		}
+
+		m_nodePtr->ResetChildPos();
+	}
+
+	//::SysFreeString(bstr);
+
+	return childName;
+}
+
+int CXMLArchiveNode::GetNoChildren()
+{
+	int length = 0;
+
+	if (m_nodePtr == NULL)
+	{
+		return 0;
+	}
+
+	if (m_childNodeListPtr == NULL)
+	{
+		// Get all nodes with this name
+		//m_childNodeListPtr = m_nodePtr->childNodes;
+		if (m_nodePtr->FindChildElem())
+		{
+			m_childNodeListPtr = new CMarkup(m_nodePtr->GetDoc());
+			m_childNodeListPtr = m_nodePtr;
+			length++;
+		}
+	}
+
+	while (m_nodePtr->FindElem())
+	{
+		length++;
+	}
+
+	m_nodePtr->ResetChildPos();
+
+	/*return m_childNodeListPtr->length;*/
+	return length;
+}
+
 // Loads into existing objects
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 {
@@ -457,7 +576,7 @@ void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject*& objectPtr)
 		do
 		{
 			// Dummy loop, executes only once
-			/*
+
 			int numberObjects = curNodePtr->GetNoChildren();
 
 			if (numberObjects == 0)
@@ -474,7 +593,7 @@ void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject*& objectPtr)
 				ASSERT(FALSE);
 				break;
 			}
-			*/
+
 			objectPtr->Serialize(*m_archivePtr);
 
 			break;

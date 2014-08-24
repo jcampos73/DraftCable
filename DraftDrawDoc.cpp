@@ -594,6 +594,9 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 		//Svg file (under development)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
 			//XMLCLASSNODE;
+			CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
+			CShape shape;
+			XMLDATA(shape);
 			//XMLDATA(m_itemArray);
 			//XMLDATA(m_singleItem);
 			//XMLENDNODE;
