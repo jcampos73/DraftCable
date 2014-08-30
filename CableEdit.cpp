@@ -34,6 +34,7 @@ CCableEdit::CCableEdit(LPCSTR lpcsCableFile, BOOL bConnector /*= FALSE*/, CWnd* 
 	m_bModified=FALSE;
 	m_strFile=lpcsCableFile;
 	m_bConnector=bConnector;
+	m_nColumn = 0;
 }
 
 void CCableEdit::DoDataExchange(CDataExchange* pDX)
@@ -75,89 +76,8 @@ BOOL CCableEdit::OnInitDialog()
 	
 	m_FlagEditing=false;
 
-	// TODO: Add extra initialization here
-
-	//Configures combo box control
-	//-----------------------------------------------------------------
-if(!m_bConnector){
-	int nCount=AfxGetCableCount();
-	LPTSTR *listCable=(LPTSTR *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,nCount*sizeof(CString*));
-	int i;
-	for(i=0;i<nCount;i++){
-		listCable[i]=new char[256];
-	}		
-	AfxGetCables(listCable,nCount,255);
-	for(i=0;i<nCount;i++){
-		if(listCable[i]){
-			int nIndex=m_cbFile.AddString(listCable[i]);
-			m_cbFile.SetItemData(nIndex,i);
-			delete(listCable[i]);
-		}
-	}		
-	if(!m_strFile.IsEmpty()){
-		m_cbFile.SelectString(-1,m_strFile);
-	}
-	else{
-		m_cbFile.SetCurSel( 0 );
-	}
-}
-else{
-	GetDlgItem(IDC_STATIC_NUMBER)->SetWindowText("Conn. Number");
-	int nCount=AfxGetConnectorCount();
-	LPTSTR *listCable=(LPTSTR *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,nCount*sizeof(CString*));
-	int i;
-	for(i=0;i<nCount;i++){
-		listCable[i]=new char[256];
-	}		
-	AfxGetConnector(listCable,nCount,255);
-	for(i=0;i<nCount;i++){
-		if(listCable[i]){
-			int nIndex=m_cbFile.AddString(listCable[i]);
-			m_cbFile.SetItemData(nIndex,i);
-			delete(listCable[i]);
-		}
-	}		
-	if(!m_strFile.IsEmpty()){
-		m_cbFile.SelectString(-1,m_strFile);
-	}
-	else{
-		m_cbFile.SetCurSel( 0 );
-	}
-}
-	//-----------------------------------------------------------------
-
-	//Configures list control
-	//-----------------------------------------------------------------
-#define _COLDEFWIDTH_CABLEDIT		100
-if(!m_bConnector){
-	m_iColumn[0]=_COLDEFWIDTH_CABLEDIT;
-	m_iColumn[1]=_COLDEFWIDTH_CABLEDIT;
-	m_iColumn[2]=_COLDEFWIDTH_CABLEDIT;
-	m_iColumn[3]=_COLDEFWIDTH_CABLEDIT;
-
-	m_lcCable.InsertColumn(0,"PIN",LVCFMT_LEFT,m_iColumn[0],0);
-	m_lcCable.InsertColumn(1,"REF.HILO",LVCFMT_LEFT,m_iColumn[1],1);
-	m_lcCable.InsertColumn(2,"FUNCTION",LVCFMT_LEFT,m_iColumn[2],2);
-	m_lcCable.InsertColumn(3,"PIN",LVCFMT_LEFT,m_iColumn[3],3);
-}
-else{
-	m_iColumn[0]=_COLDEFWIDTH_CABLEDIT;
-	m_iColumn[1]=_COLDEFWIDTH_CABLEDIT;
-
-	m_lcCable.InsertColumn(0,"PIN",LVCFMT_LEFT,m_iColumn[0],0);
-	m_lcCable.InsertColumn(1,"REF.HILO",LVCFMT_LEFT,m_iColumn[1],1);
-}
-	DWORD dwStyle = m_lcCable.SendMessage(LVM_GETEXTENDEDLISTVIEWSTYLE);
-	dwStyle |= LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT;
-	/*m_lcUser.ModifyStyle(LVS_ICON, LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS);*/
-	m_lcCable.SendMessage(LVM_SETEXTENDEDLISTVIEWSTYLE, 0, (LPARAM)dwStyle);
-
-	//-----------------------------------------------------------------
-
-	//Load cable file
-	//-----------------------------------------------------------------
-	LoadCable();
-	//-----------------------------------------------------------------
+	//Prepare controls
+	DoPrepareCtrl();
 
 	//load accelerator table
 	//-----------------------------------------------------------------
@@ -172,8 +92,6 @@ else{
 
 void CCableEdit::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult) 
 {
-	// TODO: Add your control notification handler code here
-
 	/*
 	CEdit* pedit = m_lcCable.EditLabel(1);
 	
@@ -527,7 +445,11 @@ void CCableEdit::OnSelendokFile()
 	// TODO: Add your control notification handler code here
 	if(m_bModified){
 		if(::AfxMessageBox("¿Desea guardar los cambios realizados?",MB_OKCANCEL|MB_ICONEXCLAMATION,-1)==IDOK){
-			SaveCable(m_strFileLast);
+			//SaveCable(m_strFileLast);
+			m_cbFile.AddString(m_strFileLast);
+			int count = m_cbFile.GetCount();
+			m_cbFile.SetCurSel(count-1);
+			SaveCable(FALSE);
 		}
 		else{
 			CString str=m_strFileLast;
@@ -652,25 +574,37 @@ void CCableEdit::OnEditchangeFile()
 
 void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 {
-	//m_cbFile.GetWindowText(m_strFile);
 	int nIndex=m_cbFile.GetCurSel();
+
+	BOOL bToggle = FALSE;
+	BOOL bOverwrite = FALSE;
 
 	if(!bSaveas){
 		m_cbFile.GetLBText(nIndex,m_strFile);
-
 	}
 	else{
 		CDialogSaveas dlgSaveas;
 		if(dlgSaveas.DoModal()==IDOK){
 
-
+			//Prepare filename
 			m_strFile=dlgSaveas.m_sName;
 			nIndex=m_strFile.ReverseFind('.');
-
 			if(nIndex<0){
 				m_strFile+=".txt";
-
 			}
+
+			CString strTable = "";
+			CString strField1 = "";
+			bToggle = dlgSaveas.m_bTogCabCon;
+			if (m_bConnector^bToggle){
+				strTable = DCABLE_TB_TABLE_CONNECTOR;
+				strField1 = DCABLE_TB_TABLE_CONNECTOR_NAME;
+			}
+			else{
+				strTable = DCABLE_TB_TABLE_CABLE;
+				strField1 = DCABLE_TB_TABLE_CABLE_NAME;
+			}
+
 			//Connect to database
 			CDatabase db;
 			TCHAR sConnect[1024];
@@ -681,24 +615,25 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 
 			CRecordset rsConnector(&db);
 
-			CString str;str.Format("nNameCon = '%s'",m_strFile);
+			CString str;str.Format("%s = '%s'", strField1, m_strFile);
 			rsConnector.m_strFilter=str;
 
-			rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbConnector");
+			str.Format("SELECT * FROM %s", strTable);
+			rsConnector.Open(CRecordset::forwardOnly, str);
 
 			if(!rsConnector.IsEOF()){
 				if(AfxMessageBox("File allready exists, overwrite?",MB_YESNOCANCEL,0)==IDNO){
-
 					rsConnector.Close();
 					db.Close();
 					return;
-
 				}
-
+				else{
+					bOverwrite = TRUE;
+				}
 			}
 			else{
 
-				CString str;str.Format("INSERT INTO tbConnector (nNameCon) VALUES ('%s')",m_strFile);
+				CString str;str.Format("INSERT INTO %s (%s) VALUES ('%s')", strTable, strField1, m_strFile);
 				db.ExecuteSQL(str);
 
 			}
@@ -720,7 +655,7 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 	if(m_strFile.IsEmpty()==FALSE){
 
 		CString sName;
-		if(!m_bConnector){
+		if(!(m_bConnector^bToggle)){
 			sName=AfxGetCablePath();
 		}
 		else{
@@ -740,7 +675,7 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 		  ))||(GetLastError()==ERROR_NO_MORE_FILES)){
 			CString str;
 			str.FormatMessage(IDS_MSG_CABLEXISTS,m_strFile);
-			if(AfxMessageBox(str,MB_OK|MB_ICONQUESTION,-1)!=IDOK){
+			if (bOverwrite || AfxMessageBox(str, MB_OK | MB_ICONQUESTION, -1) != IDOK){
 				return;
 			}
 		}
@@ -748,18 +683,34 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 		CStdioFile stfile;
 		stfile.Open(sName,CFile::modeWrite|CFile::modeCreate);
 
-
 		CString strline;
 
-		for(int i=0;i<m_lcCable.GetItemCount();i++){
+		for(int i=0; i<m_lcCable.GetItemCount(); i++){
 			strline="";
-			for(int j=0;j<m_lcCable.GetHeaderCtrl( )->GetItemCount( );j++){
+			int nTop = m_lcCable.GetHeaderCtrl()->GetItemCount();
+			if (m_bConnector == FALSE && bToggle)
+			{
+				nTop = 2;
+			}
+			for(int j=0; j<nTop; j++){
 				if(!strline.IsEmpty()){
 					strline+=";";
 				}
 				strline+=m_lcCable.GetItemText(i,j);
 			}
+			//Aditional loop used when saving connector as cables
+			if (m_bConnector == TRUE && bToggle)
+			{
+				for (int j = m_lcCable.GetHeaderCtrl()->GetItemCount()-1; j>=0; j--){
+					if (!strline.IsEmpty()){
+						strline += ";";
+					}
+					strline += m_lcCable.GetItemText(i, j);
+				}
+			}
+			//Line end
 			strline+="\n";
+			//Write to file
 			stfile.WriteString(strline);
 		}
 		//Add an empty line so that old versions of CTBEditView load wires well
@@ -770,10 +721,12 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 
 		m_bModified=FALSE;
 		GetDlgItem(IDC_BUTTON_SAVE)->EnableWindow(FALSE);
-
+		AfxGetCables(NULL, 0, 0);
+		DoPrepareCtrl();
 	}
 }
 
+//Onsolete: delete
 void CCableEdit::SaveCable(CString strName)
 {
 	//m_cbFile.GetWindowText(m_strFile);
@@ -877,4 +830,98 @@ void CCableEdit::OnOK()
 	int nIndex=m_cbFile.GetCurSel();
 	m_iType=m_cbFile.GetItemData(nIndex);
 	CDialog::OnOK();
+}
+
+void CCableEdit::DoPrepareCtrl()
+{
+	//Configures combo box control
+	//-----------------------------------------------------------------
+	m_cbFile.ResetContent();
+	if (m_bConnector == FALSE){
+		int nCount = AfxGetCableCount();
+		LPTSTR *listCable = (LPTSTR *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, nCount*sizeof(CString*));
+		int i;
+		for (i = 0; i<nCount; i++){
+			listCable[i] = new char[256];
+		}
+		AfxGetCables(listCable, nCount, 255);
+		for (i = 0; i<nCount; i++){
+			if (listCable[i]){
+				int nIndex = m_cbFile.AddString(listCable[i]);
+				m_cbFile.SetItemData(nIndex, i);
+				delete(listCable[i]);
+			}
+		}
+		if (!m_strFile.IsEmpty()){
+			m_cbFile.SelectString(-1, m_strFile);
+		}
+		else{
+			m_cbFile.SetCurSel(0);
+		}
+	}
+	else{
+		GetDlgItem(IDC_STATIC_NUMBER)->SetWindowText("Conn. Number");
+		int nCount = AfxGetConnectorCount();
+		LPTSTR *listCable = (LPTSTR *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, nCount*sizeof(CString*));
+		int i;
+		for (i = 0; i<nCount; i++){
+			listCable[i] = new char[256];
+		}
+		AfxGetConnector(listCable, nCount, 255);
+		for (i = 0; i<nCount; i++){
+			if (listCable[i]){
+				int nIndex = m_cbFile.AddString(listCable[i]);
+				m_cbFile.SetItemData(nIndex, i);
+				delete(listCable[i]);
+			}
+		}
+		if (!m_strFile.IsEmpty()){
+			m_cbFile.SelectString(-1, m_strFile);
+		}
+		else{
+			m_cbFile.SetCurSel(0);
+		}
+	}
+	//-----------------------------------------------------------------
+
+	//Configures list control
+	//-----------------------------------------------------------------
+#define _COLDEFWIDTH_CABLEDIT		100
+	m_lcCable.DeleteAllItems();
+	for (int i = m_nColumn-1; i >= 0; i--){
+		m_lcCable.DeleteColumn(i);
+	}
+	if (!m_bConnector){
+		m_iColumn[0] = _COLDEFWIDTH_CABLEDIT;
+		m_iColumn[1] = _COLDEFWIDTH_CABLEDIT;
+		m_iColumn[2] = _COLDEFWIDTH_CABLEDIT;
+		m_iColumn[3] = _COLDEFWIDTH_CABLEDIT;
+
+		m_lcCable.InsertColumn(0, "PIN", LVCFMT_LEFT, m_iColumn[0], 0);
+		m_lcCable.InsertColumn(1, "REF.HILO", LVCFMT_LEFT, m_iColumn[1], 1);
+		m_lcCable.InsertColumn(2, "FUNCTION", LVCFMT_LEFT, m_iColumn[2], 2);
+		m_lcCable.InsertColumn(3, "PIN", LVCFMT_LEFT, m_iColumn[3], 3);
+
+		m_nColumn = 4;
+	}
+	else{
+		m_iColumn[0] = _COLDEFWIDTH_CABLEDIT;
+		m_iColumn[1] = _COLDEFWIDTH_CABLEDIT;
+
+		m_lcCable.InsertColumn(0, "PIN", LVCFMT_LEFT, m_iColumn[0], 0);
+		m_lcCable.InsertColumn(1, "REF.HILO", LVCFMT_LEFT, m_iColumn[1], 1);
+
+		m_nColumn = 2;
+	}
+	DWORD dwStyle = m_lcCable.SendMessage(LVM_GETEXTENDEDLISTVIEWSTYLE);
+	dwStyle |= LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT;
+	/*m_lcUser.ModifyStyle(LVS_ICON, LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS);*/
+	m_lcCable.SendMessage(LVM_SETEXTENDEDLISTVIEWSTYLE, 0, (LPARAM)dwStyle);
+
+	//-----------------------------------------------------------------
+
+	//Load cable file
+	//-----------------------------------------------------------------
+	LoadCable();
+	//-----------------------------------------------------------------
 }

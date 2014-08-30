@@ -145,6 +145,8 @@
 #define IDC_ADODC1                      1059
 #define IDC_DATAGRID1                   1060
 #define IDC_CHECK_ALL                   1061
+#define IDC_CHECK1                      1062
+#define IDC_CHECK_TOGGLE_CAB_CON        1062
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002
@@ -247,7 +249,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        207
 #define _APS_NEXT_COMMAND_VALUE         32859
-#define _APS_NEXT_CONTROL_VALUE         1062
+#define _APS_NEXT_CONTROL_VALUE         1063
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

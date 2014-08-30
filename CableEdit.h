@@ -36,7 +36,7 @@ public:
 	//}}AFX_DATA
 	CString	m_strFileLast;
 	int m_iType;
-
+	int m_nColumn;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -71,6 +71,7 @@ protected:
 	void LoadCable();
 	void SaveCable(BOOL bSaveas =FALSE);
 	void SaveCable(CString strName);
+	void DoPrepareCtrl();
 
 	// Generated message map functions
 	//{{AFX_MSG(CCableEdit)

@@ -45,5 +45,6 @@ void CDialogSaveas::OnOK()
 {
 	// TODO: Add extra validation here
 	m_cbName.GetWindowText(m_sName);
+	m_bTogCabCon = (SendDlgItemMessage(IDC_CHECK_TOGGLE_CAB_CON, BM_GETCHECK) == BST_CHECKED);
 	CDialog::OnOK();
 }

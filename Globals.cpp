@@ -312,6 +312,8 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 
 	if(lpCableList==NULL){
 
+		afxCableList.RemoveAll();
+
 		//Access database
 		//**********************************************************************
 		//**********************************************************************
@@ -352,9 +354,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 			CString sPath=DCABLE_CONNECTORDIR;
 			sPath+=sNameConnector.c_str();//"*.txt";
 
-
 			int nCount=0;
-
 
 			hFind=FindFirstFile(sPath,&FindFileData);
 
@@ -377,8 +377,6 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 							nCount++;
 					}
 					
-
-
 					fclose(fin);
 					//**********************************************************
 
@@ -405,9 +403,8 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 			nIndex=0;
 			rsConnector.GetFieldValue(nIndex,str);
 			int idata=atoi(str);
-idata=afxConnectorList.GetSize()-1;
+			idata=afxConnectorList.GetSize()-1;
 			g_mapIdConnInfo[idata]=infoConn;
-
 
 			rsConnector.MoveNext();
 
@@ -417,7 +414,7 @@ idata=afxConnectorList.GetSize()-1;
 		db.Close();
 
 		return afxConnectorList.GetSize();
-			*/
+		*/
 		//**********************************************************************
 		//**********************************************************************
 
@@ -425,7 +422,7 @@ idata=afxConnectorList.GetSize()-1;
 		WIN32_FIND_DATA FindFileData;
 		HANDLE hFind;
 
-		CString sPath=DCABLE_CABLEDIR;
+		CString sPath = AfxGetCablePath();//DCABLE_CABLEDIR;
 		sPath+="*.txt";
 
 		hFind=FindFirstFile(sPath,&FindFileData);
@@ -440,7 +437,7 @@ idata=afxConnectorList.GetSize()-1;
 					//Count wire number
 					//This will not be neccesary when derived to database
 					//**********************************************************
-					FILE *fin=fopen(DCABLE_CABLEDIR+sName,"r");
+					FILE *fin = fopen(AfxGetCablePath() + sName, "r");
 					int nCount=0;
 					while(fgets(buffer,MAX_PATH,fin)!=NULL){
 						if(strlen(buffer)>1)
@@ -508,8 +505,6 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 /*
 		FILE *fin=fopen(sFileDsn.c_str(),"r");
 
-
-		
 		//Constructs connection string
 		while(fgets(buffer,MAX_PATH,fin)!=NULL){
 
@@ -548,7 +543,6 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 
 		CRecordset rsConnector(&db);
 
-
 		rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbConnector ORDER BY iIdConnector ASC");
 
 		while((!rsConnector.IsBOF())&&(!rsConnector.IsEOF())){
@@ -560,9 +554,7 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 
 			if(sNameConnector.find("txt")==std::string::npos){
 				sNameConnector+=".txt";
-			}
-
-			
+			}		
 
 		//**********************************************************************
 		//**********************************************************************
@@ -571,7 +563,7 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 			WIN32_FIND_DATA FindFileData;
 			HANDLE hFind;
 
-			CString sPath=DCABLE_CONNECTORDIR;
+			CString sPath = AfxGetConnectorPath();//DCABLE_CONNECTORDIR;
 			sPath+=sNameConnector.c_str();//"*.txt";
 
 
@@ -598,8 +590,6 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 						if(strlen(buffer)>1)
 							nCount++;
 					}
-					
-
 
 					fclose(fin);
 					//**********************************************************

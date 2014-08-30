@@ -53,6 +53,10 @@ extern CString g_sCurrentLibrary;
 
 #define DCABLE_RACKDIR	".\\Rack\\"
 
+#define DCABLE_TB_TABLE_CONNECTOR		"tbConnector"
+#define DCABLE_TB_TABLE_CONNECTOR_NAME	"nNameCon"
+#define DCABLE_TB_TABLE_CABLE			"tbCable"
+#define DCABLE_TB_TABLE_CABLE_NAME		"nNameCable"
 
 //TYPEDEFS
 //******************************************************************************

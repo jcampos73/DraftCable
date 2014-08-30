@@ -22,6 +22,7 @@ public:
 	CComboBox	m_cbName;
 	//}}AFX_DATA
 	CString m_sName;
+	BOOL	m_bTogCabCon;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
