@@ -593,10 +593,26 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 	{
 		//Svg file (under development)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
-			//XMLCLASSNODE;
-			CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
-			CShape shape;
-			XMLDATA(shape);
+
+			//Old implementation for loading from files
+			//Just in case XML serialization cannot made work
+			/*
+			char buffer[256];
+			buffer[0] = 0;
+			CFile *pfile = ar.GetFile();
+			fini = fopen(pfile->GetFilePath(), "rb");
+			fgets(buffer, 255, fini);
+			*/
+
+			XMLCLASSNODE;
+			//CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
+
+			//int numberObjects = curNodePtr->GetNoChildren();
+			//for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
+			//{
+
+			CShape path;
+			XMLDATA(path);
 			//XMLDATA(m_itemArray);
 			//XMLDATA(m_singleItem);
 			//XMLENDNODE;
@@ -814,18 +830,12 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				//old code, commented 17/04/2004
 				/*
 				CShape *pShp;
-
 				CShapeUnit *pShpUnit=new CShapeUnit();
-
 				pShp=(CShape *)pShpUnit->LoadUnit(ar.m_strFileName,&ar);
-
 				pShp->m_pCursorArray=m_CursorArray;
 				pShp->m_Mode=1;
-
 				AddObject(pShp);
-
 				delete pShpUnit;
-
 				UpdateAllViews(NULL);
 				*/
 
@@ -833,9 +843,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				char buffer[256];
 				buffer[0]=0;
 
-
 				CFile *pfile=ar.GetFile();
-
 
 				fini=fopen(pfile->GetFilePath(),"rb");
 
@@ -4804,17 +4812,19 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 	ploadArchive->m_pDocument = this;
 	ploadArchive->m_bForceFlat = FALSE;
 
+	/*
 	CArchive loadArchive(pFile, CArchive::load | CArchive::bNoFlushOnDelete);
 	loadArchive.m_pDocument = this;
 	loadArchive.m_bForceFlat = FALSE;
+	*/
 	TRY
 	{
 		g_bFlagDb=FALSE;//!!!
 
 		CWaitCursor wait;
 		if (pFile->GetLength() != 0)
-			Serialize(loadArchive);     // load me
-		loadArchive.Close();
+			Serialize(*ploadArchive);     // load me
+		ploadArchive->Close();
 #ifdef DCABLE_COMPOUNDFILE
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_DD1){
 			ReadStorage(pStgRoot);			// load persisted objects

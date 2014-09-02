@@ -78,8 +78,8 @@ CXMLArchive::CXMLArchive(const CString& fileName, UINT nMode,
 				// closing zipfile
 				fclose(f);
 
-				m_pMarkup = new CMarkup();
-				m_bOpened = m_pMarkup->SetDoc(sLoaded.c_str());
+				m_xmlDocPtr = new CMarkup();
+				m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
 			}
 			else
 			{
@@ -173,8 +173,8 @@ CXMLArchive::CXMLArchive(
 				}
 			}
 
-			m_pMarkup = new CMarkup();
-			m_bOpened = m_pMarkup->SetDoc(sLoaded.c_str());
+			m_xmlDocPtr = new CMarkup();
+			m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
 
 
 			//// reading data - zlib will detect if zipped or not...
@@ -272,13 +272,16 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 	try
 	{
-		//BSTR nodeNameBSTR = nodeName.AllocSysString();
-
+#ifdef USE_MSXML
+		BSTR nodeNameBSTR = nodeName.AllocSysString();
+		MSXML::IXMLDOMNodePtr fatherNodePtr;
+#else
 		CMarkup* fatherNodePtr;
+#endif
 
 		if (m_nodeList.size() == 0)
 		{
-			fatherNodePtr = m_pMarkup;
+			fatherNodePtr = m_xmlDocPtr;
 		}
 		else
 		{
@@ -294,10 +297,10 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		if (IsStoring())
 		{
 			// Archive is storing
-			m_pMarkup->AddChildElem(nodeName);
-			CMarkup* childnodep = new CMarkup(m_pMarkup->GetDoc());
-			childnodep = m_pMarkup;
-			m_pMarkup->ResetChildPos();
+			m_xmlDocPtr->AddChildElem(nodeName);
+			CMarkup* childnodep = new CMarkup(m_xmlDocPtr->GetDoc());
+			childnodep = m_xmlDocPtr;
+			m_xmlDocPtr->ResetChildPos();
 			CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, 
 				childnodep,
 				//m_xmlDocPtr->createElement(nodeNameBSTR),
@@ -326,12 +329,14 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			nodeListPtr = xmlNodePtr->m_childNodeListPtr;
 
 			int length = 0;
-			while (nodeListPtr->FindElem())
-			{
-				length++;
-			}
+			if (nodeListPtr != NULL){
+				while (nodeListPtr->FindElem())
+				{
+					length++;
+				}
 
-			nodeListPtr->ResetMainPos();
+				nodeListPtr->ResetMainPos();
+			}
 
 			if (nodeListPtr != NULL && length/*nodeListPtr->length*/ > 0)
 			{
@@ -352,11 +357,11 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 						nodePtr = new CMarkup();
 						nodePtr = nodeListPtr;
 
-						nodeListPtr->ResetChildPos();
+						//nodeListPtr->ResetChildPos();
 					}
 
 
-					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_pMarkup);// m_xmlDocPtr);
+					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);// m_xmlDocPtr);
 
 					m_nodeList.push(xmlArchiveNodePtr);
 
@@ -369,6 +374,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			}
 		}
 
+#ifdef USE_MSXML
 		// Get all nodes with this name
 		//if (MSXML::IXMLDOMDocumentPtr(fatherNodePtr) != NULL)
 		//{
@@ -381,11 +387,12 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		//	// Get node with desired name
 		//	nodeListPtr = MSXML::IXMLDOMElementPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
 		//}
+#endif
 
-		fatherNodePtr->FindElem(nodeName);
+		bool bResult=fatherNodePtr->FindElem(nodeName);
 		nodeListPtr = new CMarkup();
 		nodeListPtr = fatherNodePtr;
-		fatherNodePtr->ResetMainPos();
+		//fatherNodePtr->ResetMainPos();
 
 		//::SysFreeString(nodeNameBSTR);
 
@@ -395,7 +402,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			childIndex = m_nodeList.top()->m_childIndex;
 		}
 
-		int length = 0;
+		int length = 1;
 		while (nodeListPtr->FindElem())
 		{
 			length++;
@@ -415,15 +422,21 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 					index++;
 				}
 
+				nodeListPtr->IntoElem();
+
 				nodePtr = new CMarkup();
 				nodePtr = nodeListPtr;
 
-				nodeListPtr->ResetChildPos();
+				nodeListPtr->ResetMainPos();
+			}
+			else
+			{
+				nodePtr = new CMarkup();
+				nodePtr = nodeListPtr;
 			}
 		}
 
-
-		CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_pMarkup);// m_xmlDocPtr);
+		CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);
 
 		m_nodeList.push(xmlArchiveNodePtr);
 
@@ -452,6 +465,7 @@ m_nodePtr(newNodePtr),
 m_fatherNodePtr(fatherNodePtr)
 {
 	m_childIndex = 0;
+	m_childNodeListPtr = NULL;
 }
 
 CXMLArchiveNode::~CXMLArchiveNode()

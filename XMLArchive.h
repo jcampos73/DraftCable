@@ -2,6 +2,11 @@
 #include "afx.h"
 #include "Markup.h"
 
+//define USE_MSXML
+#ifdef USE_MSXML
+#import "msxml.dll"
+#endif
+
 #include <stack>
 
 #ifndef _UNICODE
@@ -24,8 +29,8 @@ namespace std
 };
 #endif
 
-#define XMLCLASSNODE { CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar); \
-						xmlArchive.GetNode(GetActualClass()->m_lpszClassName);
+#define XMLCLASSNODE /*{*/ CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar); \
+						xmlArchive.GetNode("svg"/*GetActualClass()->m_lpszClassName*/);
 #define XMLDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
 	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName);}}
 #define XMLINTDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
@@ -63,7 +68,11 @@ public:
 protected:
 	//! true if already opened
 	bool m_bOpened;
-	CMarkup* m_pMarkup;
+#ifdef USE_MSXML
+	MSXML::IXMLDOMDocumentPtr	m_xmlDocPtr;
+#else
+	CMarkup* m_xmlDocPtr;
+#endif
 };
 
 class CXMLArchiveNode
@@ -79,7 +88,7 @@ protected:
 	CMarkup* const					m_fatherNodePtr;
 	CXMLArchive* const				m_archivePtr;
 	//MSXML::IXMLDOMNodeListPtr		m_childNodeListPtr;
-	CMarkup*		m_childNodeListPtr;
+	CMarkup*						m_childNodeListPtr;
 	int								m_childIndex;
 
 public:

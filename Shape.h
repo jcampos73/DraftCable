@@ -11,7 +11,7 @@
 #include "SvgioFile.h"
 #include "OMParser.h"		//Object model parser
 
-
+#include "XMLArchive.h"
 
 #define _DRAFTDRAW_MODE_SEL					0		//When we select a shape and we don't realease the left button
 #define _DRAFTDRAW_MODE_DRW					1
@@ -686,6 +686,8 @@ public:
 // Implementation
 public:
 	virtual void Serialize( CArchive& archive );
+	//Development
+	//virtual void Serialize(CXMLArchive& archive);
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
 	virtual void SerializeSvg(CSvgioFile &svgfile);
