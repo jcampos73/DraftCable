@@ -65,14 +65,16 @@ public:
 
 	// Attributes
 	const CString	m_fileName;
-protected:
-	//! true if already opened
-	bool m_bOpened;
+
 #ifdef USE_MSXML
 	MSXML::IXMLDOMDocumentPtr	m_xmlDocPtr;
 #else
 	CMarkup* m_xmlDocPtr;
 #endif
+
+protected:
+	//! true if already opened
+	bool m_bOpened;
 };
 
 class CXMLArchiveNode
@@ -97,7 +99,7 @@ public:
 //	MSXML::IXMLDOMNodePtr CXMLArchiveNode::GetDataNode(LPCTSTR nodeName, CString& nodeText);
 	int		GetNoChildren();
 	CString GetChildName(int childIndex);
-//	int		GetNextChildIndex() { return m_childIndex++; };
+	int		GetNextChildIndex() { return m_childIndex++; };
 	void	Close();
 //	void DataNode(LPCTSTR attrName, CTime& attrValue);
 

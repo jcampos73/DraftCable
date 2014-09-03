@@ -686,8 +686,7 @@ public:
 // Implementation
 public:
 	virtual void Serialize( CArchive& archive );
-	//Development
-	//virtual void Serialize(CXMLArchive& archive);
+	virtual void SerializeXml(CXMLArchive& archive);
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
 	virtual void SerializeSvg(CSvgioFile &svgfile);

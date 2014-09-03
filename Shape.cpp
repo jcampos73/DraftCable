@@ -2951,6 +2951,17 @@ void CShapePolyline::Serialize( CArchive& archive )
 
 }
 
+void CShapePolyline::SerializeXml(CXMLArchive& archive)
+{
+	CXMLArchiveNode* curNodePtr = archive.GetCurrentNode();
+
+	//<path d="M 995 1040 L 995 910 Z" stroke="#000" fill="none"/>
+
+	CString d = archive.m_xmlDocPtr->GetAttrib("d");
+	CString stroke = archive.m_xmlDocPtr->GetAttrib("stroke");
+	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
+}
+
 void CShapePolyline::SerializeDdw(CDdwioFile &ddwfile)
 {
 	int count=m_dwarrPointarr.GetSize();

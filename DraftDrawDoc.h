@@ -247,6 +247,7 @@ protected:
 	void ReadStorage(LPSTORAGE pStg);
 public:
 	static int Split(CString str,LPTSTR *sa,int max);
+	static int Split(CString str, CString dmter, LPTSTR *sa, int max);
 
 // Generated message map functions
 protected:

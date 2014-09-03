@@ -540,8 +540,18 @@ int CXMLArchiveNode::GetNoChildren()
 		if (m_nodePtr->FindChildElem())
 		{
 			m_childNodeListPtr = new CMarkup(m_nodePtr->GetDoc());
-			m_childNodeListPtr = m_nodePtr;
-			length++;
+			*m_childNodeListPtr = *m_nodePtr;
+			m_childNodeListPtr->IntoElem();
+
+			//Now count
+			while (m_childNodeListPtr->FindElem())
+			{
+				length++;
+			}
+
+			m_childNodeListPtr->ResetChildPos();
+
+			return length;
 		}
 	}
 
@@ -550,17 +560,23 @@ int CXMLArchiveNode::GetNoChildren()
 		length++;
 	}
 
-	m_nodePtr->ResetChildPos();
+	m_nodePtr->ResetMainPos();
 
-	/*return m_childNodeListPtr->length;*/
+#ifdef USE_MSXML
+	return m_childNodeListPtr->length;
+#else
 	return length;
+#endif
 }
 
 // Loads into existing objects
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 {
 	m_archivePtr->GetNode(attrName);
-	object.Serialize(*m_archivePtr);
+	if (object.IsKindOf(RUNTIME_CLASS(CShapePolyline))){
+		CObject* pObject = &object;
+		((CShapePolyline*)pObject)->SerializeXml(*m_archivePtr);
+	}
 	m_archivePtr->GetCurrentNode()->Close();
 }
 

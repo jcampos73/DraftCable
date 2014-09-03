@@ -426,8 +426,6 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					*/
 					//----------------------------------------------------------
 
-
-
 					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
 						CShapePolyline *pShPoly=new CShapePolyline();
 						pShPoly->Create(pSh->m_Rect-rcFrm.TopLeft());
@@ -607,12 +605,14 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			XMLCLASSNODE;
 			//CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
 
-			//int numberObjects = curNodePtr->GetNoChildren();
-			//for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
-			//{
+			CXMLArchiveNode* curNodePtr = xmlArchive.GetCurrentNode();
+			int numberObjects = curNodePtr->GetNoChildren();
+			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
+			{
 
-			CShape path;
-			XMLDATA(path);
+				CShapePolyline path;
+				XMLDATA(path);
+			}
 			//XMLDATA(m_itemArray);
 			//XMLDATA(m_singleItem);
 			//XMLENDNODE;
@@ -4667,6 +4667,22 @@ int CDraftDrawDoc::Split(CString str,LPTSTR *sa,int max){
 		}
 		str=str.Right(str.GetLength()-index-1);
 		index = str.Find('|');
+		count++;
+	}
+	return count;
+}
+
+int CDraftDrawDoc::Split(CString str,CString dmter, LPTSTR *sa, int max){
+
+	int index = str.Find(dmter);
+	int count = 0;
+	while (index >= 0){
+		CString l_str = str.Left(index);
+		if (sa != NULL && count<max){
+			strcpy(sa[count], (LPCTSTR)l_str);
+		}
+		str = str.Right(str.GetLength() - index - 1);
+		index = str.Find(dmter);
 		count++;
 	}
 	return count;
