@@ -431,6 +431,11 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			}
 			else
 			{
+				while (nodeListPtr->FindElem() && index < childIndex)
+				{
+					index++;
+				}
+
 				nodePtr = new CMarkup();
 				nodePtr = nodeListPtr;
 			}
