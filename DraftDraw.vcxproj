@@ -156,6 +156,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Markup.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
@@ -499,6 +500,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Importer.h" />
     <ClInclude Include="Markup.h" />
     <ClInclude Include="SvgioFile.h" />
     <ClInclude Include="XMLArchive.h" />
