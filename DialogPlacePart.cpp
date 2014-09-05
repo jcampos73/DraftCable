@@ -6,6 +6,8 @@
 #include "DialogPlacePart.h"
 #include "NameDlg.h"
 
+#include "Importer.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -658,4 +660,36 @@ void CDialogPlacePart::OnCheckAll()
 
 
 	m_db.Close();
+}
+
+void CDialogPlacePart::DoImportLibrary()
+{
+	std::string sFilter = "External library file (*.xml)|*.xml||"; //All Files (*.*)|*.*||;
+	CStringArray saExtensions;
+	saExtensions.Add("xml");
+
+
+	CFileDialog fdialog(
+		TRUE,		//save dialog box
+		NULL,
+		NULL,
+		0,			//no flags
+		sFilter.c_str(),
+		NULL);
+
+	if (fdialog.DoModal() == IDOK){
+
+		int offset = fdialog.m_ofn.nFileExtension;
+		CString strFile = fdialog.m_ofn.lpstrFile;
+		int nFilterIndex = fdialog.m_ofn.nFilterIndex;
+		if ((!offset) || (fdialog.m_ofn.lpstrFile[offset] == 0)){
+
+			strFile += "." + saExtensions[fdialog.m_ofn.nFilterIndex - 1];
+			sFilter = saExtensions[fdialog.m_ofn.nFilterIndex - 1];
+		}
+
+		//Try to import library
+		CImporter *pImporter = new CImporter();
+		pImporter->ImportLibrary(strFile);
+	}
 }

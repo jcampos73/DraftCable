@@ -53,6 +53,7 @@ protected:
 
 	void UpdatePartList();
 	void LoadUnit(LPCTSTR lpszUnit =NULL);
+	void DoImportLibrary();
 	// Generated message map functions
 	//{{AFX_MSG(CDialogPlacePart)
 	virtual BOOL OnInitDialog();
