@@ -1757,15 +1757,8 @@ void CShapeArc::OnDraw(CDC *pDC)
 	}
 	else if(!m_Rect.IsRectEmpty()){
 
-		/*
-		CPoint P1=m_P1;//m_Point;//m_Rect.TopLeft();
-
-		CPoint P2=m_P2;//m_Point2;//m_Rect.BottomRight();
-		*/
-
 		CPoint P1=m_Rect.TopLeft();//m_Point;
 		CPoint P2=m_Rect.BottomRight();//m_Point2;
-
 
 		//CRect rect;
 		//BoundRect(P1,P2,10,rect);
@@ -1773,17 +1766,13 @@ void CShapeArc::OnDraw(CDC *pDC)
 		m_Alfap=m_Alfa;
 		RotateAxis(P1,P2,b,m_Alfap);
 
-
 		CPoint point_array[100];
 		DrawEllipse(point_array,100,P1,P2,b,m_Alfap);
-
 
 		pDC->Polyline(point_array,100);
 
 		//pDC->Arc(&rect,P1,P2);
 		//pDC->Rectangle(&rect);
-
-
 	}
 }
 

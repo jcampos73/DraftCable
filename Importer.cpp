@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Importer.h"
 
+#include "DraftDrawDoc.h"
 
 CImporter::CImporter()
 {
@@ -19,16 +20,13 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName)
 	//Load raw xml data into object
 	DoLoadRawData(lpszPathName);
 
-	CString strTCRootNodeLabel = "Library";
-	CString strTCSymbolNodeLabel = "Library";
-
-	if (m_xmlDocPtr->FindElem(strTCRootNodeLabel)){
+	if (m_xmlDocPtr->FindElem(m_strTCRootNodeLabel)){
 		if (!m_xmlDocPtr->IntoElem()){
 			return FALSE;
 		}
 
 		//Iterate symbols
-		while (m_xmlDocPtr->FindElem(strTCSymbolNodeLabel))
+		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))
 		{
 			if (m_xmlDocPtr->IntoElem()){
 
@@ -47,9 +45,95 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName)
 /////////////////////////////////////////////////////////////////////////////
 // CImporter implementation
 
-void CImporter::DoProcessNode()
+BOOL CImporter::DoProcessNode()
 {
 	//Create CShapeUnit
+	//(...)
+
+	if (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomLabel)){
+		if (!m_xmlDocPtr->IntoElem()){
+			return FALSE;
+		}
+
+		//Iterate polygons
+		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPolygonLabel))
+		{
+			if (m_xmlDocPtr->IntoElem()){
+
+				CObArray* pobarrShapearr = NULL;
+
+				//Do process symbol
+				DoProcessPolygon(pobarrShapearr);
+
+				//Go out of node
+				m_xmlDocPtr->OutOfElem();
+			}
+		}
+	}//end if root node
+
+	return TRUE;
+}
+
+void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+	//Create ellipse arc or end Polyline
+	if (ptArray->GetCount() > 0)
+	{
+		pSh = new CShapePolyline();
+		LPPOINT pPoints = new POINT[ptArray->GetCount()];
+		for (int i = 0; i < ptArray->GetCount(); i++)
+		{
+			pPoints[i] = (*ptArray)[i];
+		}
+		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
+		ptArray->RemoveAll();
+	}
+}
+
+BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
+{
+	TRY
+	{
+		//Iterate points
+		CArray<CPoint, CPoint> ptArray;
+		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPolygonPointLabel))
+		{
+			CString pos = m_xmlDocPtr->GetAttrib("pos");
+			int arc = atoi(m_xmlDocPtr->GetAttrib("arc"));
+			if (arc > 1){
+				//Create ellipse arc or end Polyline
+				CShape* pSh = NULL;
+				DoCreatePolyline(&ptArray, pSh);
+				if (pSh != NULL) pobarrShapearr->Add(pSh);
+				//Now create the arc
+				//CShapeArc* pSh = new CShapeArc();
+			}
+			else{
+				int idata = CDraftDrawDoc::Split(pos, ",", NULL, 0);
+				LPTSTR *sa = new LPTSTR[idata];
+				for (int i = 0; i<idata; i++){
+					sa[i] = new TCHAR[255];
+				}
+				CDraftDrawDoc::Split(pos, ",", sa, idata);
+				if (idata >= 2){
+					int x = atoi(sa[0]);
+					int y = atoi(sa[1]);
+					CPoint point(x, y);
+					ptArray.Add(point);
+				}
+			}
+		}
+		//Create ellipse arc or end Polyline
+		CShape* pSh = NULL;
+		DoCreatePolyline(&ptArray, pSh);
+		if (pSh != NULL) pobarrShapearr->Add(pSh);
+	}
+	CATCH_ALL(e)
+	{
+
+	}
+	END_CATCH_ALL
+
+	return TRUE;
 }
 
 void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
@@ -89,5 +173,6 @@ void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
 	m_xmlDocPtr = new CMarkup();
 	m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
 }
+
 
 
