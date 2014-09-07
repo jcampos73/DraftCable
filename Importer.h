@@ -9,7 +9,7 @@ public:
 	CImporter();
 	~CImporter();
 	//Import library from external system
-	BOOL ImportLibrary(LPCTSTR lpszPathName);
+	BOOL ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray);
 	CMarkup* m_xmlDocPtr;
 protected:
 	const CString m_strTCRootNodeLabel = "Library";
@@ -21,8 +21,9 @@ protected:
 	//! true if already opened
 	bool m_bOpened;
 	void DoLoadRawData(LPCTSTR lpszPathName);
-	BOOL DoProcessNode();
+	BOOL DoProcessNode(CShapeUnit*& pSh);
 	BOOL DoProcessPolygon(CObArray* pobarrShapearr);
 	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",");
 };
 

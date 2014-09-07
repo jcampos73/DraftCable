@@ -464,6 +464,8 @@ class CShapeArc : public CShape
 public:
 	CShapeArc(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	DECLARE_SERIAL( CShapeArc )
+	//Create a allipse arc from an array of points
+	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus = FALSE);
 
 // Attributes
 public:
@@ -490,6 +492,10 @@ public:
 
 // Implementation
 protected:
+	bool m_bGdiplus;
+	//Start and end of ellipse arc
+	float m_angleStart;
+	float m_angleSweep;
 	//Members used to rotate angle
 	float m_Alfap;
 	float m_Alfa;

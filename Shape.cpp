@@ -1658,13 +1658,36 @@ IMPLEMENT_SERIAL(CShapeArc, CShape, 1)
 
 CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,cmddq)
 {
-	m_uiShapeType=ddcShapeArc;
-	m_Type=1;
-	//m_TypeSelect=1;
+	m_uiShapeType = ddcShapeArc;
+	m_Type = 1;
 
-	b=20;
-	m_Alfa=0.0;
-	m_Alfap=0.0;
+	b = 20;
+	m_Alfa = 0.0;
+	m_Alfap = 0.0;
+
+	//Start angle for drawing ellipse arc
+	m_angleStart = 0.0;
+	m_angleSweep = 0.0;
+
+	//Use Gdiplus to draw the ellipse arc
+	m_bGdiplus = false;
+}
+
+BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/)
+{
+	m_angleStart = 0;
+	m_angleSweep = 90;
+	m_bGdiplus = bGdiplus;
+
+	if (lpPoint1->y < lpPoint2->y){
+		m_angleSweep = -90;
+	}
+
+	if (lpPoint1->x < lpPoint2->x){
+		m_angleStart = 180;
+	}
+
+	return TRUE;
 }
 
 CShapeArc::~CShapeArc()
@@ -1685,7 +1708,6 @@ void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 
 	m_Point2=point;
 
-
 	m_P1=m_Rect.TopLeft();//m_Point;
 	m_P2=m_Rect.BottomRight();//m_Point2;
 
@@ -1695,9 +1717,7 @@ void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 
 		m_Alfap=m_Alfa;
 		//RotateAxis(m_P1,m_P2,b,m_Alfap);
-
 	}
-	
 
 }
 /*
@@ -1755,21 +1775,35 @@ void CShapeArc::OnDraw(CDC *pDC)
 		pDC->LineTo(m_P2);
 
 	}
-	else if(!m_Rect.IsRectEmpty()){
+	else if (!m_Rect.IsRectEmpty()){
 
-		CPoint P1=m_Rect.TopLeft();//m_Point;
-		CPoint P2=m_Rect.BottomRight();//m_Point2;
+		CPoint P1 = m_Rect.TopLeft();//m_Point;
+		CPoint P2 = m_Rect.BottomRight();//m_Point2;
 
 		//CRect rect;
 		//BoundRect(P1,P2,10,rect);
 
-		m_Alfap=m_Alfa;
-		RotateAxis(P1,P2,b,m_Alfap);
+		if (!m_bGdiplus){
+			m_Alfap = m_Alfa;
+			RotateAxis(P1, P2, b, m_Alfap);
 
-		CPoint point_array[100];
-		DrawEllipse(point_array,100,P1,P2,b,m_Alfap);
+			CPoint point_array[100];
+			DrawEllipse(point_array, 100, P1, P2, b, m_Alfap);
 
-		pDC->Polyline(point_array,100);
+			pDC->Polyline(point_array, 100);
+		}
+		else{
+			GraphicsPath gfxPath;
+			gfxPath.AddArc(m_Rect.TopLeft().x,
+				m_Rect.TopLeft().y,
+				m_Rect.Width(),
+				m_Rect.Height(),
+				2 * PI* m_angleStart / 360, 2 * PI* m_angleSweep / 360);
+			//Draw the path
+			Graphics grf(pDC->m_hDC);
+			Pen blackPen(Color::Black, 1);
+			grf.DrawPath(&blackPen, &gfxPath);
+		}
 
 		//pDC->Arc(&rect,P1,P2);
 		//pDC->Rectangle(&rect);

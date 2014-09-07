@@ -15,7 +15,7 @@ CImporter::~CImporter()
 	if (m_xmlDocPtr != NULL) delete(m_xmlDocPtr);
 }
 
-BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName)
+BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray)
 {
 	//Load raw xml data into object
 	DoLoadRawData(lpszPathName);
@@ -30,11 +30,17 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName)
 		{
 			if (m_xmlDocPtr->IntoElem()){
 
+				//Unit to be created
+				CShapeUnit* pShUnit = NULL;
+
 				//Do process symbol
-				DoProcessNode();
+				DoProcessNode(pShUnit);
 
 				//Go out of node
 				m_xmlDocPtr->OutOfElem();
+
+				//Add to array
+				if (pShUnit != NULL) pObArray->Add(pShUnit);
 			}
 		}
 	}//end if root node
@@ -45,10 +51,10 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName)
 /////////////////////////////////////////////////////////////////////////////
 // CImporter implementation
 
-BOOL CImporter::DoProcessNode()
+BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 {
 	//Create CShapeUnit
-	//(...)
+	pShUnit = new CShapeUnit();
 
 	if (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomLabel)){
 		if (!m_xmlDocPtr->IntoElem()){
@@ -60,7 +66,7 @@ BOOL CImporter::DoProcessNode()
 		{
 			if (m_xmlDocPtr->IntoElem()){
 
-				CObArray* pobarrShapearr = NULL;
+				CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
 
 				//Do process symbol
 				DoProcessPolygon(pobarrShapearr);
@@ -72,21 +78,6 @@ BOOL CImporter::DoProcessNode()
 	}//end if root node
 
 	return TRUE;
-}
-
-void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
-	//Create ellipse arc or end Polyline
-	if (ptArray->GetCount() > 0)
-	{
-		pSh = new CShapePolyline();
-		LPPOINT pPoints = new POINT[ptArray->GetCount()];
-		for (int i = 0; i < ptArray->GetCount(); i++)
-		{
-			pPoints[i] = (*ptArray)[i];
-		}
-		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
-		ptArray->RemoveAll();
-	}
 }
 
 BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
@@ -104,22 +95,23 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				CShape* pSh = NULL;
 				DoCreatePolyline(&ptArray, pSh);
 				if (pSh != NULL) pobarrShapearr->Add(pSh);
+
+				//Add point to array
+				CPoint point = GetPointFromStr(pos);
+				ptArray.Add(point);
+
 				//Now create the arc
-				//CShapeArc* pSh = new CShapeArc();
+				if (ptArray.GetCount()>=2){
+					CShapeArc* pSh = new CShapeArc();
+					//Create arc
+					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
+					pobarrShapearr->Add(pSh);
+				}
 			}
 			else{
-				int idata = CDraftDrawDoc::Split(pos, ",", NULL, 0);
-				LPTSTR *sa = new LPTSTR[idata];
-				for (int i = 0; i<idata; i++){
-					sa[i] = new TCHAR[255];
-				}
-				CDraftDrawDoc::Split(pos, ",", sa, idata);
-				if (idata >= 2){
-					int x = atoi(sa[0]);
-					int y = atoi(sa[1]);
-					CPoint point(x, y);
-					ptArray.Add(point);
-				}
+				//Add point to array
+				CPoint point = GetPointFromStr(pos);
+				ptArray.Add(point);
 			}
 		}
 		//Create ellipse arc or end Polyline
@@ -134,6 +126,21 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 	END_CATCH_ALL
 
 	return TRUE;
+}
+
+void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+	//Create ellipse arc or end Polyline
+	if (ptArray->GetCount() > 0)
+	{
+		pSh = new CShapePolyline();
+		LPPOINT pPoints = new POINT[ptArray->GetCount()];
+		for (int i = 0; i < ptArray->GetCount(); i++)
+		{
+			pPoints[i] = (*ptArray)[i];
+		}
+		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
+		ptArray->RemoveAll();
+	}
 }
 
 void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
@@ -172,6 +179,23 @@ void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
 
 	m_xmlDocPtr = new CMarkup();
 	m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
+}
+
+POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
+{
+	int idata = CDraftDrawDoc::Split(pos, ",", NULL, 0);
+	LPTSTR *sa = new LPTSTR[idata];
+	for (int i = 0; i<idata; i++){
+		sa[i] = new TCHAR[255];
+	}
+	CDraftDrawDoc::Split(pos, ",", sa, idata);
+	if (idata >= 2){
+		int x = atoi(sa[0]);
+		int y = atoi(sa[1]);
+		CPoint point(x, y);
+		//ptArray.Add(point);
+		return point;
+	}
 }
 
 

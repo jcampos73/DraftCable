@@ -645,7 +645,6 @@ void CDialogPlacePart::OnCheckAll()
 
 	g_GetConnectString(sConnect,1024);
 
-
 	//Connect to database
 
 	if (!m_db.OpenEx(sConnect))
@@ -655,10 +654,96 @@ void CDialogPlacePart::OnCheckAll()
 		return;
 	}
 
+	UpdatePartList();
+
+	m_db.Close();
+}
+
+void CDialogPlacePart::DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists)
+{
+	if (!m_db.IsOpen()){
+		TCHAR sConnect[1024];
+		g_GetConnectString(sConnect, 1024);
+		//Connect to database
+		m_db.OpenEx(sConnect);
+	}
+
+	//Check if library exists
+	if (bCheckExists){
+		CRecordset rsLibExists(&m_db);
+		CString strQuery;
+		strQuery.Format("SELECT * FROM tbLibrary WHERE nNameLib = '%s' ORDER BY iIdLib DESC", lpszLibName);
+		rsLibExists.Open(CRecordset::forwardOnly, strQuery);
+		if (!rsLibExists.IsEOF())
+		{
+			CString str;
+			rsLibExists.GetFieldValue("iIdLib", str);
+			return;
+		}
+	}
+
+	m_db.ExecuteSQL("INSERT INTO tbLibrary (nNameLib) VALUES ('" + CString(lpszLibName) + "')");
+
+	m_cbLibrary.ResetContent();
+
+	CRecordset rsLib(&m_db);
+
+	rsLib.Open(CRecordset::forwardOnly, "SELECT * FROM tbLibrary");
+
+	CString strName;
+	while (!rsLib.IsEOF()){
+		CString str;
+		rsLib.GetFieldValue("nNameLib", strName);
+		int nIndex = m_cbLibrary.AddString(strName);
+		rsLib.GetFieldValue("iIdLib", str);
+		m_cbLibrary.SetItemData(nIndex, atoi(str));
+		rsLib.MoveNext();
+	}
+
+	int nIndex = m_cbLibrary.FindString(-1, strName);
+	m_cbLibrary.SetCurSel(nIndex);
+	m_iLibrary = m_cbLibrary.GetItemData(nIndex);
+
+	rsLib.Close();
 
 	UpdatePartList();
 
+	m_db.Close();
+}
 
+void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
+{
+	//Local variables
+	CString str;
+	CString strQuery;
+
+	//Connect to database
+	if (!g_db.IsOpen()){
+		TCHAR sConnect[1024];
+
+		g_GetConnectString(sConnect, 1024);
+
+		//Connect to database
+		g_db.OpenEx(sConnect);
+	}
+
+	//Insert new element
+	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
+	strQuery.Format("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
+	g_db.ExecuteSQL(strQuery);
+
+	CRecordset rs(&g_db);
+	rs.m_strFilter.Format("nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
+	rs.m_strSort = "iIdPart DESC";
+	rs.Open(CRecordset::forwardOnly, "SELECT * FROM tbPart");
+
+	rs.GetFieldValue("iIdPart", str);
+	rs.Close();
+
+	strQuery.Format("UPDATE tbPart SET nNamePart='" + CString(lpszPartName) + "',bTextBin=1,iIdLib=%i WHERE iIdPart=" + str, m_iLibrary);
+	g_db.ExecuteSQL(strQuery);
+
+	//Closes connections
 	m_db.Close();
 }
 
@@ -690,6 +775,18 @@ void CDialogPlacePart::DoImportLibrary()
 
 		//Try to import library
 		CImporter *pImporter = new CImporter();
+		CObArray *pObArray = new CObArray();
 		pImporter->ImportLibrary(strFile);
+
+		//Create new library
+		CString strLib = strFile.Left(strFile.Find('.'));
+		if (strLib.GetLength() == 0) strLib = strFile;
+		DoInsertNewLibrary(strLib, TRUE);
+
+		//Insert/update parts
+
+		//Save parts
+		//Create new method in CDocument to be called from here and serialize the parts
+
 	}
 }

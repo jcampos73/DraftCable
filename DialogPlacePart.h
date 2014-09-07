@@ -54,6 +54,8 @@ protected:
 	void UpdatePartList();
 	void LoadUnit(LPCTSTR lpszUnit =NULL);
 	void DoImportLibrary();
+	void DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists);
+	void DoInsertPart(LPCTSTR lpszPartName);
 	// Generated message map functions
 	//{{AFX_MSG(CDialogPlacePart)
 	virtual BOOL OnInitDialog();
