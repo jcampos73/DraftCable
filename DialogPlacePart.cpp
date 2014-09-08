@@ -764,6 +764,7 @@ void CDialogPlacePart::DoImportLibrary()
 
 	if (fdialog.DoModal() == IDOK){
 
+		//Get filename from dialog
 		int offset = fdialog.m_ofn.nFileExtension;
 		CString strFile = fdialog.m_ofn.lpstrFile;
 		int nFilterIndex = fdialog.m_ofn.nFilterIndex;
@@ -776,7 +777,7 @@ void CDialogPlacePart::DoImportLibrary()
 		//Try to import library
 		CImporter *pImporter = new CImporter();
 		CObArray *pObArray = new CObArray();
-		pImporter->ImportLibrary(strFile);
+		pImporter->ImportLibrary(strFile, pObArray);
 
 		//Create new library
 		CString strLib = strFile.Left(strFile.Find('.'));
@@ -784,9 +785,18 @@ void CDialogPlacePart::DoImportLibrary()
 		DoInsertNewLibrary(strLib, TRUE);
 
 		//Insert/update parts
+		for (int i = 0; i<pObArray->GetSize(); i++){
 
-		//Save parts
-		//Create new method in CDocument to be called from here and serialize the parts
+			//Insert part
+			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
+			DoInsertPart(pSh->m_sUnitName);
 
-	}
+			//Save parts
+			//Create new method in CDocument to be called from here and serialize the parts
+			CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+			CString strFile = pSh->m_sUnitName;
+			pDoc->OnDatabaseSave(strLib + "." + strFile);
+		}
+
+	}//End dialog result OK
 }

@@ -640,16 +640,6 @@ void CShapeUnit::Serialize( CArchive& archive )
 		}
 		g_aShBufIndex+=indexpline;
 
-		/*
-		for(i=0;i<m_obarrShapearr.GetSize();i++){
-			//27/03/2005
-			if(!m_obarrShapearr[i]->IsKindOf(RUNTIME_CLASS(CShapeContainer))){
-				archive<<m_obarrShapearr[i];
-			}
-		}
-		*/
-		
-
 		//CObArray aShLabel;
 		//aShLabel.SetSize(m_LabelsCount);
 		int indexlabel;

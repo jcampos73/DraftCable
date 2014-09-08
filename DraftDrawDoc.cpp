@@ -492,12 +492,9 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 					nCounter++;
 					pSh=(CShape *)NextObject(index);
-				}
-
+				}//end while loop
 
 				nCounter=nCounter;
-
-
 			}
 
 			//05/04/2005
@@ -6568,5 +6565,186 @@ CRect CDraftDrawDoc::ResetAllDrwOpe()
 	//AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
 
 	return rect;
+
+}
+
+void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
+
+	if (ar.IsStoring())
+	{
+
+		//Set global index to 0
+		g_aShBufIndex = 0;
+
+		//Check if we are editing a part
+		if (!m_bFlagPartEdit){
+			//Check if we are not serializing all the sheets
+			if (GetSheetSerialCount()>0){
+				ar << GetSheetSerialCount();
+			}
+			else{
+				ar << GetSheetCount();//Send to archive number of sheet
+			}
+		}
+
+		//Temporal buffer
+		CObArray obaBuffer;
+
+		int i;
+		for (i = 0; i<GetSheetCount(); i++){
+
+			//Check if sheet is to be serialized
+			if (m_shList.GetCount()>0){
+				if (!m_shList.Find(i)) continue;
+			}
+
+			//Code to iterate shapes in several sheets
+			if (GetSheetCount()>1){
+				ChangeSheet(i);
+			}
+
+			//If we are editing a part seriaze first a shape unit heading
+			if (m_bFlagPartEdit){
+				CShapeUnit ShUnit;
+				ShUnit.m_Rect = CRect(0, 0, 100, 100);
+				ShUnit.m_sUnitName = GetTitle();
+				ShUnit.Serialize(ar);
+			}
+
+			//Main serialization loop
+			int index;
+			CShape *pSh = (CShape *)FirstObject(index);
+			pSh = (CShape *)NextObject(index);
+			int idata = GetSizeObject();
+			ar << idata;
+
+			CRect rcFrm = CRect(0, 0, 0, 0);
+			int nCounter = 0;
+			while (pSh != NULL){
+				//27/03/2005
+				//Debuging. Delete ASAP.
+				//----------------------------------------------------------
+				/*
+				int debug_cont=0;//for debugging
+				if(pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
+				CShapeUnit *pShUnit=(CShapeUnit *)pSh;
+				if(pShUnit->m_obarrShapearr.GetSize()>1000){
+				debug_cont=1;
+				}
+				}
+				if(debug_cont){
+				pSh=(CShape *)NextObject(index);
+				continue;
+				}
+				*/
+				//----------------------------------------------------------
+
+				if (pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
+					CShapePolyline *pShPoly = new CShapePolyline();
+					pShPoly->Create(pSh->m_Rect - rcFrm.TopLeft());
+					obaBuffer.Add(pShPoly);
+					ar << pShPoly;
+				}
+				else if (pSh->IsKindOf(RUNTIME_CLASS(CShapeFrmRect))){
+					rcFrm = pSh->m_Rect;
+					m_fUTemp = pSh->m_Rect.Height();
+					m_fUTemp /= DCABLE_GRID_US;
+					//07/01/2006
+					//Shapes appeared with offset at placing into schematics.
+					//This code is not ok, becouse
+					//when re-editing the shape, it is moved towards origin.
+					//It is better to do it in CShapeUnit::Serialize when
+					//archive is loading.
+					//pSh->m_Rect-=rcFrm.TopLeft();
+					ar << pSh;
+				}
+				else if (pSh->IsKindOf(RUNTIME_CLASS(CShapeLabel))){
+					*((CShapeLabel*)pSh)->m_Label.rect = CRect((pSh->m_Rect - rcFrm.TopLeft()).TopLeft(), CSize(0, 0));
+					pSh->m_Rect -= rcFrm.TopLeft();
+					ar << pSh;
+				}
+				else if (pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
+					pSh->m_Rect -= rcFrm.TopLeft();
+					ar << pSh;
+					pSh->m_Rect += rcFrm.TopLeft();
+					//05/04/2005
+					//Added to store path panels if applicable
+					//This must be substituted by a function call
+					//to determine if a shape is of type 'TB'.
+					//======================================================
+					CString strFile = ((CShapeUnit*)pSh)->m_sUnitName;
+					//get libray name
+					CString strLib = strFile.Left(strFile.Find('.'));
+					//remove library name
+					strFile = strFile.Right(strFile.GetLength() - strFile.Find('.') - 1);
+
+					//Check if part is of type TB
+					CString str = strFile;
+
+					int nIndex = str.Find('.');
+
+					if (nIndex >= 0){
+						str = str.Left(nIndex);
+					}
+
+					if (str.CompareNoCase("TB") == 0){
+
+						//SerializePatchP(ar,((CShapeUnit*)pSh)->m_uiShapeId);
+					}
+					//======================================================
+				}
+				else{
+					pSh->m_Rect -= rcFrm.TopLeft();
+					ar << pSh;
+					pSh->m_Rect += rcFrm.TopLeft();
+				}
+
+				//07/04/2005
+				m_fVer = pSh->m_fVer;
+
+
+				nCounter++;
+				pSh = (CShape *)NextObject(index);
+			}//end while loop
+
+			nCounter = nCounter;
+		}
+
+		//05/04/2005
+		//Save TB's
+		float fVer0 = 1.05;
+		float fData = m_fVer - fVer0;
+		if (fData >= 0){
+			ar << m_obaCables1.GetSize();
+			int i;
+			for (i = 0; i<m_obaCables1.GetSize(); i++){
+				CStringArray* pstrA;
+				pstrA = m_obaCables1[i];
+				ar << pstrA;
+			}
+			ar << m_obaCables2.GetSize();
+			for (i = 0; i<m_obaCables2.GetSize(); i++){
+				CStringArray* pstrA;
+				pstrA = m_obaCables2[i];
+				ar << pstrA;
+			}
+			//ar<<&m_mapIdHWIndex;
+		}
+
+		//Clean up
+		for (i = 0; i<obaBuffer.GetSize(); i++){
+			delete(obaBuffer[i]);
+		}
+		obaBuffer.RemoveAll();
+		for (i = 0; i<g_aShBuffer.GetSize(); i++){
+			delete(g_aShBuffer[i]);
+		}
+		g_aShBuffer.RemoveAll();
+
+	}//end if storing
+	else
+	{
+
+	}
 
 }
