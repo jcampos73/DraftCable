@@ -25,6 +25,9 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray)
 			return FALSE;
 		}
 
+		int count = 0;
+		int count_max = 1;
+
 		//Iterate symbols
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))
 		{
@@ -41,6 +44,10 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray)
 
 				//Add to array
 				if (pShUnit != NULL) pObArray->Add(pShUnit);
+
+				//Increment counter
+				count++;
+				if (count_max > 0 && count >= count_max) break;
 			}
 		}
 	}//end if root node
