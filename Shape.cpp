@@ -1666,11 +1666,11 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 	m_Alfap = 0.0;
 
 	//Start angle for drawing ellipse arc
-	m_angleStart = 0.0;
-	m_angleSweep = 0.0;
+	m_angleStart = 30.0;
+	m_angleSweep = -180.0;
 
 	//Use Gdiplus to draw the ellipse arc
-	m_bGdiplus = false;
+	m_bGdiplus = true;//false;
 }
 
 BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/)
@@ -1794,11 +1794,13 @@ void CShapeArc::OnDraw(CDC *pDC)
 		}
 		else{
 			GraphicsPath gfxPath;
+			float angleStart = m_angleStart;//2 * PI* m_angleStart / 360;
+			float angleSweep = m_angleSweep;//2 * PI* m_angleSweep / 360;
 			gfxPath.AddArc(m_Rect.TopLeft().x,
 				m_Rect.TopLeft().y,
 				m_Rect.Width(),
 				m_Rect.Height(),
-				2 * PI* m_angleStart / 360, 2 * PI* m_angleSweep / 360);
+				angleStart, angleSweep);
 			//Draw the path
 			Graphics grf(pDC->m_hDC);
 			Pen blackPen(Color::Black, 1);
@@ -1833,6 +1835,7 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		//m_P2=m_Point2;
 		//m_Alfap=m_Alfa;
 		//RotateAxis(m_P1,m_P2,b,m_Alfap);
+		m_angleStart = fmod(m_angleStart - 10.0, 360.0);
 		break;
 
 	case 39://right arrow
@@ -1842,6 +1845,7 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		//m_P2=m_Point2;
 		//m_Alfap=m_Alfa;
 		//RotateAxis(m_P1,m_P2,b,m_Alfap);
+		m_angleStart = fmod(m_angleStart + 10.0, 360);
 		break;
 
 	default:
