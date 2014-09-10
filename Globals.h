@@ -32,7 +32,13 @@
 
 //07/02/2005
 //Enables OLE structured storage in application
-#define DCABLE_COMPOUNDFILE			
+#define DCABLE_COMPOUNDFILE	
+
+//2014/09/20
+//Enables shape filling code
+#define DCABLE_SHAPE_FILL	
+//Allways comment this for releasing (can produce unexpected outputs)
+#define DCABLE_SHAPE_FILL_PROTOTYPE
 
 extern CString g_sDCableBaseDir;
 extern CString g_sConnectString;

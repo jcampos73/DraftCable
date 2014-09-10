@@ -266,6 +266,8 @@ protected:
 	//24/03/2004
 	CRect m_Rect0;	
 	virtual void GetData(CStringArray& saData){return;};
+	//Do filling of shape: solid, gradient...
+	virtual void DoFill(CDC* pDC);
 
 	// Generated message map functions
 protected:

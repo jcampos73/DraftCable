@@ -1024,6 +1024,10 @@ void CShape::OnDraw(CDC *pDC)
 	}//end if mode _DRAFTDRAW_MODE_SEL
 	else if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
 
+#ifdef DCABLE_SHAPE_FILL_PROTOTYPE
+		DoFill(pDC);
+#endif
+
 		int i=0;
 		while(m_MarkerArray[i]){
 
@@ -1221,6 +1225,23 @@ void CShape::DoWorldTransform(HDC hdc){
 	x.eDx = (float)pivot.x;
 	x.eDy = (float)pivot.y;
 	ModifyWorldTransform (hdc, &x, MWT_RIGHTMULTIPLY);
+}
+
+//Do filling of shape: solid, gradient...
+void CShape::DoFill(CDC* pDC)
+{
+	GraphicsPath gfxPath;
+	Gdiplus::Rect tmpRect(m_Rect.top, m_Rect.left, m_Rect.Width(), m_Rect.Height());
+	gfxPath.AddRectangle(tmpRect);
+
+	//Fill the path
+	Graphics grf(pDC->m_hDC);
+	LinearGradientBrush lgb(Point(m_Rect.TopLeft().x, m_Rect.TopLeft().y),
+		Point(m_Rect.BottomRight().x, m_Rect.BottomRight().y),
+		Color::White,
+		Color::LightBlue);
+	grf.FillPath(&lgb, &gfxPath);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
