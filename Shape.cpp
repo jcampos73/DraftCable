@@ -1024,10 +1024,6 @@ void CShape::OnDraw(CDC *pDC)
 	}//end if mode _DRAFTDRAW_MODE_SEL
 	else if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
 
-#ifdef DCABLE_SHAPE_FILL_PROTOTYPE
-		DoFill(pDC);
-#endif
-
 		int i=0;
 		while(m_MarkerArray[i]){
 
@@ -1228,20 +1224,51 @@ void CShape::DoWorldTransform(HDC hdc){
 }
 
 //Do filling of shape: solid, gradient...
-void CShape::DoFill(CDC* pDC)
+void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 {
+	CRect rect = m_Rect;
+	if (lpRect != NULL){
+		rect = *lpRect;
+	}
 	GraphicsPath gfxPath;
-	Gdiplus::Rect tmpRect(m_Rect.top, m_Rect.left, m_Rect.Width(), m_Rect.Height());
+	Gdiplus::Rect tmpRect(rect.left, rect.top, rect.Width(), rect.Height());
 	gfxPath.AddRectangle(tmpRect);
 
 	//Fill the path
 	Graphics grf(pDC->m_hDC);
-	LinearGradientBrush lgb(Point(m_Rect.TopLeft().x, m_Rect.TopLeft().y),
-		Point(m_Rect.BottomRight().x, m_Rect.BottomRight().y),
+	LinearGradientBrush lgb(Point(rect.TopLeft().x, rect.TopLeft().y),
+		Point(rect.TopLeft().x, rect.BottomRight().y),
 		Color::White,
 		Color::LightBlue);
 	grf.FillPath(&lgb, &gfxPath);
+	//grf.FillRectangle(&lgb, tmpRect);
+}
 
+//Split rectangle in two rectangles of same size, following vector
+int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
+{
+	CPoint point;
+	CRect rect1, rect2;
+
+	if (vect->x == 0 && vect->y != 0){
+		point = rect.TopLeft() + CPoint(0, rect.Height()*0.5);
+		rect1 = CRect(rect.TopLeft(), point + CPoint(rect.Width(), 0));
+		//rect1.DeflateRect(0, rect1.Height()*0.10);
+		rect2 = CRect(point, rect.BottomRight());
+		//rect2.DeflateRect(0, rect2.Height()*0.10);
+	}
+	else if (vect->x != 0 && vect->y == 0){
+		point = rect.TopLeft() + CPoint(rect.Width()*0.5, 0);
+		rect1 = CRect(rect.TopLeft(), point + CPoint(0, rect.Height()));
+		//rect1.DeflateRect(rect1.Width()*0.10, rect1.Height()*0.10);
+		rect2 = CRect(point, rect.BottomRight());
+		//rect2.DeflateRect(rect2.Width()*0.10, rect2.Height()*0.10);
+	}
+
+	arrRect[0] = rect1;
+	arrRect[1] = rect2;
+
+	return 2;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1324,7 +1351,16 @@ void CShapeRect::OnDraw(CDC *pDC)
 			pDC->FrameRect(&m_Rect,&CBrush(RGB(0,0,0)));
 		}
 		else{
+#ifdef DCABLE_SHAPE_FILL_PROTOTYPE
+			CRect arrRect[2];
+			//void Func(int(&myArray)[100]);
+			SplitRect(m_Rect, &CPoint(0, 1), arrRect);
+			DoFill(pDC, arrRect[0]);
+			DoFill(pDC, arrRect[1]);
+			pDC->FrameRect(&m_Rect,&CBrush(RGB(0,0,0)));
+#else
 			pDC->Rectangle(m_Rect);
+#endif
 		}
 
 		//to draw selections
