@@ -70,6 +70,8 @@ protected:
 	afx_msg void OnCheckAll();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedButtonImplib();
 };
 
 //{{AFX_INSERT_LOCATION}}

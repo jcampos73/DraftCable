@@ -63,6 +63,7 @@ BEGIN_MESSAGE_MAP(CDialogPlacePart, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_NEWLIB, OnButtonNewlib)
 	ON_BN_CLICKED(IDC_CHECK_ALL, OnCheckAll)
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_BUTTON_IMPLIB, &CDialogPlacePart::OnBnClickedButtonImplib)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -190,6 +191,7 @@ BOOL CDialogPlacePart::OnInitDialog()
 		GetDlgItem(IDC_BUTTON_NEW)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_BUTTON_DEL)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_BUTTON_NEWLIB)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BUTTON_IMPLIB)->ShowWindow(SW_SHOW);
 		SetWindowText("SIC Sistema de Información de Componentes");
 		GetDlgItem(IDC_CHECK_ALL)->ShowWindow(SW_HIDE);
 	}
@@ -799,4 +801,11 @@ void CDialogPlacePart::DoImportLibrary()
 		}
 
 	}//End dialog result OK
+}
+
+
+void CDialogPlacePart::OnBnClickedButtonImplib()
+{
+	//Do import library
+	DoImportLibrary();
 }

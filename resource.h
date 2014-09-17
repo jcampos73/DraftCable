@@ -143,6 +143,8 @@
 #define IDC_TREE1                       1056
 #define IDC_BUTTON_NEWLIB               1058
 #define IDC_ADODC1                      1059
+#define IDC_BUTTON_NEWLIB2              1059
+#define IDC_BUTTON_IMPLIB               1059
 #define IDC_DATAGRID1                   1060
 #define IDC_CHECK_ALL                   1061
 #define IDC_CHECK1                      1062
