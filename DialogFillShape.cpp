@@ -14,7 +14,8 @@ IMPLEMENT_DYNAMIC(CDialogFillShape, CDialog)
 CDialogFillShape::CDialogFillShape(CWnd* pParent /*=NULL*/)
 	: CDialog(CDialogFillShape::IDD, pParent)
 {
-
+	m_crCurrent = RGB(255, 255, 255);
+	m_crCurrentBgnd = RGB(0, 0, 0);
 }
 
 CDialogFillShape::~CDialogFillShape()
@@ -50,9 +51,20 @@ void CDialogFillShape::SetColor(COLORREF cr)
 	GetDlgItem(IDC_FRONT_COLOR)->Invalidate();
 }
 
+void CDialogFillShape::SetColorBgnd(COLORREF cr)
+{
+	m_crCurrentBgnd = cr;
+
+	if (m_brushBgnd.GetSafeHandle())
+		m_brushBgnd.DeleteObject();
+	m_brushBgnd.CreateSolidBrush(m_crCurrentBgnd);
+	GetDlgItem(IDC_BGND_COLOR)->Invalidate();
+}
+
 BEGIN_MESSAGE_MAP(CDialogFillShape, CDialog)
 	ON_WM_CTLCOLOR()
 	ON_STN_DBLCLK(IDC_FRONT_COLOR, &CDialogFillShape::OnStnDblclickFrontColor)
+	ON_STN_DBLCLK(IDC_BGND_COLOR, &CDialogFillShape::OnStnDblclickBgndColor)
 END_MESSAGE_MAP()
 
 
@@ -70,6 +82,11 @@ HBRUSH CDialogFillShape::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		{
 			if (m_brush.GetSafeHandle())
 				hbr = m_brush;
+		}
+		else if (GetDlgItem(IDC_BGND_COLOR)->m_hWnd == pWnd->m_hWnd)
+		{
+			if (m_brushBgnd.GetSafeHandle())
+				hbr = m_brushBgnd;
 		}
 		break;
 
@@ -98,6 +115,19 @@ BOOL CDialogFillShape::OnInitDialog()
 	GetDlgItem(IDC_FRONT_COLOR)->SetWindowText("");
 	GetDlgItem(IDC_BGND_COLOR)->SetWindowText("");
 
+	SetColor(m_crCurrent);
+	SetColorBgnd(m_crCurrentBgnd);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
+}
+
+
+void CDialogFillShape::OnStnDblclickBgndColor()
+{
+	CColorDialog dlg(m_crCurrentBgnd, CC_FULLOPEN);
+	if (dlg.DoModal() == IDOK)
+	{
+		SetColorBgnd(dlg.GetColor());
+	}
 }

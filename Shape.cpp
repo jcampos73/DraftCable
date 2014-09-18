@@ -101,6 +101,8 @@ CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 	m_eM12=(FLOAT)0;				//Sine of the rotation angle
 	m_eM21=(FLOAT)0;				//Negative sine of the rotation angle
 	m_eM22=(FLOAT)1.0;				//Cosine of rotation angle
+	m_crFill = RGB(255, 255, 255);
+	m_crFillBgnd = RGB(255, 255, 255);
 }
 
 //Copy constructor
@@ -213,7 +215,8 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 	case ID_EDIT_FORMATSHAPE:
 		CDialogFillShape pdlgFill = new CDialogFillShape();
 		if (pdlgFill.DoModal() == IDOK){
-
+			m_crFill = pdlgFill.m_crCurrent;
+			m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
 		}
 		break;
 	}
@@ -1257,8 +1260,9 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 	Graphics grf(pDC->m_hDC);
 	LinearGradientBrush lgb(Point(point1.x, point1.y),
 		Point(point2.x, point2.y),
-		Color::Black,
-		Color::White);
+		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
+		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
+		);
 	lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
 	grf.FillPath(&lgb, &gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);

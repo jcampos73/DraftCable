@@ -13,6 +13,8 @@ public:
 
 // Dialog Data
 	enum { IDD = IDD_FILLSHAPE };
+	COLORREF m_crCurrent;
+	COLORREF m_crCurrentBgnd;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -20,14 +22,16 @@ protected:
 // Implementation
 protected:
 	HICON m_hIcon;
-	COLORREF m_crCurrent;
 	CBrush m_brush;
+	CBrush m_brushBgnd;
 
 	void SetColor(COLORREF cr);
+	void SetColorBgnd(COLORREF cr);
 
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnStnDblclickFrontColor();
 	virtual BOOL OnInitDialog();
+	afx_msg void OnStnDblclickBgndColor();
 };
