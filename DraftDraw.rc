@@ -50,6 +50,7 @@ BEGIN
         MENUITEM "Move to &Top",                ID_ORDER_TOP
         MENUITEM "Move to &Bottom",             ID_ORDER_BOTTOM
         MENUITEM "&Properties",                 ID_EDIT_PROPERTIES
+        MENUITEM "F&ormat Shape",               ID_EDIT_FORMATSHAPE
     END
 END
 
@@ -760,6 +761,17 @@ FONT 8, "MS Sans Serif"
 BEGIN
 END
 
+IDD_FILLSHAPE DIALOGEX 0, 0, 309, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,156,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,252,156,50,14
+    LTEXT           "Static",IDC_FRONT_COLOR,23,19,76,36,SS_NOTIFY | WS_BORDER
+    LTEXT           "Static",IDC_BGND_COLOR,101,63,76,36,SS_NOTIFY | WS_BORDER
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -855,6 +867,14 @@ BEGIN
         RIGHTMARGIN, 282
         TOPMARGIN, 7
         BOTTOMMARGIN, 221
+    END
+
+    IDD_FILLSHAPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
     END
 END
 #endif    // APSTUDIO_INVOKED

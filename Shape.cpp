@@ -24,6 +24,7 @@
 
 //Dialogs
 #include "DialogDebugShpInfo.h"
+#include "DialogFillShape.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -206,6 +207,15 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 			return TRUE;
 			break;
 		}
+	}
+
+	switch (LOWORD(wParam)){
+	case ID_EDIT_FORMATSHAPE:
+		CDialogFillShape pdlgFill = new CDialogFillShape();
+		if (pdlgFill.DoModal() == IDOK){
+
+		}
+		break;
 	}
 
 	return FALSE;

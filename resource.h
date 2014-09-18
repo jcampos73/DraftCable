@@ -87,6 +87,7 @@
 #define IDB_MENU_POLYGON_NCROSS         205
 #define IDB_MENU_POLYGON_T              206
 #define IDB_MENU_POLYGON_L              207
+#define IDD_FILLSHAPE                   207
 #define IDB_MENU_POLYGON_STRAIGHT       208
 #define IDC_ALIAS                       1000
 #define IDC_VERTICAL                    1001
@@ -143,12 +144,13 @@
 #define IDC_TREE1                       1056
 #define IDC_BUTTON_NEWLIB               1058
 #define IDC_ADODC1                      1059
-#define IDC_BUTTON_NEWLIB2              1059
 #define IDC_BUTTON_IMPLIB               1059
 #define IDC_DATAGRID1                   1060
 #define IDC_CHECK_ALL                   1061
 #define IDC_CHECK1                      1062
 #define IDC_CHECK_TOGGLE_CAB_CON        1062
+#define IDC_FRONT_COLOR                 1063
+#define IDC_BGND_COLOR                  1064
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002
@@ -235,6 +237,8 @@
 #define ID_BUTTON32858                  32858
 #define ID_BUTTON_PAN                   32858
 #define ID_BUTTON_POLYARC               32859
+#define ID_0_FORMATSHAPE                32859
+#define ID_EDIT_FORMATSHAPE             32860
 #define ID_INDICATOR_TOOL               59142
 #define ID_INDICATOR_COOR               59143
 #define ID_INDICATOR_MODE               59144
@@ -249,9 +253,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        207
-#define _APS_NEXT_COMMAND_VALUE         32859
-#define _APS_NEXT_CONTROL_VALUE         1063
+#define _APS_NEXT_RESOURCE_VALUE        208
+#define _APS_NEXT_COMMAND_VALUE         32861
+#define _APS_NEXT_CONTROL_VALUE         1064
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

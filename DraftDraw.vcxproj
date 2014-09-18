@@ -156,6 +156,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DialogFillShape.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Markup.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
@@ -500,6 +501,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Markup.h" />
     <ClInclude Include="SvgioFile.h" />

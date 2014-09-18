@@ -2994,6 +2994,7 @@ BOOL CDraftDrawView::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERI
 		case ID_EDIT_PROPERTIES:
 		case ID_IMG_FLIPHORZ:
 		case ID_IMG_FLIPVERT:
+		case ID_EDIT_FORMATSHAPE:
 			return OnCommandShape(MAKEWPARAM(nID,0),0);
 			break;
 
@@ -3081,6 +3082,7 @@ BOOL CDraftDrawView::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERI
 		case ID_EDIT_PROPERTIES:
 		case ID_IMG_FLIPHORZ:
 		case ID_IMG_FLIPVERT:
+		case ID_EDIT_FORMATSHAPE:
 			return TRUE;
 			break;
 		}

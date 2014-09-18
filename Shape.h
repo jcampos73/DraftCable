@@ -229,6 +229,8 @@ public:
 	//05/12/2004
 	BOOL m_bTransparent;	//If TRUE (default) shape is not filled.
 	COLORREF m_crFill;		//Color to fill the shape.
+	//18/09/2014
+	COLORREF m_crFillBgnd;	//Color to fill the shape background (for gradients).
 	//24/03/2005
 	CString m_sVer;			//.dd1 file version
 	float m_fVer;			//.dd1 file version as a decimal number
