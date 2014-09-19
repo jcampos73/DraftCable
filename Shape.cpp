@@ -217,6 +217,7 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 			if (pdlgFill.DoModal() == IDOK){
 				m_crFill = pdlgFill.m_crCurrent;
 				m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+				m_bTransparent = FALSE;
 				return TRUE;
 			}
 			break;
@@ -1267,6 +1268,21 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 		);
 	lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
 	grf.FillPath(&lgb, &gfxPath);
+	//grf.FillRectangle(&lgb, tmpRect);
+}
+
+//Do filling of shape: solid, gradient...
+void CShape::DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2)
+{
+	//Fill the path
+	Graphics grf(pDC->m_hDC);
+	LinearGradientBrush lgb(Point(point1.x, point1.y),
+		Point(point2.x, point2.y),
+		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
+		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
+		);
+	lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
+	grf.FillPath(&lgb, (GraphicsPath*)gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);
 }
 
@@ -3167,13 +3183,55 @@ void CShapePolyline::OnDraw(CDC *pDC){
 
 		if(m_dwarrPointarr.GetSize()){
 
+			GraphicsPath gfxPath;
+
 			pDC->MoveTo(m_Rect.TopLeft()+CPoint(m_dwarrPointarr.GetAt(0)));
+
+			CPoint prevPoint = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(0));
+
+			//Aux point for gradients
+			CPoint point = prevPoint;
+			CPoint point1 = prevPoint;
+			CPoint point2 = prevPoint;
+			CPoint point_left = prevPoint;
+			CPoint point_top = prevPoint;
+			CPoint point_bottom = prevPoint;
+			CPoint point_right = prevPoint;
 
 			for(int i=1;i<m_dwarrPointarr.GetSize();i++){
 
-				pDC->LineTo(m_Rect.TopLeft()+CPoint(m_dwarrPointarr.GetAt(i)));
+				point = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(i));
+
+				pDC->LineTo(point);
+
+				//Gradient
+				gfxPath.AddLine(prevPoint.x, prevPoint.y, point.x, point. y);
+				prevPoint = point;
+				point_left = (point.x < point_left.x ? point : point_left);
+				point_right = (point.x > point_right.x ? point : point_right);
+				point_top = (point.y < point_top.y ? point : point_top);
+				point_bottom = (point.y > point_bottom.y ? point : point_bottom);
+			}
+			/*
+			if (m_dwarrPointarr.GetSize()>1){
+				point2 = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(1));
+			}
+			*/
+
+			if (point_right.x - point_left.x < point_bottom.y - point_top.y){
+				point1 = point_left;
+				point2 = CPoint(point_right.x, point_left.y);
+			}
+			else
+			{
+				point1 = point_top;
+				point2 = CPoint(point_top.x, point_bottom.y);
 			}
 
+			if (m_bTransparent == FALSE)
+			{
+				this->DoFill(pDC, &gfxPath, point1, point2);
+			}
 		}
 
 		CShape::OnDraw(pDC);
@@ -3272,6 +3330,7 @@ void CShape::Serialize( CArchive& archive )
 		//1.05
 		//'TB' serialization in CDocument
 		//1.07
+		archive << m_bTransparent;
 		archive << m_crFill;
 		archive << m_crFillBgnd;
 	}
@@ -3320,8 +3379,9 @@ void CShape::Serialize( CArchive& archive )
 		fVer0 = 1.07;
 		fData = m_fVer - fVer0;
 		if (fData >= 0){
-			archive >> m_crFillBgnd;
+			archive >> m_bTransparent;
 			archive >> m_crFill;
+			archive >> m_crFillBgnd;
 		}
 	}
 }

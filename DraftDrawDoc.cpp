@@ -429,6 +429,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
 						CShapePolyline *pShPoly=new CShapePolyline();
 						pShPoly->Create(pSh->m_Rect-rcFrm.TopLeft());
+						pShPoly->m_bTransparent = pSh->m_bTransparent;
 						pShPoly->m_crFill = pSh->m_crFill;
 						pShPoly->m_crFillBgnd = pSh->m_crFillBgnd;
 						obaBuffer.Add(pShPoly);
