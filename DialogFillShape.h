@@ -27,6 +27,7 @@ protected:
 
 	void SetColor(COLORREF cr);
 	void SetColorBgnd(COLORREF cr);
+	void _DoSwapColor();
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -34,4 +35,5 @@ public:
 	afx_msg void OnStnDblclickFrontColor();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnStnDblclickBgndColor();
+	afx_msg void OnStnBlclickSwapIcon();
 };

@@ -429,8 +429,11 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
 						CShapePolyline *pShPoly=new CShapePolyline();
 						pShPoly->Create(pSh->m_Rect-rcFrm.TopLeft());
+						pShPoly->m_crFill = pSh->m_crFill;
+						pShPoly->m_crFillBgnd = pSh->m_crFillBgnd;
 						obaBuffer.Add(pShPoly);
 						ar<<pShPoly;
+						pSh = pShPoly;
 					}
 					else if(pSh->IsKindOf(RUNTIME_CLASS(CShapeFrmRect))){
 						rcFrm=pSh->m_Rect;
@@ -503,6 +506,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			float fVer0=1.05;
 			float fData=m_fVer-fVer0;
 			if(fData>=0){
+				int sz=m_obaCables1.GetSize();
 				ar<<m_obaCables1.GetSize();
 				int i;
 				for(i=0;i<m_obaCables1.GetSize();i++){

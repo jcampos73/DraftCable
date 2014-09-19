@@ -194,8 +194,8 @@ CShape& CShape::operator++( ){
 
 BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 
-	if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
-		switch(LOWORD(wParam)){
+	if (m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT){
+		switch (LOWORD(wParam)){
 		case ID_IMG_FLIPHORZ:
 			Flip(0.0);
 			return TRUE;
@@ -209,16 +209,18 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 			return TRUE;
 			break;
 		}
-	}
 
-	switch (LOWORD(wParam)){
-	case ID_EDIT_FORMATSHAPE:
-		CDialogFillShape pdlgFill = new CDialogFillShape();
-		if (pdlgFill.DoModal() == IDOK){
-			m_crFill = pdlgFill.m_crCurrent;
-			m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+		//Format shape
+		switch (LOWORD(wParam)){
+		case ID_EDIT_FORMATSHAPE:
+			CDialogFillShape pdlgFill = new CDialogFillShape();
+			if (pdlgFill.DoModal() == IDOK){
+				m_crFill = pdlgFill.m_crCurrent;
+				m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+				return TRUE;
+			}
+			break;
 		}
-		break;
 	}
 
 	return FALSE;
@@ -3248,10 +3250,10 @@ void CShape::Serialize( CArchive& archive )
 		//CString sVer="1.03";	//added m_bConect,m_uiConn,m_uiConnChild
 		//CString sVer="1.04";	//added m_bNoResize,m_uiShapeType,label::style,m_Rect0,CShapeUnit::m_pPoints0
 		//CString sVer="1.05";	//added 'TB' serialization in CDocument
-		CString sVer="1.06";	//added 'TB' serialization in CDocument with support for 'TB' associated to wires
-		m_sVer=sVer;
+		//CString sVer="1.06";	//added 'TB' serialization in CDocument with support for 'TB' associated to wires
+		CString m_sVer="1.07";	//serialization of fill colors (front & background)
 		m_fVer=atof(m_sVer);
-		archive << sVer;
+		archive << m_sVer;
 		int idata=9;
 		archive << idata;
         archive << m_Rect;
@@ -3269,6 +3271,9 @@ void CShape::Serialize( CArchive& archive )
 		archive << m_uiShapeType;
 		//1.05
 		//'TB' serialization in CDocument
+		//1.07
+		archive << m_crFill;
+		archive << m_crFillBgnd;
 	}
     else{
 		//CString sVer;
@@ -3311,6 +3316,13 @@ void CShape::Serialize( CArchive& archive )
 		}
 		//1.05
 		//'TB' serialization in CDocument
+		//1.07
+		fVer0 = 1.07;
+		fData = m_fVer - fVer0;
+		if (fData >= 0){
+			archive >> m_crFillBgnd;
+			archive >> m_crFill;
+		}
 	}
 }
 

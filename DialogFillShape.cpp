@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CDialogFillShape, CDialog)
 	ON_WM_CTLCOLOR()
 	ON_STN_DBLCLK(IDC_FRONT_COLOR, &CDialogFillShape::OnStnDblclickFrontColor)
 	ON_STN_DBLCLK(IDC_BGND_COLOR, &CDialogFillShape::OnStnDblclickBgndColor)
+	ON_STN_CLICKED(IDC_STATIC_SWAP, &CDialogFillShape::OnStnBlclickSwapIcon)
 END_MESSAGE_MAP()
 
 
@@ -130,4 +131,16 @@ void CDialogFillShape::OnStnDblclickBgndColor()
 	{
 		SetColorBgnd(dlg.GetColor());
 	}
+}
+
+void CDialogFillShape::OnStnBlclickSwapIcon()
+{
+	_DoSwapColor();
+}
+
+void CDialogFillShape::_DoSwapColor()
+{
+	COLORREF current = m_crCurrent;
+	SetColor(m_crCurrentBgnd);
+	SetColorBgnd(current);
 }
