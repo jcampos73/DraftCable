@@ -325,241 +325,163 @@ BOOL CShapeUnit::IsTB(){
 
 //Drawing code
 void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
-		//Resize while drawing shape
-		if(m_Mode==_DRAFTDRAW_MODE_SEL&&!m_bNoResize){
-			Resize();
-		}
 
-        //---------------------------------------
-        //|                                     |
-        //|                                     |
-        //|                                     |   b
-        //|                                     |
-        //|                                     |
-        //---------------------------------------
-		//
-		//<------------------- a --------------->
+	//Resize while drawing shape
+	if(m_Mode==_DRAFTDRAW_MODE_SEL&&!m_bNoResize){
+		Resize();
+	}
 
-		//Erase rect
-		//	pDC->FillSolidRect(&m_Rect,RGB(255,255,255));
+    //---------------------------------------
+    //|                                     |
+    //|                                     |
+    //|                                     |   b
+    //|                                     |
+    //|                                     |
+    //---------------------------------------
+	//
+	//<------------------- a --------------->
 
-		//Draw text
-		int i;
-		for(i=0; i<m_LabelsCount;i++){
+	//Erase rect
+	//	pDC->FillSolidRect(&m_Rect,RGB(255,255,255));
 
-			//Resize label to fit text
-			if(m_pLabels[i]->rect->IsRectEmpty()){
+	//Draw text
+	int i;
+	for(i=0; i<m_LabelsCount;i++){
 
-				CFont *prev_font;
-				//Check if label font is null
-				if(m_pLabels[i]->font==NULL){
-					if(m_pLabels[i]->iSize<=10){
-						prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
-					}
-					else{
-						prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
-					}
+		//Resize label to fit text
+		if(m_pLabels[i]->rect->IsRectEmpty()){
+
+			CFont *prev_font;
+			//Check if label font is null
+			if(m_pLabels[i]->font==NULL){
+				if(m_pLabels[i]->iSize<=10){
+					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
 				}
 				else{
-					//If it is not null select font in shape
-					prev_font=pDC->SelectObject(m_pLabels[i]->font);
+					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
 				}
+			}
+			else{
+				//If it is not null select font in shape
+				prev_font=pDC->SelectObject(m_pLabels[i]->font);
+			}
 
-				//Check if it is a vertical label
-				if(m_pLabels[i]->bver){
+			//Check if it is a vertical label
+			if(m_pLabels[i]->bver){
 
-					CString stlabel="";
-					CSize szac=CSize(0,0);
+				CString stlabel="";
+				CSize szac=CSize(0,0);
 
-					for(int j=0;j<m_pLabels[i]->slabel->GetLength();j++){
+				for(int j=0;j<m_pLabels[i]->slabel->GetLength();j++){
 						
-						if(j)stlabel+="\n";
-						stlabel+=m_pLabels[i]->slabel[0][j];
+					if(j)stlabel+="\n";
+					stlabel+=m_pLabels[i]->slabel[0][j];
 
-						CString stlabel1=m_pLabels[i]->slabel[0][j];
-
-						SIZE sz;
-						GetTextExtentPoint32(pDC->m_hDC, stlabel1, lstrlen(stlabel1), &sz);
-
-						szac+=CSize(0,sz.cy);
-						if(szac.cx<sz.cx){
-							szac.cx=sz.cx;
-						}
-					}
-
-					*m_pLabels[i]->slabel=stlabel;
-
-					*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),szac);
-				}
-				else{
+					CString stlabel1=m_pLabels[i]->slabel[0][j];
 
 					SIZE sz;
-					GetTextExtentPoint32(pDC->m_hDC, *m_pLabels[i]->slabel, lstrlen(*m_pLabels[i]->slabel), &sz);
+					GetTextExtentPoint32(pDC->m_hDC, stlabel1, lstrlen(stlabel1), &sz);
 
-					*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),sz);
+					szac+=CSize(0,sz.cy);
+					if(szac.cx<sz.cx){
+						szac.cx=sz.cx;
+					}
 				}
-				
 
+				*m_pLabels[i]->slabel=stlabel;
 
-				pDC->SelectObject(prev_font);
-			}
-
-			//debug
-			//pDC->FrameRect(m_pLabels[i]->rect,&CBrush(RGB(255,0,0)));
-
-			CString stlabel="";
-
-			if(m_pLabels[i]->bver){
-				/*
-				for(int j=0;j<m_pLabels[i]->slabel->GetLength();j++){
-					
-					stlabel+="\n";
-					stlabel+=(*m_pLabels[i]->slabel)[j];
-				}
-				*/
-
-				stlabel=*m_pLabels[i]->slabel;
+				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),szac);
 			}
 			else{
 
-				stlabel=*m_pLabels[i]->slabel;
+				SIZE sz;
+				GetTextExtentPoint32(pDC->m_hDC, *m_pLabels[i]->slabel, lstrlen(*m_pLabels[i]->slabel), &sz);
+
+				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),sz);
 			}
 
-			if(m_pLabels[i]->style&WS_VISIBLE){
-				CFont *prev_font;
-				if(m_pLabels[i]->font==NULL){
-					if(m_pLabels[i]->iSize<=10){
-						prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*m_pLabels[i]->font*/);
-					}
-					else{
-						prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
-					}
+			pDC->SelectObject(prev_font);
+		}
+
+		//debug
+		//pDC->FrameRect(m_pLabels[i]->rect,&CBrush(RGB(255,0,0)));
+
+		CString stlabel="";
+
+		if(m_pLabels[i]->bver){
+
+			stlabel=*m_pLabels[i]->slabel;
+		}
+		else{
+
+			stlabel=*m_pLabels[i]->slabel;
+		}
+
+		if(m_pLabels[i]->style&WS_VISIBLE){
+			CFont *prev_font;
+			if(m_pLabels[i]->font==NULL){
+				if(m_pLabels[i]->iSize<=10){
+					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*m_pLabels[i]->font*/);
 				}
 				else{
-					prev_font=pDC->SelectObject(m_pLabels[i]->font);
+					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
 				}
-
-				pDC->DrawText( stlabel,*m_pLabels[i]->rect+rect1.TopLeft(), DT_CENTER);
-				pDC->SelectObject(prev_font);
-			}
-
-		}
-
-		//draw pin
-		int a=m_Rect.Width();
-		int b=m_Rect.Height();
-		int d=m_d*a;
-		int a1=m_a1*a;
-		int b1=m_b1*b;
-		CPoint point;
-
-		for(i=0;i<m_obarrShapearr.GetSize();i++){
-
-			//CShapePin *psh=(CShapePin *)m_obarrShapearr.GetAt(i);
-			CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
-
-			//int idata=psh->m_Rect.Height()*.5;
-			//point=m_Rect.TopLeft()+CPoint(d+i*a1,m_Rect.Height()-idata);
-			//psh->m_Rect=CRect(point/*+CPoint(0,-a*m_a2*0.5)*/,CSize(a*m_a2,a*m_a2));
-			//psh->m_Rect=m_Rect;//+=m_Rect.TopLeft();
-
-			CRect rect=psh->m_Rect;
-
-			if(psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
-				psh->m_Rect+=m_Rect.TopLeft();
 			}
 			else{
-				psh->m_Rect+=rect1.TopLeft();
-				//psh->m_Rect+=m_Rect.TopLeft();
+				prev_font=pDC->SelectObject(m_pLabels[i]->font);
 			}
 
-			psh->OnDraw(pDC);
-
-			psh->m_Rect=rect;
+			pDC->DrawText( stlabel,*m_pLabels[i]->rect+rect1.TopLeft(), DT_CENTER);
+			pDC->SelectObject(prev_font);
 		}
 
+	}
 
-		//Draw lines
-		for(i=0; i<m_PointspCount;i++){
+	//Draw pin
+	for(i=0;i<m_obarrShapearr.GetSize();i++){
 
-			LPPOINT lpPoints=( LPPOINT)&m_pPoints[i][1];
-			int nCount= m_pPoints[i][0];
+		CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
 
-			//debug delete
-			CRect rectTemp=rect1;
-			rectTemp.NormalizeRect();
-			CPoint pt;
-			if(rectTemp!=rect1){
-				int i=0;
-				pt=rect1.TopLeft();
-			}
+		//Keep original rectangle
+		CRect rect=psh->m_Rect;
 
-			for(int j=0;j<nCount;j++){
-
-				m_pPBuffer[j]=CPoint(lpPoints[j])+rect1.TopLeft();
-
-			}
-
-			pDC->Polyline(m_pPBuffer, nCount);
+		if(psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
+			//This only a patch to avoid leaving things back when dragging
+			psh->m_Rect+=m_Rect.TopLeft();
+		}
+		else{
+			psh->m_Rect+=rect1.TopLeft();
 		}
 
+		psh->OnDraw(pDC);
 
-		//old code
-/*
-		int a=m_Rect.Width();
-		int b=m_Rect.Height();
-		int d=m_d*a;
-		int a1=m_a1*a;
-		int b1=m_b1*b;
-		CPoint point;
-		
-		pDC->Rectangle(m_Rect);
+		//Restore original rectangle
+		psh->m_Rect=rect;
+	}
 
+	//Draw lines
+	for(i=0; i<m_PointspCount;i++){
 
-		for(int i=0;i<16;i++){
+		//Get pointer to polylines buffer
+		LPPOINT lpPoints=( LPPOINT)&m_pPoints[i][1];
+		int nCount= m_pPoints[i][0];
 
+		//Iterate polylines
+		for(int j=0;j<nCount;j++){
 
-			
-			CRect rect;
-
-			float fdata=i;
-			fdata/=(m_ShapeNumber-1);
-
-
-			point=m_Rect.TopLeft()+CPoint(d+i*a1,0);
-
-			pDC->MoveTo(point);
-			pDC->LineTo(point+CPoint(0,b1));
-			pDC->LineTo(point+CPoint(a1,b1));
-
-			rect=CRect(point,point+CPoint(a1,b1));
-			rect.DeflateRect(2,2);
-
-			CFont *def_font=pDC->SelectObject(&m_fontFont1);
-			pDC->DrawText("\n\nI\nO\nL\n",&rect,DT_CENTER );
-			pDC->SelectObject(def_font);
-
-
+			m_pPBuffer[j]=CPoint(lpPoints[j])+rect1.TopLeft();
 		}
 
-		pDC->LineTo(point+CPoint(a1,0));
-
-
-		for(i=0;i<m_obarrShapearr.GetSize();i++){
-
-			point=m_Rect.TopLeft()+CPoint(d+i*a1,m_Rect.Height());
-
-			CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
-
-			psh->m_Rect=CRect(point+CPoint(0,-a*m_a2*0.5),CSize(a*m_a2,a*m_a2));
-
-			psh->OnDraw(pDC);
-		}
-
-*/
+		//Draw polyline using MFC
+		pDC->Polyline(m_pPBuffer, nCount);
+	}
 }
 
 void CShapeUnit::OnDraw(CDC *pDC){
+
+	//2014-09-25
+	//CShapeUnit is not calling its base case CShapeContainer for drawing because is overlapping some
+	//of its functionality (mainly polyline implementation) and should be solved
 
 	//Call base class for drawing sizing handles
 	if(m_Mode==_DRAFTDRAW_MODE_SEL){
@@ -583,9 +505,6 @@ void CShapeUnit::OnDraw(CDC *pDC){
 		//To draw selection handlers
 		CShape::OnDraw(pDC);
 	}
-
-
-
 }
 
 void CShapeUnit::Serialize( CArchive& archive )
