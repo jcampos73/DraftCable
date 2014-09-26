@@ -351,6 +351,7 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 		//Resize label to fit text
 		if(m_pLabels[i]->rect->IsRectEmpty()){
 
+			//Save previous font
 			CFont *prev_font;
 			//Check if label font is null
 			if(m_pLabels[i]->font==NULL){
@@ -373,15 +374,17 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 				CSize szac=CSize(0,0);
 
 				for(int j=0;j<m_pLabels[i]->slabel->GetLength();j++){
-						
+					
+					//Add line breaks except for 1st character
 					if(j)stlabel+="\n";
 					stlabel+=m_pLabels[i]->slabel[0][j];
 
+					//Get space occupied by single character
 					CString stlabel1=m_pLabels[i]->slabel[0][j];
-
 					SIZE sz;
 					GetTextExtentPoint32(pDC->m_hDC, stlabel1, lstrlen(stlabel1), &sz);
 
+					//Accumulate total occupied space
 					szac+=CSize(0,sz.cy);
 					if(szac.cx<sz.cx){
 						szac.cx=sz.cx;
@@ -389,14 +392,12 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 				}
 
 				*m_pLabels[i]->slabel=stlabel;
-
 				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),szac);
 			}
 			else{
 
 				SIZE sz;
 				GetTextExtentPoint32(pDC->m_hDC, *m_pLabels[i]->slabel, lstrlen(*m_pLabels[i]->slabel), &sz);
-
 				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),sz);
 			}
 
@@ -408,12 +409,11 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 
 		CString stlabel="";
 
+		//redundant block?
 		if(m_pLabels[i]->bver){
-
 			stlabel=*m_pLabels[i]->slabel;
 		}
 		else{
-
 			stlabel=*m_pLabels[i]->slabel;
 		}
 
@@ -421,7 +421,7 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 			CFont *prev_font;
 			if(m_pLabels[i]->font==NULL){
 				if(m_pLabels[i]->iSize<=10){
-					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*m_pLabels[i]->font*/);
+					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
 				}
 				else{
 					prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
@@ -435,14 +435,14 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 			pDC->SelectObject(prev_font);
 		}
 
-	}
+	}//end draw text
 
 	//Draw pin
 	for(i=0;i<m_obarrShapearr.GetSize();i++){
 
 		CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
 
-		//Keep original rectangle
+		//Save original rectangle
 		CRect rect=psh->m_Rect;
 
 		if(psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
@@ -2882,10 +2882,11 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 {
 	if (m_Rect.IsRectEmpty()){
 
+		//Save font
 		CFont *prev_font;
 		if (m_Label.font == NULL){
 			if (m_Label.iSize <= 10){
-				prev_font = pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*m_pLabels[i]->font*/);
+				prev_font = pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
 			}
 			else{
 				prev_font = pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
@@ -2897,9 +2898,11 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 
 		if (m_Label.bver){
 
+			//Local variables
 			CString stlabel = "";
 			CSize szac = CSize(0, 0);
 
+			//Check if label has not been initialized
 			if (!m_bIni){
 				for (int i = 0; i<m_Label.slabel->GetLength(); i++){
 
@@ -2907,13 +2910,14 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 					stlabel += m_Label.slabel[0][i];
 				}
 				*m_Label.slabel = stlabel;
+				//Set label as initialized
 				m_bIni = TRUE;
 			}
 
+			//Calculate bounding rectangle
 			for (int i = 0; i<m_Label.slabel->GetLength(); i++){
 
 				CString stlabel1 = m_Label.slabel[0][i];
-
 				SIZE sz;
 				GetTextExtentPoint32(pDC->m_hDC, stlabel1, lstrlen(stlabel1), &sz);
 
@@ -2923,21 +2927,25 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 				}
 			}
 
+			//Set bounding rectangle
 			m_Rect = CRect(m_Rect.TopLeft(), szac);
 		}
 		else{
+			//Check if label has not been initialized
 			if (!m_bIni){
-
 				m_Label.slabel->Replace("\n", "");
 				m_bIni = TRUE;
 			}
 
+			//Calculate bounding rectangle
 			SIZE sz;
 			GetTextExtentPoint32(pDC->m_hDC, *m_Label.slabel, lstrlen(*m_Label.slabel), &sz);
 
+			//Set bounding rectangle
 			m_Rect = CRect(m_Rect.TopLeft(), sz);
 		}
 
+		//Restore font
 		pDC->SelectObject(prev_font);
 	}
 }
@@ -2989,30 +2997,21 @@ void CShapeLabel::OnDraw(CDC *pDC){
 			pDC->SelectObject(prevPen);
 		}
 
-		//pDC->Rectangle(&m_Rect);
-
 		CString stlabel="";
 
+		//Redundant block?
 		if(m_Label.bver){
-/*
-			for(int i=0;i<m_Label.slabel->GetLength();i++){
-				
-				if(i)stlabel+="\n";
-				stlabel+=m_Label.slabel[0][i];
-			}
-*/
 			stlabel=*m_Label.slabel;
 		}
 		else{
-
 			stlabel=*m_Label.slabel;
 		}
 
-		/*CFont *prev_font=(CFont *)pDC->SelectObject(&m_Label.font);*/
+		//Save previous font
 		CFont *prev_font;
 		if(m_Label.font==NULL){
 			if(m_Label.iSize<=10){
-				prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL)/*m_pLabels[i]->font*/);
+				prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
 			}
 			else{
 				prev_font=pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
@@ -3032,15 +3031,13 @@ void CShapeLabel::OnDraw(CDC *pDC){
 		//pDC->SetBkColor( clrprev );
 		pDC->SetBkMode( nBkMode );
 
+		//Restore font
 		pDC->SelectObject(prev_font);
 
 		//to draw selections
 		CShape::OnDraw(pDC);
 
-	}
-
-
-
+	}//end !m_Rect.IsRectEmpty
 }
 
 void CShapeLabel::Serialize( CArchive& archive )
