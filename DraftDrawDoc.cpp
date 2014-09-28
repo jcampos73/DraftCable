@@ -4675,7 +4675,7 @@ int CDraftDrawDoc::Split(CString str,LPTSTR *sa,int max){
 }
 
 int CDraftDrawDoc::Split(CString str,CString dmter, LPTSTR *sa, int max){
-
+	CString str0 = str;
 	int index = str.Find(dmter);
 	int count = 0;
 	while (index >= 0){
@@ -4685,6 +4685,14 @@ int CDraftDrawDoc::Split(CString str,CString dmter, LPTSTR *sa, int max){
 		}
 		str = str.Right(str.GetLength() - index - 1);
 		index = str.Find(dmter);
+		count++;
+	}
+	//This is a difference with the implementation with less arguments
+	CString end_str = str0.Right(dmter.GetLength());
+	if (end_str != dmter){
+		if (sa != NULL && count<max){
+			strcpy(sa[count], (LPCTSTR)str);
+		}
 		count++;
 	}
 	return count;

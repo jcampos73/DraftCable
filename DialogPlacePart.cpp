@@ -791,13 +791,23 @@ void CDialogPlacePart::DoImportLibrary()
 
 			//Insert part
 			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
+pSh->m_sUnitName = "Resistor";
 			DoInsertPart(pSh->m_sUnitName);
 
 			//Save parts
 			//Create new method in CDocument to be called from here and serialize the parts
 			CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
 			CString strFile = pSh->m_sUnitName;
+			//Keep previous part edition status
+			BOOL bFlagPartEdit = pDoc->m_bFlagPartEdit;
+			//Set part edition mode to save the save
+			pDoc->m_bFlagPartEdit = TRUE;
+			CObArray* prevObArray = pDoc->m_pObArray;
+			pDoc->m_pObArray = &pSh->m_obarrShapearr;
 			pDoc->OnDatabaseSave(strLib + "." + strFile);
+			pDoc->m_pObArray = prevObArray;
+			//Restore flag
+			pDoc->m_bFlagPartEdit = bFlagPartEdit;
 		}
 
 	}//End dialog result OK

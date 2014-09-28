@@ -12,6 +12,9 @@ public:
 	BOOL ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray);
 	CMarkup* m_xmlDocPtr;
 protected:
+	float m_scale;
+	const float m_scaleDefault = 2.0;
+
 	const CString m_strTCRootNodeLabel = "Library";
 	const CString m_strTCSymbolNodeLabel = "SYMBOL";
 	const CString m_strTCSymbolNodeGeomLabel = "TinyCAD";

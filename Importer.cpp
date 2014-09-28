@@ -7,6 +7,7 @@ CImporter::CImporter()
 {
 	m_bOpened = false;
 	m_xmlDocPtr = NULL;
+	m_scale = m_scaleDefault;
 }
 
 
@@ -71,16 +72,9 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		//Iterate polygons
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPolygonLabel))
 		{
-			if (m_xmlDocPtr->IntoElem()){
-
-				CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
-
-				//Do process symbol
-				DoProcessPolygon(pobarrShapearr);
-
-				//Go out of node
-				m_xmlDocPtr->OutOfElem();
-			}
+			//Do process symbol
+			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
+			DoProcessPolygon(pobarrShapearr);
 		}
 	}//end if root node
 
@@ -91,6 +85,16 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 {
 	TRY
 	{
+		//Get position of polygon
+		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CPoint point0 = GetPointFromStr(pos);
+		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
+
+		//Check if polygon is empty
+		if (!m_xmlDocPtr->IntoElem()){
+			return FALSE;
+		}
+
 		//Iterate points
 		CArray<CPoint, CPoint> ptArray;
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPolygonPointLabel))
@@ -105,7 +109,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 
 				//Add point to array
 				CPoint point = GetPointFromStr(pos);
-				ptArray.Add(point);
+				ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 
 				//Now create the arc
 				if (ptArray.GetCount()>=2){
@@ -118,7 +122,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 			else{
 				//Add point to array
 				CPoint point = GetPointFromStr(pos);
-				ptArray.Add(point);
+				ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 			}
 		}
 		//Create ellipse arc or end Polyline
@@ -131,6 +135,9 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 
 	}
 	END_CATCH_ALL
+
+	//Go out of node
+	m_xmlDocPtr->OutOfElem();
 
 	return TRUE;
 }
