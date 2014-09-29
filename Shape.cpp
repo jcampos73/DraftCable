@@ -3100,7 +3100,8 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 	for (int i = 0; i < idata; i++)
 	{
 		if (CString(sa[i]).MakeUpper() == "M" ||
-			CString(sa[i]).MakeUpper() == "L"){
+			CString(sa[i]).MakeUpper() == "L" ||
+			CString(sa[i]).MakeUpper() == "Z"){
 			arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
 			x_str = "";
 			y_str = "";
