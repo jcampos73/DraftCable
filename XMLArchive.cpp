@@ -402,12 +402,13 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			childIndex = m_nodeList.top()->m_childIndex;
 		}
 
-		int length = 1;
+		//Block added to calcule length when using CMarkup
+		int length = 0;
+		nodeListPtr->ResetMainPos();
 		while (nodeListPtr->FindElem())
 		{
 			length++;
 		}
-
 		nodeListPtr->ResetMainPos();
 
 		if (childIndex < length/*nodeListPtr->length*/)

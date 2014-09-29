@@ -3087,6 +3087,44 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 	CString d = archive.m_xmlDocPtr->GetAttrib("d");
 	CString stroke = archive.m_xmlDocPtr->GetAttrib("stroke");
 	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
+
+	//Parse d
+	int idata = CDraftDrawDoc::Split(d, " ", NULL, 0);
+	LPTSTR *sa = new LPTSTR[idata];
+	CDraftDrawDoc::Split(d, " ", sa, idata);
+
+	CString x_str = "";
+	CString y_str = "";
+	int count = 0;
+	CArray<CPoint, CPoint> arrPoints;
+	for (int i = 0; i < idata; i++)
+	{
+		if (CString(sa[i]).MakeUpper() == "M" ||
+			CString(sa[i]).MakeUpper() == "L"){
+			arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
+			x_str = "";
+			y_str = "";
+			count++;
+		}
+		else if (x_str == "")
+		{
+			x_str = sa[i];
+		}
+		else
+		{
+			y_str = sa[i];
+		}
+	}//end for
+
+	LPPOINT pPoints = new POINT[count];
+
+	for (int i = 0; i < arrPoints.GetCount(); i++)
+	{
+		CPoint point = arrPoints.GetAt(i);
+		pPoints[i] = point;
+	}
+
+	Create(pPoints, arrPoints.GetCount());
 }
 
 void CShapePolyline::SerializeDdw(CDdwioFile &ddwfile)

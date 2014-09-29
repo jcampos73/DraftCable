@@ -611,9 +611,9 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			int numberObjects = curNodePtr->GetNoChildren();
 			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
 			{
-
-				CShapePolyline path;
-				XMLDATA(path);
+				CShapePolyline *path = new CShapePolyline();
+				XMLDATA(*path);
+				AddObject(path);
 			}
 			//XMLDATA(m_itemArray);
 			//XMLDATA(m_singleItem);
