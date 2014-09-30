@@ -296,6 +296,16 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 		if (IsStoring())
 		{
+#ifdef USE_MSXML
+			// Archive is storing
+			CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, m_xmlDocPtr->createElement(nodeNameBSTR), fatherNodePtr);
+
+			::SysFreeString(nodeNameBSTR);
+
+			m_nodeList.push(xmlArchiveNodePtr);
+
+			return xmlArchiveNodePtr;
+#endif
 			// Archive is storing
 			m_xmlDocPtr->AddChildElem(nodeName);
 			CMarkup* childnodep = new CMarkup(m_xmlDocPtr->GetDoc());
@@ -305,8 +315,6 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 				childnodep,
 				//m_xmlDocPtr->createElement(nodeNameBSTR),
 				fatherNodePtr);
-
-			//::SysFreeString(nodeNameBSTR);
 
 			m_nodeList.push(xmlArchiveNodePtr);
 
