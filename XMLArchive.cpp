@@ -330,19 +330,47 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 		// If child node list is not empty, we are loading using the tags to
 		// create CObject derived objects (CArray<Cobject* CObject*>, use child list
-
+		// collections?
+#ifdef USE_MSXML
 		if (m_nodeList.size() > 0)
 		{
 			CXMLArchiveNode* xmlNodePtr = m_nodeList.top();
 			nodeListPtr = xmlNodePtr->m_childNodeListPtr;
 
+			if (nodeListPtr != NULL && nodeListPtr->length > 0)
+			{
+				int childIndex = xmlNodePtr->m_childIndex;
+
+				if (childIndex < nodeListPtr->length)
+				{
+					nodeListPtr->get_item(childIndex, &nodePtr);
+
+					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);
+
+					m_nodeList.push(xmlArchiveNodePtr);
+
+					::SysFreeString(nodeNameBSTR);
+
+					return xmlArchiveNodePtr;
+				}
+
+				ASSERT(FALSE);
+			}
+		}
+#else
+		if (m_nodeList.size() > 0)
+		{
+			CXMLArchiveNode* xmlNodePtr = m_nodeList.top();
+			nodeListPtr = xmlNodePtr->m_childNodeListPtr;
+
+			//Block added to calcule length when using CMarkup
 			int length = 0;
 			if (nodeListPtr != NULL){
+				nodeListPtr->ResetMainPos();
 				while (nodeListPtr->FindElem())
 				{
 					length++;
 				}
-
 				nodeListPtr->ResetMainPos();
 			}
 
@@ -364,10 +392,8 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 						nodePtr = new CMarkup();
 						nodePtr = nodeListPtr;
-
 						//nodeListPtr->ResetChildPos();
 					}
-
 
 					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);// m_xmlDocPtr);
 
@@ -381,29 +407,30 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 				ASSERT(FALSE);
 			}
 		}
+#endif
 
 #ifdef USE_MSXML
 		// Get all nodes with this name
-		//if (MSXML::IXMLDOMDocumentPtr(fatherNodePtr) != NULL)
-		//{
-		//	// First level node in document
-		//	ASSERT(!nodeName.IsEmpty());
-		//	nodeListPtr = MSXML::IXMLDOMDocumentPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
-		//}
-		//else
-		//{
-		//	// Get node with desired name
-		//	nodeListPtr = MSXML::IXMLDOMElementPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
-		//}
-#endif
+		if (MSXML::IXMLDOMDocumentPtr(fatherNodePtr) != NULL)
+		{
+			// First level node in document
+			ASSERT(!nodeName.IsEmpty());
+			nodeListPtr = MSXML::IXMLDOMDocumentPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
+		}
+		else
+		{
+			// Get node with desired name
+			nodeListPtr = MSXML::IXMLDOMElementPtr(fatherNodePtr)->getElementsByTagName(nodeNameBSTR);
+		}
+
+		::SysFreeString(nodeNameBSTR);
+#else
 
 		bool bResult=fatherNodePtr->FindElem(nodeName);
 		nodeListPtr = new CMarkup();
 		nodeListPtr = fatherNodePtr;
 		//fatherNodePtr->ResetMainPos();
-
-		//::SysFreeString(nodeNameBSTR);
-
+#endif
 		int childIndex = 0;
 		if (m_nodeList.size() > 0)
 		{
@@ -419,6 +446,12 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		}
 		nodeListPtr->ResetMainPos();
 
+#ifdef USE_MSXML
+		if (childIndex < nodeListPtr->length)
+		{
+			nodeListPtr->get_item(childIndex, &nodePtr);
+		}
+#else
 		if (childIndex < length/*nodeListPtr->length*/)
 		{
 			//nodeListPtr->get_item(childIndex, &nodePtr);
@@ -449,7 +482,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 				nodePtr = nodeListPtr;
 			}
 		}
-
+#endif
 		CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);
 
 		m_nodeList.push(xmlArchiveNodePtr);
