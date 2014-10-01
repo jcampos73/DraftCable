@@ -3088,6 +3088,8 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 	CString stroke = archive.m_xmlDocPtr->GetAttrib("stroke");
 	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
 
+	return;
+
 	//Parse d
 	int idata = CDraftDrawDoc::Split(d, " ", NULL, 0);
 	LPTSTR *sa = new LPTSTR[idata];
