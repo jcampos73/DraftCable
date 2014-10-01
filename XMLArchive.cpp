@@ -329,8 +329,8 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		CMarkup*		nodePtr;
 
 		// If child node list is not empty, we are loading using the tags to
-		// create CObject derived objects (CArray<Cobject* CObject*>, use child list
-		// collections?
+		// create CObject derived objects or collections (like CArray<Cobject* CObject*>, use child list
+
 #ifdef USE_MSXML
 		if (m_nodeList.size() > 0)
 		{
@@ -431,12 +431,19 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		nodeListPtr = fatherNodePtr;
 		//fatherNodePtr->ResetMainPos();
 #endif
+		//Get child index from m_nodeList
 		int childIndex = 0;
 		if (m_nodeList.size() > 0)
 		{
 			childIndex = m_nodeList.top()->m_childIndex;
 		}
 
+#ifdef USE_MSXML
+		if (childIndex < nodeListPtr->length)
+		{
+			nodeListPtr->get_item(childIndex, &nodePtr);
+		}
+#else
 		//Block added to calcule length when using CMarkup
 		int length = 0;
 		nodeListPtr->ResetMainPos();
@@ -446,17 +453,11 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 		}
 		nodeListPtr->ResetMainPos();
 
-#ifdef USE_MSXML
-		if (childIndex < nodeListPtr->length)
+		if (childIndex < length)
 		{
-			nodeListPtr->get_item(childIndex, &nodePtr);
-		}
-#else
-		if (childIndex < length/*nodeListPtr->length*/)
-		{
-			//nodeListPtr->get_item(childIndex, &nodePtr);
 			int index = 0;
 
+			//Check if it has child elements and go inside if so
 			if (nodeListPtr->FindChildElem())
 			{
 				while (nodeListPtr->FindElem() && index < childIndex)
