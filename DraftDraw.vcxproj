@@ -159,6 +159,8 @@
     <ClCompile Include="DialogFillShape.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Markup.cpp" />
+    <ClCompile Include="RegExp.cpp" />
+    <ClCompile Include="StringEx.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
     <ClCompile Include="_recordset.cpp">
@@ -504,6 +506,8 @@
     <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Markup.h" />
+    <ClInclude Include="RegExp.h" />
+    <ClInclude Include="StringEx.h" />
     <ClInclude Include="SvgioFile.h" />
     <ClInclude Include="XMLArchive.h" />
     <ClInclude Include="_recordset.h" />
