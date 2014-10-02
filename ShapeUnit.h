@@ -262,6 +262,7 @@ public:
 public:
 	virtual BOOL OnCommand( WPARAM wParam, LPARAM lParam );
 	virtual void Serialize( CArchive& archive );
+	virtual void SerializeXml(CXMLArchive& archive);
 	virtual void SerializeDdw(CDdwioFile &ddwfile);
 	virtual void SerializeGbr(CGbrioFile &gbrfile);
 	virtual void SerializeSvg(CSvgioFile &svgfile);

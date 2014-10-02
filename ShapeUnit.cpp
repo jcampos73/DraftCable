@@ -3104,6 +3104,29 @@ void CShapeLabel::Serialize( CArchive& archive )
 
 }
 
+void CShapeLabel::SerializeXml(CXMLArchive& archive)
+{
+	//Get pointer to current node
+	CXMLArchiveNode* curNodePtr = archive.GetCurrentNode();
+
+	//Sample text line in svg file
+	//<text x="1165" y="922" font-family="sans - serif" font-size="10px" fill="black">PROY</text>
+
+	CString x = archive.m_xmlDocPtr->GetAttrib("x");
+	CString y = archive.m_xmlDocPtr->GetAttrib("y");
+	CString fontFamiliy = archive.m_xmlDocPtr->GetAttrib("font-family");
+	CString fontSize = archive.m_xmlDocPtr->GetAttrib("font-size");
+	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
+	CString text = archive.m_xmlDocPtr->GetData();
+
+	fontSize.MakeUpper();
+	fontSize.Replace("PX", "");
+
+	CRect rect(CPoint(atoi(x), atoi(y)), CPoint(atoi(x), atoi(y)));
+
+	this->Create(rect, text, -atoi(fontSize)-3, FALSE);
+}
+
 void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)
 {
 	m_Label.rect=new CRect(m_Rect);

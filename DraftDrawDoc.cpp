@@ -615,6 +615,15 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				XMLDATA(*path);
 				AddObject(path);
 			}
+
+			curNodePtr = xmlArchive.GetCurrentNode();
+			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
+			{
+				CShapeLabel *text = new CShapeLabel();
+				XMLDATA(*text);
+				AddObject(text);
+			}
+
 			//XMLDATA(m_itemArray);
 			//XMLDATA(m_singleItem);
 			//XMLENDNODE;
