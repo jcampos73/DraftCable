@@ -3080,17 +3080,54 @@ void CShapePolyline::Serialize( CArchive& archive )
 
 void CShapePolyline::SerializeXml(CXMLArchive& archive)
 {
+	//Get pointer to current node
 	CXMLArchiveNode* curNodePtr = archive.GetCurrentNode();
 
+	//Sample path line in svg file
 	//<path d="M 995 1040 L 995 910 Z" stroke="#000" fill="none"/>
 
 	CString d = archive.m_xmlDocPtr->GetAttrib("d");
 	CString stroke = archive.m_xmlDocPtr->GetAttrib("stroke");
 	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
 
-	return;
-
 	//Parse d
+	//Tokenize
+	CString resToken;
+	int curPos = 0;
+	resToken = d.Tokenize(_T(" "), curPos);
+	CString x_str = "";
+	CString y_str = "";
+
+	//Point counter
+	int countPoint = 0;
+	CArray<CPoint, CPoint> arrPoints;
+	while (resToken != _T(""))
+	{
+		
+		if (resToken.MakeUpper() == "M" ||
+			resToken.MakeUpper() == "L" ||
+			resToken.MakeUpper() == "Z"){
+			if (countPoint > 0){
+			arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
+				x_str = "";
+				y_str = "";
+			}
+			countPoint++;
+		}
+		else if (x_str == "")
+		{
+			x_str = resToken;
+		}
+		else
+		{
+			y_str = resToken;
+		}
+
+
+		resToken = d.Tokenize(_T(" "), curPos);
+	};
+
+	/*
 	int idata = CDraftDrawDoc::Split(d, " ", NULL, 0);
 	LPTSTR *sa = new LPTSTR[idata];
 	CDraftDrawDoc::Split(d, " ", sa, idata);
@@ -3118,8 +3155,11 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 			y_str = sa[i];
 		}
 	}//end for
+	*/
 
-	LPPOINT pPoints = new POINT[count];
+	//Create polyline
+	//Prepare point array
+	LPPOINT pPoints = new POINT[countPoint];
 
 	for (int i = 0; i < arrPoints.GetCount(); i++)
 	{
@@ -3127,6 +3167,7 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 		pPoints[i] = point;
 	}
 
+	//Create polyline
 	Create(pPoints, arrPoints.GetCount());
 }
 

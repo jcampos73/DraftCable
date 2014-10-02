@@ -385,7 +385,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 					if (nodeListPtr->FindChildElem())
 					{
-						while (nodeListPtr->FindElem() && index < childIndex)
+						while (index < childIndex && nodeListPtr->FindElem())
 						{
 							index++;
 						}
@@ -460,7 +460,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			//Check if it has child elements and go inside if so
 			if (nodeListPtr->FindChildElem())
 			{
-				while (nodeListPtr->FindElem() && index < childIndex)
+				while (index < childIndex && nodeListPtr->FindElem())
 				{
 					index++;
 				}
@@ -474,7 +474,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			}
 			else
 			{
-				while (nodeListPtr->FindElem() && index < childIndex)
+				while (index < childIndex && nodeListPtr->FindElem())
 				{
 					index++;
 				}
