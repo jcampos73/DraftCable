@@ -782,7 +782,10 @@ void CDialogPlacePart::DoImportLibrary()
 		pImporter->ImportLibrary(strFile, pObArray);
 
 		//Create new library
-		CString strLib = strFile.Left(strFile.Find('.'));
+		CString strLib = strFile.Left(strFile.ReverseFind('.'));
+		if (strLib.ReverseFind('\\') >= 0){
+			strLib = strLib.Right(strLib.GetLength() - strLib.ReverseFind('\\') - 1);
+		}
 		if (strLib.GetLength() == 0) strLib = strFile;
 		DoInsertNewLibrary(strLib, TRUE);
 
@@ -791,7 +794,7 @@ void CDialogPlacePart::DoImportLibrary()
 
 			//Insert part
 			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
-pSh->m_sUnitName = "Resistor";
+//pSh->m_sUnitName = "Resistor";
 			DoInsertPart(pSh->m_sUnitName);
 
 			//Save parts

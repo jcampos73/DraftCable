@@ -17,6 +17,8 @@ protected:
 
 	const CString m_strTCRootNodeLabel = "Library";
 	const CString m_strTCSymbolNodeLabel = "SYMBOL";
+	const CString m_strTCSymbolNodeDescLabel = "DETAILS";
+	const CString m_strTCSymbolNodeDescDescriptionLabel = "DESCRIPTION";
 	const CString m_strTCSymbolNodeGeomLabel = "TinyCAD";
 	const CString m_strTCSymbolNodeGeomPolygonLabel = "POLYGON";
 	const CString m_strTCSymbolNodeGeomPolygonPointLabel = "POINT";

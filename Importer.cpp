@@ -27,7 +27,8 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray)
 		}
 
 		int count = 0;
-		int count_max = 1;
+		//Debug: set count_max to other value than 0, to limit number of processed shapes
+		int count_max = 2;
 
 		//Iterate symbols
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))
@@ -64,6 +65,22 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 	//Create CShapeUnit
 	pShUnit = new CShapeUnit();
 
+	//Symbol description
+	if (m_xmlDocPtr->FindElem(m_strTCSymbolNodeDescLabel)){
+		if (!m_xmlDocPtr->IntoElem()){
+			return FALSE;
+		}
+
+		if (!m_xmlDocPtr->FindElem(m_strTCSymbolNodeDescDescriptionLabel)){
+			return FALSE;
+		}
+
+		pShUnit->m_sUnitName = m_xmlDocPtr->GetData();
+
+		m_xmlDocPtr->OutOfElem();
+	}
+
+	//Symbol geometry
 	if (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomLabel)){
 		if (!m_xmlDocPtr->IntoElem()){
 			return FALSE;
@@ -75,7 +92,13 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 			//Do process symbol
 			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
 			DoProcessPolygon(pobarrShapearr);
+
+			//Need to normalize and rescale (so we have to store in some place all the points)
+			//to reprocess after
 		}
+
+		//Go out of node
+		m_xmlDocPtr->OutOfElem();
 	}//end if root node
 
 	return TRUE;
@@ -101,11 +124,13 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 		{
 			CString pos = m_xmlDocPtr->GetAttrib("pos");
 			int arc = atoi(m_xmlDocPtr->GetAttrib("arc"));
-			if (arc > 1){
+			if (arc > 0){
 				//Create ellipse arc or end Polyline
-				CShape* pSh = NULL;
-				DoCreatePolyline(&ptArray, pSh);
-				if (pSh != NULL) pobarrShapearr->Add(pSh);
+				if (ptArray.GetCount() >= 2){
+					CShape* pSh = NULL;
+					DoCreatePolyline(&ptArray, pSh);
+					if (pSh != NULL) pobarrShapearr->Add(pSh);
+				}
 
 				//Add point to array
 				CPoint point = GetPointFromStr(pos);
@@ -118,6 +143,9 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
 					pobarrShapearr->Add(pSh);
 				}
+
+				//Start new segment/spline
+				ptArray.RemoveAll();
 			}
 			else{
 				//Add point to array
@@ -126,9 +154,11 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 			}
 		}
 		//Create ellipse arc or end Polyline
-		CShape* pSh = NULL;
-		DoCreatePolyline(&ptArray, pSh);
-		if (pSh != NULL) pobarrShapearr->Add(pSh);
+		if (ptArray.GetCount() >= 2){
+			CShape* pSh = NULL;
+			DoCreatePolyline(&ptArray, pSh);
+			if (pSh != NULL) pobarrShapearr->Add(pSh);
+		}
 	}
 	CATCH_ALL(e)
 	{
