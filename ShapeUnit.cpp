@@ -2758,9 +2758,10 @@ IMPLEMENT_SERIAL(CShapeLabel, CShape, 1)
 CShapeLabel::CShapeLabel(label *lpLbl/*=NULL*/,LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
 {
 
-	m_uiShapeType=ddcShapeLabel;
-	m_bIni=FALSE;
-	m_bNoResize=TRUE;
+	m_uiShapeType = ddcShapeLabel;
+	m_bIni = FALSE;
+	m_bUnselectAfterResize = FALSE;
+	m_bNoResize = TRUE;
 	//m_Rect=CRect(0,0,100,100);
 	m_Rect=CRect(0,0,0,0);
 
@@ -2975,6 +2976,18 @@ BOOL CShapeLabel::OnCommand( WPARAM wParam, LPARAM lParam ){
 
 void CShapeLabel::OnDraw(CDC *pDC){
 
+	//Block to get bounding rectangle when loading from svg file
+	if (m_bUnselectAfterResize == TRUE){
+		ResizeAuto(pDC);
+		this->Unselect();
+		//This would be just a one time operation (after loading)
+		m_bUnselectAfterResize = FALSE;
+
+		//Offset when loading from svg files
+		int offset = this->m_Rect.CenterPoint().y - this->m_Rect.TopLeft().y;
+		this->m_Rect -= CPoint(0, offset);
+	}
+
 	if((!m_Mode) && m_Rect.IsRectEmpty()){
 		//Resize label to fit text
 		ResizeAuto(pDC);
@@ -3125,7 +3138,8 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	CRect rect(CPoint(atoi(x), atoi(y)), CPoint(atoi(x), atoi(y)));
 
 	this->Create(rect, text, -atoi(fontSize)-3, FALSE);
-	//this->Unselect();
+	this->Unselect();
+	m_bUnselectAfterResize = TRUE;
 }
 
 void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)

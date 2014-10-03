@@ -276,6 +276,9 @@ public:
 
 protected:
 	BOOL m_bIni;
+	//This flag is used when deserializing from XML formats, that don't store bounding rect
+	//Default value is false
+	BOOL m_bUnselectAfterResize;
 	virtual void GetData(CStringArray& saData){
 		saData.Add(*m_Label.slabel);
 		CString str;
