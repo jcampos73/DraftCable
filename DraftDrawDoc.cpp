@@ -616,7 +616,10 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				AddObject(path);
 			}
 
+			//curNodePtr = xmlArchive.GetCurrentNode();
+			xmlArchive.ResetMainPos();
 			curNodePtr = xmlArchive.GetCurrentNode();
+			numberObjects = curNodePtr->GetNoChildren();
 			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
 			{
 				CShapeLabel *text = new CShapeLabel();

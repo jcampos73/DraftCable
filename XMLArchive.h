@@ -62,6 +62,7 @@ public:
 	CXMLArchiveNode*	GetNode(LPCTSTR nodeNameStr);
 	void				RemoveNode(CXMLArchiveNode* xmlArchiveNodePtr);
 	CXMLArchiveNode*	GetCurrentNode();
+	void				ResetMainPos();
 
 	// Attributes
 	const CString	m_fileName;

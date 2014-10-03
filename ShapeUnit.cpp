@@ -3125,6 +3125,7 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	CRect rect(CPoint(atoi(x), atoi(y)), CPoint(atoi(x), atoi(y)));
 
 	this->Create(rect, text, -atoi(fontSize)-3, FALSE);
+	//this->Unselect();
 }
 
 void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)

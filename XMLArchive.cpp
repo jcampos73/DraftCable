@@ -255,7 +255,30 @@ CXMLArchiveNode* CXMLArchive::GetCurrentNode()
 	}
 
 	return m_nodeList.top();
-};
+}
+
+void CXMLArchive::ResetMainPos()
+{
+#ifdef USE_MSXML
+	BSTR nodeNameBSTR = nodeName.AllocSysString();
+	MSXML::IXMLDOMNodePtr fatherNodePtr;
+#else
+	CMarkup* fatherNodePtr;
+#endif
+
+	if (m_nodeList.size() == 0)
+	{
+		fatherNodePtr = m_xmlDocPtr;
+	}
+	else
+	{
+		fatherNodePtr = m_nodeList.top()->m_nodePtr;
+		CXMLArchiveNode* xmlNodePtr = m_nodeList.top();
+		xmlNodePtr->m_childIndex = 0;
+	}
+
+	fatherNodePtr->ResetMainPos();
+}
 
 void CXMLArchive::RemoveNode(CXMLArchiveNode* xmlArchiveNodePtr)
 {
@@ -474,7 +497,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			}
 			else
 			{
-				while (index < childIndex && nodeListPtr->FindElem())
+				while (index < childIndex && nodeListPtr->FindElem(nodeName))
 				{
 					index++;
 				}
@@ -620,10 +643,16 @@ int CXMLArchiveNode::GetNoChildren()
 // Loads into existing objects
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 {
-	m_archivePtr->GetNode(attrName);
+	CString attrname = attrName;
+	attrname.Replace("*", "");
+	m_archivePtr->GetNode(attrname);
 	if (object.IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 		CObject* pObject = &object;
 		((CShapePolyline*)pObject)->SerializeXml(*m_archivePtr);
+	}
+	else if (object.IsKindOf(RUNTIME_CLASS(CShapeLabel))){
+		CObject* pObject = &object;
+		((CShapeLabel*)pObject)->SerializeXml(*m_archivePtr);
 	}
 	m_archivePtr->GetCurrentNode()->Close();
 }
