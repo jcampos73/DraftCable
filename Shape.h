@@ -487,6 +487,7 @@ public:
 
 // Operations
 public:
+	virtual void Serialize(CArchive& archive);
 	void SerializeGbr(CGbrioFile &gbrfile);
 	CPoint m_Point2;
 	int b;

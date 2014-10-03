@@ -1957,6 +1957,24 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 }
 
+void CShapeArc::Serialize(CArchive& archive)
+{
+
+	// call base class function first
+	// base class is CObject in this case
+	CShape::Serialize(archive);
+
+	// now do the stuff for our specific class
+
+	if (archive.IsStoring()){
+
+	}
+	else{
+
+	}
+
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CShapeContainer
 /*IMPLEMENT_DYNCREATE(CShapeContainer, CShape)*/
