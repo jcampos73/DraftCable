@@ -141,6 +141,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 					CShapeArc* pSh = new CShapeArc();
 					//Create arc
 					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
+					pSh->Unselect();
 					pobarrShapearr->Add(pSh);
 				}
 

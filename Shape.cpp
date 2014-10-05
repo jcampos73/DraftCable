@@ -1766,8 +1766,8 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 	m_Alfap = 0.0;
 
 	//Start angle for drawing ellipse arc
-	m_angleStart = 30.0;
-	m_angleSweep = -180.0;
+	m_angleStart = 0;//30.0;
+	m_angleSweep = -90.0;//-180.0
 
 	//Use Gdiplus to draw the ellipse arc
 	m_bGdiplus = true;//false;
@@ -1775,6 +1775,9 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 
 BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/)
 {
+	m_Rect = CRect(*lpPoint1, *lpPoint2);
+	m_Rect.NormalizeRect();
+
 	m_angleStart = 0;
 	m_angleSweep = 90;
 	m_bGdiplus = bGdiplus;
@@ -1783,8 +1786,8 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		m_angleSweep = -90;
 	}
 
-	if (lpPoint1->x < lpPoint2->x){
-		m_angleStart = 180;
+	if (lpPoint1->x > lpPoint2->x){
+		//m_angleStart = 180;
 	}
 
 	return TRUE;
