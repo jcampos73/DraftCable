@@ -1777,6 +1777,8 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 {
 	m_Rect = CRect(*lpPoint1, *lpPoint2);
 	m_Rect.NormalizeRect();
+	CPoint point1 = m_Rect.TopLeft();
+	CPoint point2 = m_Rect.BottomRight();
 
 	m_angleStart = 0;
 	m_angleSweep = 90;
@@ -1784,11 +1786,21 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 
 	if (lpPoint1->y < lpPoint2->y){
 		m_angleSweep = -90;
+		point2 = point2 + CPoint(0, point2.y - point1.y);
+		if (lpPoint1->x > lpPoint2->x){
+			point2 = point2 + CPoint(point2.x - point1.x, 0);
+			m_angleStart = -90;
+		}
+		else{
+			point1 = point1 - CPoint(point2.x - point1.x, 0);
+			m_angleStart = 0;
+		}
+	}
+	else{
+		int debug = 1;
 	}
 
-	if (lpPoint1->x > lpPoint2->x){
-		//m_angleStart = 180;
-	}
+	m_Rect = CRect(point1, point2);
 
 	return TRUE;
 }
