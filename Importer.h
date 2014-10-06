@@ -21,6 +21,7 @@ protected:
 	const CString m_strTCSymbolNodeDescDescriptionLabel = "DESCRIPTION";
 	const CString m_strTCSymbolNodeGeomLabel = "TinyCAD";
 	const CString m_strTCSymbolNodeGeomPolygonLabel = "POLYGON";
+	const CString m_strTCSymbolNodeGeomPinLabel = "PIN";
 	const CString m_strTCSymbolNodeGeomPolygonPointLabel = "POINT";
 
 	//! true if already opened
@@ -28,6 +29,7 @@ protected:
 	void DoLoadRawData(LPCTSTR lpszPathName);
 	BOOL DoProcessNode(CShapeUnit*& pSh);
 	BOOL DoProcessPolygon(CObArray* pobarrShapearr);
+	BOOL DoProcessPin(CObArray* pobarrShapearr);
 	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",");
 };

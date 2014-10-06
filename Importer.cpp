@@ -94,8 +94,19 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 			DoProcessPolygon(pobarrShapearr);
 
 			//Need to normalize and rescale (so we have to store in some place all the points)
-			//to reprocess after
+			//to reprocess after (maybe before saving, in upper layer)
 		}
+
+		//Iterate pins
+		/*
+		m_xmlDocPtr->ResetMainPos();
+		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPinLabel))
+		{
+			//Do process symbol
+			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
+			DoProcessPin(pobarrShapearr);
+		}
+		*/
 
 		//Go out of node
 		m_xmlDocPtr->OutOfElem();
@@ -169,6 +180,37 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 
 	//Go out of node
 	m_xmlDocPtr->OutOfElem();
+
+	return TRUE;
+}
+
+BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
+{
+	TRY
+	{
+		//<PIN pos='70.00000,37.00000' which='0' elec='4' direction='1' part='0' number='2' show='0' length='15' number_pos='0' centre_name='0'></PIN>
+		//Get position of pin
+		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CString which = m_xmlDocPtr->GetAttrib("which");
+		CString elec = m_xmlDocPtr->GetAttrib("elec");
+		//1 = S; 0 = N; 3 = E; 2 = W
+		CString direction = m_xmlDocPtr->GetAttrib("direction");
+		CString part = m_xmlDocPtr->GetAttrib("part");
+		CString number = m_xmlDocPtr->GetAttrib("number");
+		CString show = m_xmlDocPtr->GetAttrib("show");
+		CString length = m_xmlDocPtr->GetAttrib("length");
+		CString number_pos = m_xmlDocPtr->GetAttrib("number_pos");
+		CString centre_name = m_xmlDocPtr->GetAttrib("centre_name");
+
+		CPoint point0 = GetPointFromStr(pos);
+		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
+
+	}
+	CATCH_ALL(e)
+	{
+
+	}
+	END_CATCH_ALL
 
 	return TRUE;
 }
