@@ -1790,10 +1790,14 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		if (lpPoint1->x > lpPoint2->x){
 			point2 = point2 + CPoint(point2.x - point1.x, 0);
 			m_angleStart = -90;
+			//m_Rect = CRect(CPoint(0, 0), CPoint(0, 0));
+			//return TRUE;
 		}
 		else{
 			point1 = point1 - CPoint(point2.x - point1.x, 0);
 			m_angleStart = 0;
+			//m_Rect = CRect(CPoint(0, 0), CPoint(0, 0));
+			//return TRUE;
 		}
 	}
 	else{
@@ -1982,10 +1986,12 @@ void CShapeArc::Serialize(CArchive& archive)
 	// now do the stuff for our specific class
 
 	if (archive.IsStoring()){
-
+		archive << m_angleStart;
+		archive << m_angleSweep;
 	}
 	else{
-
+		archive >> m_angleStart;
+		archive >> m_angleSweep;
 	}
 
 }
