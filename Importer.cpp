@@ -16,8 +16,11 @@ CImporter::~CImporter()
 	if (m_xmlDocPtr != NULL) delete(m_xmlDocPtr);
 }
 
-BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray)
+BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize szGrip)
 {
+	//Set size grip
+	m_szGrid = szGrip;
+
 	//Load raw xml data into object
 	DoLoadRawData(lpszPathName);
 
@@ -202,6 +205,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 
 		CPoint point0 = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
+		SnapToGrid(&point0, m_szGrid);
 
 		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
 		//Just becouse we don't want empty rectangles
@@ -286,6 +290,7 @@ POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
 		//ptArray.Add(point);
 		return point;
 	}
+	return CPoint(0, 0);
 }
 
 //Snap to grid. Coordinates are schematic.

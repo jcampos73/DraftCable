@@ -751,6 +751,8 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 
 void CDialogPlacePart::DoImportLibrary()
 {
+	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+
 	std::string sFilter = "External library file (*.xml)|*.xml||"; //All Files (*.*)|*.*||;
 	CStringArray saExtensions;
 	saExtensions.Add("xml");
@@ -779,7 +781,7 @@ void CDialogPlacePart::DoImportLibrary()
 		//Try to import library
 		CImporter *pImporter = new CImporter();
 		CObArray *pObArray = new CObArray();
-		pImporter->ImportLibrary(strFile, pObArray);
+		pImporter->ImportLibrary(strFile, pObArray, pDoc->m_szGrid);
 
 		//Create new library
 		CString strLib = strFile.Left(strFile.ReverseFind('.'));
@@ -799,7 +801,6 @@ void CDialogPlacePart::DoImportLibrary()
 
 			//Save parts
 			//Create new method in CDocument to be called from here and serialize the parts
-			CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
 			CString strFile = pSh->m_sUnitName;
 			//Keep previous part edition status
 			BOOL bFlagPartEdit = pDoc->m_bFlagPartEdit;

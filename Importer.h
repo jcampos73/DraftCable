@@ -9,11 +9,12 @@ public:
 	CImporter();
 	~CImporter();
 	//Import library from external system
-	BOOL ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray);
+	BOOL ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize szGrip);
 	CMarkup* m_xmlDocPtr;
 	//Operations
-	static void SnapToGrid(LPPOINT lpPoint, CSize szGrid);
+	void SnapToGrid(LPPOINT lpPoint, CSize szGrid);
 protected:
+	CSize m_szGrid;
 	float m_scale;
 	const float m_scaleDefault = 4.0;
 
