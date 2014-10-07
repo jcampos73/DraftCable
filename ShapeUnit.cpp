@@ -1427,48 +1427,6 @@ void CShapePin::OnDraw(CDC *pDC){
 			//border rectangle
 			pDC->Rectangle(rect);
 
-			/*
-			switch(m_uiPos){
-			case _DRAFTDRAW_SEL_RESIZING_RECT_N:
-			case _DRAFTDRAW_SEL_RESIZING_RECT_S:
-				point=rect.TopLeft()+CPoint(0,rect.Height()*0.5);
-				rect1=CRect(rect.TopLeft(),point+CPoint(rect.Width(),0));
-				rect1.DeflateRect(0,rect1.Height()*0.10);
-				rect2=CRect(point,rect.BottomRight());
-				rect2.DeflateRect(0,rect2.Height()*0.10);
-				break;
-			case _DRAFTDRAW_SEL_RESIZING_RECT_E:
-			case _DRAFTDRAW_SEL_RESIZING_RECT_W:
-				point=rect.TopLeft()+CPoint(rect.Width()*0.5,0);
-				rect1=CRect(rect.TopLeft(),point+CPoint(0,rect.Height()));
-				rect1.DeflateRect(rect1.Width()*0.10,rect1.Height()*0.10);
-				rect2=CRect(point,rect.BottomRight());
-				rect2.DeflateRect(rect2.Width()*0.10,rect2.Height()*0.10);
-				break;
-			}
-
-			//label
-			switch(m_uiPos){
-			case _DRAFTDRAW_SEL_RESIZING_RECT_E:
-			case _DRAFTDRAW_SEL_RESIZING_RECT_S:
-				strlabel1.Format("J%i",m_uiPinnumber);
-				strlabel2.Format("P%i",m_uiPinnumber);
-				break;
-			case _DRAFTDRAW_SEL_RESIZING_RECT_W:
-			case _DRAFTDRAW_SEL_RESIZING_RECT_N:
-				strlabel2.Format("J%i",m_uiPinnumber);
-				strlabel1.Format("P%i",m_uiPinnumber);
-				break;
-			}
-				
-
-			if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-				CString str=strlabel1;
-				strlabel1=strlabel2;
-				strlabel2=str;
-			}
-			*/
-
 			//Draw pin
 
 			def_font=pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));

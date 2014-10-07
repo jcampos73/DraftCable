@@ -98,7 +98,6 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		}
 
 		//Iterate pins
-		/*
 		m_xmlDocPtr->ResetMainPos();
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPinLabel))
 		{
@@ -106,7 +105,6 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
 			DoProcessPin(pobarrShapearr);
 		}
-		*/
 
 		//Go out of node
 		m_xmlDocPtr->OutOfElem();
@@ -205,6 +203,11 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		CPoint point0 = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
 
+		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
+		//Just becouse we don't want empty rectangles
+		pSh->m_Rect = CRect(point0, point0 + CPoint(1, 1));
+		pSh->Unselect();
+		pobarrShapearr->Add(pSh);
 	}
 	CATCH_ALL(e)
 	{
@@ -283,6 +286,14 @@ POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
 		//ptArray.Add(point);
 		return point;
 	}
+}
+
+//Snap to grid. Coordinates are schematic.
+void CImporter::SnapToGrid(LPPOINT lpPoint, CSize szGrid){
+
+	//SNAP TO GRID
+	lpPoint->x = ((int)((lpPoint->x + szGrid.cx*.5) / szGrid.cx)) * szGrid.cx;
+	lpPoint->y = ((int)((lpPoint->y + szGrid.cy*.5) / szGrid.cy)) * szGrid.cy;
 }
 
 
