@@ -791,6 +791,15 @@ void CDialogPlacePart::DoImportLibrary()
 		if (strLib.GetLength() == 0) strLib = strFile;
 		DoInsertNewLibrary(strLib, TRUE);
 
+		//Iterate all shapes to bounding rect union
+		CRect rectUnion;
+		for (int i = 0; i < pObArray->GetSize(); i++){
+			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
+			CRect rect;
+			pSh->GetRectTemp(rect);
+			rect.UnionRect(rectUnion, rect);
+		}
+
 		//Insert/update parts
 		for (int i = 0; i<pObArray->GetSize(); i++){
 

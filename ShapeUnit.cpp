@@ -797,7 +797,15 @@ void CShapeUnit::ReleaseBuffers(){
 }
 
 void CShapeUnit::GetRectTemp(CRect &rect){
-
+	CRect rectUnion;
+	int i;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		CRect rectTemp;
+		psh->GetRectTemp(rectTemp);
+		rectUnion.UnionRect(rectUnion, rectTemp);
+	}
+	rect = rectUnion;
 }
 
 BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
