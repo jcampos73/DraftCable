@@ -796,6 +796,10 @@ void CShapeUnit::ReleaseBuffers(){
 	GlobalFree(m_pPoints0);
 }
 
+void CShapeUnit::GetRectTemp(CRect &rect){
+
+}
+
 BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 
 	switch(LOWORD(wParam)){

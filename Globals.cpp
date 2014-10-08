@@ -62,6 +62,8 @@ CImageList g_ImageListPatterns;
 
 extern CString afxWinwordPath;
 
+void _doFixDataBase();
+
 BOOL LoadProfileSettings(){
 
 	//First of all check hardkey security if it's enabled
@@ -186,6 +188,9 @@ void AfxInitGlobal(){
 	//At this moment information is redundant in TABLE_PIN_LABEL and afxConnectorList
 	//This must be unified when connector and wire sheet will be accessed at a Data Base!!!
 	//**************************************************************************
+
+	//Fix multiple 'blank' parts
+	_doFixDataBase();
 
 	int nCount=AfxGetCableCount();
 
@@ -756,4 +761,35 @@ int g_GetConnectString(LPTSTR lpConnStr,int nMaxLen){
 	lpConnStr[nMaxLen-1]=0;
 	return strlen(lpConnStr);
 #endif
+}
+
+void _doFixDataBase()
+{
+	//Connect to database
+	CDatabase db;
+	TCHAR sConnect[1024];
+
+	g_GetConnectString(sConnect, 1024);
+
+	db.OpenEx(sConnect);
+
+	CRecordset rsPart(&db);
+
+	CString query;
+	query.Format("SELECT iIdPart FROM tbPart WHERE nNamePart LIKE '%s' ORDER BY iIdPart ASC", "blank");
+
+	rsPart.Open(CRecordset::forwardOnly,query);
+
+	if ((!rsPart.IsBOF()) && (!rsPart.IsEOF())){
+		int nIndex = 0;
+		CString strIdPart;
+		rsPart.GetFieldValue(nIndex, strIdPart);
+
+		CString deleteQuery;
+		deleteQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '%s' AND iIdPart NOT IN (%s)", "blank", strIdPart);
+		db.ExecuteSQL(deleteQuery);
+	}
+
+	rsPart.Close();
+	db.Close();
 }

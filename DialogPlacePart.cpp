@@ -796,8 +796,13 @@ void CDialogPlacePart::DoImportLibrary()
 
 			//Insert part
 			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
-//pSh->m_sUnitName = "Resistor";
+
+			//Do insert in librarry
 			DoInsertPart(pSh->m_sUnitName);
+
+			//Call a method to get bounding rectangle
+
+			//Call a method to normalize ShapeUnit from bounding rect TopLeft to (0,0)
 
 			//Save parts
 			//Create new method in CDocument to be called from here and serialize the parts

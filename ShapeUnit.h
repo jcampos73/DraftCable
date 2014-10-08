@@ -69,6 +69,7 @@ public:
 	void Resize();
 	void SetupBuffers(LPRECT rect0);
 	void ReleaseBuffers();
+	virtual void GetRectTemp(CRect &rect);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
