@@ -803,9 +803,34 @@ void CShapeUnit::GetRectTemp(CRect &rect){
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
 		CRect rectTemp;
 		psh->GetRectTemp(rectTemp);
+		if (psh->IsKindOf(RUNTIME_CLASS(CShapePolyline))){
+			rectTemp += psh->m_Rect.TopLeft();
+		}
 		rectUnion.UnionRect(rectUnion, rectTemp);
 	}
 	rect = rectUnion;
+}
+
+void CShapeUnit::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
+
+	CRect rectBound;
+	this->GetRectTemp(rectBound);
+
+	int i;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+
+		CRect rectTemp;
+		psh->GetRectTemp(rectTemp);
+		if (psh->IsKindOf(RUNTIME_CLASS(CShapePolyline))){
+			rectTemp += psh->m_Rect.TopLeft();
+		}
+
+		CPoint offset = rectTemp.TopLeft() - rectBound.TopLeft();
+		offset += ptOffset;
+
+		psh->NormalizeChildShapes(offset);
+	}
 }
 
 BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
@@ -1724,6 +1749,16 @@ BOOL CShapePin::PtInRect(LPPOINT point,CShapeContainer** lpSh){
 	}
 
 	return FALSE;
+}
+
+void CShapePin::GetRectTemp(CRect &rect)
+{
+	rect = m_Rect;
+}
+
+void CShapePin::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
+{
+	m_Rect = CRect(ptOffset, m_Rect.Size());
 }
 
 void CShapePin::_DoCreateRectUnitPin(CPoint& point, CRect& rect1, CRect& rect2, CString& strlabel1, CString& strlabel2)

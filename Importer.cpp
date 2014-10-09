@@ -83,6 +83,11 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		m_xmlDocPtr->OutOfElem();
 	}
 
+	//Symbol frame
+	CShapeFrmRect *pShFrm = new CShapeFrmRect();
+	pShFrm->m_Rect = CRect(0, 0, 0, 0);
+	pShUnit->m_obarrShapearr.Add(pShFrm);
+
 	//Symbol geometry
 	if (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomLabel)){
 		if (!m_xmlDocPtr->IntoElem()){
@@ -223,7 +228,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 }
 
 void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
-	//Create ellipse arc or end Polyline
+	//Create Polyline
 	if (ptArray->GetCount() > 0)
 	{
 		pSh = new CShapePolyline();
@@ -234,6 +239,13 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 		}
 		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
 		ptArray->RemoveAll();
+	}
+}
+
+void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+	//Create ellipse arc
+	if (ptArray->GetCount() > 0)
+	{
 	}
 }
 

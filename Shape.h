@@ -169,6 +169,7 @@ public:
 	virtual void Move(int x,int y,BOOL bAbsolute/*=FALSE*/);//Move shape
 	virtual void Move(int left,int top,int right,int bottom,BOOL bAbsolute=FALSE);//Move & Scale shape
 	virtual void GetRectTemp(CRect &rect);//For drawing the part of the polyline that is not selected
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0,0));
 	virtual void GetRectUpdatePlace(CRect &rect);//Rectangle to redraw when placing the shape
 	virtual void Flip(float fAngle);//Angle of flip axis in degrees: 0.0 = horizontal, 90.0 = vertical, etc.
 	virtual void Rotate(float fAngle);//+Angle->counter clockwise ; -Angle->counter clockwise
@@ -497,6 +498,8 @@ public:
 	//virtual void OnLButtonUp(UINT nFlags, CPoint point);
 	virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual ~CShapeArc();
+	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/);
 
 // Implementation
 protected:
@@ -553,6 +556,7 @@ public:
 	virtual CShape*& operator []( int nIndex );
 	virtual CShape* operator []( int nIndex ) const;
 	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 	virtual void GetRectUpdatePlace(CRect &rect);
 	//Return a pointer to a shape that can be connect, but doesn´t connect anaything.
 	virtual BOOL PtInRect(LPPOINT point,CShapeContainer** lpSh);
@@ -689,6 +693,7 @@ public:
 	int GetPoints(LPPOINT lpPoints,int nCount);
 	int GetSize();
 	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 	//Get update rectangle when drawing a poly curve (when we place a segment, previous segment is changed)
 	virtual void GetRectUpdatePlace(CRect &rect);
 

@@ -732,6 +732,7 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 	//Insert new element
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
 	strQuery.Format("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
+	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) SELECT nNamePart,bTextBin,iIdLib FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	CRecordset rs(&g_db);
@@ -746,7 +747,7 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 	g_db.ExecuteSQL(strQuery);
 
 	//Closes connections
-	m_db.Close();
+	g_db.Close();
 }
 
 void CDialogPlacePart::DoImportLibrary()
@@ -797,8 +798,18 @@ void CDialogPlacePart::DoImportLibrary()
 			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
 			CRect rect;
 			pSh->GetRectTemp(rect);
-			rect.UnionRect(rectUnion, rect);
+			//rectUnion.UnionRect(rectUnion, rect);
+			if (rect.Width()>rectUnion.Width()){
+				rectUnion = CRect(CPoint(0, 0), CSize(rect.Width(), rectUnion.Height()));
+			}
+			if (rect.Height()>rectUnion.Height()){
+				rectUnion = CRect(CPoint(0, 0), CSize(rectUnion.Width(), rect.Height()));
+			}
 		}
+
+		rectUnion.InflateRect(DCABLE_PADDINGX_DEFAULT << 1, DCABLE_PADDINGY_DEFAULT << 1);
+		CSize size=rectUnion.Size();
+		rectUnion = CRect(CPoint(0, 0), rectUnion.Size());
 
 		//Insert/update parts
 		for (int i = 0; i<pObArray->GetSize(); i++){
@@ -809,9 +820,15 @@ void CDialogPlacePart::DoImportLibrary()
 			//Do insert in librarry
 			DoInsertPart(pSh->m_sUnitName);
 
-			//Call a method to get bounding rectangle
+			//Get bounding rect
+			CRect rectTemp;
+			pSh->GetRectTemp(rectTemp);
+			((CShapeFrmRect*)pSh->m_obarrShapearr[0])->m_Rect = rectUnion;
+			CPoint offset = CPoint((rectUnion.Width() - rectTemp.Width()) >> 1, (rectUnion.Height() - rectTemp.Height()) >> 1);
 
-			//Call a method to normalize ShapeUnit from bounding rect TopLeft to (0,0)
+			//Call a method to normalize ShapeUnit from bounding rect TopLeft to (0,0) or any other offset
+			//pSh->NormalizeChildShapes(CPoint(DCABLE_PADDINGX_DEFAULT, DCABLE_PADDINGY_DEFAULT));
+			pSh->NormalizeChildShapes(offset);
 
 			//Save parts
 			//Create new method in CDocument to be called from here and serialize the parts

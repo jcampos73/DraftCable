@@ -1822,6 +1822,16 @@ CShapeArc::~CShapeArc()
 {
 }
 
+void CShapeArc::GetRectTemp(CRect &rect)
+{
+	rect = m_Rect;
+}
+
+void CShapeArc::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
+{
+	m_Rect = CRect(ptOffset, m_Rect.Size());
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CShape message handlers
 
@@ -2356,6 +2366,10 @@ void CShapeContainer::GetSizingRect( LPRECT lpRect ) const{
 }
 
 void CShapeContainer::GetRectTemp(CRect &rect){
+
+}
+
+void CShapeContainer::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 
 }
 
@@ -3535,6 +3549,10 @@ void CShape::GetRectTemp(CRect &rect){
 
 }
 
+void CShape::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
+
+}
+
 void CShape::GetRectUpdatePlace(CRect &rect){
 
 }
@@ -3955,6 +3973,11 @@ void CShapePolyline::GetRectTemp(CRect &rect){
 		rect=CRect(0,0,0,0);
 	}
 
+}
+
+void CShapePolyline::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
+{
+	m_Rect = CRect(ptOffset, m_Rect.Size());
 }
 
 void CShapePolyline::GetRectUpdatePlace(CRect &rect){

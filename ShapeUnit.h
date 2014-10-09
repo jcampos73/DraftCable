@@ -70,6 +70,7 @@ public:
 	void SetupBuffers(LPRECT rect0);
 	void ReleaseBuffers();
 	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -142,6 +143,8 @@ public:
 	virtual CShape& operator++( );
 	//Return a pointer to a shape that can be connect, but doesn´t connect anaything.
 	virtual BOOL PtInRect(LPPOINT point,CShapeContainer** lpSh);
+	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 
 // Overrides
 	// ClassWizard generated virtual function overrides

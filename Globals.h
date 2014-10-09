@@ -22,6 +22,10 @@
 #define DCABLE_GRIDX_DEFAULT		10
 #define DCABLE_GRIDY_DEFAULT		10
 
+//Default padding for shapes to frame rectangle
+#define DCABLE_PADDINGX_DEFAULT		DCABLE_GRIDX_DEFAULT * 4
+#define DCABLE_PADDINGY_DEFAULT		DCABLE_GRIDX_DEFAULT * 4
+
 //Equivalence mm to program units 1mm=5 program unis
 //200 program units = 40 mm
 #define DCABLE_BORDERX_MARK			200
