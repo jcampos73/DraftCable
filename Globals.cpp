@@ -771,6 +771,38 @@ void SnapToGrid(LPPOINT lpPoint, CSize szGrid){
 	lpPoint->y = ((int)((lpPoint->y + szGrid.cy*.5) / szGrid.cy)) * szGrid.cy;
 }
 
+// We are not jet including CStringEx in stdafx.h
+// so this method is commented
+/*
+int RegSearchReplace(CStringEx& string, LPCTSTR sSearchExp,
+	LPCTSTR sReplaceExp)
+{
+	int nPos = 0;
+	int nReplaced = 0;
+	CRegExp r;
+	LPTSTR str = (LPTSTR)(LPCTSTR)string;
+
+	r.RegComp(sSearchExp);
+	while ((nPos = r.RegFind((LPTSTR)str)) != -1)
+	{
+		nReplaced++;
+		TCHAR *pReplaceStr = r.GetReplaceString(sReplaceExp);
+
+		int offset = str - (LPCTSTR)string + nPos;
+		string.Replace(offset, r.GetFindLen(),
+			pReplaceStr);
+
+		// Replace might have caused a reallocation
+		str = (LPTSTR)(LPCTSTR)string + offset + _tcslen(pReplaceStr);
+		delete pReplaceStr;
+	}
+	return nReplaced;
+}
+*/
+
+/////////////////////////////////////////////////////////////////////////////
+// Private methods
+
 void _doFixDataBase()
 {
 	//Connect to database

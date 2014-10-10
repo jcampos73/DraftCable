@@ -12,6 +12,8 @@
 
 CFont *AfxGetFont(int index);
 
+#define AFX_FONT_NORMAL_DEFAULT_HEIGHT	-13
+
 #define AFX_FONT_NORMAL		0
 #define AFX_FONT_SMALL		1
 #define AFX_FONT_NORMALVER	2

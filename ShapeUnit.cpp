@@ -14,7 +14,7 @@
 #include "DialogText.h"
 
 
-
+#include "RegExp.h"
 
 
 
@@ -806,6 +806,18 @@ void CShapeUnit::GetRectTemp(CRect &rect){
 		if (psh->IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 			rectTemp += psh->m_Rect.TopLeft();
 		}
+		rectUnion.UnionRect(rectUnion, rectTemp);
+	}
+	rect = rectUnion;
+}
+
+void CShapeUnit::GetBoundRect(CRect &rect){
+	CRect rectUnion;
+	int i;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		CRect rectTemp;
+		psh->GetRectTemp(rectTemp);
 		rectUnion.UnionRect(rectUnion, rectTemp);
 	}
 	rect = rectUnion;
@@ -3138,12 +3150,28 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
 	CString text = archive.m_xmlDocPtr->GetData();
 
+	/*
 	fontSize.MakeUpper();
 	fontSize.Replace("PX", "");
+	*/
+
+	int nPos = 0;
+	int nReplaced = 0;
+	CRegExp r;
+	CString sSearchExp = "^[0-9]+";
+	LPTSTR str = (LPTSTR)(LPCTSTR)fontSize;
+	int iFontSize = AFX_FONT_NORMAL_DEFAULT_HEIGHT;
+
+	r.RegComp(sSearchExp);
+	if ((nPos = r.RegFind((LPTSTR)str)) != -1)
+	{
+		fontSize = fontSize.Mid(nPos, r.GetFindLen());
+		iFontSize = -atoi(fontSize) - 3;
+	}
 
 	CRect rect(CPoint(atoi(x), atoi(y)), CPoint(atoi(x), atoi(y)));
 
-	this->Create(rect, text, -atoi(fontSize)-3, FALSE);
+	this->Create(rect, text, iFontSize, FALSE);
 	this->Unselect();
 	m_bUnselectAfterResize = TRUE;
 }

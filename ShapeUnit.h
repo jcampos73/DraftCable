@@ -70,6 +70,7 @@ public:
 	void SetupBuffers(LPRECT rect0);
 	void ReleaseBuffers();
 	virtual void GetRectTemp(CRect &rect);
+	virtual void GetBoundRect(CRect &rect);
 	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 
 // Overrides

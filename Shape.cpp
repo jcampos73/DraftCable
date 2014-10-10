@@ -2369,6 +2369,10 @@ void CShapeContainer::GetRectTemp(CRect &rect){
 
 }
 
+void CShapeContainer::GetBoundRect(CRect &rect){
+
+}
+
 void CShapeContainer::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 
 }
@@ -3549,6 +3553,10 @@ void CShape::GetRectTemp(CRect &rect){
 
 }
 
+void CShape::GetBoundRect(CRect &rect){
+
+}
+
 void CShape::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 
 }
@@ -3973,6 +3981,11 @@ void CShapePolyline::GetRectTemp(CRect &rect){
 		rect=CRect(0,0,0,0);
 	}
 
+}
+
+void CShapePolyline::GetBoundRect(CRect &rect){
+	GetRectTemp(rect);
+	rect += this->m_Rect.TopLeft();
 }
 
 void CShapePolyline::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)

@@ -515,9 +515,9 @@ void CDialogPlacePart::OnButtonDel( ){
 	//Connect to database
 
 	if (!m_db.OpenEx(sConnect))
-	/*if (!db.OpenEx("DRIVER=Microsoft Access Driver (*.mdb);DBQ=BinDB.MDB;FIL=MS Access for Microsoft Access;UID=Admin;PWD=;"))*/
+	/*if (!db.OpenEx(_T("DRIVER=Microsoft Access Driver (*.mdb);DBQ=BinDB.MDB;FIL=MS Access for Microsoft Access;UID=Admin;PWD=;")))*/
 	{
-		AfxMessageBox("No se puede conectar con la base de datos.");
+		AfxMessageBox(_T("No se puede conectar con la base de datos."));
 		return;
 	}
 
@@ -609,20 +609,20 @@ void CDialogPlacePart::OnButtonNewlib()
 			m_db.OpenEx(sConnect);
 		}
 
-		m_db.ExecuteSQL("INSERT INTO tbLibrary (nNameLib) VALUES ('"+dlg.m_Name+"')");
+		m_db.ExecuteSQL(_T("INSERT INTO tbLibrary (nNameLib) VALUES ('") + dlg.m_Name + _T("')"));
 
 		m_cbLibrary.ResetContent();
 
 		CRecordset rsLib(&m_db);
 
-		rsLib.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
+		rsLib.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbLibrary"));
 
 		CString strName;
 		while(!rsLib.IsEOF()){
 			CString str;
-			rsLib.GetFieldValue("nNameLib",strName);
+			rsLib.GetFieldValue(_T("nNameLib"), strName);
 			int nIndex=m_cbLibrary.AddString(strName);
-			rsLib.GetFieldValue("iIdLib",str);
+			rsLib.GetFieldValue(_T("iIdLib"), str);
 			m_cbLibrary.SetItemData(nIndex,atoi(str));
 			rsLib.MoveNext();
 		}
@@ -650,9 +650,9 @@ void CDialogPlacePart::OnCheckAll()
 	//Connect to database
 
 	if (!m_db.OpenEx(sConnect))
-	/*if (!db.OpenEx("DRIVER=Microsoft Access Driver (*.mdb);DBQ=BinDB.MDB;FIL=MS Access for Microsoft Access;UID=Admin;PWD=;"))*/
+	/*if (!db.OpenEx(_T("DRIVER=Microsoft Access Driver (*.mdb);DBQ=BinDB.MDB;FIL=MS Access for Microsoft Access;UID=Admin;PWD=;")))*/
 	{
-		AfxMessageBox("No se puede conectar con la base de datos.");
+		AfxMessageBox(_T("No se puede conectar con la base de datos."));
 		return;
 	}
 
@@ -684,7 +684,7 @@ void CDialogPlacePart::DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists
 		}
 	}
 
-	m_db.ExecuteSQL("INSERT INTO tbLibrary (nNameLib) VALUES ('" + CString(lpszLibName) + "')");
+	m_db.ExecuteSQL(_T("INSERT INTO tbLibrary (nNameLib) VALUES ('") + CString(lpszLibName) + _T("')"));
 
 	m_cbLibrary.ResetContent();
 
@@ -730,24 +730,24 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 	}
 
 	//Delete existing shape
-	strQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '" + CString(lpszPartName) + "' AND iIdLib=%i", m_iLibrary);
+	strQuery.Format(_T("DELETE FROM tbPart WHERE nNamePart LIKE '") + CString(lpszPartName) + _T("' AND iIdLib=%i"), m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	//Insert new element
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
-	strQuery.Format("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
+	strQuery.Format(_T("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) SELECT nNamePart,bTextBin,iIdLib FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	CRecordset rs(&g_db);
-	rs.m_strFilter.Format("nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
-	rs.m_strSort = "iIdPart DESC";
-	rs.Open(CRecordset::forwardOnly, "SELECT * FROM tbPart");
+	rs.m_strFilter.Format(_T("nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
+	rs.m_strSort = _T("iIdPart DESC");
+	rs.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbPart"));
 
 	rs.GetFieldValue("iIdPart", str);
 	rs.Close();
 
-	strQuery.Format("UPDATE tbPart SET nNamePart='" + CString(lpszPartName) + "',bTextBin=1,iIdLib=%i WHERE iIdPart=" + str, m_iLibrary);
+	strQuery.Format(_T("UPDATE tbPart SET nNamePart='") + CString(lpszPartName) + _T("',bTextBin=1,iIdLib=%i WHERE iIdPart=") + str, m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	//Closes connections
@@ -758,10 +758,9 @@ void CDialogPlacePart::DoImportLibrary()
 {
 	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
 
-	std::string sFilter = "External library file (*.xml)|*.xml||"; //All Files (*.*)|*.*||;
+	std::string sFilter = _T("External library file (*.xml)|*.xml||"); //All Files (*.*)|*.*||;
 	CStringArray saExtensions;
-	saExtensions.Add("xml");
-
+	saExtensions.Add(_T("xml"));
 
 	CFileDialog fdialog(
 		TRUE,		//save dialog box
@@ -790,8 +789,8 @@ void CDialogPlacePart::DoImportLibrary()
 
 		//Create new library
 		CString strLib = strFile.Left(strFile.ReverseFind('.'));
-		if (strLib.ReverseFind('\\') >= 0){
-			strLib = strLib.Right(strLib.GetLength() - strLib.ReverseFind('\\') - 1);
+		if (strLib.ReverseFind(_T('\\')) >= 0){
+			strLib = strLib.Right(strLib.GetLength() - strLib.ReverseFind(_T('\\')) - 1);
 		}
 		if (strLib.GetLength() == 0) strLib = strFile;
 		DoInsertNewLibrary(strLib, TRUE);
