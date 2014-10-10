@@ -118,6 +118,7 @@ BOOL AfxIsConnectorLogical(int iType);
 
 int g_GetConnectString(LPTSTR lpConnStr,int nMaxLen);
 
+void SnapToGrid(LPPOINT lpPoint, CSize szGrid);
 
 //private
 int CreateImagelist();

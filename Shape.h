@@ -722,9 +722,9 @@ protected:
 	virtual void GetData(CStringArray& saData){
 		for(int i=0;i<m_dwarrPointarr.GetSize();i++){
 			CString strAux;
-			strAux.Format("%i",LOWORD(m_dwarrPointarr[i]));
+			strAux.Format(_T("%i"), LOWORD(m_dwarrPointarr[i]));
 			saData.Add(strAux);
-			strAux.Format("%i",HIWORD(m_dwarrPointarr[i]));
+			strAux.Format(_T("%i"), HIWORD(m_dwarrPointarr[i]));
 			saData.Add(strAux);
 		}
 	};

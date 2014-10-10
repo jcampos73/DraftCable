@@ -71,13 +71,13 @@ BOOL CDib::AttachMapFile(const char* strPathname, BOOL bShare) // para lectura
 	HANDLE hMap = ::CreateFileMapping(hFile, NULL, PAGE_READWRITE, 0, 0, NULL);
 	DWORD dwErr = ::GetLastError();
 	if(hMap == NULL) {
-		AfxMessageBox("Archivo de mapa de bits vacío");
+		AfxMessageBox(_T("Archivo de mapa de bits vacío"));
 		return FALSE;
 	}
 	LPVOID lpvFile = ::MapViewOfFile(hMap, FILE_MAP_WRITE, 0, 0, 0); // proyectar archivo completo
 	ASSERT(lpvFile != NULL);
 	if(((LPBITMAPFILEHEADER) lpvFile)->bfType != 0x4d42) {
-		AfxMessageBox("Archivo de mapa de bits inválido");
+		AfxMessageBox(_T("Archivo de mapa de bits inválido"));
 		DetachMapFile();
 		return FALSE;
 	}
@@ -153,7 +153,7 @@ BOOL CDib::AttachMemory(LPVOID lpvMem, BOOL bMustDelete, HGLOBAL hGlobal)
 		MakePalette();
 	}
 	catch(CException* pe) {
-		AfxMessageBox("Error de AttachMemory");
+		AfxMessageBox(_T("Error de AttachMemory"));
 		pe->Delete();
 		return FALSE;
 	}
@@ -264,7 +264,7 @@ BOOL CDib::Compress(CDC* pDC, BOOL bCompress /* = TRUE */)
 		// llama a GetDIBits con un puntero de datos nulo para obtener el tamaño del DIB comprimido
 		if(!::GetDIBits(pDC->GetSafeHdc(), hBitmap, 0, (UINT) lpBMIH->biHeight,
 						NULL, (LPBITMAPINFO) lpBMIH, DIB_RGB_COLORS)) {
-			AfxMessageBox("No se ha podido comprimir este DIB");
+			AfxMessageBox(_T("No se ha podido comprimir este DIB"));
 			// probablemente un problema con la tabla de colores
 	 		::DeleteObject(hBitmap);
 			delete [] lpBMIH;
@@ -272,7 +272,7 @@ BOOL CDib::Compress(CDC* pDC, BOOL bCompress /* = TRUE */)
 			return FALSE; 
 		}
 		if (lpBMIH->biSizeImage == 0) {
-			AfxMessageBox("El controlador no puede realizar la compresión");
+			AfxMessageBox(_T("El controlador no puede realizar la compresión"));
 	 		::DeleteObject(hBitmap);
 			delete [] lpBMIH;
 			::SelectPalette(hdc, hOldPalette, FALSE);
@@ -341,7 +341,7 @@ BOOL CDib::Read(CFile* pFile)
 		nCount = pFile->Read(m_lpImage, m_dwSizeImage); // sólo la imagen
 	}
 	catch(CException* pe) {
-		AfxMessageBox("Error de lectura");
+		AfxMessageBox(_T("Error de lectura"));
 		pe->Delete();
 		return FALSE;
 	}
@@ -391,7 +391,7 @@ BOOL CDib::ReadSection(CFile* pFile, CDC* pDC /* = NULL */)
 		nCount = pFile->Read(m_lpImage, m_dwSizeImage); // solo la imagen
 	}
 	catch(CException* pe) {
-		AfxMessageBox("Error de ReadSection");
+		AfxMessageBox(_T("Error de ReadSection"));
 		pe->Delete();
 		return FALSE;
 	}
@@ -416,7 +416,7 @@ BOOL CDib::Write(CFile* pFile)
 	}
 	catch(CException* pe) {
 		pe->Delete();
-		AfxMessageBox("error de escritura");
+		AfxMessageBox(_T("error de escritura"));
 		return FALSE;
 	}
 	return TRUE;
@@ -426,10 +426,10 @@ void CDib::Serialize(CArchive& ar)
 {
 	DWORD dwPos;
 	dwPos = ar.GetFile()->GetPosition();
-	TRACE("CDib::Serialize -- pos = %d\n", dwPos);
+	TRACE(_T("CDib::Serialize -- pos = %d\n"), dwPos);
 	ar.Flush();
 	dwPos = ar.GetFile()->GetPosition();
-	TRACE("CDib::Serialize -- pos = %d\n", dwPos);
+	TRACE(_T("CDib::Serialize -- pos = %d\n"), dwPos);
 	if(ar.IsStoring()) {
 		Write(ar.GetFile());
 	}
@@ -470,7 +470,7 @@ void CDib::ComputePaletteSize(int nBitCount)
 void CDib::ComputeMetrics()
 {
 	if(m_lpBMIH->biSize != sizeof(BITMAPINFOHEADER)) {
-		TRACE("No es un mapa de bits válido de Windows -- probablemente un mapa de bits de OS/2\n");
+		TRACE(_T("No es un mapa de bits válido de Windows -- probablemente un mapa de bits de OS/2\n"));
 			//throw new CException;
 			throw new std::exception;
 

@@ -287,7 +287,7 @@ BOOL CCableEdit::OnCommand(WPARAM wParam, LPARAM lParam)
 		break;
 
 	case IDC_BUTTON_NEW:
-		m_cbFile.SetWindowText("");
+		m_cbFile.SetWindowText(_T(""));
 		m_lcCable.DeleteAllItems();
 		m_bNew=TRUE;
 		break;
@@ -444,7 +444,7 @@ void CCableEdit::OnSelendokFile()
 {
 	// TODO: Add your control notification handler code here
 	if(m_bModified){
-		if(::AfxMessageBox("¿Desea guardar los cambios realizados?",MB_OKCANCEL|MB_ICONEXCLAMATION,-1)==IDOK){
+		if (::AfxMessageBox(_T("¿Desea guardar los cambios realizados?"), MB_OKCANCEL | MB_ICONEXCLAMATION, -1) == IDOK){
 			//SaveCable(m_strFileLast);
 			m_cbFile.AddString(m_strFileLast);
 			int count = m_cbFile.GetCount();
@@ -615,14 +615,14 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 
 			CRecordset rsConnector(&db);
 
-			CString str;str.Format("%s = '%s'", strField1, m_strFile);
+			CString str; str.Format(_T("%s = '%s'"), strField1, m_strFile);
 			rsConnector.m_strFilter=str;
 
-			str.Format("SELECT * FROM %s", strTable);
+			str.Format(_T("SELECT * FROM %s"), strTable);
 			rsConnector.Open(CRecordset::forwardOnly, str);
 
 			if(!rsConnector.IsEOF()){
-				if(AfxMessageBox("File allready exists, overwrite?",MB_YESNOCANCEL,0)==IDNO){
+				if (AfxMessageBox(_T("File allready exists, overwrite?"), MB_YESNOCANCEL, 0) == IDNO){
 					rsConnector.Close();
 					db.Close();
 					return;
@@ -633,7 +633,7 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 			}
 			else{
 
-				CString str;str.Format("INSERT INTO %s (%s) VALUES ('%s')", strTable, strField1, m_strFile);
+				CString str; str.Format(_T("INSERT INTO %s (%s) VALUES ('%s')"), strTable, strField1, m_strFile);
 				db.ExecuteSQL(str);
 
 			}
@@ -806,7 +806,7 @@ void CCableEdit::TrimLast(){
 			bEmpty=TRUE;
 			for(int j=0;j<m_lcCable.GetHeaderCtrl( )->GetItemCount( );j++){
 				str=m_lcCable.GetItemText(index,j);
-				str=str.SpanExcluding(" ");
+				str = str.SpanExcluding(_T(" "));
 				if(!str.IsEmpty()){
 					bEmpty=FALSE;;
 				}
@@ -860,7 +860,7 @@ void CCableEdit::DoPrepareCtrl()
 		}
 	}
 	else{
-		GetDlgItem(IDC_STATIC_NUMBER)->SetWindowText("Conn. Number");
+		GetDlgItem(IDC_STATIC_NUMBER)->SetWindowText(_T("Conn. Number"));
 		int nCount = AfxGetConnectorCount();
 		LPTSTR *listCable = (LPTSTR *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, nCount*sizeof(CString*));
 		int i;

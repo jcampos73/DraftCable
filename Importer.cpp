@@ -305,13 +305,5 @@ POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
 	return CPoint(0, 0);
 }
 
-//Snap to grid. Coordinates are schematic.
-void CImporter::SnapToGrid(LPPOINT lpPoint, CSize szGrid){
-
-	//SNAP TO GRID
-	lpPoint->x = ((int)((lpPoint->x + szGrid.cx*.5) / szGrid.cx)) * szGrid.cx;
-	lpPoint->y = ((int)((lpPoint->y + szGrid.cy*.5) / szGrid.cy)) * szGrid.cy;
-}
-
 
 

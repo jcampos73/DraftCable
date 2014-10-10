@@ -763,6 +763,14 @@ int g_GetConnectString(LPTSTR lpConnStr,int nMaxLen){
 #endif
 }
 
+//Snap to grid. Coordinates are schematic.
+void SnapToGrid(LPPOINT lpPoint, CSize szGrid){
+
+	//SNAP TO GRID
+	lpPoint->x = ((int)((lpPoint->x + szGrid.cx*.5) / szGrid.cx)) * szGrid.cx;
+	lpPoint->y = ((int)((lpPoint->y + szGrid.cy*.5) / szGrid.cy)) * szGrid.cy;
+}
+
 void _doFixDataBase()
 {
 	//Connect to database

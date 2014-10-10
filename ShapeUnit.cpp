@@ -1758,6 +1758,7 @@ void CShapePin::GetRectTemp(CRect &rect)
 
 void CShapePin::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
 {
+	SnapToGrid(&ptOffset, CSize(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT));
 	m_Rect = CRect(ptOffset, m_Rect.Size());
 }
 
@@ -1789,13 +1790,13 @@ void CShapePin::_DoCreateRectUnitPin(CPoint& point, CRect& rect1, CRect& rect2, 
 	switch (m_uiPos){
 	case _DRAFTDRAW_SEL_RESIZING_RECT_E:
 	case _DRAFTDRAW_SEL_RESIZING_RECT_S:
-		strlabel1.Format("J%i", m_uiPinnumber);
-		strlabel2.Format("P%i", m_uiPinnumber);
+		strlabel1.Format(_T("J%i"), m_uiPinnumber);
+		strlabel2.Format(_T("P%i"), m_uiPinnumber);
 		break;
 	case _DRAFTDRAW_SEL_RESIZING_RECT_W:
 	case _DRAFTDRAW_SEL_RESIZING_RECT_N:
-		strlabel2.Format("J%i", m_uiPinnumber);
-		strlabel1.Format("P%i", m_uiPinnumber);
+		strlabel2.Format(_T("J%i"), m_uiPinnumber);
+		strlabel1.Format(_T("P%i"), m_uiPinnumber);
 		break;
 	}
 

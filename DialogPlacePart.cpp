@@ -368,7 +368,7 @@ void CDialogPlacePart::OnButtonNew( ){
 		str=m_lcPart.GetItemText(nIndex,0);
 
 		//this will be substituted by a rebuild reg-expression
-		int i=std::string(str).find_last_not_of("0123456789");
+		int i = std::string(str).find_last_not_of(_T("0123456789"));
 		if(i>nLenMax){
 			nLenMax=i;
 			strPrefix=str.Left(i+1);//hold prefix
@@ -728,6 +728,10 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 		//Connect to database
 		g_db.OpenEx(sConnect);
 	}
+
+	//Delete existing shape
+	strQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '" + CString(lpszPartName) + "' AND iIdLib=%i", m_iLibrary);
+	g_db.ExecuteSQL(strQuery);
 
 	//Insert new element
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);

@@ -286,9 +286,9 @@ protected:
 	virtual void GetData(CStringArray& saData){
 		saData.Add(*m_Label.slabel);
 		CString str;
-		str.Format("%i",m_Label.iSize);
+		str.Format(_T("%i"), m_Label.iSize);
 		saData.Add(str);
-		str.Format("%i",m_Label.bver);
+		str.Format(_T("%i"), m_Label.bver);
 		saData.Add(str);
 	};
 

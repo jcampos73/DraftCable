@@ -30,7 +30,7 @@ namespace std
 #endif
 
 #define XMLCLASSNODE /*{*/ CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar); \
-						xmlArchive.GetNode("svg"/*GetActualClass()->m_lpszClassName*/);
+						xmlArchive.GetNode(_T("svg")/*GetActualClass()->m_lpszClassName*/);
 #define XMLDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
 	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName);}}
 #define XMLINTDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\

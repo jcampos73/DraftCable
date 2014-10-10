@@ -12,7 +12,7 @@ public:
 	BOOL ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize szGrip);
 	CMarkup* m_xmlDocPtr;
 	//Operations
-	void SnapToGrid(LPPOINT lpPoint, CSize szGrid);
+
 protected:
 	CSize m_szGrid;
 	float m_scale;

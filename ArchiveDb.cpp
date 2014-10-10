@@ -74,7 +74,7 @@ CArchiveDb::~CArchiveDb()
 
 			//AfxMessageBox(strQuery);
 
-			FILE *fout=fopen("log_debugdb.txt","w");
+			FILE *fout=fopen(_T("log_debugdb.txt"),_T("w"));
 			std::string str(strQuery);
 			fwrite(str.c_str(),sizeof(char),str.length(),fout);
 			fclose(fout);
