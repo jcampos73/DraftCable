@@ -1784,6 +1784,8 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 	m_angleSweep = 90;
 	m_bGdiplus = bGdiplus;
 
+	CPoint ptOffset = CPoint(0, 0);
+
 	if (lpPoint1->y < lpPoint2->y){
 		m_angleSweep = -90;
 		point2 = point2 + CPoint(0, point2.y - point1.y);
@@ -1806,14 +1808,23 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		if (lpPoint1->x > lpPoint2->x){
 			point2 = point2 + CPoint(point2.x - point1.x, 0);
 			m_angleStart = 90;
+
+			ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			m_angleSweep = -90;
+			m_angleStart = 0;
 		}
 		else{
 			point1 = point1 - CPoint(point2.x - point1.x, 0);
 			m_angleStart = 0;
+
+			ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			m_angleStart = -90;
+			m_angleSweep = -90;
 		}
 	}
 
 	m_Rect = CRect(point1, point2);
+	m_Rect += ptOffset;
 
 	return TRUE;
 }
