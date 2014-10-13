@@ -31,7 +31,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 
 		int count = 0;
 		//Debug: set count_max to other value than 0, to limit number of processed shapes
-		int count_max = 3;
+		int count_max = 6;
 
 		//Iterate symbols
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))
@@ -156,6 +156,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				//Now create the arc
 				if (ptArray.GetCount()>=2){
 					CShapeArc* pSh = new CShapeArc();
+					//DoCreatePolyline(&ptArray, pSh);
 					//Create arc
 					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
 					pSh->Unselect();
@@ -238,14 +239,18 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 			pPoints[i] = (*ptArray)[i];
 		}
 		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
-		ptArray->RemoveAll();
+		//ptArray->RemoveAll();
 	}
 }
 
 void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	//Create ellipse arc
-	if (ptArray->GetCount() > 0)
-	{
+	if (ptArray->GetCount() >= 2){
+		CShapeArc* pSh = new CShapeArc();
+		//Create arc
+		pSh->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE);
+		pSh->Unselect();
+		//ptArray->RemoveAll();
 	}
 }
 
