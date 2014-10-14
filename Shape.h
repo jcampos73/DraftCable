@@ -16,7 +16,6 @@
 #define _DRAFTDRAW_MODE_SEL					0		//When we select a shape and we don't realease the left button
 #define _DRAFTDRAW_MODE_DRW					1
 
-
 #define _DRAFTDRAW_SEL_SIZING_RECT			0		//Normal draw
 //#define _DRAFTDRAW_SEL_SIZING_LINE			1
 #define _DRAFTDRAW_SEL_MOVING_RECT			2		//Place sizing handles
@@ -496,7 +495,6 @@ public:
 	virtual void OnDraw(CDC* pDC);
 	virtual void OnMouseMove(UINT nFlags, CPoint point);
 	virtual void OnLButtonDown(UINT nFlags, CPoint point);
-	//virtual void OnLButtonUp(UINT nFlags, CPoint point);
 	virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual ~CShapeArc();
 	virtual void GetRectTemp(CRect &rect);

@@ -1851,17 +1851,12 @@ void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 {
 
 	CShape::OnMouseMove(nFlags,point);
-	//m_Rect=CRect(m_Point,point);
-
-	//m_Rect.NormalizeRect();
 
 	m_Point2=point;
 
-	m_P1=m_Rect.TopLeft();//m_Point;
-	m_P2=m_Rect.BottomRight();//m_Point2;
+	m_P1=m_Rect.TopLeft();
+	m_P2=m_Rect.BottomRight();
 
-	//m_Alfa=0.0;
-	
 	if(m_Alfa!=0.0){
 
 		m_Alfap=m_Alfa;
@@ -1869,19 +1864,14 @@ void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 }
-/*
-void CShapeArc::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	//m_Rect=CRect(point,point);
-}
-*/
+
 void CShapeArc::OnLButtonDown(UINT nFlags, CPoint point)
 {
 
 	CShape::OnLButtonDown(nFlags,point);
 
-	m_P1=m_Rect.TopLeft();//point;
-	m_P2=m_Rect.BottomRight();//point;
+	m_P1=m_Rect.TopLeft();
+	m_P2=m_Rect.BottomRight();
 	m_Point2=point;
 	
 }

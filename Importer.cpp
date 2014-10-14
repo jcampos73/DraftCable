@@ -31,7 +31,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 
 		int count = 0;
 		//Debug: set count_max to other value than 0, to limit number of processed shapes
-		int count_max = 6;
+		int count_max = 16;
 
 		//Iterate symbols
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))
@@ -155,12 +155,16 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 
 				//Now create the arc
 				if (ptArray.GetCount()>=2){
+					CShape* pSh = NULL;
+					DoCreateArc(&ptArray, pSh);
+					/*
 					CShapeArc* pSh = new CShapeArc();
 					//DoCreatePolyline(&ptArray, pSh);
 					//Create arc
 					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
 					pSh->Unselect();
-					pobarrShapearr->Add(pSh);
+					*/
+					if (pSh != NULL) pobarrShapearr->Add(pSh);
 				}
 
 				//Start new segment/spline
