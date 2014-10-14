@@ -1770,7 +1770,7 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 	m_angleSweep = -90.0;//-180.0
 
 	//Use Gdiplus to draw the ellipse arc
-	m_bGdiplus = true;//false;
+	m_bGdiplus = true;
 }
 
 BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/)
@@ -1844,8 +1844,7 @@ void CShapeArc::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// CShape message handlers
-
+// CShapeArc message handlers
 
 void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -1884,30 +1883,33 @@ void CShapeArc::OnDraw(CDC *pDC)
 
 	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){
 
+		//Do draw ellipse
+		_DrawEllipse(pDC);
+
 		CPoint P1=m_Rect.TopLeft();//m_Point;
 		CPoint P2=m_Rect.BottomRight();//m_Point2;
 
 		pDC->MoveTo(P1);
 		pDC->LineTo(P2);
 
-		//module of main axis (2a)
+		//Module of main axis (2a)
 		float mod=sqrt((double)((P1.x-P2.x)*(P1.x-P2.x)+(P1.y-P2.y)*(P1.y-P2.y)));
-		//calcule b axis
+		//Calcule b axis
 		float vector_x=(P2.y-P1.y)*b/mod;
 		float vector_y=(P1.x-P2.x)*b/mod;
-		//calcule midle point
+		//Calcule midle point
 		CPoint point_mid=CPoint((P1.x+P2.x)*.5,(P1.y+P2.y)*.5);
 
-		//calcule extremes of second axis (2b)
+		//Calcule extremes of second axis (2b)
 		//CPoint P3=CPoint(point_mid.x+vector_x,point_mid.y+vector_y);
 		//CPoint P4=CPoint(point_mid.x-vector_x,point_mid.y-vector_y);
-		//calcule extremes of second axis (2b) with rotation
+		//Calcule extremes of second axis (2b) with rotation
 		float cosAB=vector_x*cos(2*PI*m_Alfa/360)+vector_y*sin(2*PI*m_Alfa/360);
 		float senAB=vector_y*cos(2*PI*m_Alfa/360)-vector_x*sin(2*PI*m_Alfa/360);
 		CPoint P3=CPoint(point_mid.x+cosAB,point_mid.y+senAB);
 		CPoint P4=CPoint(point_mid.x-cosAB,point_mid.y-senAB);
 
-		//draw handlers
+		//Draw handlers
 		pDC->MoveTo(P3);
 		pDC->LineTo(P4);
 		pDC->MoveTo(m_P1);
@@ -1916,20 +1918,11 @@ void CShapeArc::OnDraw(CDC *pDC)
 	}
 	else if (!m_Rect.IsRectEmpty()){
 
-		CPoint P1 = m_Rect.TopLeft();//m_Point;
-		CPoint P2 = m_Rect.BottomRight();//m_Point2;
-
-		//CRect rect;
-		//BoundRect(P1,P2,10,rect);
+		CPoint P1 = m_Rect.TopLeft();
+		CPoint P2 = m_Rect.BottomRight();
 
 		if (!m_bGdiplus){
-			m_Alfap = m_Alfa;
-			RotateAxis(P1, P2, b, m_Alfap);
-
-			CPoint point_array[100];
-			DrawEllipse(point_array, 100, P1, P2, b, m_Alfap);
-
-			pDC->Polyline(point_array, 100);
+			_DrawEllipse(pDC);
 		}
 		else{
 			GraphicsPath gfxPath;
@@ -1945,10 +1938,7 @@ void CShapeArc::OnDraw(CDC *pDC)
 			Pen blackPen(Color::Black, 1);
 			grf.DrawPath(&blackPen, &gfxPath);
 		}
-
-		//pDC->Arc(&rect,P1,P2);
-		//pDC->Rectangle(&rect);
-	}
+	}//end else if (!m_Rect.IsRectEmpty())
 }
 
 void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
@@ -1957,19 +1947,18 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 	switch(nChar){
 
-	case 38:
-
-		if(b<200) b+=10;
+	case 38://up arrow
+		//if(b<200) b+=10;
+		m_angleSweep = fmod(m_angleSweep + 10.0, 360.0);
 		break;
 
-	case 40:
-
-		if(b>10) b-=10;
+	case 40://down arrow
+		//if(b>10) b-=10;
+		m_angleSweep = fmod(m_angleSweep - 10.0, 360.0);
 		break;
 
 	case 37://left arrow
-
-		m_Alfa-=1;
+		m_Alfa += 10;
 		//m_P1=m_Point;
 		//m_P2=m_Point2;
 		//m_Alfap=m_Alfa;
@@ -1978,8 +1967,7 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		break;
 
 	case 39://right arrow
-
-		m_Alfa+=1;
+		m_Alfa -= 10;
 		//m_P1=m_Point;
 		//m_P2=m_Point2;
 		//m_Alfap=m_Alfa;
@@ -1988,12 +1976,9 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		break;
 
 	default:
-
 		i=0;
 		break;
-
-	}
-
+	}//end switch
 }
 
 void CShapeArc::Serialize(CArchive& archive)
@@ -2014,6 +1999,30 @@ void CShapeArc::Serialize(CArchive& archive)
 		archive >> m_angleSweep;
 	}
 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CShapeArc implementation
+
+void CShapeArc::_DrawEllipse(CDC* pDC)
+{
+	CPoint P1 = m_Rect.TopLeft();
+	CPoint P2 = m_Rect.BottomRight();
+
+	if (m_bGdiplus){
+		GraphicsPath gfxPath;
+		float angleStart = m_angleStart;//2 * PI* m_angleStart / 360;
+		float angleSweep = m_angleSweep;//2 * PI* m_angleSweep / 360;
+		gfxPath.AddArc(m_Rect.TopLeft().x,
+			m_Rect.TopLeft().y,
+			m_Rect.Width(),
+			m_Rect.Height(),
+			angleStart, angleSweep);
+		//Draw the path
+		Graphics grf(pDC->m_hDC);
+		Pen blackPen(Color::Black, 1);
+		grf.DrawPath(&blackPen, &gfxPath);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

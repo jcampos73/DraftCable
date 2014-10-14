@@ -502,6 +502,7 @@ public:
 
 // Implementation
 protected:
+	void _DrawEllipse(CDC* pDC);
 	bool m_bGdiplus;
 	//Start and end of ellipse arc
 	float m_angleStart;
