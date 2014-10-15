@@ -228,22 +228,6 @@ BOOL CDraftDrawDoc::OnNewDocument()
 	//Add shape to stack
 	AddObject(pShUnit);
 
-
-	//Added temporary to insert TBEditView in project
-/*
-	m_straCable1.Add("101;CableBusPanel.txt");
-	m_straCable2.Add("102;CableBusPanel.txt");
-
-	m_straCable1.Add("103;Cable232.txt");
-	m_straCable2.Add("104;CableBusPanel.txt");
-
-	m_straCable1.Add("105;CableBusPanel.txt");
-	m_straCable2.Add("106;CableBusPanel.txt");
-
-	m_obaCables1.Add(&m_straCable1);
-	m_obaCables2.Add(&m_straCable2);
-*/
-
 	return TRUE;
 }
 
@@ -478,7 +462,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							str=str.Left(nIndex);
 						}
 
-						if(str.CompareNoCase("TB")==0){
+						if (str.CompareNoCase(_T("TB")) == 0){
 
 							//SerializePatchP(ar,((CShapeUnit*)pSh)->m_uiShapeId);
 						}
@@ -723,7 +707,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							str=str.Left(nIndex);
 						}
 
-						if(str.CompareNoCase("TB")==0){
+						if (str.CompareNoCase(_T("TB")) == 0){
 
 							//SerializePatchP(ar,((CShapeUnit*)pSh)->m_uiShapeId);
 						}
@@ -5328,9 +5312,9 @@ void CDraftDrawDoc::OnDatabaseLoad()
 	CString strName;
 	if(atoi(strType)){
 	
-		rs.GetFieldValue("bTextPart",dbTextPart);
+		rs.GetFieldValue(_T("bTextPart"), dbTextPart);
 	
-		rs.GetFieldValue("nNamePart",strName);
+		rs.GetFieldValue(_T("nNamePart"), strName);
 		if(dbTextPart.m_dwType!=DBVT_BINARY){
 			return;
 		}
@@ -5339,8 +5323,8 @@ void CDraftDrawDoc::OnDatabaseLoad()
 		pStorage=(BYTE *)GlobalLock(dbTextPart.m_pbinary->m_hData);
 	}
 	else{
-		rs.GetFieldValue("nTextPart",dbTextPart);
-		rs.GetFieldValue("nNamePart",strName);
+		rs.GetFieldValue(_T("nTextPart"), dbTextPart);
+		rs.GetFieldValue(_T("nNamePart"), strName);
 		pStorage=(BYTE *)dbTextPart.m_pstring->GetBuffer(dbTextPart.m_pstring->GetLength());
 	}
 
@@ -5377,7 +5361,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 	TRY
 	{
 		//Parse part name
-		if(!strName.Right(strName.GetLength()-strName.ReverseFind('.')-1).CompareNoCase("ddw")){
+		if (!strName.Right(strName.GetLength() - strName.ReverseFind(_T('.')) - 1).CompareNoCase(_T("ddw"))){
 			g_bFlagDb=TRUE;
 			nFilterIndex=1;
 		}
@@ -5392,7 +5376,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 		delete(file);
 
 		//!Release previously get buffer.
-		if(!strName.Right(strName.GetLength()-strName.ReverseFind('.')-1).CompareNoCase("ddw")){
+		if (!strName.Right(strName.GetLength() - strName.ReverseFind(_T('.')) - 1).CompareNoCase(_T("ddw"))){
 			g_bFlagDb=FALSE;
 			dbTextPart.m_pstring->ReleaseBuffer();
 		}

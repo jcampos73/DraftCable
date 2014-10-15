@@ -141,9 +141,9 @@ BOOL CDialogPlacePart::OnInitDialog()
 	//Iterate throw libraries
 	while(!rsLib.IsEOF()){
 		CString str;
-		rsLib.GetFieldValue("nNameLib",str);
+		rsLib.GetFieldValue(_T("nNameLib"), str);
 		int nIndex=m_cbLibrary.AddString(str);
-		rsLib.GetFieldValue("iIdLib",str);
+		rsLib.GetFieldValue(_T("iIdLib"), str);
 		m_cbLibrary.SetItemData(nIndex,atoi(str));
 		rsLib.MoveNext();
 	}
@@ -232,9 +232,9 @@ void CDialogPlacePart::UpdatePartList(){
 
 		m_lcPart.InsertColumn(0,"Part",LVCFMT_LEFT,100,0);
 		CString str;
-		rs.GetFieldValue("nNamePart",str);
+		rs.GetFieldValue(_T("nNamePart"), str);
 		m_lcPart.InsertItem(0,str);
-		rs.GetFieldValue("iIdPart",str);
+		rs.GetFieldValue(_T("iIdPart"), str);
 		m_lcPart.SetItemData(0,atoi(str));
 		rs.MoveNext();
 	}
@@ -434,18 +434,18 @@ void CDialogPlacePart::OnEndlabeleditListpart(NMHDR* pNMHDR, LRESULT* pResult)
 
 	//Insert new element
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
-	strQuery.Format("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')",m_iLibrary);	
+	strQuery.Format(_T("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	CRecordset rs(&g_db);
-	rs.m_strFilter.Format("nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')",m_iLibrary);	
-	rs.m_strSort="iIdPart DESC";
-	rs.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	rs.m_strFilter.Format(_T("nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
+	rs.m_strSort = _T("iIdPart DESC");
+	rs.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbPart"));
 
-	rs.GetFieldValue("iIdPart",str);
+	rs.GetFieldValue(_T("iIdPart"), str);
 	rs.Close();
 
-	strQuery.Format("UPDATE tbPart SET nNamePart='"+CString(pDispInfo->item.pszText)+"',bTextBin=1,iIdLib=%i WHERE iIdPart="+str,m_iLibrary); 
+	strQuery.Format(_T("UPDATE tbPart SET nNamePart='") + CString(pDispInfo->item.pszText) + _T("',bTextBin=1,iIdLib=%i WHERE iIdPart=") + str, m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 
@@ -674,12 +674,12 @@ void CDialogPlacePart::DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists
 	if (bCheckExists){
 		CRecordset rsLibExists(&m_db);
 		CString strQuery;
-		strQuery.Format("SELECT * FROM tbLibrary WHERE nNameLib = '%s' ORDER BY iIdLib DESC", lpszLibName);
+		strQuery.Format(_T("SELECT * FROM tbLibrary WHERE nNameLib = '%s' ORDER BY iIdLib DESC"), lpszLibName);
 		rsLibExists.Open(CRecordset::forwardOnly, strQuery);
 		if (!rsLibExists.IsEOF())
 		{
 			CString str;
-			rsLibExists.GetFieldValue("iIdLib", str);
+			rsLibExists.GetFieldValue(_T("iIdLib"), str);
 			return;
 		}
 	}
@@ -690,14 +690,14 @@ void CDialogPlacePart::DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists
 
 	CRecordset rsLib(&m_db);
 
-	rsLib.Open(CRecordset::forwardOnly, "SELECT * FROM tbLibrary");
+	rsLib.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbLibrary"));
 
 	CString strName;
 	while (!rsLib.IsEOF()){
 		CString str;
-		rsLib.GetFieldValue("nNameLib", strName);
+		rsLib.GetFieldValue(_T("nNameLib"), strName);
 		int nIndex = m_cbLibrary.AddString(strName);
-		rsLib.GetFieldValue("iIdLib", str);
+		rsLib.GetFieldValue(_T("iIdLib"), str);
 		m_cbLibrary.SetItemData(nIndex, atoi(str));
 		rsLib.MoveNext();
 	}
@@ -744,7 +744,7 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 	rs.m_strSort = _T("iIdPart DESC");
 	rs.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbPart"));
 
-	rs.GetFieldValue("iIdPart", str);
+	rs.GetFieldValue(_T("iIdPart"), str);
 	rs.Close();
 
 	strQuery.Format(_T("UPDATE tbPart SET nNamePart='") + CString(lpszPartName) + _T("',bTextBin=1,iIdLib=%i WHERE iIdPart=") + str, m_iLibrary);

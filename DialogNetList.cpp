@@ -206,7 +206,7 @@ void CDialogNetList::OnOK()
 	POSITION pos = m_lcList.GetFirstSelectedItemPosition();
 	if (pos == NULL){
 	   
-		AfxMessageBox("Debe seleccionar un tipo de documento",MB_OK|MB_ICONEXCLAMATION,-1);
+		AfxMessageBox(_T("Debe seleccionar un tipo de documento"),MB_OK|MB_ICONEXCLAMATION,-1);
 		return;
 	}	
 	else

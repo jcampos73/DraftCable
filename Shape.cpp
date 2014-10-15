@@ -1857,28 +1857,23 @@ void CShapeArc::OnMouseMove(UINT nFlags, CPoint point)
 	m_P2=m_Rect.BottomRight();
 
 	if(m_Alfa!=0.0){
-
 		m_Alfap=m_Alfa;
 		//RotateAxis(m_P1,m_P2,b,m_Alfap);
 	}
-
 }
 
 void CShapeArc::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
 	CShape::OnLButtonDown(nFlags,point);
 
 	m_P1=m_Rect.TopLeft();
 	m_P2=m_Rect.BottomRight();
 	m_Point2=point;
-	
 }
 
 void CShapeArc::OnDraw(CDC *pDC)
 {
-
-	//to draw selections
+	//To draw selections
 	CShape::OnDraw(pDC);
 
 	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){
@@ -1886,23 +1881,22 @@ void CShapeArc::OnDraw(CDC *pDC)
 		//Do draw ellipse
 		_DrawEllipse(pDC);
 
-		CPoint P1=m_Rect.TopLeft();//m_Point;
-		CPoint P2=m_Rect.BottomRight();//m_Point2;
-
+		//Draw a axis
+		CPoint P1=m_Rect.TopLeft();
+		CPoint P2=m_Rect.BottomRight();
 		pDC->MoveTo(P1);
 		pDC->LineTo(P2);
 
 		//Module of main axis (2a)
 		float mod=sqrt((double)((P1.x-P2.x)*(P1.x-P2.x)+(P1.y-P2.y)*(P1.y-P2.y)));
+
 		//Calcule b axis
 		float vector_x=(P2.y-P1.y)*b/mod;
 		float vector_y=(P1.x-P2.x)*b/mod;
+
 		//Calcule midle point
 		CPoint point_mid=CPoint((P1.x+P2.x)*.5,(P1.y+P2.y)*.5);
 
-		//Calcule extremes of second axis (2b)
-		//CPoint P3=CPoint(point_mid.x+vector_x,point_mid.y+vector_y);
-		//CPoint P4=CPoint(point_mid.x-vector_x,point_mid.y-vector_y);
 		//Calcule extremes of second axis (2b) with rotation
 		float cosAB=vector_x*cos(2*PI*m_Alfa/360)+vector_y*sin(2*PI*m_Alfa/360);
 		float senAB=vector_y*cos(2*PI*m_Alfa/360)-vector_x*sin(2*PI*m_Alfa/360);
@@ -1912,8 +1906,6 @@ void CShapeArc::OnDraw(CDC *pDC)
 		//Draw handlers
 		pDC->MoveTo(P3);
 		pDC->LineTo(P4);
-		pDC->MoveTo(m_P1);
-		pDC->LineTo(m_P2);
 
 	}
 	else if (!m_Rect.IsRectEmpty()){
@@ -1926,8 +1918,10 @@ void CShapeArc::OnDraw(CDC *pDC)
 		}
 		else{
 			GraphicsPath gfxPath;
-			float angleStart = m_angleStart;//2 * PI* m_angleStart / 360;
-			float angleSweep = m_angleSweep;//2 * PI* m_angleSweep / 360;
+			//Degrees
+			float angleStart = m_angleStart;
+			//Degrees
+			float angleSweep = m_angleSweep;
 			gfxPath.AddArc(m_Rect.TopLeft().x,
 				m_Rect.TopLeft().y,
 				m_Rect.Width(),
@@ -1984,12 +1978,10 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 void CShapeArc::Serialize(CArchive& archive)
 {
-
-	// call base class function first
-	// base class is CObject in this case
+	//Call base class function first
 	CShape::Serialize(archive);
 
-	// now do the stuff for our specific class
+	//Now do the stuff for our specific class
 
 	if (archive.IsStoring()){
 		archive << m_angleStart;
@@ -1999,7 +1991,6 @@ void CShapeArc::Serialize(CArchive& archive)
 		archive >> m_angleStart;
 		archive >> m_angleSweep;
 	}
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
