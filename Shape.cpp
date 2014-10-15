@@ -1945,19 +1945,20 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 	int i;
 
+	//VK_UP, VK_DOWN, VK_RIGHT, VK_LEFT, VK_PRIOR, VK_NEXT, VK_HOME, and VK_END
 	switch(nChar){
 
-	case 38://down arrow
+	case VK_DOWN://down arrow
 		//if(b<200) b+=10;
 		m_angleSweep = fmod(m_angleSweep - 10.0, 360.0);
 		break;
 
-	case 40://up arrow
+	case VK_UP://up arrow
 		//if(b>10) b-=10;
 		m_angleSweep = fmod(m_angleSweep + 10.0, 360.0);
 		break;
 
-	case 37://left arrow
+	case VK_LEFT://left arrow
 		m_Alfa += 10;
 		//m_P1=m_Point;
 		//m_P2=m_Point2;
@@ -1966,7 +1967,7 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 		m_angleStart = fmod(m_angleStart - 10.0, 360.0);
 		break;
 
-	case 39://right arrow
+	case VK_RIGHT://right arrow
 		m_Alfa -= 10;
 		//m_P1=m_Point;
 		//m_P2=m_Point2;
