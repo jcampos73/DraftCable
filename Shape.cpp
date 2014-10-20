@@ -1944,12 +1944,12 @@ void CShapeArc::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 	case VK_DOWN://down arrow
 		//if(b<200) b+=10;
-		m_angleSweep = fmod(m_angleSweep - 10.0, 360.0);
+		m_angleSweep = fmod(m_angleSweep + 10.0, 360.0);
 		break;
 
 	case VK_UP://up arrow
 		//if(b>10) b-=10;
-		m_angleSweep = fmod(m_angleSweep + 10.0, 360.0);
+		m_angleSweep = fmod(m_angleSweep - 10.0, 360.0);
 		break;
 
 	case VK_LEFT://left arrow

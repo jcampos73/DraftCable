@@ -1732,10 +1732,8 @@ void CDraftDrawDoc::DeleteContents()
 
 
 	//Delete contents of shape array
-
 	if(m_pObArray!=NULL){
 		for(int i=0;i<m_pObArray->GetSize();i++){
-
 			DeleteObject(i);
 		}
 		m_pObArray->RemoveAll();
