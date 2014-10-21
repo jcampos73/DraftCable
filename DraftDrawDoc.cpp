@@ -1585,10 +1585,19 @@ void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE
 #endif
 
 #ifdef _ARRAY_STG
+	if (index == -1){
+		index = m_pObArray->GetUpperBound();
+	}
+
+/*
 	if(index==-1){
 
-		int i=m_pObArray->GetUpperBound();
-		CShape *pSh=(CShape *)(*m_pObArray)[i];
+		index=m_pObArray->GetUpperBound();
+		CShape *pSh=(CShape *)(*m_pObArray)[index];
+
+		if (pSh == NULL){
+			return;
+		}
 
 		//26/01/2005
 		//Delete shape from screen map
@@ -1608,13 +1617,38 @@ void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE
 		//======================================================================
 
 		if (bDoNotRemoveFromArray == FALSE){
-			m_pObArray->RemoveAt(i);
+			m_pObArray->RemoveAt(index);
 		}
+		else{
+			(*m_pObArray)[index] = NULL;
+		}
+
+		//Code for deleting of copies
+		for (int i = m_pObArray->GetSize() - 1; i > index; i--){
+			CShape *pShTemp = (CShape *)(*m_pObArray)[i];
+			if (pShTemp == pSh){
+				//Make and ASSERT becouse having copies in array is not good
+				if (bDoNotRemoveFromArray == FALSE){
+					m_pObArray->RemoveAt(i);
+				}
+				else
+				{
+					(*m_pObArray)[i] = NULL;
+				}
+			}
+		}
+
 		delete(pSh);
 
 		return;
 	}
+*/
+
 	CShape *pSh=(CShape *)(*m_pObArray)[index];
+
+	if (pSh == NULL){
+		return;
+	}
 
 	//26/01/2005
 	//Delete shape from screen map
@@ -1636,7 +1670,27 @@ void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE
 	if (bDoNotRemoveFromArray == FALSE){
 		m_pObArray->RemoveAt(index);
 	}
+	else{
+		(*m_pObArray)[index] = NULL;
+	}
 
+	//Code for deleting of copies
+	for (int i = m_pObArray->GetSize() - 1; i > index; i--){
+		CShape *pShTemp = (CShape *)(*m_pObArray)[i];
+		if (pShTemp == pSh){
+			//TRACE becouse having copies in array is not good
+			TRACE("Duplicated Shape in m_pObArray at pos %i, while deleting %i\n", i, index);
+			if (bDoNotRemoveFromArray == FALSE){
+				m_pObArray->RemoveAt(i);
+			}
+			else
+			{
+				(*m_pObArray)[i] = NULL;
+			}
+		}
+	}
+
+	//Delete shape
 	delete(pSh);
 
 #endif
