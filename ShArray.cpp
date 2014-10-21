@@ -261,10 +261,10 @@ void CShArray::MoveShape(CShape *pSh,LPRECT lpRecLast,BOOL bReconnect /*=TRUE*/)
 
 void CShArray::DeleteShape(CShape *pSh){			//Delete shape
 
-	int origen_x=pSh->m_Rect.TopLeft().x/m_szCell.cx;
-	int origen_y=pSh->m_Rect.TopLeft().y/m_szCell.cy;
-	int limit_x=pSh->m_Rect.BottomRight().x/m_szCell.cx;
-	int limit_y=pSh->m_Rect.BottomRight().y/m_szCell.cy;
+	int origen_x = max(pSh->m_Rect.TopLeft().x / m_szCell.cx, 0);
+	int origen_y = max(pSh->m_Rect.TopLeft().y / m_szCell.cy, 0);
+	int limit_x = pSh->m_Rect.BottomRight().x / m_szCell.cx;
+	int limit_y = pSh->m_Rect.BottomRight().y / m_szCell.cy;
 
 	for(int j=origen_y;j<=min(limit_y,m_szArray.cy-1);j++){
 	for(int i=origen_x;i<=min(limit_x,m_szArray.cx-1);i++){

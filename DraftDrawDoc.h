@@ -78,7 +78,7 @@ public:
 	UINT SetActiveViewType(UINT nViewType);		//Set active view type
 	//Object array functions
 	CObject * LastObject(int &index);
-	void DeleteObject(int index=-1);
+	void DeleteObject(int index=-1, BOOL bDoNotRemoveFromArray = FALSE);
 	void DeleteShape(DWORD dwId, BOOL bForce =TRUE);
 	int AddObject( CObject* newElement,UINT nId =0 );
 	int AddShape(DWORD dwType,int left,int top,int right,int bottom,DWORD dwId,std::deque<CDBVariant*> *lpParameters =NULL);

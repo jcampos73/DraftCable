@@ -1574,7 +1574,7 @@ int CDraftDrawDoc::AddObject(CObject *newElement,UINT nId /*=0*/)
 #endif
 }
 
-void CDraftDrawDoc::DeleteObject(int index)
+void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE*/)
 {
 #ifdef _LIST_STG
 	if(pos==NULL){
@@ -1607,7 +1607,9 @@ void CDraftDrawDoc::DeleteObject(int index)
 		}
 		//======================================================================
 
-		m_pObArray->RemoveAt(i);
+		if (bDoNotRemoveFromArray == FALSE){
+			m_pObArray->RemoveAt(i);
+		}
 		delete(pSh);
 
 		return;
@@ -1631,7 +1633,10 @@ void CDraftDrawDoc::DeleteObject(int index)
 	}
 	//======================================================================
 
-	m_pObArray->RemoveAt(index);
+	if (bDoNotRemoveFromArray == FALSE){
+		m_pObArray->RemoveAt(index);
+	}
+
 	delete(pSh);
 
 #endif
@@ -1734,7 +1739,7 @@ void CDraftDrawDoc::DeleteContents()
 	//Delete contents of shape array
 	if(m_pObArray!=NULL){
 		for(int i=0;i<m_pObArray->GetSize();i++){
-			DeleteObject(i);
+			DeleteObject(i, TRUE);
 		}
 		m_pObArray->RemoveAll();
 	}
@@ -6521,15 +6526,13 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 CRect CDraftDrawDoc::ResetAllDrwOpe()
 {
 	//Local variables
-	//CDraftDrawDoc* pDoc = GetDocument();
-	//ASSERT_VALID(pDoc);
 	CRect rect;
 	int index;
 	int index_keep = -1;
-	CShape *pSh = (CShape *)this->FirstObject(index);
-	pSh = (CShape *)this->NextObject(index);
 
 	//Iterate all the shapes
+	CShape *pSh = (CShape *)this->FirstObject(index);
+	pSh = (CShape *)this->NextObject(index);
 	while (pSh){
 		if ((pSh->m_Mode == _DRAFTDRAW_MODE_SEL) &&
 			(pSh->m_TypeSelect == _DRAFTDRAW_SEL_SIZING_RECT)){
@@ -6567,12 +6570,8 @@ CRect CDraftDrawDoc::ResetAllDrwOpe()
 		}
 	}
 
-	//15/08/2004
-	//Put selection tool
-	//AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
-
+	//Return shape rectangle for update screen
 	return rect;
-
 }
 
 void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
