@@ -1335,11 +1335,22 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		int ModeLast=pSh->m_Mode;
 		int TypeLast=pSh->m_TypeSelect;
 
+		//New code under testing
+		if (_DoGetConnectionTmp(pSh, point, nFlags,
+			bConnectionTmp,
+			indexPin,
+			&pShContConnect
+			) == TRUE){
+			return;
+		}
+
 		//Different treatment should be done to wires and units:
 		//Wires: hit point = point
 		//Units: all unit hit point should be tested.
+		/*
 		if( (pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))   ){
 
+			//BOOL _DoGetConnectionTmp(CShape *pSh);
 			CShapeContainer *pShContainer=(CShapeContainer *)pSh;
 
 			if(pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire))){
@@ -1397,7 +1408,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				//==========================================================================
 			}
 		}
-
+		*/
 		//Next shape
 		pSh=(CShape *)pDoc->NextObject(index);
 	}//end while and if (...) IsKindOf(RUNTIME_CLASS(CShapeWire)) (...)
@@ -1570,17 +1581,17 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		}//end if _TOOLTYPECHAININI_DRAFTCABLE
 		else if(pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE){
 
-				//Current position to erase
-				CRect rect;
-				pSh->GetSizingRect(rect);
-				pSh->GetRectUpdatePlace(rect);
-				rect.NormalizeRect();
-				//Inflate update rectangle
-				rect.InflateRect(DCABLE_GRIDX_DEFAULT*4,DCABLE_GRIDY_DEFAULT*4);//MAGIC NUMBER
-				//Intersect with sheet
-				rect.IntersectRect(rect,rcSheet);
-				//Add to update rectangle
-				rect_union.UnionRect(rect_union,rect);
+			//Current position to erase
+			CRect rect;
+			pSh->GetSizingRect(rect);
+			pSh->GetRectUpdatePlace(rect);
+			rect.NormalizeRect();
+			//Inflate update rectangle
+			rect.InflateRect(DCABLE_GRIDX_DEFAULT*4,DCABLE_GRIDY_DEFAULT*4);//MAGIC NUMBER
+			//Intersect with sheet
+			rect.IntersectRect(rect,rcSheet);
+			//Add to update rectangle
+			rect_union.UnionRect(rect_union,rect);
 
 			//Pass event to shape
 			/*pDoc->m_pSh->OnLButtonDown(nFlags, point);*/
@@ -4144,4 +4155,73 @@ void CDraftDrawView::DoPreventShpOutSchem(CShape *pSh, CRect rcSheet){
 	else if(pSh->m_Rect.top<rcSheet.top){
 		pSh->m_Rect += CPoint(0,rcSheet.top-pSh->m_Rect.top);
 	}
+}
+
+BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
+	BOOL& bConnectionTmp,
+	int& indexPin,
+	CShapeContainer** pShContConnect
+	)
+{
+	CDraftDrawDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
+
+		//BOOL _DoGetConnectionTmp(CShape *pSh);
+		CShapeContainer *pShContainer = (CShapeContainer *)pSh;
+
+		if (pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire))){
+			//19/01/2005: new connecting mechanism
+			if (!bConnectionTmp){
+				//Get previous connecting point
+				CPoint ptConnectPrev = GetConnectPrev();
+				//If point is same that previous one, do not reconnect on itself
+				if (point != ptConnectPrev){
+					//Test connection
+					bConnectionTmp = pShContainer->PtInRect(&point, pShContConnect);
+					if (bConnectionTmp){
+						indexPin = 1;
+					}
+				}
+				else{
+					return TRUE;
+				}
+			}
+		}
+		else if (pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
+			CShapeUnit *pShUnit = (CShapeUnit *)pDoc->m_pSh;
+			//This code is suspect not been completelly implemented
+
+			//==========================================================================
+
+			for (int i = 0; i<pShUnit->m_obarrShapearr.GetSize(); i++){
+
+				CShape *psh = (CShape *)pShUnit->m_obarrShapearr.GetAt(i);
+
+				if (psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
+
+					CShapePin *pShPin = (CShapePin *)psh;
+
+					if (!pShPin->m_pshChildConn){
+
+						//Connection rectangles are relative to container.
+						CPoint hitPoint = CPoint(pShPin->m_rectConect.CenterPoint() + pShUnit->m_Rect.TopLeft());
+
+						pShContainer->m_bConnectMake = TRUE;
+						pSh->OnLButtonDown(nFlags, hitPoint);
+
+						if (pSh->m_pshChildConn){
+							pShUnit->m_pshChildConn = pShPin->m_pshChildConn;
+							indexPin = 0;
+						}
+					}
+				}
+			}
+
+			//==========================================================================
+		}
+	}
+
+	return FALSE;
 }

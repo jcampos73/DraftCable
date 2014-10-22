@@ -124,6 +124,11 @@ protected:
 
 	void _DoPanMove(CPoint point);
 	void _DoMappingEngine(CPoint& point);
+	BOOL _DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
+		BOOL& bConnectionTmp,
+		int& indexPin,
+		CShapeContainer** pShContConnect
+		);
 	void GetSheetArea(CRect& rcSheet);
 
 // Generated message map functions

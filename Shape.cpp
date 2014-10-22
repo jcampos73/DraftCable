@@ -3045,14 +3045,13 @@ void CShapePolyline::OnLButtonUp(UINT nFlags, CPoint point){
 	if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 
 /*
-		if(m_dwarrPointarr.GetSize()<=1){
-			DWORD dwPoint=MAKELONG(point.x,point.y);
+		//This code creates a strange behaviour while drawing, but only with first segment?
+		if (m_dwarrPointarr.GetSize() == 1){
+			DWORD dwPoint = MAKELONG(point.x, point.y);
 			m_dwarrPointarr.Add(dwPoint);
-			CShape::OnLButtonUp(nFlags,point);
-			m_Mode=_DRAFTDRAW_MODE_SEL;
-//			CShape::OnLButtonDown(nFlags,point);
 		}
 */
+
 		DWORD status=GetStatus();
 		CShape::OnLButtonUp(nFlags,point);
 		SetStatus(status);
