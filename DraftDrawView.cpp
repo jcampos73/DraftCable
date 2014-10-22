@@ -1583,7 +1583,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				rect_union.UnionRect(rect_union,rect);
 
 			//Pass event to shape
-			pDoc->m_pSh->OnLButtonDown(nFlags, point);
+			/*pDoc->m_pSh->OnLButtonDown(nFlags, point);*/
 		}
 		//REPEAT PREVIOUS PLACMENT
 		else if(pDoc->m_iToolType==_TOOLTYPENORMAL_DRAFTCABLE){

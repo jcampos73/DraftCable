@@ -3028,15 +3028,11 @@ void CShapePolyline::OnLButtonDown(UINT nFlags, CPoint point){
 
 	if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 		if(m_dwarrPointarr.GetSize()>1){
-
 			m_dwarrPointarr.Add(dwPoint);
-
 			CShape::OnLButtonUp(nFlags,point);
-
 			m_Mode=_DRAFTDRAW_MODE_SEL;
 		}
 		else{
-
 			m_dwarrPointarr.Add(dwPoint);
 		}
 	}
@@ -3047,15 +3043,12 @@ void CShapePolyline::OnLButtonDown(UINT nFlags, CPoint point){
 void CShapePolyline::OnLButtonUp(UINT nFlags, CPoint point){
 
 	if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
+
 /*
 		if(m_dwarrPointarr.GetSize()<=1){
 			DWORD dwPoint=MAKELONG(point.x,point.y);
-
 			m_dwarrPointarr.Add(dwPoint);
-
 			CShape::OnLButtonUp(nFlags,point);
-
-
 			m_Mode=_DRAFTDRAW_MODE_SEL;
 //			CShape::OnLButtonDown(nFlags,point);
 		}
@@ -4381,19 +4374,24 @@ void CShapePolyArc::OnDraw(CDC* pDC){
 
 		if(m_dwarrPointarr.GetSize()){
 
+			//Local variables
 			int iSizeArr=m_dwarrPointarr.GetSize();
-
 			if(m_dwarrPointarr.GetSize()>=2 && m_dwarrPointarr[0]==m_dwarrPointarr[m_dwarrPointarr.GetSize()-1]){
 				iSizeArr--;
 			}
-
 			Pen blackPen(Color::Black, 1);
 			Point *points=new Point[iSizeArr];
-				double startAngle=0;
-				double amplitude=90;
-
+			double startAngle=0;
+			double amplitude=90;
 			GraphicsPath gfxPath;
+
+			//Iterate all points
 			for(int i=0;i<iSizeArr;i++){
+
+				//Debug
+				if (iSizeArr >= 3){
+					int debug = 1;
+				}
 
 				CPoint pt(m_dwarrPointarr.GetAt(i));
 				pt+=m_Rect.TopLeft();
@@ -4402,6 +4400,7 @@ void CShapePolyArc::OnDraw(CDC* pDC){
 				CPoint pt_next;
 				double h_next=0;
 				double w_next=0;
+
 				//We need more than two points to calcule angles
 				if(iSizeArr>=2){
 
