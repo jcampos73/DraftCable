@@ -31,7 +31,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 
 		int count = 0;
 		//Debug: set count_max to other value than 0, to limit number of processed shapes
-		int count_max = 16;
+		int count_max = 0;// 16;
 
 		//Iterate symbols
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeLabel))

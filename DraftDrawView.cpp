@@ -1034,12 +1034,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	if ((pDoc->m_iToolSel == _TOOLSELECT_DRAFTCABLE) ||
 		(pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE) ||
 		(pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE))
-		//There was a bug and instead of previous line appeared
-		//(pDoc->m_iToolSel==_TOOLTYPECHAININI_DRAFTCABLE))
-		//that should be replaced by
-		//(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE))
-		//but this didn't work properly, so it was replaced by
-		//(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
+
 		while (pSh){
 
 		int TypeSelectLast = pSh->m_TypeSelect;
@@ -1087,19 +1082,6 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			flag_atleast_one_selected = true;
 			pShSelected = pSh;
 
-#ifdef DRAFTDRAW_RECTMUL_DELETE
-			//This if solves the problem of moving serveral selected shapes, but it causes
-			//the dragging of big shapes under a current selected one, in this manner:
-			//1.Select a small shape with a big one under it.
-			//2.Release left button.
-			//3.Hit small shape (left click) and drag (do not release left button).
-			//4.Big shape is also dragged becouse program enter this if (small shape had TypeSelectLast=_DRAFTDRAW_SEL_MOVING_RECT).
-			if (TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT){
-				//This is obsolete and complecated so is being deleted
-				//flag_nodeselect = true;
-			}
-#endif
-
 			flag_return = true;
 			if (DRAFTCABLE_SELECT_INV){
 				index_keep = index - 1;
@@ -1107,16 +1089,13 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			else{
 				index_keep = index + 1;
 			}
-#ifndef DRAFTDRAW_RECTMUL_DELETE
-			break;
-#else
+
 			//This line has been introduced by the fact that if rect mul is deleted,
 			//when some shapes are selected all must be hit with OnLButtonDown
 			//for proper OnMouseMove operation.
 			if (!flag_nodeselect){
 				break;
 			}
-#endif
 		}
 
 		//check temp conection
@@ -1178,30 +1157,6 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}
-
-	/*
-	pSh=(CShape *)pDoc->FirstObject(index);
-	pSh=(CShape *)pDoc->NextObject(index);
-
-	if(!flag_nodeselect){
-		while(pSh){
-
-			if((pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT)&&((index-1)!=index_keep)){
-
-				pSh->m_TypeSelect=_DRAFTDRAW_SEL_SIZING_RECT;
-				flag_return=true;
-			}
-
-			pSh=(CShape *)pDoc->NextObject(index);
-		}
-	}
-	*/
-
-	/*
-	if(flag_return){
-		return;
-	}
-	*/
 	//=======================================================
 
 	//NEW SHAPE
@@ -1327,6 +1282,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	BOOL bConnectionTmp=FALSE;//set when a connection is pending
 	CShapeContainer *pShContConnect=NULL;
 
+	//Preprocessing: connection engine and multiple select rectangle
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE && pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire)))
 		//Loop
 		while(index<pDoc->m_pObArray->GetSize()){
@@ -1341,74 +1297,10 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			indexPin,
 			&pShContConnect
 			) == TRUE){
+			//If the private return TRUE we return now
 			return;
 		}
 
-		//Different treatment should be done to wires and units:
-		//Wires: hit point = point
-		//Units: all unit hit point should be tested.
-		/*
-		if( (pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))   ){
-
-			//BOOL _DoGetConnectionTmp(CShape *pSh);
-			CShapeContainer *pShContainer=(CShapeContainer *)pSh;
-
-			if(pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire))){
-				//19/01/2005: new connecting mechanism
-				if(!bConnectionTmp){
-					//Get previous connecting point
-					CPoint ptConnectPrev=GetConnectPrev();
-					//If point is same that previous one, do not reconnect on itself
-					if(point!=ptConnectPrev){
-						//Test connection
-						bConnectionTmp=pShContainer->PtInRect(&point,&pShContConnect);
-						if(bConnectionTmp){
-							indexPin=1;
-						}
-					}
-					else{
-						return;
-					}
-				}
-			}
-			else if(pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
-				CShapeUnit *pShUnit=(CShapeUnit *)pDoc->m_pSh;
-				//This code is suspect not been completelly implemented
-
-				//==========================================================================
-
-				for(int i=0;i<pShUnit->m_obarrShapearr.GetSize();i++){
-
-					CShape *psh=(CShape *)pShUnit->m_obarrShapearr.GetAt(i);
-
-					if(psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
-
-						CShapePin *pShPin=(CShapePin *)psh;
-
-						if(!pShPin->m_pshChildConn){
-
-							//Connection rectangles are relative to container.
-							CPoint hitPoint=CPoint(pShPin->m_rectConect.CenterPoint()  +pShUnit->m_Rect.TopLeft());
-
-							pShContainer->m_bConnectMake=TRUE;
-							pSh->OnLButtonDown(nFlags, hitPoint);
-
-							if(pSh->m_pshChildConn){
-
-								pShUnit->m_pshChildConn=pShPin->m_pshChildConn;
-
-								indexPin=0;
-
-								//break;
-							}
-						}
-					}
-				}
-
-				//==========================================================================
-			}
-		}
-		*/
 		//Next shape
 		pSh=(CShape *)pDoc->NextObject(index);
 	}//end while and if (...) IsKindOf(RUNTIME_CLASS(CShapeWire)) (...)
@@ -1524,7 +1416,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				pDoc->AddObject(pDoc->m_pSh);
 				pDoc->m_iToolType=_TOOLTYPECHAIN_DRAFTCABLE;
 
-
 				pShconn=NULL;
 			
 				int idata1=pSh->m_Mode;
@@ -1569,7 +1460,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 						}
 					}
 				}
-
 
 				//Set new shape in sizing mode
 				pDoc->m_pSh->OnLButtonDown(nFlags, point);
@@ -1643,8 +1533,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 					m_szVPext=CSize(1,1);
 					(m_szWext.cx<m_szWext.cy?m_szWext.cx=m_szWext.cy:m_szWext.cy=m_szWext.cx);
 				}
-
-
 
 				//Execute zoom
 				szDesign=pDoc->GetSize();
@@ -4166,6 +4054,9 @@ BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
+	//Different treatment should be done to wires and units:
+	//Wires: hit point = point
+	//Units: all unit hit point should be tested.
 	if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
 
 		//BOOL _DoGetConnectionTmp(CShape *pSh);
