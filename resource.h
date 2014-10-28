@@ -155,8 +155,8 @@
 #define IDC_RADIO_FILL_NO               1068
 #define IDC_RADIO_FILL_SOLID            1069
 #define IDC_RADIO_FILL_GRADIENT         1070
-#define IDC_SLIDER1                     1071
 #define IDC_SLIDER_GRADIENT             1071
+#define IDC_SLIDER_GRADIENT2            1072
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002

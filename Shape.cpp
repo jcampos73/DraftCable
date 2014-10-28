@@ -1270,7 +1270,23 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
 		);
-	lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
+
+	//Normaly set to 0 or 0.5
+	float focus = 0.5f / 10;
+	//float focus = 0.0f / 10;
+	//Normally set to one
+	float scale = 1.0f;
+	//lgb.SetBlendBellShape(focus, scale);
+	//SetBlendTriangularShape(.5f, 1.0f);
+
+	float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
+	float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
+	lgb.SetBlend(
+		blendFactors,
+		blendPositions,
+		3
+		);
+
 	grf.FillPath(&lgb, &gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);
 }
