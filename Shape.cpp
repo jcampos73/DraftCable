@@ -1261,7 +1261,11 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 
 	//Fill the path
 	Graphics grf(pDC->m_hDC);
-	LinearGradientBrush lgb(Point(point1.x, point1.y),
+	//Gradient position
+	CPoint vt = point2 - point1;
+	//float mod = sqrt((double)vt.x*vt.x + vt.y*vt.y);
+	CPoint point = point1 + CPoint(vt.x * 0 / 10, vt.y * 0 / 10);
+	LinearGradientBrush lgb(Point(point.x, point.y),
 		Point(point2.x, point2.y),
 		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))

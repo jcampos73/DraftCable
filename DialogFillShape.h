@@ -1,7 +1,12 @@
 #pragma once
+#include "afxcmn.h"
 
 
 // CDialogFillShape dialog
+
+#define DRAFTCABLE_FILL_NO			0
+#define DRAFTCABLE_FILL_SOLID		1
+#define DRAFTCABLE_FILL_GRADIENT	2
 
 class CDialogFillShape : public CDialog
 {
@@ -15,6 +20,7 @@ public:
 	enum { IDD = IDD_FILLSHAPE };
 	COLORREF m_crCurrent;
 	COLORREF m_crCurrentBgnd;
+	int m_iPosGradient;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -28,6 +34,7 @@ protected:
 	void SetColor(COLORREF cr);
 	void SetColorBgnd(COLORREF cr);
 	void _DoSwapColor();
+	int ChangeFill(int nSize);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -36,4 +43,9 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnStnDblclickBgndColor();
 	afx_msg void OnStnBlclickSwapIcon();
+	afx_msg void OnClickedRadioFillNo();
+	afx_msg void OnClickedRadioFillSolid();
+	afx_msg void OnClickedRadioFillGradient();
+	CSliderCtrl m_ctrlSliderGradient;
+	afx_msg void OnOk();
 };

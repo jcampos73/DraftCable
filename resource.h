@@ -154,8 +154,9 @@
 #define IDC_STATIC_SWAP                 1067
 #define IDC_RADIO_FILL_NO               1068
 #define IDC_RADIO_FILL_SOLID            1069
-#define IDC_RADIO3                      1070
 #define IDC_RADIO_FILL_GRADIENT         1070
+#define IDC_SLIDER1                     1071
+#define IDC_SLIDER_GRADIENT             1071
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002
@@ -260,7 +261,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        208
 #define _APS_NEXT_COMMAND_VALUE         32861
-#define _APS_NEXT_CONTROL_VALUE         1069
+#define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
