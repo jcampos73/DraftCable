@@ -103,6 +103,11 @@ CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 	m_eM22=(FLOAT)1.0;				//Cosine of rotation angle
 	m_crFill = RGB(255, 255, 255);
 	m_crFillBgnd = RGB(255, 255, 255);
+
+	//7.Fill
+	m_blendCount = 0;
+	m_blendPositions = NULL;
+	m_blendFactors = NULL;
 }
 
 //Copy constructor
@@ -150,10 +155,29 @@ CShape::CShape(CShape& Sh){
 	m_eM12=(FLOAT)Sh.m_eM12;			//Sine of the rotation angle
 	m_eM21=(FLOAT)Sh.m_eM21;			//Negative sine of the rotation angle
 	m_eM22=(FLOAT)Sh.m_eM22;			//Cosine of rotation angle
+
+	//7.Fill
+	m_blendCount = Sh.m_blendCount;
+	m_blendPositions = new float[m_blendCount];
+	m_blendFactors = new float[m_blendCount];
+	for (int i = 0; i < m_blendCount; i++)
+	{
+		m_blendPositions[i] = Sh.m_blendPositions[i];
+		m_blendFactors[i] = Sh.m_blendFactors[i];
+	}
 }
 
 CShape::~CShape()
 {
+	//7.Fill
+	if (m_blendPositions != NULL){
+		delete(m_blendPositions);
+		m_blendPositions = NULL;
+	}
+	if (m_blendFactors != NULL){
+		delete(m_blendFactors);
+		m_blendFactors = NULL;
+	}
 }
 
 /*
