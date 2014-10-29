@@ -70,7 +70,7 @@ BEGIN_MESSAGE_MAP(CDialogFillShape, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_FILL_NO, &CDialogFillShape::OnClickedRadioFillNo)
 	ON_BN_CLICKED(IDC_RADIO_FILL_SOLID, &CDialogFillShape::OnClickedRadioFillSolid)
 	ON_BN_CLICKED(IDC_RADIO_FILL_GRADIENT, &CDialogFillShape::OnClickedRadioFillGradient)
-	ON_COMMAND(ID_OK, &CDialogFillShape::OnOk)
+//	ON_COMMAND(ID_OK, &CDialogFillShape::OnOk)
 END_MESSAGE_MAP()
 
 
@@ -212,9 +212,28 @@ int CDialogFillShape::ChangeFill(int nSize)
 }
 
 
-void CDialogFillShape::OnOk()
+//void CDialogFillShape::OnOk()
+//{
+//	UpdateData(TRUE);
+//
+//	m_blendCount = 1;
+//	m_blendPositions = new float[1];
+//	m_blendFactors = new float[1];
+//	m_blendPositions[0] = m_ctrlSliderGradient.GetPos();
+//	m_blendFactors[0] = 1.0f;
+//}
+
+
+void CDialogFillShape::OnOK()
 {
 	UpdateData(TRUE);
 
-	m_iPosGradient = m_ctrlSliderGradient.GetPos();
+	m_blendCount = 1;
+	m_blendPositions = new float[1];
+	m_blendFactors = new float[1];
+	m_blendPositions[0] = m_ctrlSliderGradient.GetPos();
+	m_blendPositions[0] /= (m_ctrlSliderGradient.GetRangeMax() - m_ctrlSliderGradient.GetRangeMin());
+	m_blendFactors[0] = 1.0f;
+
+	CDialog::OnOK();
 }

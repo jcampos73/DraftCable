@@ -217,6 +217,15 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 			if (pdlgFill.DoModal() == IDOK){
 				m_crFill = pdlgFill.m_crCurrent;
 				m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+				m_blendCount = pdlgFill.m_blendCount;
+
+				m_blendPositions = new float[m_blendCount];
+				m_blendFactors = new float[m_blendCount];
+
+				for (int i = 0; i < m_blendCount; i++){
+					m_blendPositions[i] = pdlgFill.m_blendPositions[i];
+					m_blendFactors[i] = pdlgFill.m_blendFactors[i];
+				}
 				m_bTransparent = FALSE;
 				return TRUE;
 			}
@@ -1271,21 +1280,28 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
 		);
 
-	//Normaly set to 0 or 0.5
-	float focus = 0.5f / 10;
-	//float focus = 0.0f / 10;
-	//Normally set to one
-	float scale = 1.0f;
-	//lgb.SetBlendBellShape(focus, scale);
-	//SetBlendTriangularShape(.5f, 1.0f);
+	if (this->m_blendCount == 1){
 
-	float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
-	float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
-	lgb.SetBlend(
-		blendFactors,
-		blendPositions,
-		3
-		);
+		//Normaly set to 0.0f or 0.5f
+		//float focus = 0.5f / 10;
+		//float focus = 0.0f / 10;
+		float focus = m_blendPositions[0];
+		
+		//Normally set to 1.0f
+		float scale = m_blendFactors[0];
+		lgb.SetBlendBellShape(focus, scale);
+		//lgb.SetBlendTriangularShape(.5f, 1.0f);
+	}
+	else{
+
+		float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
+		float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
+		lgb.SetBlend(
+			blendFactors,
+			blendPositions,
+			3
+			);
+	}
 
 	grf.FillPath(&lgb, &gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);

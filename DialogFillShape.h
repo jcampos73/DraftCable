@@ -20,7 +20,9 @@ public:
 	enum { IDD = IDD_FILLSHAPE };
 	COLORREF m_crCurrent;
 	COLORREF m_crCurrentBgnd;
-	int m_iPosGradient;
+	int m_blendCount;
+	float* m_blendPositions;
+	float* m_blendFactors;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
@@ -47,5 +49,6 @@ public:
 	afx_msg void OnClickedRadioFillSolid();
 	afx_msg void OnClickedRadioFillGradient();
 	CSliderCtrl m_ctrlSliderGradient;
-	afx_msg void OnOk();
+//	afx_msg void OnOk();
+	virtual void OnOK();
 };

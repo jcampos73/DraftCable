@@ -232,6 +232,9 @@ public:
 	COLORREF m_crFill;		//Color to fill the shape.
 	//18/09/2014
 	COLORREF m_crFillBgnd;	//Color to fill the shape background (for gradients).
+	int m_blendCount;
+	float* m_blendPositions;
+	float* m_blendFactors;
 	//24/03/2005
 	CString m_sVer;			//.dd1 file version
 	float m_fVer;			//.dd1 file version as a decimal number
