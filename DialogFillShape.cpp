@@ -16,6 +16,9 @@ CDialogFillShape::CDialogFillShape(CWnd* pParent /*=NULL*/)
 {
 	m_crCurrent = RGB(255, 255, 255);
 	m_crCurrentBgnd = RGB(0, 0, 0);
+	m_blendCount = 0;
+	m_blendPositions = NULL;
+	m_blendFactors = NULL;
 }
 
 CDialogFillShape::~CDialogFillShape()
@@ -32,6 +35,7 @@ void CDialogFillShape::SetColor(COLORREF cr)
 {
 	m_crCurrent = cr;
 
+	//Text feed-back
 	/*
 	CString str = _T("");
 	str.Format(_T("RGB(%d,%d,%d)"), GetRValue(m_crCurrent),
@@ -125,9 +129,8 @@ BOOL CDialogFillShape::OnInitDialog()
 	SetColorBgnd(m_crCurrentBgnd);
 
 	//Initialize gradient slider
-	m_ctrlSliderGradient.SetRange(0, 10);
-	m_ctrlSliderGradient.SetTicFreq(10);
-	m_ctrlSliderGradient.SetPos(5);
+	_DoLoadSliders();
+
 	GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -211,19 +214,6 @@ int CDialogFillShape::ChangeFill(int nSize)
 	return 0;
 }
 
-
-//void CDialogFillShape::OnOk()
-//{
-//	UpdateData(TRUE);
-//
-//	m_blendCount = 1;
-//	m_blendPositions = new float[1];
-//	m_blendFactors = new float[1];
-//	m_blendPositions[0] = m_ctrlSliderGradient.GetPos();
-//	m_blendFactors[0] = 1.0f;
-//}
-
-
 void CDialogFillShape::OnOK()
 {
 	UpdateData(TRUE);
@@ -236,4 +226,21 @@ void CDialogFillShape::OnOK()
 	m_blendFactors[0] = 1.0f;
 
 	CDialog::OnOK();
+}
+
+//Implementation
+
+void CDialogFillShape::_DoLoadSliders(){
+	m_ctrlSliderGradient.SetRange(0, 10);
+	m_ctrlSliderGradient.SetTicFreq(10);
+	if (m_blendCount>0){
+		_DoLoadSlider(m_blendPositions[0]);
+	}
+	else{
+		_DoLoadSlider(0.5f);
+	}
+}
+
+void CDialogFillShape::_DoLoadSlider(float position){
+	m_ctrlSliderGradient.SetPos(position * (m_ctrlSliderGradient.GetRangeMax() - m_ctrlSliderGradient.GetRangeMin()));
 }

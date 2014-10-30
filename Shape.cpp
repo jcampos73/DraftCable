@@ -238,10 +238,28 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 		switch (LOWORD(wParam)){
 		case ID_EDIT_FORMATSHAPE:
 			CDialogFillShape pdlgFill = new CDialogFillShape();
+			if (m_blendPositions != NULL){
+				//Update dialog with shape blendPositions and blendFactors
+				pdlgFill.m_blendCount = m_blendCount;
+				pdlgFill.m_blendPositions = new float[m_blendCount];
+				pdlgFill.m_blendFactors = new float[m_blendCount];
+				for (int i = 0; i < m_blendCount; i++){
+					pdlgFill.m_blendPositions[i] = m_blendPositions[i];
+					pdlgFill.m_blendFactors[i] = m_blendFactors[i];
+				}
+			}
+			//Shos fill dialog
 			if (pdlgFill.DoModal() == IDOK){
 				m_crFill = pdlgFill.m_crCurrent;
 				m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
 				m_blendCount = pdlgFill.m_blendCount;
+
+				if (m_blendPositions != NULL){
+					delete(m_blendPositions);
+				}
+				if (m_blendFactors != NULL){
+					delete(m_blendFactors);
+				}
 
 				m_blendPositions = new float[m_blendCount];
 				m_blendFactors = new float[m_blendCount];
@@ -3503,7 +3521,7 @@ void CShape::Serialize( CArchive& archive )
     CObject::Serialize( archive );
 
     // now do the stuff for our specific class
-    if( archive.IsStoring() ){
+	if (archive.IsStoring()){
 		//CString sVer="1.00";
 		//CString sVer="1.01";	//added m_uiShapeId;
 		//CString sVer="1.02";	//added m_strTypeIdent;
@@ -3511,12 +3529,13 @@ void CShape::Serialize( CArchive& archive )
 		//CString sVer="1.04";	//added m_bNoResize,m_uiShapeType,label::style,m_Rect0,CShapeUnit::m_pPoints0
 		//CString sVer="1.05";	//added 'TB' serialization in CDocument
 		//CString sVer="1.06";	//added 'TB' serialization in CDocument with support for 'TB' associated to wires
-		CString m_sVer="1.07";	//serialization of fill colors (front & background)
-		m_fVer=atof(m_sVer);
+		//CString m_sVer = "1.07";	//serialization of fill colors (front & background)
+		CString m_sVer = "1.08";	//serialization of fill colors (blend positions & factors)
+		m_fVer = atof(m_sVer);
 		archive << m_sVer;
-		int idata=9;
+		int idata = 9;
 		archive << idata;
-        archive << m_Rect;
+		archive << m_Rect;
 		archive << m_Mode;
 		archive << m_strIdent;
 		archive << m_uiShapeId;
@@ -3535,6 +3554,18 @@ void CShape::Serialize( CArchive& archive )
 		archive << m_bTransparent;
 		archive << m_crFill;
 		archive << m_crFillBgnd;
+		//1.08
+		//Fill blend positions and scales
+		if (m_blendPositions != NULL){
+			archive << m_blendCount;
+			for (int i = 0; i < m_blendCount; i++){
+				archive << m_blendPositions[i];
+				archive << m_blendFactors[i];
+			}
+		}
+		else{
+			archive << 0;
+		}
 	}
     else{
 		//CString sVer;
@@ -3584,6 +3615,21 @@ void CShape::Serialize( CArchive& archive )
 			archive >> m_bTransparent;
 			archive >> m_crFill;
 			archive >> m_crFillBgnd;
+		}
+		//1.08
+		//Fill blend positions and scales
+		fVer0 = 1.08;
+		fData = m_fVer - fVer0;
+		if (fData >= 0){
+			archive >> m_blendCount;
+			if(m_blendCount > 0){
+				m_blendPositions = new float[m_blendCount];
+				m_blendFactors = new float[m_blendCount];
+				for (int i = 0; i < m_blendCount; i++){
+					archive >> m_blendPositions[i];
+					archive >> m_blendFactors[i];
+				}
+			}
 		}
 	}
 }

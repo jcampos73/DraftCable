@@ -37,6 +37,8 @@ protected:
 	void SetColorBgnd(COLORREF cr);
 	void _DoSwapColor();
 	int ChangeFill(int nSize);
+	void _DoLoadSliders();
+	void _DoLoadSlider(float position);
 
 	DECLARE_MESSAGE_MAP()
 public:
