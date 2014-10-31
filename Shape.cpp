@@ -1290,7 +1290,7 @@ void CShape::DoWorldTransform(HDC hdc){
 	ModifyWorldTransform (hdc, &x, MWT_RIGHTMULTIPLY);
 }
 
-//Do filling of shape: solid, gradient...
+//Called for rectangles
 void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 {
 	CRect rect = m_Rect;
@@ -1349,7 +1349,7 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 	//grf.FillRectangle(&lgb, tmpRect);
 }
 
-//Do filling of shape: solid, gradient...
+//Called for polylines
 void CShape::DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2)
 {
 	//Fill the path
@@ -1359,7 +1359,29 @@ void CShape::DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2)
 		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
 		);
-	lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
+	//lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
+	if (this->m_blendCount == 1){
+
+		//Normaly set to 0.0f or 0.5f
+		//float focus = 0.5f / 10;
+		//float focus = 0.0f / 10;
+		float focus = m_blendPositions[0];
+
+		//Normally set to 1.0f
+		float scale = m_blendFactors[0];
+		lgb.SetBlendBellShape(focus, scale);
+		//lgb.SetBlendTriangularShape(.5f, 1.0f);
+	}
+	else{
+
+		float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
+		float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
+		lgb.SetBlend(
+			blendFactors,
+			blendPositions,
+			3
+			);
+	}
 	grf.FillPath(&lgb, (GraphicsPath*)gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);
 }
