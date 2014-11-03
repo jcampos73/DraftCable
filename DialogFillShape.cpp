@@ -131,8 +131,9 @@ BOOL CDialogFillShape::OnInitDialog()
 	//Initialize gradient slider
 	_DoLoadSliders();
 
-	m_nFill = DRAFTCABLE_FILL_NO;
-	GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
+	ChangeFill(m_nFill);
+	//m_nFill = DRAFTCABLE_FILL_NO;
+	//GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

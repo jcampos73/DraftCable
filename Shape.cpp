@@ -238,14 +238,22 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 		switch (LOWORD(wParam)){
 		case ID_EDIT_FORMATSHAPE:
 			CDialogFillShape pdlgFill = new CDialogFillShape();
-			if (m_blendPositions != NULL){
-				//Update fill radios
-				if (m_bTransparent){
-					pdlgFill.m_nFill = CDialogFillShape::DRAFTCABLE_FILL_NO;
-				}
-				else if (m_crFill == m_crFillBgnd){
+			//Update fill radios
+			if (m_bTransparent){
+				pdlgFill.m_nFill = CDialogFillShape::DRAFTCABLE_FILL_NO;
+			}
+			else if (m_crFill == m_crFillBgnd){
+				pdlgFill.m_nFill = CDialogFillShape::DRAFTCABLE_FILL_SOLID;
+				pdlgFill.m_crCurrent = m_crFill;
+				pdlgFill.m_crCurrentBgnd = m_crFillBgnd;
+			}
+			else{
+				pdlgFill.m_nFill = CDialogFillShape::DRAFTCABLE_FILL_GRADIENT;
+				pdlgFill.m_crCurrent = m_crFill;
+				pdlgFill.m_crCurrentBgnd = m_crFillBgnd;
+			}
 
-				}
+			if (m_blendPositions != NULL){
 				//Update dialog with shape blendPositions and blendFactors
 				pdlgFill.m_blendCount = m_blendCount;
 				pdlgFill.m_blendPositions = new float[m_blendCount];
