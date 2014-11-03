@@ -3,16 +3,19 @@
 
 
 // CDialogFillShape dialog
-
+/*
 #define DRAFTCABLE_FILL_NO			0
 #define DRAFTCABLE_FILL_SOLID		1
 #define DRAFTCABLE_FILL_GRADIENT	2
+*/
 
 class CDialogFillShape : public CDialog
 {
 	DECLARE_DYNAMIC(CDialogFillShape)
 
 public:
+	enum Fill_Type { DRAFTCABLE_FILL_NO = 0, DRAFTCABLE_FILL_SOLID, DRAFTCABLE_FILL_GRADIENT };
+
 	CDialogFillShape(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CDialogFillShape();
 
@@ -20,6 +23,7 @@ public:
 	enum { IDD = IDD_FILLSHAPE };
 	COLORREF m_crCurrent;
 	COLORREF m_crCurrentBgnd;
+	Fill_Type m_nFill;
 	int m_blendCount;
 	float* m_blendPositions;
 	float* m_blendFactors;
@@ -36,7 +40,7 @@ protected:
 	void SetColor(COLORREF cr);
 	void SetColorBgnd(COLORREF cr);
 	void _DoSwapColor();
-	int ChangeFill(int nSize);
+	int ChangeFill(Fill_Type nFillType);
 	void _DoLoadSliders();
 	void _DoLoadSlider(float position);
 

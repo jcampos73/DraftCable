@@ -239,6 +239,13 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 		case ID_EDIT_FORMATSHAPE:
 			CDialogFillShape pdlgFill = new CDialogFillShape();
 			if (m_blendPositions != NULL){
+				//Update fill radios
+				if (m_bTransparent){
+					pdlgFill.m_nFill = CDialogFillShape::DRAFTCABLE_FILL_NO;
+				}
+				else if (m_crFill == m_crFillBgnd){
+
+				}
 				//Update dialog with shape blendPositions and blendFactors
 				pdlgFill.m_blendCount = m_blendCount;
 				pdlgFill.m_blendPositions = new float[m_blendCount];
@@ -248,10 +255,16 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 					pdlgFill.m_blendFactors[i] = m_blendFactors[i];
 				}
 			}
-			//Shos fill dialog
+			//Shows fill dialog
 			if (pdlgFill.DoModal() == IDOK){
 				m_crFill = pdlgFill.m_crCurrent;
-				m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+
+				if (pdlgFill.m_nFill != CDialogFillShape::DRAFTCABLE_FILL_GRADIENT){
+					m_crFillBgnd = pdlgFill.m_crCurrent;
+				}
+				else{
+					m_crFillBgnd = pdlgFill.m_crCurrentBgnd;
+				}
 				m_blendCount = pdlgFill.m_blendCount;
 
 				if (m_blendPositions != NULL){
@@ -268,7 +281,14 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 					m_blendPositions[i] = pdlgFill.m_blendPositions[i];
 					m_blendFactors[i] = pdlgFill.m_blendFactors[i];
 				}
-				m_bTransparent = FALSE;
+
+				if (pdlgFill.m_nFill == CDialogFillShape::DRAFTCABLE_FILL_NO){
+					m_bTransparent = TRUE;
+				}
+				else{
+					m_bTransparent = FALSE;
+				}
+
 				return TRUE;
 			}
 			break;

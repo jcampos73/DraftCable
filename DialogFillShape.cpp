@@ -131,6 +131,7 @@ BOOL CDialogFillShape::OnInitDialog()
 	//Initialize gradient slider
 	_DoLoadSliders();
 
+	m_nFill = DRAFTCABLE_FILL_NO;
 	GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -161,39 +162,26 @@ void CDialogFillShape::_DoSwapColor()
 
 void CDialogFillShape::OnClickedRadioFillNo()
 {
-
+	ChangeFill(DRAFTCABLE_FILL_NO);
 }
 
 
 void CDialogFillShape::OnClickedRadioFillSolid()
 {
-
+	ChangeFill(DRAFTCABLE_FILL_SOLID);
 }
 
 
 void CDialogFillShape::OnClickedRadioFillGradient()
 {
-
+	ChangeFill(DRAFTCABLE_FILL_GRADIENT);
 }
 
-int CDialogFillShape::ChangeFill(int nSize)
+int CDialogFillShape::ChangeFill(Fill_Type nFillType)
 {
-	/*
-	if (nSize == DRAFTCABLE_SIZE_CUSTOM){
-		if (m_szSize == CSize(0, 0)){
-			m_szSize = CSize(297, 210);
-			nSize = DRAFTCABLE_SIZE_A4;
-		}
-		else if (m_szSize == CSize(297, 210)){
-			nSize = DRAFTCABLE_SIZE_A4;
-		}
-		else if (m_szSize == CSize(420, 297)){
-			nSize = DRAFTCABLE_SIZE_A3;
-		}
-	}
-	*/
+	m_nFill = nFillType;
 
-	switch (nSize){
+	switch (nFillType){
 	case DRAFTCABLE_FILL_NO:
 		GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
 		GetDlgItem(IDC_RADIO_FILL_SOLID)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
