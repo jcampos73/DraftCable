@@ -411,21 +411,12 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					//----------------------------------------------------------
 
 					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
-						CShapePolyline *pShPoly=new CShapePolyline();
-						pShPoly->Create(pSh->m_Rect-rcFrm.TopLeft());
-						pShPoly->m_bTransparent = pSh->m_bTransparent;
-						pShPoly->m_crFill = pSh->m_crFill;
-						pShPoly->m_crFillBgnd = pSh->m_crFillBgnd;
-						if (pSh->m_blendPositions != NULL){
-							pShPoly->m_blendCount = pSh->m_blendCount;
-							pShPoly->m_blendPositions = new float[pShPoly->m_blendCount];
-							pShPoly->m_blendFactors = new float[pShPoly->m_blendCount];
-							for (int i = 0; i < pShPoly->m_blendCount; i++)
-							{
-								pShPoly->m_blendPositions[i] = pSh->m_blendPositions[i];
-								pShPoly->m_blendFactors[i] = pSh->m_blendFactors[i];
-							}
-						}
+						CShapePolyline *pShPoly = new CShapePolyline();
+						CRect rectPrev = pSh->m_Rect;
+						pSh->m_Rect -= rcFrm.TopLeft();
+						pShPoly->Create((CShapeRect*)pSh);
+						pSh->m_Rect = rectPrev;
+
 						obaBuffer.Add(pShPoly);
 						ar<<pShPoly;
 						pSh = pShPoly;

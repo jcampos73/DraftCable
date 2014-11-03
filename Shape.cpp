@@ -3874,6 +3874,34 @@ BOOL CShapePolyline::Create(LPRECT lpRect){
 	return Create(ptArray,5);
 }
 
+BOOL CShapePolyline::Create(CShapeRect* pSh)
+{
+	LPRECT lpRect = pSh->m_Rect;
+	CPoint ptArray[5];
+
+	ptArray[0] = CPoint(lpRect->left, lpRect->top);
+	ptArray[1] = CPoint(lpRect->right, lpRect->top);
+	ptArray[2] = CPoint(lpRect->right, lpRect->bottom);
+	ptArray[3] = CPoint(lpRect->left, lpRect->bottom);
+	ptArray[4] = CPoint(lpRect->left, lpRect->top);
+
+	this->m_bTransparent = pSh->m_bTransparent;
+	this->m_crFill = pSh->m_crFill;
+	this->m_crFillBgnd = pSh->m_crFillBgnd;
+	if (pSh->m_blendPositions != NULL){
+		this->m_blendCount = pSh->m_blendCount;
+		this->m_blendPositions = new float[this->m_blendCount];
+		this->m_blendFactors = new float[this->m_blendCount];
+		for (int i = 0; i < this->m_blendCount; i++)
+		{
+			this->m_blendPositions[i] = pSh->m_blendPositions[i];
+			this->m_blendFactors[i] = pSh->m_blendFactors[i];
+		}
+	}
+
+	return Create(ptArray, 5);
+}
+
 //Creates a polygon
 BOOL CShapePolyline::Create(LPRECT lpRect,int nCount){
 

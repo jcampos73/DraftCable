@@ -679,6 +679,7 @@ public:
 	BOOL Create(LPPOINT lpPoints, int nCount);
 	//Create a rectangle
 	BOOL Create(LPRECT lpRect);
+	BOOL Create(CShapeRect* pSh);
 	//Creates a polygon
 	BOOL Create(LPRECT lpRect,int nCount);
 	BOOL CreateNStar(LPRECT lpRect,int nCount,float percDeep =25.0);
