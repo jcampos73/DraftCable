@@ -187,16 +187,28 @@ int CDialogFillShape::ChangeFill(Fill_Type nFillType)
 		GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_CHECKED);
 		GetDlgItem(IDC_RADIO_FILL_SOLID)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_FILL_GRADIENT)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
+		//Show-hide controls
+		GetDlgItem(IDC_SLIDER_GRADIENT)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BGND_COLOR)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_SWAP)->ShowWindow(SW_HIDE);
 		break;
 	case DRAFTCABLE_FILL_SOLID:
 		GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_FILL_SOLID)->SendMessage(BM_SETCHECK, BST_CHECKED);
 		GetDlgItem(IDC_RADIO_FILL_GRADIENT)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
+		//Show-hide controls
+		GetDlgItem(IDC_SLIDER_GRADIENT)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_BGND_COLOR)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_SWAP)->ShowWindow(SW_HIDE);
 		break;
 	case DRAFTCABLE_FILL_GRADIENT:
 		GetDlgItem(IDC_RADIO_FILL_NO)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_FILL_SOLID)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_FILL_GRADIENT)->SendMessage(BM_SETCHECK, BST_CHECKED);
+		//Show-hide controls
+		GetDlgItem(IDC_SLIDER_GRADIENT)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_BGND_COLOR)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_SWAP)->ShowWindow(SW_SHOW);
 		break;
 	}
 
