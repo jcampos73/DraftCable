@@ -1321,6 +1321,10 @@ void CShape::DoWorldTransform(HDC hdc){
 //Called for rectangles
 void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 {
+	if (m_bTransparent){
+		return;
+	}
+
 	CRect rect = m_Rect;
 	if (lpRect != NULL){
 		rect = *lpRect;
@@ -1380,6 +1384,10 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 //Called for polylines
 void CShape::DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2)
 {
+	if (m_bTransparent){
+		return;
+	}
+
 	//Fill the path
 	Graphics grf(pDC->m_hDC);
 	LinearGradientBrush lgb(Point(point1.x, point1.y),
