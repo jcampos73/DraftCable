@@ -2853,9 +2853,16 @@ BOOL CDraftDrawView::OnCommandShape(WPARAM wParam, LPARAM lParam){
 	int index;
 	CShape *pSh=(CShape *)pDoc->FirstObject(index);
 	pSh=(CShape *)pDoc->NextObject(index);
+	CShape* pShPrev = NULL;
 	while(pSh){
 
 		CRgn rgn2;
+
+		if (pShPrev == pSh){
+			pShPrev = pSh;
+			pSh = (CShape *)pDoc->NextObject(index);
+			continue;
+		}
 
 		if(pSh->OnCommand(wParam,lParam/*MAKEWPARAM(ID_ROTATE,0),0*/)){
 
@@ -2872,6 +2879,8 @@ BOOL CDraftDrawView::OnCommandShape(WPARAM wParam, LPARAM lParam){
 			rgn1.CombineRgn(&rgn1,&rgn2,RGN_OR);
 			bRedraw=TRUE;
 		}
+
+		pShPrev = pSh;
 		pSh=(CShape *)pDoc->NextObject(index);
 	}
 
