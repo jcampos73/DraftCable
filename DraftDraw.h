@@ -16,11 +16,9 @@
 #include "DraftDrawDoc.h"
 #include "OMParser.h"		//Object model parser
 
-
 #define _DOCTYPE_SCHEMATIC						0	//schematic document type
 #define _DOCTYPE_RACK							1	//rack document type
 #define _DOCTYPE_PATCHPANEL						2	//patch panel document type
-
 
 //Display patch panel properties
 void SDisplayPatchPProp(UINT nID);
@@ -78,6 +76,7 @@ protected:
 
 extern CDraftDrawApp theApp;
 
+//Global array used in serialization. Its whipped after serialization operations
 extern CObArray g_aShBuffer;
 extern int g_aShBufIndex;
 

@@ -4,7 +4,6 @@
 #include <map>
 #include <afxtempl.h>
 
-
 //14/12/2004
 //Global flags that affect application behaviour
 //Enables CDocument::OnFileSave() to send part archiving (m_bFlagPartEdit==TRUE) throw CArchiveDb.
@@ -16,6 +15,10 @@
 //26/12/2004
 //Enables ShArray that maps screen coordinates to shapes.
 #define DCABLE_SHARRAY
+//10/11/2014
+//Loads polylines into array for unit loading,
+//instead of loading them embedded
+#define DCABLE_SHUNIT_LOAD_POLYLINES_INTO_ARRAY
 
 //This parameter is used:
 //-To calcule update region when rotating pins = DCABLE_GRID_DEFAULT * 2
@@ -59,7 +62,6 @@ extern CString g_sCurrentLibrary;
 #define DCABLE_CONNECTORDIR	"Connector\\"
 
 #define DCABLE_DATABASEDIR	"db\\"
-
 
 #define DCABLE_RACKDIR	".\\Rack\\"
 

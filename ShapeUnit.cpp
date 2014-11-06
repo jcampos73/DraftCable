@@ -516,39 +516,19 @@ void CShapeUnit::Serialize( CArchive& archive )
     // now do the stuff for our specific class
 
     if( archive.IsStoring() ){
-        //archive << m_name << m_number;
 		
 		archive << m_sUnitName;
 
-		//Calcule count
-
-		//27/03/2005
-		/*
-		int nCounterNoCont=0;
-		for(int i=0;i<m_obarrShapearr.GetSize();i++){
-			CShape *pSh=(CShape *)m_obarrShapearr[i];
-			if(!m_obarrShapearr[i]->IsKindOf(RUNTIME_CLASS(CShapeContainer))){
-				nCounterNoCont++;
-			}
-		}
-		*/
-
-
-		int nCount=m_PointspCount+/*m_obarrShapearr.GetSize()+*/m_LabelsCount/*+1*//*frm rectangle*/;
-		if(nCount||m_obarrShapearr.GetSize())//!!! nCount=0 => Part edit!
-		archive<<nCount;
-		//archive<<&CShapeFrmRect(m_Rect);
-		//CObArray aShPoly;
-		//aShPoly.SetSize(m_PointspCount);
+		int nCount = m_PointspCount + m_LabelsCount;
+		if(nCount || m_obarrShapearr.GetSize())
+			archive<<nCount;
 
 		if(m_bNoResize){
 			g_aShBuffer.SetSize(g_aShBuffer.GetSize()+m_PointspCount+m_LabelsCount);
 		}
-		//24/01/2005
 		else{
 			g_aShBuffer.SetSize(g_aShBuffer.GetSize()+2*m_PointspCount+m_LabelsCount);
 		}
-
 
 		int indexpline;
 		for(indexpline=0;indexpline<m_PointspCount;indexpline++){
@@ -564,27 +544,17 @@ void CShapeUnit::Serialize( CArchive& archive )
 		int indexlabel;
 		for(indexlabel=0;indexlabel<m_LabelsCount;indexlabel++){
 			label lbl=*m_pLabels[indexlabel];
-			//*lbl.rect=CRect((CRect(lbl.rect)-m_Rect.TopLeft()).TopLeft(),CSize(0,0));
 			g_aShBuffer[g_aShBufIndex+indexlabel]=new CShapeLabel(&lbl);
 			archive<<g_aShBuffer[g_aShBufIndex+indexlabel];
 		}
 		g_aShBufIndex+=indexlabel;
-		//Clean up.
-		/*
-		for(indexpline=0;indexpline<m_PointspCount;indexpline++){
-			delete(aShPoly[indexpline]);
-		}
-		for(indexlabel=0;indexlabel<m_LabelsCount;indexlabel++){
-			delete(aShLabel[indexlabel]);
-		}
-		*/
 
 		//24/03/2004
 		//From second version on a secondary buffer will be stored
 		if(!m_bNoResize){
-			int nCount=m_PointspCount/*+1*//*frm rectangle*/;
+			int nCount=m_PointspCount;
 			if(nCount)//!!!
-			archive<<nCount;
+				archive<<nCount;
 
 			for(indexpline=0;indexpline<m_PointspCount;indexpline++){
 				g_aShBuffer[g_aShBufIndex+indexpline]=new CShapePolyline();
@@ -619,10 +589,14 @@ void CShapeUnit::Serialize( CArchive& archive )
 			if(pSh->IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 				CShapePolyline *pShPoly=(CShapePolyline *)pSh;
 				int idata=pShPoly->GetSize();
+#ifdef DCABLE_SHUNIT_LOAD_POLYLINES_INTO_ARRAY
+				m_obarrShapearr.Add(pShPoly);
+#else
 				m_pPoints[indexpline]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(idata+1));
 				m_pPoints[indexpline][0]=idata;
-				pShPoly->GetPoints((LPPOINT)&m_pPoints[indexpline][1],idata);
+				pShPoly->GetPoints((LPPOINT)&m_pPoints[indexpline][1], idata);
 				indexpline++;
+#endif
 			}
 			else if(pSh->IsKindOf(RUNTIME_CLASS(CShapeEllipse))){
 				m_obarrShapearr.Add(pSh);
