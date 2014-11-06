@@ -1676,7 +1676,7 @@ void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE
 	}
 
 	//Code for deleting of copies
-	for (int i = m_pObArray->GetSize() - 1; i > index; i--){
+	for (int i = m_pObArray->GetSize() - 1; i >= index; i--){
 		CShape *pShTemp = (CShape *)(*m_pObArray)[i];
 		if (pShTemp == pSh){
 			//TRACE becouse having copies in array is not good
