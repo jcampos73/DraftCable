@@ -4255,13 +4255,15 @@ void CShapePolyline::GetRectUpdatePlace(CRect &rect){
 }
 
 void CShapePolyline::DoRotate(float fAngle){
+	CArray<CPoint, CPoint> ptArray;
 	for (int i = 0; i < m_dwarrPointarr.GetSize(); i++){
 		//Rotate points
 		CPoint point = CPoint(m_dwarrPointarr.GetAt(i));
-		CPoint ptCenter = m_Rect.CenterPoint() - m_Rect.TopLeft();
+		CPoint ptCenter = m_Rect.TopLeft();
 		float cx = ptCenter.x;
 		float cy = ptCenter.y;
 		CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
+		ptArray.Add(ptRotated);
 		DWORD dwPoint = MAKELONG(ptRotated.x, ptRotated.y);
 		m_dwarrPointarr[i] = dwPoint;
 	}
