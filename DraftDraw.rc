@@ -498,8 +498,12 @@ BEGIN
     END
     POPUP "Ima&ge"
     BEGIN
-        MENUITEM "&Rotate",                     ID_ROTATE
-        MENUITEM "Horizontal flip",             ID_IMG_FLIPHORZ
+        POPUP "&Rotate"
+        BEGIN
+            MENUITEM "Rotate 90º CW",               ID_ROTATE_ROTATE90CW
+            MENUITEM "Rotate 90º CCW",              ID_ROTATE_ROTATE90CCW
+        END
+        MENUITEM "Horizontal flip",             ID_IMG_FLIPVERT
         MENUITEM "Vertical flip",               ID_IMG_FLIPVERT
     END
     POPUP "&Tools"
