@@ -277,6 +277,7 @@ protected:
 	virtual void DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2);
 	//Split rectangle in two rectangles of same size, following vector
 	static int SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2]);
+	static CPoint Rotate(float cx, float cy, float angle, CPoint p);
 
 	// Generated message map functions
 protected:

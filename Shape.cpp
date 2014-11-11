@@ -1449,6 +1449,28 @@ int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
 	return 2;
 }
 
+//(cx, cy) pivot point
+//angle to rotate
+//p point to rotate
+CPoint Rotate(float cx, float cy, float angle, CPoint p)
+{
+	float s = sin(angle);
+	float c = cos(angle);
+
+	// translate point back to origin:
+	p.x -= cx;
+	p.y -= cy;
+
+	// rotate point
+	float xnew = p.x * c - p.y * s;
+	float ynew = p.x * s + p.y * c;
+
+	// translate point back:
+	p.x = xnew + cx;
+	p.y = ynew + cy;
+	return p;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CShapeRect
 
