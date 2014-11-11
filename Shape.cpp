@@ -4255,24 +4255,41 @@ void CShapePolyline::GetRectUpdatePlace(CRect &rect){
 }
 
 void CShapePolyline::DoRotate(float fAngle){
-	CArray<CPoint, CPoint> ptArray;
+
+	CPoint ptOffset0 = m_Rect.CenterPoint();
+
+	int nCount = m_dwarrPointarr.GetSize();
+	CPoint *points = new CPoint[nCount];
 	for (int i = 0; i < m_dwarrPointarr.GetSize(); i++){
 		//Rotate points
 		CPoint point = CPoint(m_dwarrPointarr.GetAt(i));
-		CPoint ptCenter = m_Rect.TopLeft();
+		CPoint ptCenter = CPoint(0, 0);//m_Rect.CenterPoint() - m_Rect.TopLeft();
 		float cx = ptCenter.x;
 		float cy = ptCenter.y;
 		CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
-		ptArray.Add(ptRotated);
-		DWORD dwPoint = MAKELONG(ptRotated.x, ptRotated.y);
-		m_dwarrPointarr[i] = dwPoint;
+		points[i] = ptRotated;
+		//DWORD dwPoint = MAKELONG(ptRotated.x, ptRotated.y);
+		//m_dwarrPointarr[i] = dwPoint;
 	}
+	m_dwarrPointarr.RemoveAll();
+	this->Create(points, nCount);
+	delete(points);
+
+	CPoint ptOffset = CPoint(m_Rect.TopLeft().x < 0 ? -m_Rect.TopLeft().x : 0,
+		m_Rect.TopLeft().y < 0 ? -m_Rect.TopLeft().y : 0);
+
+	//Offset
+	m_Rect += ptOffset;
+	m_Rect += ptOffset0 - m_Rect.CenterPoint();
+
 	//Rotate rectangle
+	/*
 	CPoint ptCenter = m_Rect.CenterPoint();
 	float cx = ptCenter.x;
 	float cy = ptCenter.y;
 	CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, m_Rect.TopLeft());
 	m_Rect = CRect(ptRotated + CPoint(-m_Rect.Height(), 0), CSize(m_Rect.Height(), m_Rect.Width()));
+	*/
 }
 
 /////////////////////////////////////////////////////////////////////////////
