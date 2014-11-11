@@ -278,6 +278,7 @@ protected:
 	//Split rectangle in two rectangles of same size, following vector
 	static int SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2]);
 	static CPoint Rotate(float cx, float cy, float angle, CPoint p);
+	virtual void DoRotate(float fAngle);//+Angle->counter clockwise ; -Angle->counter clockwise
 
 	// Generated message map functions
 protected:
@@ -611,6 +612,7 @@ public:
 
 protected:
 	virtual void GetData(CStringArray& saData){return;};
+	virtual void DoRotate(float fAngle);
 
 	// Generated message map functions
 protected:
@@ -735,6 +737,7 @@ protected:
 			saData.Add(strAux);
 		}
 	};
+	virtual void DoRotate(float fAngle);
 
 	// Generated message map functions
 protected:
