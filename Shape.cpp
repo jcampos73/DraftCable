@@ -232,6 +232,12 @@ BOOL CShape::OnCommand( WPARAM wParam, LPARAM lParam ){
 			Rotate(30.0);
 			return TRUE;
 			break;
+		case ID_ROTATE_ROTATE90CW:
+			DoRotate(90.0);
+			return TRUE;
+		case ID_ROTATE_ROTATE90CCW:
+			DoRotate(-90.0);
+			return TRUE;
 		}
 
 		//Format shape
@@ -1452,8 +1458,9 @@ int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
 //(cx, cy) pivot point
 //angle to rotate
 //p point to rotate
-CPoint Rotate(float cx, float cy, float angle, CPoint p)
+CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 {
+	angle = angle * 2 * PI / 360;
 	float s = sin(angle);
 	float c = cos(angle);
 
@@ -1469,6 +1476,10 @@ CPoint Rotate(float cx, float cy, float angle, CPoint p)
 	p.x = xnew + cx;
 	p.y = ynew + cy;
 	return p;
+}
+
+void CShape::DoRotate(float fAngle){
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2839,6 +2850,10 @@ void CShapeContainer::GetNextChainItem(CShape *& pSh,CShape* pShPrev) const{
 			pSh=NULL;
 		}
 	}
+}
+
+void CShapeContainer::DoRotate(float fAngle){
+	CShape::DoRotate(fAngle);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4237,6 +4252,25 @@ void CShapePolyline::GetRectUpdatePlace(CRect &rect){
 		rectTot.UnionRect(rectTot,rect);
 		rect = rectTot;
 	}
+}
+
+void CShapePolyline::DoRotate(float fAngle){
+	for (int i = 0; i < m_dwarrPointarr.GetSize(); i++){
+		//Rotate points
+		CPoint point = CPoint(m_dwarrPointarr.GetAt(i));
+		CPoint ptCenter = m_Rect.CenterPoint() - m_Rect.TopLeft();
+		float cx = ptCenter.x;
+		float cy = ptCenter.y;
+		CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
+		DWORD dwPoint = MAKELONG(ptRotated.x, ptRotated.y);
+		m_dwarrPointarr[i] = dwPoint;
+	}
+	//Rotate rectangle
+	CPoint ptCenter = m_Rect.CenterPoint();
+	float cx = ptCenter.x;
+	float cy = ptCenter.y;
+	CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, m_Rect.TopLeft());
+	m_Rect = CRect(ptRotated + CPoint(-m_Rect.Height(), 0), CSize(m_Rect.Height(), m_Rect.Width()));
 }
 
 /////////////////////////////////////////////////////////////////////////////

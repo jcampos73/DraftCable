@@ -156,7 +156,6 @@
 #define IDC_RADIO_FILL_SOLID            1069
 #define IDC_RADIO_FILL_GRADIENT         1070
 #define IDC_SLIDER_GRADIENT             1071
-#define IDC_SLIDER_GRADIENT2            1072
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002
@@ -245,6 +244,8 @@
 #define ID_BUTTON_POLYARC               32859
 #define ID_0_FORMATSHAPE                32859
 #define ID_EDIT_FORMATSHAPE             32860
+#define ID_ROTATE_ROTATE90CW            32861
+#define ID_ROTATE_ROTATE90CCW           32862
 #define ID_INDICATOR_TOOL               59142
 #define ID_INDICATOR_COOR               59143
 #define ID_INDICATOR_MODE               59144
@@ -260,7 +261,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        208
-#define _APS_NEXT_COMMAND_VALUE         32861
+#define _APS_NEXT_COMMAND_VALUE         32863
 #define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
