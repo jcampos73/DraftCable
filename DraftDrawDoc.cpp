@@ -2480,7 +2480,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 				m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 				m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-				m_pSh->LoadUnit(dialog.m_sLibrary+"."+dialog.m_sPart/*"SSIOL.txt"*/);
+				m_pSh->LoadUnit(dialog.m_sLibrary+"."+dialog.m_sPart);
 				m_pSh->m_pCursorArray=m_CursorArray;
 				m_iCursor=11;
 

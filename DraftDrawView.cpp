@@ -2856,27 +2856,41 @@ BOOL CDraftDrawView::OnCommandShape(WPARAM wParam, LPARAM lParam){
 	CShape* pShPrev = NULL;
 	while(pSh){
 
+		//Local regions for update
 		CRgn rgn2;
+		CRgn rgn3;
 
+		//Filter for duplicated shapes in stack like polylines
 		if (pShPrev == pSh){
 			pShPrev = pSh;
 			pSh = (CShape *)pDoc->NextObject(index);
 			continue;
 		}
 
-		if(pSh->OnCommand(wParam,lParam/*MAKEWPARAM(ID_ROTATE,0),0*/)){
+		//Store previous rectangle
+		CRect rectPrev = pSh->m_Rect;
+		if(pSh->OnCommand(wParam,lParam)){
 
 			CRect rect=pSh->m_Rect;
 			rect.NormalizeRect();
 			rect.InflateRect(DCABLE_GRIDX_DEFAULT<<1,DCABLE_GRIDY_DEFAULT<<1);
 
 			CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
-			//CPoint point1=rect.TopLeft();
 			CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
-
 
 			rgn2.CreateRectRgnIndirect(CRect(point1,size));
 			rgn1.CombineRgn(&rgn1,&rgn2,RGN_OR);
+
+			//Previous region
+			rect = rectPrev;
+			rect.NormalizeRect();
+			rect.InflateRect(DCABLE_GRIDX_DEFAULT << 1, DCABLE_GRIDY_DEFAULT << 1);
+			point1 = CPoint(rect.TopLeft().x / m_xScale, rect.TopLeft().y / m_yScale) - GetScrollPosition();
+			size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
+			rgn3.CreateRectRgnIndirect(CRect(point1, size));
+			rgn1.CombineRgn(&rgn1, &rgn3, RGN_OR);
+
+			//Redraw flag
 			bRedraw=TRUE;
 		}
 
