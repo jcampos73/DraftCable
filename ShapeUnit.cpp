@@ -1156,13 +1156,17 @@ BOOL CShapeUnit::Create(LPRECT lpRect,int nCount,int uiShapeType){
 }
 
 void CShapeUnit::DoRotate(float fAngle){
+	DoRotate(fAngle, m_Rect.CenterPoint(), TRUE);
+}
 
+void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/)
+{
 	int i;
 	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
 		CRect rectPrev = psh->m_Rect;
 		psh->m_Rect += this->m_Rect.TopLeft();;
-		psh->DoRotate(fAngle);
+		psh->DoRotate(fAngle, ptPivot, bUsePivot);
 		psh->m_Rect = rectPrev;
 	}
 }

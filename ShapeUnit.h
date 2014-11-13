@@ -110,6 +110,7 @@ protected:
 		saData.Add(m_sUnitName);
 	};
 	void DoRotate(float fAngle);
+	void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
 
 	// Generated message map functions
 protected:

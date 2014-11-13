@@ -1502,7 +1502,11 @@ CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 }
 
 void CShape::DoRotate(float fAngle){
+	DoRotate(fAngle, m_Rect.CenterPoint(), TRUE);
+}
 
+void CShape::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/){
+	/* Abstract class no implement*/
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2877,6 +2881,11 @@ void CShapeContainer::GetNextChainItem(CShape *& pSh,CShape* pShPrev) const{
 
 void CShapeContainer::DoRotate(float fAngle){
 	CShape::DoRotate(fAngle);
+}
+
+void CShapeContainer::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/)
+{
+	CShape::DoRotate(fAngle, ptPivot, bUsePivot);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -4286,13 +4295,11 @@ void CShapePolyline::DoRotate(float fAngle){
 	for (int i = 0; i < m_dwarrPointarr.GetSize(); i++){
 		//Rotate points
 		CPoint point = CPoint(m_dwarrPointarr.GetAt(i));
-		CPoint ptCenter = CPoint(0, 0);//m_Rect.CenterPoint() - m_Rect.TopLeft();
+		CPoint ptCenter = CPoint(0, 0);
 		float cx = ptCenter.x;
 		float cy = ptCenter.y;
 		CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
 		points[i] = ptRotated;
-		//DWORD dwPoint = MAKELONG(ptRotated.x, ptRotated.y);
-		//m_dwarrPointarr[i] = dwPoint;
 	}
 	m_dwarrPointarr.RemoveAll();
 	this->Create(points, nCount);
@@ -4304,15 +4311,40 @@ void CShapePolyline::DoRotate(float fAngle){
 	//Offset
 	m_Rect += ptOffset;
 	m_Rect += ptOffset0 - m_Rect.CenterPoint();
+}
 
-	//Rotate rectangle
-	/*
-	CPoint ptCenter = m_Rect.CenterPoint();
-	float cx = ptCenter.x;
-	float cy = ptCenter.y;
-	CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, m_Rect.TopLeft());
-	m_Rect = CRect(ptRotated + CPoint(-m_Rect.Height(), 0), CSize(m_Rect.Height(), m_Rect.Width()));
-	*/
+void CShapePolyline::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/)
+{
+	CPoint ptOffset0 = m_Rect.CenterPoint();
+
+	int nCount = m_dwarrPointarr.GetSize();
+	CPoint *points = new CPoint[nCount];
+	for (int i = 0; i < m_dwarrPointarr.GetSize(); i++){
+		//Rotate points
+		CPoint point = CPoint(m_dwarrPointarr.GetAt(i));
+		CPoint ptCenter = CPoint(0, 0);
+
+		if (bUsePivot){
+			ptCenter = ptPivot;
+		}
+
+		float cx = ptCenter.x;
+		float cy = ptCenter.y;
+		CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
+		points[i] = ptRotated;
+	}
+	m_dwarrPointarr.RemoveAll();
+	this->Create(points, nCount);
+	delete(points);
+
+	CPoint ptOffset = CPoint(m_Rect.TopLeft().x < 0 ? -m_Rect.TopLeft().x : 0,
+		m_Rect.TopLeft().y < 0 ? -m_Rect.TopLeft().y : 0);
+
+	//Offset
+	if (bUsePivot){
+		m_Rect += ptOffset;
+		m_Rect += ptOffset0 - m_Rect.CenterPoint();
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

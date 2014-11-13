@@ -177,6 +177,7 @@ public:
 	void DoConntoId();
 	void DoPasteConnections(std::map<int,int> *pmapIdtoId,mapShapeIdtoObj_t *pmapIdtoObj);
 	virtual void DoRotate(float fAngle);//+Angle->counter clockwise ; -Angle->counter clockwise
+	virtual void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -577,6 +578,7 @@ public:
 	void DoConntoId(BOOL bOwn =FALSE,BOOL bChild =TRUE);
 	void DoPasteConnections(std::map<int,int> *pmapIdtoId,mapShapeIdtoObj_t *pmapIdtoObj);
 	virtual void DoRotate(float fAngle);
+	virtual void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -706,6 +708,7 @@ public:
 	//Get update rectangle when drawing a poly curve (when we place a segment, previous segment is changed)
 	virtual void GetRectUpdatePlace(CRect &rect);
 	virtual void DoRotate(float fAngle);
+	void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
