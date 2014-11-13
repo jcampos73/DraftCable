@@ -1460,9 +1460,32 @@ int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
 //p point to rotate
 CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 {
+	angle = fmod(angle, 360.0);
 	angle = angle * 2 * PI / 360;
-	float s = sin(angle);
-	float c = cos(angle);
+	float s;
+	float c;
+
+	if (angle == 0){
+		s = 0.0f;
+		c = 1.0f;
+	}
+	else if (angle == 90){
+		s = 1.0f;
+		c = 0.0f;
+	}
+	else if (angle == -90){
+		s = -1.0f;
+		c = 0.0f;
+	}
+	else if (angle == 180 || angle == -180){
+		s = 0.0f;
+		c = -1.0f;
+	}
+	else
+	{
+		s = sin(angle);
+		c = cos(angle);
+	}
 
 	// translate point back to origin:
 	p.x -= cx;

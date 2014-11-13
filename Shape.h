@@ -176,6 +176,7 @@ public:
 	BOOL IsEmpty( );
 	void DoConntoId();
 	void DoPasteConnections(std::map<int,int> *pmapIdtoId,mapShapeIdtoObj_t *pmapIdtoObj);
+	virtual void DoRotate(float fAngle);//+Angle->counter clockwise ; -Angle->counter clockwise
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -278,7 +279,6 @@ protected:
 	//Split rectangle in two rectangles of same size, following vector
 	static int SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2]);
 	static CPoint Rotate(float cx, float cy, float angle, CPoint p);
-	virtual void DoRotate(float fAngle);//+Angle->counter clockwise ; -Angle->counter clockwise
 
 	// Generated message map functions
 protected:
@@ -576,6 +576,7 @@ public:
 									CShapeContainer* lpShCont2);
 	void DoConntoId(BOOL bOwn =FALSE,BOOL bChild =TRUE);
 	void DoPasteConnections(std::map<int,int> *pmapIdtoId,mapShapeIdtoObj_t *pmapIdtoObj);
+	virtual void DoRotate(float fAngle);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -612,7 +613,6 @@ public:
 
 protected:
 	virtual void GetData(CStringArray& saData){return;};
-	virtual void DoRotate(float fAngle);
 
 	// Generated message map functions
 protected:
@@ -705,6 +705,7 @@ public:
 	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 	//Get update rectangle when drawing a poly curve (when we place a segment, previous segment is changed)
 	virtual void GetRectUpdatePlace(CRect &rect);
+	virtual void DoRotate(float fAngle);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -737,7 +738,6 @@ protected:
 			saData.Add(strAux);
 		}
 	};
-	virtual void DoRotate(float fAngle);
 
 	// Generated message map functions
 protected:

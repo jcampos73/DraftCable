@@ -109,6 +109,7 @@ protected:
 	virtual void GetData(CStringArray& saData){
 		saData.Add(m_sUnitName);
 	};
+	void DoRotate(float fAngle);
 
 	// Generated message map functions
 protected:

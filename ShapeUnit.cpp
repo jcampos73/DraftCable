@@ -1155,6 +1155,18 @@ BOOL CShapeUnit::Create(LPRECT lpRect,int nCount,int uiShapeType){
 	return result;
 }
 
+void CShapeUnit::DoRotate(float fAngle){
+
+	int i;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		CRect rectPrev = psh->m_Rect;
+		psh->m_Rect += this->m_Rect.TopLeft();;
+		psh->DoRotate(fAngle);
+		psh->m_Rect = rectPrev;
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // CShapePin
 /*IMPLEMENT_DYNCREATE(CShapePin, CShapeContainer)*/
