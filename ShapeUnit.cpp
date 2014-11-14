@@ -1168,22 +1168,30 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	float cx = ptCenter.x;
 	float cy = ptCenter.y;
 	CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
-	//Offset for bounding rectangle
 	CRect rectNext = CRect(CPoint(0, 0), ptRotated);
 	rectNext.NormalizeRect();
+
+	point = m_Rect.BottomRight();
+	ptCenter = m_Rect.TopLeft();
+	cx = ptCenter.x;
+	cy = ptCenter.y;
+	ptRotated = CShape::Rotate(cx, cy, fAngle, point);
+	CRect rectNext2 = CRect(m_Rect.TopLeft(), ptRotated);
+	rectNext2.NormalizeRect();
+
 	CPoint ptOffset = m_Rect.CenterPoint() - rectNext.CenterPoint();
-	CPoint ptOffset2 = m_Rect.TopLeft() - rectNext.TopLeft();
 
 	int i;
 	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
 		psh->m_Rect += this->m_Rect.TopLeft();
 		psh->DoRotate(fAngle, m_Rect.TopLeft(), TRUE);
-		psh->m_Rect -= rectNext.TopLeft();
+		psh->m_Rect -= rectNext2.TopLeft();
 	}
 
 	m_Rect = rectNext;
 	m_Rect += ptOffset;
+	m_Rect.NormalizeRect();
 }
 
 /////////////////////////////////////////////////////////////////////////////
