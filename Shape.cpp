@@ -1464,6 +1464,10 @@ CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 	float s;
 	float c;
 
+	angle *= PI / 180.0;
+	s = sin(angle);
+	c = cos(angle);
+	/*
 	if (angle == 0){
 		s = 0.0f;
 		c = 1.0f;
@@ -1485,6 +1489,7 @@ CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 		s = sin(angle);
 		c = cos(angle);
 	}
+	*/
 
 	// translate point back to origin:
 	p.x -= cx;
@@ -4334,7 +4339,7 @@ void CShapePolyline::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= T
 		points[i] = ptRotated;
 	}
 	m_dwarrPointarr.RemoveAll();
-	this->Create(points, nCount);
+	if (bUsePivot) this->Create(points, nCount);
 	delete(points);
 
 	CPoint ptOffset = CPoint(m_Rect.TopLeft().x < 0 ? -m_Rect.TopLeft().x : 0,

@@ -1161,7 +1161,9 @@ void CShapeUnit::DoRotate(float fAngle){
 
 void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/)
 {
-	//Rotate bounding rectangle
+	fAngle = 10.0f;
+
+	//Rotate bounding rectangle in origin
 	CRect rectPrev = this->m_Rect;
 	CPoint point = CPoint(m_Rect.Width(), m_Rect.Height());
 	CPoint ptCenter = CPoint(0, 0);
@@ -1171,6 +1173,7 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	CRect rectNext = CRect(CPoint(0, 0), ptRotated);
 	rectNext.NormalizeRect();
 
+	//Rotate bounding rectangle in position
 	point = m_Rect.BottomRight();
 	ptCenter = m_Rect.TopLeft();
 	cx = ptCenter.x;
@@ -1182,11 +1185,15 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	CPoint ptOffset = m_Rect.CenterPoint() - rectNext.CenterPoint();
 
 	int i;
-	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+	for (i = 0; i < 1/*m_obarrShapearr.GetSize()*/; i++){
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
 		psh->m_Rect += this->m_Rect.TopLeft();
-		psh->DoRotate(fAngle, m_Rect.TopLeft(), TRUE);
+		psh->DoRotate(fAngle, m_Rect.TopLeft(), TRUE/*i<=4*/);
 		psh->m_Rect -= rectNext2.TopLeft();
+	}
+
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+
 	}
 
 	m_Rect = rectNext;
