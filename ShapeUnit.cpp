@@ -1161,9 +1161,10 @@ void CShapeUnit::DoRotate(float fAngle){
 
 void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/)
 {
-	fAngle = 10.0f;
+	//fAngle = 10.0f;
 
 	//Rotate bounding rectangle in origin
+	/*
 	CRect rectPrev = this->m_Rect;
 	CPoint point = CPoint(m_Rect.Width(), m_Rect.Height());
 	CPoint ptCenter = CPoint(0, 0);
@@ -1172,8 +1173,11 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	CPoint ptRotated = CShape::Rotate(cx, cy, fAngle, point);
 	CRect rectNext = CRect(CPoint(0, 0), ptRotated);
 	rectNext.NormalizeRect();
+	*/
+	CRect rectNext=CRect(0,0,0,0);
 
 	//Rotate bounding rectangle in position
+	/*
 	point = m_Rect.BottomRight();
 	ptCenter = m_Rect.TopLeft();
 	cx = ptCenter.x;
@@ -1181,20 +1185,35 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	ptRotated = CShape::Rotate(cx, cy, fAngle, point);
 	CRect rectNext2 = CRect(m_Rect.TopLeft(), ptRotated);
 	rectNext2.NormalizeRect();
-
-	CPoint ptOffset = m_Rect.CenterPoint() - rectNext.CenterPoint();
+	*/
 
 	int i;
-	for (i = 0; i < 1/*m_obarrShapearr.GetSize()*/; i++){
+	CShape *pShPrev = NULL;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
 		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		if (pShPrev == psh) continue;
 		psh->m_Rect += this->m_Rect.TopLeft();
 		psh->DoRotate(fAngle, m_Rect.TopLeft(), TRUE/*i<=4*/);
-		psh->m_Rect -= rectNext2.TopLeft();
+		pShPrev = psh;
 	}
 
+	pShPrev = NULL;
 	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
-
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		if (pShPrev == psh) continue;
+		rectNext.UnionRect(rectNext, psh->m_Rect);
+		pShPrev = psh;
 	}
+
+	pShPrev = NULL;
+	for (i = 0; i < m_obarrShapearr.GetSize(); i++){
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+		if (pShPrev == psh) continue;
+		psh->m_Rect -= rectNext.TopLeft();
+		pShPrev = psh;
+	}
+
+	CPoint ptOffset = m_Rect.CenterPoint() - rectNext.CenterPoint();
 
 	m_Rect = rectNext;
 	m_Rect += ptOffset;
