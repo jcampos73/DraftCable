@@ -1461,7 +1461,6 @@ int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
 CPoint CShape::Rotate(float cx, float cy, float angle, CPoint p)
 {
 	angle = fmod(angle, 360.0);
-	angle = angle * 2 * PI / 360;
 	float s;
 	float c;
 
@@ -4325,6 +4324,7 @@ void CShapePolyline::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= T
 		CPoint ptCenter = CPoint(0, 0);
 
 		if (bUsePivot){
+			point += m_Rect.TopLeft();
 			ptCenter = ptPivot;
 		}
 
@@ -4341,7 +4341,7 @@ void CShapePolyline::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= T
 		m_Rect.TopLeft().y < 0 ? -m_Rect.TopLeft().y : 0);
 
 	//Offset
-	if (bUsePivot){
+	if (bUsePivot==FALSE){
 		m_Rect += ptOffset;
 		m_Rect += ptOffset0 - m_Rect.CenterPoint();
 	}
