@@ -13,15 +13,6 @@
 #define SHAPEUNIT_PINTYPE_MASK		0x000000ff
 #define SHAPEUNIT_PINTYPE_JACK		0x00000100
 
-/*
-typedef struct labeltag{
-CRect rect;
-CString slabel; //if vertical store here X\nX\nX\n
-CFont font;
-BOOL bver;
-} label;
-*/
-
 extern char **TABLE_PIN_LABEL;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -37,7 +28,6 @@ public:
 	BOOL CreateNGear(LPRECT lpRect,int nCount,float percDeep =25.0);
 	BOOL CreateNCross(LPRECT lpRect,int nCount,float percDeep =25.0);
 	BOOL Create(LPRECT lpRect,int nCount,int uiShapeType);
-	/*DECLARE_DYNCREATE(CShapeUnit)*/
 	DECLARE_SERIAL( CShapeUnit )
 
 // Attributes
@@ -132,7 +122,6 @@ public:
 	CShapePin();
 	CShapePin(UINT uiPinnumber,UINT uiPos=_DRAFTDRAW_SEL_RESIZING_RECT_S,DWORD dwStyle=0,cmddeque *cmddq =NULL);
 	CShapePin(CShapePin& ShPin);//Copy constructor
-	/*DECLARE_DYNCREATE(CShapePin)*/
 	DECLARE_SERIAL( CShapePin )
 
 // Attributes
@@ -200,7 +189,6 @@ class CShapeWire : public CShapeContainer
 // Construction
 public:
 	CShapeWire(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeWire)*/
 	DECLARE_SERIAL( CShapeWire )
 
 // Attributes
@@ -247,7 +235,6 @@ class CShapeLabel : public CShape
 // Construction
 public:
 	CShapeLabel(label *lpLbl =NULL,LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeLabel)*/
 	DECLARE_SERIAL( CShapeLabel )
 	BOOL Create(LPRECT lpRect,LPCTSTR lpszText,int nSize,BOOL bVer);
 
@@ -316,7 +303,6 @@ class CShapeFrmRect : public CShape
 // Construction
 public:
 	CShapeFrmRect(LPRECT lpRect =NULL,UINT nId =0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeFrmRect);*/
 	DECLARE_SERIAL( CShapeFrmRect );
 
 // Attributes
@@ -360,7 +346,7 @@ class CShapeJunction : public CShapeContainer
 // Construction
 public:
 	CShapeJunction();
-	DECLARE_DYNCREATE(CShapeJunction)
+	DECLARE_SERIAL(CShapeJunction)
 
 // Attributes
 public:
@@ -403,7 +389,6 @@ class CShapeBus : public CShapePolyline
 // Construction
 public:
 	CShapeBus(LPRECT lpRect =NULL,UINT nId =0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeBus)*/
 	DECLARE_SERIAL( CShapeBus )
 
 // Attributes

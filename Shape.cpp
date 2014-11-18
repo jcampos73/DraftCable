@@ -1822,7 +1822,7 @@ void CShapeLine::OnDraw(CDC *pDC)
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeRule
-IMPLEMENT_DYNCREATE(CShapeRule, CShape)
+IMPLEMENT_SERIAL(CShapeRule, CShape, 1)
 
 CShapeRule::CShapeRule()
 {
@@ -1868,83 +1868,74 @@ void CShapeRule::OnMouseMove(UINT nFlags, CPoint point)
 
 void CShapeRule::OnDraw(CDC *pDC)
 {
+	if(m_VectorProyect==CPoint3D(0,1,0)){
 
-	//if(!m_Rect.IsRectEmpty()){
-
-
-		if(m_VectorProyect==CPoint3D(0,1,0)){
-
-			CPoint point1=CPoint(m_Rect.TopLeft().x,0);
-			point1+=m_PointOrg;
+		CPoint point1=CPoint(m_Rect.TopLeft().x,0);
+		point1+=m_PointOrg;
 
 
-			CPoint point2=CPoint(m_Rect.BottomRight().x,point1.y);
+		CPoint point2=CPoint(m_Rect.BottomRight().x,point1.y);
 
-			pDC->MoveTo(point1);
-			pDC->LineTo(point2);
-			pDC->Ellipse(CRect(point1-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT),point1+CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT)));
-			pDC->Ellipse(CRect(point2-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT),point2+CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT)));
-			return;
-		}
-
-		CPoint point1=m_Rect.TopLeft();
-		CPoint point2=m_Rect.BottomRight();
-
-		pDC->MoveTo(m_Rect.TopLeft());
-		pDC->LineTo(m_Rect.BottomRight());
-/*
+		pDC->MoveTo(point1);
+		pDC->LineTo(point2);
 		pDC->Ellipse(CRect(point1-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT),point1+CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT)));
 		pDC->Ellipse(CRect(point2-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT),point2+CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT)));
-*/
+		return;
+	}
 
-		CPoint pt=m_Rect.TopLeft();
-		CPoint pt11=pt+CSize(m_offset1,m_offset2);
-		CPoint pt12=pt+CSize(m_offset3,m_offset4);
-		pt=m_Rect.BottomRight();
-		CPoint pt21=pt-CSize(m_offset3,m_offset4);
-		CPoint pt22=pt-CSize(m_offset1,m_offset2);
+	CPoint point1=m_Rect.TopLeft();
+	CPoint point2=m_Rect.BottomRight();
 
-		//if(!m_Mode==_DRAFTDRAW_MODE_SEL){
-		pDC->MoveTo(pt11);
-		pDC->LineTo(m_Rect.TopLeft());
-		pDC->LineTo(pt12);
-		pDC->MoveTo(pt21);
-		pDC->LineTo(m_Rect.BottomRight());
-		pDC->LineTo(pt22);
-		//}
+	pDC->MoveTo(m_Rect.TopLeft());
+	pDC->LineTo(m_Rect.BottomRight());
 
-		//Draw label
-		CFont font;
-		font.CreateFont(
-			16,							// nHeight
-			0,							// nWidth
-			0,							// nEscapement
-			0,							// nOrientation
-			FW_NORMAL,					// nWeight
-			FALSE,						// bItalic
-			FALSE,						// bUnderline
-			0,							// cStrikeOut
-			ANSI_CHARSET,				// nCharSet
-			OUT_DEFAULT_PRECIS,			// nOutPrecision
-			CLIP_DEFAULT_PRECIS,		// nClipPrecision
-			DEFAULT_QUALITY,			// nQuality
-			DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-			"Arial");					// lpszFacename
-		CString strLabel;
-		int height=m_Rect.Height();
-		int width=m_Rect.Width();
-		strLabel.Format("%.0f(%i,%i)",m_dfD,width,height);
-		CFont *font_prev=pDC->SelectObject(&font);
-		SIZE sz;
-		GetTextExtentPoint32(pDC->m_hDC, strLabel, strLabel.GetLength(), &sz);
-		pt=m_Rect.TopLeft()+CSize((width-sz.cx)*.5,(height-sz.cy)*.5);
-		pDC->DrawText(strLabel,CRect(pt,sz),DT_CENTER);
-		pDC->FrameRect(CRect(pt,sz),&CBrush(RGB(0,0,0)));
-		pDC->SelectObject(font_prev);
+	CPoint pt=m_Rect.TopLeft();
+	CPoint pt11=pt+CSize(m_offset1,m_offset2);
+	CPoint pt12=pt+CSize(m_offset3,m_offset4);
+	pt=m_Rect.BottomRight();
+	CPoint pt21=pt-CSize(m_offset3,m_offset4);
+	CPoint pt22=pt-CSize(m_offset1,m_offset2);
 
-		//to draw selections
-		CShape::OnDraw(pDC);
+	//if(!m_Mode==_DRAFTDRAW_MODE_SEL){
+	pDC->MoveTo(pt11);
+	pDC->LineTo(m_Rect.TopLeft());
+	pDC->LineTo(pt12);
+	pDC->MoveTo(pt21);
+	pDC->LineTo(m_Rect.BottomRight());
+	pDC->LineTo(pt22);
 	//}
+
+	//Draw label
+	CFont font;
+	font.CreateFont(
+		16,							// nHeight
+		0,							// nWidth
+		0,							// nEscapement
+		0,							// nOrientation
+		FW_NORMAL,					// nWeight
+		FALSE,						// bItalic
+		FALSE,						// bUnderline
+		0,							// cStrikeOut
+		ANSI_CHARSET,				// nCharSet
+		OUT_DEFAULT_PRECIS,			// nOutPrecision
+		CLIP_DEFAULT_PRECIS,		// nClipPrecision
+		DEFAULT_QUALITY,			// nQuality
+		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
+		"Arial");					// lpszFacename
+	CString strLabel;
+	int height=m_Rect.Height();
+	int width=m_Rect.Width();
+	strLabel.Format("%.0f(%i,%i)",m_dfD,width,height);
+	CFont *font_prev=pDC->SelectObject(&font);
+	SIZE sz;
+	GetTextExtentPoint32(pDC->m_hDC, strLabel, strLabel.GetLength(), &sz);
+	pt=m_Rect.TopLeft()+CSize((width-sz.cx)*.5,(height-sz.cy)*.5);
+	pDC->DrawText(strLabel,CRect(pt,sz),DT_CENTER);
+	pDC->FrameRect(CRect(pt,sz),&CBrush(RGB(0,0,0)));
+	pDC->SelectObject(font_prev);
+
+	//to draw selections
+	CShape::OnDraw(pDC);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2890,6 +2881,7 @@ void CShapeContainer::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= 
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeBoard
+IMPLEMENT_SERIAL(CShapeBoard, CShape, 1)
 
 CShapeBoard::CShapeBoard()
 {
@@ -2909,8 +2901,6 @@ CShapeBoard::~CShapeBoard()
 /*
 void CShapeBoard::OnLButtonDown(UINT nFlags, CPoint point)
 {
-
-
 	// code afecting bounding rectangle can be placed in base class
 	//CShape::OnLButtonDown(UINT nFlags, CPoint point);
 	int i;
@@ -2988,8 +2978,6 @@ void CShapeBoard::OnMouseMove(UINT nFlags, CPoint point)
 		float vector_x;
 		float vector_y;
 		bool flag_move=false;
-		
-
 
 		switch(m_VectorSelect){
 
@@ -3068,6 +3056,7 @@ void CShapeBoard::OnMouseMove(UINT nFlags, CPoint point)
 	}
 }
 */
+
 void CShapeBoard::OnDraw(CDC *pDC){
 
 	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){

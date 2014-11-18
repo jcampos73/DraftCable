@@ -32,7 +32,6 @@ char TABLE_PIN_LABEL[][256]={
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeUnit
-/*IMPLEMENT_DYNCREATE(CShapeUnit, CShapeContainer)*/
 IMPLEMENT_SERIAL(CShapeUnit, CShapeContainer, 1)
 
 CShapeUnit::CShapeUnit(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapeContainer(lpRect,nId,cmddq)
@@ -1222,7 +1221,6 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapePin
-/*IMPLEMENT_DYNCREATE(CShapePin, CShapeContainer)*/
 IMPLEMENT_SERIAL(CShapePin, CShapeContainer, 1)
 
 CShapePin::CShapePin()
@@ -1859,7 +1857,6 @@ void CShapePin::_DoCreateRectUnitPin(CPoint& point, CRect& rect1, CRect& rect2, 
 }
 /////////////////////////////////////////////////////////////////////////////
 // CShapeWire
-/*IMPLEMENT_DYNCREATE(CShapeWire, CShapeContainer)*/
 IMPLEMENT_SERIAL(CShapeWire, CShapeContainer, 1)
 
 CShapeWire::CShapeWire(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapeContainer(lpRect,nId,cmddq)
@@ -2809,7 +2806,6 @@ CString CShapeUnit::CutString(CString &strtext)
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeLabel
-/*IMPLEMENT_DYNCREATE(CShapeLabel, CShape)*/
 IMPLEMENT_SERIAL(CShapeLabel, CShape, 1)
 
 CShapeLabel::CShapeLabel(label *lpLbl/*=NULL*/,LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
@@ -3286,7 +3282,6 @@ void CShapeLabel::OnMouseMove(UINT nFlags, CPoint point)
 /////////////////////////////////////////////////////////////////////////////
 // CShapeFrmRect
 
-/*IMPLEMENT_DYNCREATE(CShapeFrmRect, CShape)*/
 IMPLEMENT_SERIAL(CShapeFrmRect, CShape, 1)
 
 CShapeFrmRect::CShapeFrmRect(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
@@ -3382,7 +3377,7 @@ void CShapeFrmRect::OnDraw(CDC *pDC)
 /////////////////////////////////////////////////////////////////////////////
 // CShapeJunction
 
-IMPLEMENT_DYNCREATE(CShapeJunction, CShapeContainer)
+IMPLEMENT_SERIAL(CShapeJunction, CShapeContainer, 1)
 
 CShapeJunction::CShapeJunction():CShapeContainer()
 {
@@ -3481,7 +3476,6 @@ void CShapeJunction::OnDraw(CDC *pDC)
 /////////////////////////////////////////////////////////////////////////////
 // CShapeBus
 
-/*IMPLEMENT_DYNCREATE(CShapeBus, CShape)*/
 IMPLEMENT_SERIAL(CShapeBus, CShapePolyline, 1)
 
 CShapeBus::CShapeBus(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapePolyline(lpRect,nId,cmddq)

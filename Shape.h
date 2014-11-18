@@ -103,7 +103,6 @@ class CShape : public CObject
 public:
 	CShape(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	CShape(CShape& Sh);//Copy constructor
-	/*DECLARE_DYNCREATE( CShape )*/
 	DECLARE_SERIAL( CShape )
 
 // Attributes
@@ -269,7 +268,6 @@ class CShapeRect : public CShape
 // Construction
 public:
 	CShapeRect(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeRect)*/
 	DECLARE_SERIAL( CShapeRect )
 
 // Attributes
@@ -314,7 +312,6 @@ class CShapeEllipse : public CShape
 // Construction
 public:
 	CShapeEllipse(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeEllipse)*/
 	DECLARE_SERIAL( CShapeEllipse )
 
 // Attributes
@@ -358,7 +355,6 @@ class CShapeLine : public CShape
 // Construction
 public:
 	CShapeLine(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeLine)*/
 	DECLARE_SERIAL( CShapeLine )
 
 // Attributes
@@ -401,7 +397,7 @@ class CShapeRule : public CShape
 // Construction
 public:
 	CShapeRule();
-	DECLARE_DYNCREATE(CShapeRule)
+	DECLARE_SERIAL( CShapeRule )
 
 // Attributes
 public:
@@ -506,7 +502,6 @@ class CShapeContainer : public CShape
 public:
 	CShapeContainer(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	CShapeContainer(CShapeContainer& ShCont);//Copy contructor
-	/*DECLARE_DYNCREATE(CShapeContainer)*/
 	DECLARE_SERIAL( CShapeContainer )
 
 // Attributes
@@ -602,14 +597,13 @@ class CShapeBoard : public CShapeContainer
 // Construction
 public:
 	CShapeBoard();
+	DECLARE_SERIAL(CShapeBoard)
 
 // Attributes
 public:
 	float m_Alfa;	//degress
 	float m_Beta;	//degress
 	float m_d;		//relative
-
-	
 
 // Operations
 public:
@@ -646,7 +640,6 @@ class CShapePolyline : public CShapeContainer
 // Construction
 public:
 	CShapePolyline(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapePolyline)*/
 	DECLARE_SERIAL( CShapePolyline )
 	//Create a polyline from an array of points
 	BOOL Create(LPPOINT lpPoints, int nCount);
@@ -769,7 +762,6 @@ class CShapePicture : public CShape
 // Construction
 public:
 	CShapePicture(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapePicture)*/
 	DECLARE_SERIAL( CShapePicture )
 
 // Attributes
@@ -820,7 +812,6 @@ class CShapeCurve : public CShapePolyline
 // Construction
 public:
 	CShapeCurve(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeCurve)*/
 	DECLARE_SERIAL( CShapeCurve )
 
 // Attributes
@@ -861,7 +852,6 @@ class CShapePolyArc : public CShapePolyline
 // Construction
 public:
 	CShapePolyArc(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
-	/*DECLARE_DYNCREATE(CShapeCurve)*/
 	DECLARE_SERIAL( CShapePolyArc )
 
 // Attributes
