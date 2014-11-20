@@ -3108,13 +3108,10 @@ void CShapeLabel::OnDraw(CDC *pDC){
 
 void CShapeLabel::Serialize( CArchive& archive )
 {
-
     // call base class function first
-    // base class is CObject in this case
+    // base class is CShape in this case
 	DoConntoId();
     CShape::Serialize( archive );
-
-    // now do the stuff for our specific class
 
     if( archive.IsStoring() ){
 		m_Label.font->Serialize(archive);
@@ -3147,7 +3144,6 @@ void CShapeLabel::Serialize( CArchive& archive )
 			archive>>m_Label.style;
 		}
 
-
 		LOGFONT lf;
 		ZeroMemory(&lf, sizeof(LOGFONT));
 
@@ -3167,7 +3163,6 @@ void CShapeLabel::Serialize( CArchive& archive )
 		m_Label.font=new CFont();
 		m_Label.font->CreateFontIndirect(&lf);
 	}
-
 }
 
 void CShapeLabel::SerializeXml(CXMLArchive& archive)
@@ -3185,11 +3180,7 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
 	CString text = archive.m_xmlDocPtr->GetData();
 
-	/*
-	fontSize.MakeUpper();
-	fontSize.Replace("PX", "");
-	*/
-
+	//Replace 'px' with regular expressions
 	int nPos = 0;
 	int nReplaced = 0;
 	CRegExp r;
@@ -3219,7 +3210,7 @@ void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)
 
 void CShapeLabel::SerializeGbr(CGbrioFile &gbrfile)
 {
-
+	//No implementation
 }
 
 void CShapeLabel::SerializeSvg(CSvgioFile &svgfile)
@@ -3232,6 +3223,7 @@ void CShapeLabel::SerializeSvg(CSvgioFile &svgfile)
 void CShapeLabel::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
+
 	if(!m_Mode){
 		m_Mode=1;
 		//Edit label
@@ -3305,35 +3297,15 @@ END_MESSAGE_MAP()
 */
 
 /////////////////////////////////////////////////////////////////////////////
-// CShapeRect message handlers
+// CShapeFrmRect message handlers
 //use this function to select
-/*
-void CShapeFrmRect::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	m_Point=point;
-	m_Rect=CRect(point,point);
-}
-*/
-/*
-void CShapeFrmRect::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	//m_Rect=CRect(point,point);
-}
-*/
 
 void CShapeFrmRect::Serialize( CArchive& archive )
 {
-    // call base class function first
-    // base class is CObject in this case
+    // Call base class function first
+    // base class is CShape in this case
     CShape::Serialize( archive );
 
-	// now do the stuff for our specific class
-	/*
-    if( archive.IsStoring() )
-        archive << m_Rect;
-    else
-        archive >> m_Rect;
-	*/
 }
 
 void CShapeFrmRect::SerializeDdw(CDdwioFile &ddwfile)
@@ -3356,9 +3328,9 @@ void CShapeFrmRect::OnDraw(CDC *pDC)
 
 			CRect rect=CRect(
 				m_Rect.TopLeft().x,
-				0/*m_Rect.TopLeft().y*/,
+				0,
 				m_Rect.BottomRight().x,
-				/*m_Rect.TopLeft().y*/-m_Height);
+				-m_Height);
 
 			pDC->Rectangle(rect+m_PointOrg);
 			return;
@@ -3417,59 +3389,25 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeJunction message handlers
-//use this function to select
-/*
-void CShapeJunction::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	m_Point=point;
-	m_Rect=CRect(point,point);
-}
-*/
-/*
-void CShapeJunction::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	//m_Rect=CRect(point,point);
-}
-*/
 
 void CShapeJunction::SerializeDdw(CDdwioFile &ddwfile)
 {
-	/*ddwfile.WriteRect(&m_Rect);*/
+	//No implementation
 }
 
 void CShapeJunction::OnDraw(CDC *pDC)
 {
-
 	if(!m_Mode){
 
 		CShape::OnDraw(pDC);
 	}
-
 	else if(!m_Rect.IsRectEmpty()){
 
-		/*if(m_VectorProyect==CPoint3D(0,1,0)){
-
-			CRect rect=CRect(
-				m_Rect.TopLeft().x,
-				0,
-				m_Rect.BottomRight().x,
-				-m_Height);
-
-			pDC->Rectangle(rect+m_PointOrg);
-			return;
-		}*/
-
-		/*
-		CPen *prev_pen=pDC->SelectObject(&m_Pen);
-		pDC->Rectangle(m_Rect);
-		pDC->SelectObject(prev_pen);
-		*/
 		pDC->MoveTo(m_Rect.TopLeft());
 		pDC->LineTo(m_Rect.BottomRight());
 
 		//to draw selections
 		CShape::OnDraw(pDC);
-
 	}
 }
 
@@ -3480,7 +3418,6 @@ IMPLEMENT_SERIAL(CShapeBus, CShapePolyline, 1)
 
 CShapeBus::CShapeBus(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapePolyline(lpRect,nId,cmddq)
 {
-
 	m_bLineResize=TRUE;
 }
 
@@ -3517,36 +3454,26 @@ void CShapeBus::OnDraw(CDC *pDC)
 
 void CShapeBus::SerializeGbr(CGbrioFile &gbrfile)
 {
-
+	//No implementation
 }
 
 void CShapeBus::Serialize( CArchive& archive )
 {
     // call base class function first
-    // base class is CObject in this case
+    // base class is CShapePolyline in this case
     CShapePolyline::Serialize( archive );
 
-    // now do the stuff for our specific class
-
     if( archive.IsStoring() ){
-        //archive << m_name << m_number;
+        //Do nothing
 	}
     else{
-		/*
-		int nCount;
-		CShape *pSh;
-		archive>>nCount;
-        archive >> pSh;
-		if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
-			m_Rect=pSh->m_Rect;
-		}
-		*/
+		//Do nothing
 	}
-
 }
 
 void CShapeBus::SerializeDdw(CDdwioFile &ddwfile)
 {
+	//Legacy code
 	int count=m_dwarrPointarr.GetSize();
 
 	CPoint *p=new CPoint[count];
@@ -3559,5 +3486,4 @@ void CShapeBus::SerializeDdw(CDdwioFile &ddwfile)
 	ddwfile.WriteUnit("*bus",p,count,std::string(m_strIdent+","+m_strTypeIdent).c_str());
 
 	delete(p);
-	
 }
