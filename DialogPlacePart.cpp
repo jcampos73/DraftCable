@@ -91,11 +91,8 @@ BOOL CDialogPlacePart::OnInitDialog()
 
 	}
 
-
-
 	m_lcPart.InsertColumn(0,"Part",LVCFMT_LEFT,100,0);
 	m_sPart="";
-
 
 	HANDLE handle=::FindFirstFile(sPath,&FindFileData);
 
@@ -173,15 +170,16 @@ BOOL CDialogPlacePart::OnInitDialog()
 	*/
 
 	//Align part viewer with other controls
-	CRect rect0,rect, rect1, rect2;
+	CRect rect0, rect, rect1, rect2;
 	m_pPPView->GetWindowRect(&rect0);
 	m_cbLibrary.GetWindowRect(&rect);
 	m_lcPart.GetWindowRect(&rect1);
 	CWnd* pButton=GetDlgItem(IDC_BUTTON_NEWLIB);
 	pButton->GetWindowRect(&rect2);
+	ScreenToClient(&rect0);
 	ScreenToClient(&rect);
 	ScreenToClient(&rect1);
-	ScreenToClient(&rect0);
+	ScreenToClient(&rect2);
 	m_pPPView->SetWindowPos(0,rect.left,rect1.top,rect2.left-rect.left,rect1.Height(),SWP_NOZORDER);
 	
 	//Enable buttons
