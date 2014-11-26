@@ -1,3 +1,14 @@
+DraftCable 1.09
+26/11/2014
+==========
+
+NEW FEATURES
+
+1. Included basic support for SVG files read/write
+2. Gradient fill of shapes
+3. Included basic support for rotate shapes
+4. Included new libraries: Pipes and Passive components
+
 DraftCable 1.08
 28/04/2014
 ==========

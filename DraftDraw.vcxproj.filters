@@ -673,8 +673,6 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Test.txt">
-      <Filter>Source Files</Filter>
-    </Text>
+    <Text Include="Test.txt" />
   </ItemGroup>
 </Project>
