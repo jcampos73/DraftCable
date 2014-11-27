@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CPartPView, CView)
 	//{{AFX_MSG_MAP(CPartPView)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
+	ON_WM_MOUSEACTIVATE()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -110,3 +111,12 @@ void CPartPView::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CPartPView message handlers
+
+
+int CPartPView::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
+{
+	// This method needs to be overridden to prevent an assertion
+	// As described here
+	// http://www.codeguru.com/cpp/w-d/dislog/article.php/c5007/Creating-a-View-on-a-Dialog.htm
+	return MA_ACTIVATE;
+}
