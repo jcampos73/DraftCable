@@ -141,7 +141,7 @@ CDraftDrawDoc::CDraftDrawDoc()
 	m_pDocRack=NULL;
 	m_iIdPart=0;
 
-	
+	m_pDlgPlacePart = NULL;
 }
 
 CDraftDrawDoc::~CDraftDrawDoc()
@@ -2471,13 +2471,17 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			//Reset all current drawing operations
 			ResetAllDrwOpe();
 
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+			//Construct place part dialog
+			if(m_pDlgPlacePart != NULL){
+				delete(m_pDlgPlacePart);
+			}
+			m_pDlgPlacePart =  new CDialogPlacePart();;
+			m_pDlgPlacePart->Create(IDD_PLACEPART2, AfxGetMainWnd());
+			m_pDlgPlacePart->ShowWindow(SW_SHOW);
+#else
 			//Construct place part dialog
 			CDialogPlacePart *dialog = new CDialogPlacePart();
-
-#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
-			dialog->Create(IDD_PLACEPART2, AfxGetMainWnd());
-			dialog->ShowWindow(SW_SHOW);
-#else
 			if(dialog->DoModal()==IDOK){
 
 				m_iToolSel=_TOOLPLACE_DRAFTCABLE;

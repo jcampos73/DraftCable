@@ -64,6 +64,8 @@ BEGIN_MESSAGE_MAP(CDialogPlacePart, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_ALL, OnCheckAll)
 	//}}AFX_MSG_MAP
 	ON_BN_CLICKED(IDC_BUTTON_IMPLIB, &CDialogPlacePart::OnBnClickedButtonImplib)
+//	ON_NOTIFY(HDN_ITEMDBLCLICK, 0, &CDialogPlacePart::OnItemdblclickListpart)
+ON_NOTIFY(NM_DBLCLK, IDC_LISTPART, &CDialogPlacePart::OnDblclkListpart)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -854,4 +856,11 @@ void CDialogPlacePart::OnBnClickedButtonImplib()
 {
 	//Do import library
 	DoImportLibrary();
+}
+
+void CDialogPlacePart::OnDblclkListpart(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: Add your control notification handler code here
+	*pResult = 0;
 }

@@ -72,6 +72,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedButtonImplib();
+//	afx_msg void OnItemdblclickListpart(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnDblclkListpart(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 //{{AFX_INSERT_LOCATION}}

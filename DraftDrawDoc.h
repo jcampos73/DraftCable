@@ -11,8 +11,11 @@
 
 #include "Shape.h"
 #include "PLexdoc.h"
-#include "OMParser.h"		//Object model parser
+#include "OMParser.h"			//Object model parser
 #include "ShArray.h"			//Screen array
+
+#include "Resource.h"
+#include "DialogPlacePart.h"
 
 //04/12/2004
 //View types
@@ -265,6 +268,9 @@ protected:
 	//Added temporary to insert TBEditView in project
 	CStringArray m_straCable1;
 	CStringArray m_straCable2;
+
+	//Pointer to non modal place part
+	CDialogPlacePart* m_pDlgPlacePart;
 
 	//There are two views supported:
 	//0 ->  schematic
