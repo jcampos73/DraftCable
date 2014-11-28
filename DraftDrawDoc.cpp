@@ -2472,21 +2472,28 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			ResetAllDrwOpe();
 
 			//Construct place part dialog
-			CDialogPlacePart dialog;
+			CDialogPlacePart *dialog = new CDialogPlacePart();
 
-			if(dialog.DoModal()==IDOK){
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+			dialog->Create(IDD_PLACEPART2, AfxGetMainWnd());
+			dialog->ShowWindow(SW_SHOW);
+#else
+			if(dialog->DoModal()==IDOK){
 
 				m_iToolSel=_TOOLPLACE_DRAFTCABLE;
 				m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 				m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-				m_pSh->LoadUnit(dialog.m_sLibrary+"."+dialog.m_sPart);
+				m_pSh->LoadUnit(dialog->m_sLibrary+"."+dialog->m_sPart);
 				m_pSh->m_pCursorArray=m_CursorArray;
 				m_iCursor=11;
 
 				AddObject(m_pSh);
 				m_pSh->OnLButtonDown(0, CPoint(0,0));
-				}
+			}
+
+			delete(dialog);
+#endif
 
 			}
 			return TRUE;

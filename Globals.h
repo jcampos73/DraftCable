@@ -19,6 +19,10 @@
 //Loads polylines into array for unit loading,
 //instead of loading them embedded
 #define DCABLE_SHUNIT_LOAD_POLYLINES_INTO_ARRAY
+//28/11/2014
+//For developping not modal place part dialog
+//#define DCABLE_PLACEPART_DIALOG_NOT_MODAL
+
 
 //This parameter is used:
 //-To calcule update region when rotating pins = DCABLE_GRID_DEFAULT * 2
