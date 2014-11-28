@@ -7,6 +7,7 @@
 #include "NameDlg.h"
 
 #include "Importer.h"
+#include "DraftDrawView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,9 +27,10 @@ CDialogPlacePart::CDialogPlacePart(CWnd* pParent /*=NULL*/,DWORD dwType /*=0*/)
 	//}}AFX_DATA_INIT
 	int iData=IDD;
 	m_dwType=dwType;
-	m_bFlagNew=FALSE;//clear new flag
-	m_bFlagHdlItemChanged=TRUE;//enables hadling of item changed event
-	m_bFlagHdlItemChanged1=TRUE;//disables handling of item changed event for 1 time
+	m_bFlagNew=FALSE;				//clear new flag
+	m_bFlagHdlItemChanged=TRUE;		//enables hadling of item changed event
+	m_bFlagHdlItemChanged1=TRUE;	//disables handling of item changed event for 1 time
+	m_bDragging = FALSE;			//for dragging operations
 
 	//Create part viewer
 	if(iData=IDD_PLACEPART2){
@@ -66,6 +68,9 @@ BEGIN_MESSAGE_MAP(CDialogPlacePart, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_IMPLIB, &CDialogPlacePart::OnBnClickedButtonImplib)
 //	ON_NOTIFY(HDN_ITEMDBLCLICK, 0, &CDialogPlacePart::OnItemdblclickListpart)
 ON_NOTIFY(NM_DBLCLK, IDC_LISTPART, &CDialogPlacePart::OnDblclkListpart)
+ON_WM_MOUSEMOVE()
+ON_WM_LBUTTONUP()
+ON_NOTIFY(LVN_BEGINDRAG, IDC_LISTPART, &CDialogPlacePart::OnBegindragListpart)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -269,6 +274,12 @@ void CDialogPlacePart::OnOK()
 		int nIndex=m_cbLibrary.GetCurSel();
 
 		m_cbLibrary.GetLBText(nIndex,m_sLibrary);
+
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+		DoGetLibraryAndPart();
+		CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+		pDoc->SetShapeToPlace(m_sLibrary, m_sPart);
+#endif
 
 		CDialog::OnOK();
 
@@ -861,31 +872,215 @@ void CDialogPlacePart::OnBnClickedButtonImplib()
 void CDialogPlacePart::OnDblclkListpart(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: Add your control notification handler code here
-#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
-	POSITION pos = m_lcPart.GetFirstSelectedItemPosition();
 
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+	DoGetLibraryAndPart();
+	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+	pDoc->SetShapeToPlace(m_sLibrary, m_sPart);
+#endif
+
+	*pResult = 0;
+}
+
+
+void CDialogPlacePart::OnMouseMove(UINT nFlags, CPoint point)
+{
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+	//While the mouse is moving, this routine is called.
+	//This routine will redraw the drag image at the present
+	// mouse location to display the dragging.
+	//Also, while over a CListCtrl, this routine will highlight
+	// the item we are hovering over.
+
+	//// If we are in a drag/drop procedure (m_bDragging is true)
+	if (m_bDragging)
+	{
+		//// Move the drag image
+		CPoint pt(point);	//get our current mouse coordinates
+		ClientToScreen(&pt); //convert to screen coordinates
+		m_pDragImage->DragMove(pt); //move the drag image to those coordinates
+		// Unlock window updates (this allows the dragging image to be shown smoothly)
+		m_pDragImage->DragShowNolock(false);
+
+		//// Get the CWnd pointer of the window that is under the mouse cursor
+		CWnd* pDropWnd = WindowFromPoint(pt);
+		ASSERT(pDropWnd); //make sure we have a window
+
+		//// If we drag outside current window we need to adjust the highlights displayed
+		if (pDropWnd != m_pDropWnd)
+		{
+			if (m_nDropIndex != -1) //If we drag over the CListCtrl header, turn off the hover highlight
+			{
+				TRACE("m_nDropIndex is -1\n");
+				CListCtrl* pList = (CListCtrl*)m_pDropWnd;
+				VERIFY(pList->SetItemState(m_nDropIndex, 0, LVIS_DROPHILITED));
+				// redraw item
+				VERIFY(pList->RedrawItems(m_nDropIndex, m_nDropIndex));
+				pList->UpdateWindow();
+				m_nDropIndex = -1;
+			}
+			else //If we drag out of the CListCtrl altogether
+			{
+				TRACE("m_nDropIndex is not -1\n");
+				CListCtrl* pList = (CListCtrl*)m_pDropWnd;
+				int i = 0;
+				int nCount = pList->GetItemCount();
+				for (i = 0; i < nCount; i++)
+				{
+					pList->SetItemState(i, 0, LVIS_DROPHILITED);
+				}
+				pList->RedrawItems(0, nCount);
+				pList->UpdateWindow();
+			}
+		}
+
+		// Save current window pointer as the CListCtrl we are dropping onto
+		m_pDropWnd = pDropWnd;
+
+		// Convert from screen coordinates to drop target client coordinates
+		pDropWnd->ScreenToClient(&pt);
+
+		//If we are hovering over a CListCtrl we need to adjust the highlights
+		if (pDropWnd->IsKindOf(RUNTIME_CLASS(CListCtrl)))
+		{
+			//Note that we can drop here
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
+			UINT uFlags;
+			CListCtrl* pList = (CListCtrl*)pDropWnd;
+
+			// Turn off hilight for previous drop target
+			pList->SetItemState(m_nDropIndex, 0, LVIS_DROPHILITED);
+			// Redraw previous item
+			pList->RedrawItems(m_nDropIndex, m_nDropIndex);
+
+			// Get the item that is below cursor
+			m_nDropIndex = ((CListCtrl*)pDropWnd)->HitTest(pt, &uFlags);
+			// Highlight it
+			pList->SetItemState(m_nDropIndex, LVIS_DROPHILITED, LVIS_DROPHILITED);
+			// Redraw item
+			pList->RedrawItems(m_nDropIndex, m_nDropIndex);
+			pList->UpdateWindow();
+		}
+		else
+		{
+			//If we are not hovering over a CListCtrl, change the cursor
+			// to note that we cannot drop here
+			SetCursor(LoadCursor(NULL, IDC_NO));
+		}
+		// Lock window updates
+		m_pDragImage->DragShowNolock(true);
+	}
+
+	CDialog::OnMouseMove(nFlags, point);
+#endif
+}
+
+
+void CDialogPlacePart::OnLButtonUp(UINT nFlags, CPoint point)
+{
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+	//This routine is the end of the drag/drop operation.
+	//When the button is released, we are to drop the item.
+	//There are a few things we need to do to clean up and
+	// finalize the drop:
+	//	1) Release the mouse capture
+	//	2) Set m_bDragging to false to signify we are not dragging
+	//	3) Actually drop the item (we call a separate function to do that)
+
+	//If we are in a drag and drop operation (otherwise we don't do anything)
+	if (m_bDragging)
+	{
+		// Release mouse capture, so that other controls can get control/messages
+		ReleaseCapture();
+
+		// Note that we are NOT in a drag operation
+		m_bDragging = FALSE;
+
+		// End dragging image
+		m_pDragImage->DragLeave(GetDesktopWindow());
+		m_pDragImage->EndDrag();
+		delete m_pDragImage; //must delete it because it was created at the beginning of the drag
+
+		CPoint pt(point); //Get current mouse coordinates
+		ClientToScreen(&pt); //Convert to screen coordinates
+		// Get the CWnd pointer of the window that is under the mouse cursor
+		CWnd* pDropWnd = WindowFromPoint(pt);
+		ASSERT(pDropWnd); //make sure we have a window pointer
+		// If window is CListCtrl, we perform the drop
+		if (pDropWnd->IsKindOf(RUNTIME_CLASS(CDraftDrawView)))
+		{
+			/*
+			m_pDropList = (CListCtrl*)pDropWnd; //Set pointer to the list we are dropping on
+			DropItemOnList(m_pDragList, m_pDropList); //Call routine to perform the actual drop
+			*/
+			DoGetLibraryAndPart();
+			CDraftDrawDoc* pDoc = ((CDraftDrawView*)pDropWnd)->GetDocument();
+			pDoc->SetShapeToPlace(m_sLibrary, m_sPart);
+		}
+	}
+#endif
+	CDialog::OnLButtonUp(nFlags, point);
+}
+
+void CDialogPlacePart::DoGetLibraryAndPart()
+{
+	POSITION pos = m_lcPart.GetFirstSelectedItemPosition();
 	if (pos){
 		int nItem = m_lcPart.GetNextSelectedItem(pos);
 		m_sPart = m_lcPart.GetItemText(nItem, 0);
 		int nIndex = m_cbLibrary.GetCurSel();
 		m_cbLibrary.GetLBText(nIndex, m_sLibrary);
 	}
+}
 
-	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+void CDialogPlacePart::OnBegindragListpart(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 
-	pDoc->m_iToolSel = _TOOLPLACE_DRAFTCABLE;
-	pDoc->m_iToolType = _TOOLTYPENORMAL_DRAFTCABLE;
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+	//This routine sets the parameters for a Drag and Drop operation.
+	//It sets some variables to track the Drag/Drop as well
+	// as creating the drag image to be shown during the drag.
 
-	pDoc->ResetAllDrwOpe();
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 
-	pDoc->m_pSh = new CShapeUnit(NULL, 0, pDoc->cmdDeque);
-	pDoc->m_pSh->LoadUnit(m_sLibrary + "." + m_sPart);
-	pDoc->m_pSh->m_pCursorArray = pDoc->m_CursorArray;
-	pDoc->m_iCursor = 11;
+	//// Save the index of the item being dragged in m_nDragIndex
+	////  This will be used later for retrieving the info dragged
+	m_nDragIndex = pNMListView->iItem;
 
-	pDoc->AddObject(pDoc->m_pSh);
-	pDoc->m_pSh->OnLButtonDown(0, CPoint(0, 0));
+	//// Create a drag image
+	POINT pt;
+	int nOffset = -10; //offset in pixels for drag image
+	pt.x = nOffset;
+	pt.y = nOffset;
+
+	m_pDragImage = m_lcPart.CreateDragImage(m_nDragIndex, &pt);
+	ASSERT(m_pDragImage); //make sure it was created
+	//We will call delete later (in LButtonUp) to clean this up
+
+	CBitmap bitmap;
+	/*
+	if (m_lcPart.GetSelectedCount() > 1) //more than 1 item in list is selected
+		//bitmap.LoadBitmap(IDB_BITMAP_MULTI);
+		bitmap.LoadBitmap(IDB_BITMAP_MULTI_BOXES);
+	else
+		bitmap.LoadBitmap(IDB_BITMAP_BOX);
+	*/
+	m_pDragImage->Replace(0, &bitmap, &bitmap);
+
+	//// Change the cursor to the drag image
+	////	(still must perform DragMove() in OnMouseMove() to show it moving)
+	m_pDragImage->BeginDrag(0, CPoint(nOffset, nOffset - 4));
+	m_pDragImage->DragEnter(GetDesktopWindow(), pNMListView->ptAction);
+
+	//// Set dragging flag and others
+	m_bDragging = TRUE;	//we are in a drag and drop operation
+	m_nDropIndex = -1;	//we don't have a drop index yet
+	m_pDragList = &m_lcPart; //make note of which list we are dragging from
+	m_pDropWnd = &m_lcPart;	//at present the drag list is the drop list
+
+	//// Capture all mouse messages
+	SetCapture();
 #endif
 
 	*pResult = 0;

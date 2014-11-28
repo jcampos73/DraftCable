@@ -130,6 +130,7 @@ public:
 	virtual void SetPathName1( LPCTSTR lpszPathName, BOOL bAddToMRU = TRUE );
 	void SetModifiedFlag( BOOL bModified = TRUE );
 	BOOL IsModified( );
+	void SetShapeToPlace(CString library, CString part);
 
 // Overrides
 	// ClassWizard generated virtual function overrides

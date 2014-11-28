@@ -21,7 +21,7 @@
 #define DCABLE_SHUNIT_LOAD_POLYLINES_INTO_ARRAY
 //28/11/2014
 //For developping not modal place part dialog
-//#define DCABLE_PLACEPART_DIALOG_NOT_MODAL
+#define DCABLE_PLACEPART_DIALOG_NOT_MODAL
 
 
 //This parameter is used:

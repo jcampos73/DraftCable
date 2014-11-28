@@ -6820,3 +6820,17 @@ void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
 	}
 
 }
+
+void CDraftDrawDoc::SetShapeToPlace(CString library, CString part)
+{
+	m_iToolSel = _TOOLPLACE_DRAFTCABLE;
+	m_iToolType = _TOOLTYPENORMAL_DRAFTCABLE;
+
+	m_pSh = new CShapeUnit(NULL, 0, cmdDeque);
+	m_pSh->LoadUnit(library + "." + part);
+	m_pSh->m_pCursorArray = m_CursorArray;
+	m_iCursor = 11;
+
+	AddObject(m_pSh);
+	m_pSh->OnLButtonDown(0, CPoint(0, 0));
+}
