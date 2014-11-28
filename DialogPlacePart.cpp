@@ -862,5 +862,31 @@ void CDialogPlacePart::OnDblclkListpart(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: Add your control notification handler code here
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL
+	POSITION pos = m_lcPart.GetFirstSelectedItemPosition();
+
+	if (pos){
+		int nItem = m_lcPart.GetNextSelectedItem(pos);
+		m_sPart = m_lcPart.GetItemText(nItem, 0);
+		int nIndex = m_cbLibrary.GetCurSel();
+		m_cbLibrary.GetLBText(nIndex, m_sLibrary);
+	}
+
+	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
+
+	pDoc->m_iToolSel = _TOOLPLACE_DRAFTCABLE;
+	pDoc->m_iToolType = _TOOLTYPENORMAL_DRAFTCABLE;
+
+	pDoc->ResetAllDrwOpe();
+
+	pDoc->m_pSh = new CShapeUnit(NULL, 0, pDoc->cmdDeque);
+	pDoc->m_pSh->LoadUnit(m_sLibrary + "." + m_sPart);
+	pDoc->m_pSh->m_pCursorArray = pDoc->m_CursorArray;
+	pDoc->m_iCursor = 11;
+
+	pDoc->AddObject(pDoc->m_pSh);
+	pDoc->m_pSh->OnLButtonDown(0, CPoint(0, 0));
+#endif
+
 	*pResult = 0;
 }
