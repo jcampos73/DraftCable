@@ -653,6 +653,9 @@
   <ItemGroup>
     <Text Include="Test.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bmp_box.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -89,6 +89,7 @@
 #define IDB_MENU_POLYGON_L              207
 #define IDD_FILLSHAPE                   207
 #define IDB_MENU_POLYGON_STRAIGHT       208
+#define IDB_BITMAP_BOX                  209
 #define IDC_ALIAS                       1000
 #define IDC_VERTICAL                    1001
 #define IDC_LIST1                       1001
@@ -260,7 +261,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        208
+#define _APS_NEXT_RESOURCE_VALUE        210
 #define _APS_NEXT_COMMAND_VALUE         32863
 #define _APS_NEXT_CONTROL_VALUE         1072
 #define _APS_NEXT_SYMED_VALUE           101

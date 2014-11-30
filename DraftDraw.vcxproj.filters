@@ -675,4 +675,9 @@
   <ItemGroup>
     <Text Include="Test.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bmp_box.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

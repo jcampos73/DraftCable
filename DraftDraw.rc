@@ -1005,6 +1005,7 @@ IDB_MENU_POLYGON_NCROSS BITMAP                  "res\\bmp00016.bmp"
 IDB_MENU_POLYGON_T      BITMAP                  "res\\bmp00017.bmp"
 IDB_MENU_POLYGON_L      BITMAP                  "res\\bmp00019.bmp"
 IDB_MENU_POLYGON_STRAIGHT BITMAP                  "res\\bmp00018.bmp"
+IDB_BITMAP_BOX          BITMAP                  "res\\bmp_box.bmp"
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

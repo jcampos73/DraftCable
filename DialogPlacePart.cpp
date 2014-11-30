@@ -961,6 +961,11 @@ void CDialogPlacePart::OnMouseMove(UINT nFlags, CPoint point)
 			pList->RedrawItems(m_nDropIndex, m_nDropIndex);
 			pList->UpdateWindow();
 		}
+		else if (pDropWnd->IsKindOf(RUNTIME_CLASS(CDraftDrawView)))
+		{
+			//Note that we can drop here
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
+		}
 		else
 		{
 			//If we are not hovering over a CListCtrl, change the cursor
@@ -1059,13 +1064,13 @@ void CDialogPlacePart::OnBegindragListpart(NMHDR *pNMHDR, LRESULT *pResult)
 	//We will call delete later (in LButtonUp) to clean this up
 
 	CBitmap bitmap;
-	/*
 	if (m_lcPart.GetSelectedCount() > 1) //more than 1 item in list is selected
 		//bitmap.LoadBitmap(IDB_BITMAP_MULTI);
-		bitmap.LoadBitmap(IDB_BITMAP_MULTI_BOXES);
+		//bitmap.LoadBitmap(IDB_BITMAP_MULTI_BOXES);
+		bitmap.LoadBitmap(IDB_BITMAP_BOX);
 	else
 		bitmap.LoadBitmap(IDB_BITMAP_BOX);
-	*/
+
 	m_pDragImage->Replace(0, &bitmap, &bitmap);
 
 	//// Change the cursor to the drag image
