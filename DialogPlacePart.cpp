@@ -1030,15 +1030,17 @@ void CDialogPlacePart::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialog::OnLButtonUp(nFlags, point);
 }
 
-void CDialogPlacePart::DoGetLibraryAndPart()
+int CDialogPlacePart::DoGetLibraryAndPart()
 {
 	POSITION pos = m_lcPart.GetFirstSelectedItemPosition();
+	int nIndex = -1;
 	if (pos){
 		int nItem = m_lcPart.GetNextSelectedItem(pos);
 		m_sPart = m_lcPart.GetItemText(nItem, 0);
-		int nIndex = m_cbLibrary.GetCurSel();
+		nIndex = m_cbLibrary.GetCurSel();
 		m_cbLibrary.GetLBText(nIndex, m_sLibrary);
 	}
+	return nIndex;
 }
 
 void CDialogPlacePart::OnBegindragListpart(NMHDR *pNMHDR, LRESULT *pResult)
