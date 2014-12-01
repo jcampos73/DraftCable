@@ -907,7 +907,8 @@ void CDialogPlacePart::OnMouseMove(UINT nFlags, CPoint point)
 		ASSERT(pDropWnd); //make sure we have a window
 
 		//// If we drag outside current window we need to adjust the highlights displayed
-		if (pDropWnd != m_pDropWnd)
+		BOOL bDiasableLstUdate_ = TRUE;
+		if (bDiasableLstUdate_ == FALSE && pDropWnd != m_pDropWnd)
 		{
 			if (m_nDropIndex != -1) //If we drag over the CListCtrl header, turn off the hover highlight
 			{
@@ -948,18 +949,20 @@ void CDialogPlacePart::OnMouseMove(UINT nFlags, CPoint point)
 			UINT uFlags;
 			CListCtrl* pList = (CListCtrl*)pDropWnd;
 
-			// Turn off hilight for previous drop target
-			pList->SetItemState(m_nDropIndex, 0, LVIS_DROPHILITED);
-			// Redraw previous item
-			pList->RedrawItems(m_nDropIndex, m_nDropIndex);
+			if (bDiasableLstUdate_ == FALSE){
+				// Turn off hilight for previous drop target
+				pList->SetItemState(m_nDropIndex, 0, LVIS_DROPHILITED);
+				// Redraw previous item
+				pList->RedrawItems(m_nDropIndex, m_nDropIndex);
 
-			// Get the item that is below cursor
-			m_nDropIndex = ((CListCtrl*)pDropWnd)->HitTest(pt, &uFlags);
-			// Highlight it
-			pList->SetItemState(m_nDropIndex, LVIS_DROPHILITED, LVIS_DROPHILITED);
-			// Redraw item
-			pList->RedrawItems(m_nDropIndex, m_nDropIndex);
-			pList->UpdateWindow();
+				// Get the item that is below cursor
+				m_nDropIndex = ((CListCtrl*)pDropWnd)->HitTest(pt, &uFlags);
+				// Highlight it
+				pList->SetItemState(m_nDropIndex, LVIS_DROPHILITED, LVIS_DROPHILITED);
+				// Redraw item
+				pList->RedrawItems(m_nDropIndex, m_nDropIndex);
+				pList->UpdateWindow();
+			}
 		}
 		else if (pDropWnd->IsKindOf(RUNTIME_CLASS(CDraftDrawView)))
 		{
