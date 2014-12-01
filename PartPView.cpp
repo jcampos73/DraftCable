@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "DraftDraw.h"
 #include "PartPView.h"
+#include "DialogPlacePart.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,7 +37,18 @@ BEGIN_MESSAGE_MAP(CPartPView, CView)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
 	ON_WM_MOUSEACTIVATE()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CPartPView operations
+
+void CPartPView::SetPlacePartDlg(CWnd *pPlacePartDlg)
+{
+	m_pPlacePartDlg = pPlacePartDlg;
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CPartPView drawing
@@ -119,4 +131,77 @@ int CPartPView::OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message)
 	// As described here
 	// http://www.codeguru.com/cpp/w-d/dislog/article.php/c5007/Creating-a-View-on-a-Dialog.htm
 	return MA_ACTIVATE;
+}
+
+
+void CPartPView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnLButtonDown(nFlags, point);
+
+#ifdef DCABLE_PLACEPART_DIALOG_NOT_MODAL_dev
+
+	//This routine sets the parameters for a Drag and Drop operation.
+	//It sets some variables to track the Drag/Drop as well
+	// as creating the drag image to be shown during the drag.
+
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+
+	//// Save the index of the item being dragged in m_nDragIndex
+	////  This will be used later for retrieving the info dragged
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_nDragIndex = pNMListView->iItem;
+
+	//// Create a drag image
+	POINT pt;
+	int nOffset = -10; //offset in pixels for drag image
+	pt.x = nOffset;
+	pt.y = nOffset;
+
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDragImage =
+		m_lcPart.CreateDragImage(((CDialogPlacePart*)m_pPlacePartDlg)->m_nDragIndex, &pt);
+	ASSERT(m_pPlacePartDlg->m_pDragImage); //make sure it was created
+	//We will call delete later (in LButtonUp) to clean this up
+
+	CBitmap bitmap;
+	if (m_lcPart.GetSelectedCount() > 1) //more than 1 item in list is selected
+		//bitmap.LoadBitmap(IDB_BITMAP_MULTI);
+		//bitmap.LoadBitmap(IDB_BITMAP_MULTI_BOXES);
+		bitmap.LoadBitmap(IDB_BITMAP_BOX);
+	else
+		bitmap.LoadBitmap(IDB_BITMAP_BOX);
+
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDragImage->Replace(0, &bitmap, &bitmap);
+
+	//// Change the cursor to the drag image
+	////	(still must perform DragMove() in OnMouseMove() to show it moving)
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDragImage->BeginDrag(0, CPoint(nOffset, nOffset - 4));
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDragImage->DragEnter(GetDesktopWindow(), pNMListView->ptAction);
+
+	//// Set dragging flag and others
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_bDragging = TRUE;	//we are in a drag and drop operation
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_nDropIndex = -1;	//we don't have a drop index yet
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDragList = &m_lcPart; //make note of which list we are dragging from
+	((CDialogPlacePart*)m_pPlacePartDlg)->m_pDropWnd = &m_lcPart;	//at present the drag list is the drop list
+
+	//// Capture all mouse messages
+	SetCapture();
+
+#endif
+}
+
+
+void CPartPView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnLButtonUp(nFlags, point);
+}
+
+
+void CPartPView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnMouseMove(nFlags, point);
 }

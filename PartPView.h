@@ -19,9 +19,11 @@ protected:
 // Attributes
 public:
 	CShape *m_pShape;
+	CWnd *m_pPlacePartDlg;
 
 // Operations
 public:
+	void SetPlacePartDlg(CWnd* m_pPlacePartDlg);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -46,6 +48,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg int OnMouseActivate(CWnd* pDesktopWnd, UINT nHitTest, UINT message);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 };
 
 /////////////////////////////////////////////////////////////////////////////

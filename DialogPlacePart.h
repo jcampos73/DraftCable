@@ -49,7 +49,7 @@ public:
 	//}}AFX_VIRTUAL
 
 // Implementation
-protected:
+public:
 
 	CListCtrl* m_pDragList;		//Which ListCtrl we are dragging FROM
 	CImageList* m_pDragImage;	//For creating and managing the drag-image
@@ -57,7 +57,7 @@ protected:
 	int			m_nDragIndex;	//Index of selected item in the List we are dragging FROM
 	CWnd*		m_pDropWnd;		//Pointer to window we are dropping on (will be cast to CListCtrl* type)
 	int			m_nDropIndex;	//Index at which to drop item in the List we are dropping ON
-
+protected:
 	void UpdatePartList();
 	void LoadUnit(LPCTSTR lpszUnit =NULL);
 	void DoImportLibrary();
