@@ -40,6 +40,7 @@ CDialogPlacePart::CDialogPlacePart(CWnd* pParent /*=NULL*/,DWORD dwType /*=0*/)
 		ASSERT( pObject->IsKindOf( RUNTIME_CLASS( CPartPView ) ) );
 
 		m_pPPView=(CPartPView *)pObject;
+		m_pPPView->SetPlacePartDlg(this);
 	}
 }
 
@@ -963,6 +964,11 @@ void CDialogPlacePart::OnMouseMove(UINT nFlags, CPoint point)
 				pList->RedrawItems(m_nDropIndex, m_nDropIndex);
 				pList->UpdateWindow();
 			}
+		}
+		else if (pDropWnd->IsKindOf(RUNTIME_CLASS(CPartPView)))
+		{
+			//Note that we can drop here
+			SetCursor(LoadCursor(NULL, IDC_ARROW));
 		}
 		else if (pDropWnd->IsKindOf(RUNTIME_CLASS(CDraftDrawView)))
 		{

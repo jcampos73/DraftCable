@@ -155,13 +155,11 @@ void CPartPView::OnLButtonDown(UINT nFlags, CPoint point)
 	*/
 
 	//Does not work: asserts
-	/*
 	NM_LISTVIEW NMListView;
 	NMListView.iItem = 0;
 	NMListView.ptAction = point;
 	LRESULT result;
 	((CDialogPlacePart*)m_pPlacePartDlg)->OnBegindragListpart((NMHDR*)&NMListView, &result);
-	*/
 
 	CView::OnLButtonDown(nFlags, point);
 
