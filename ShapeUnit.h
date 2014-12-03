@@ -220,7 +220,7 @@ public:
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CShape)
-		// NOTE - the ClassWizard will add and remove member functions here.
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	//}}AFX_MSG
 	/*
 	DECLARE_MESSAGE_MAP()

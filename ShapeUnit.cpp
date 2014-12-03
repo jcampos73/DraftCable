@@ -2053,6 +2053,152 @@ void CShapeWire::OnDraw(CDC *pDC){
 
 }
 
+BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
+
+	switch (LOWORD(wParam)){
+	case ID_EDIT_PROPERTIES:
+		if (m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT){
+
+			if (!g_db.IsOpen()){
+				TCHAR sConnect[1024];
+				g_GetConnectString(sConnect, 1024);
+				//Connect to database
+				g_db.OpenEx(sConnect);
+			}
+
+			//Delete contents of temporal table
+			g_db.ExecuteSQL("DELETE FROM tbPartTemp");
+
+			//Insert properties in db
+			CString str;
+			CString strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')";
+
+
+			str.Format(strSQL, "ID", m_uiShapeId);
+			g_db.ExecuteSQL(str);
+			str.Format(strSQL, "Width0", m_Rect0.Width());
+			g_db.ExecuteSQL(str);
+			str.Format(strSQL, "Height0", m_Rect0.Height());
+			g_db.ExecuteSQL(str);
+			str.Format(strSQL, "Width", m_Rect.Width());
+			g_db.ExecuteSQL(str);
+			str.Format(strSQL, "Height", m_Rect.Height());
+			g_db.ExecuteSQL(str);
+#define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
+
+			int i;
+			/*
+			for (i = 0; i<m_LabelsCount; i++){
+				str = *m_pLabels[i]->sname;
+				str.MakeUpper();
+				if (0){//(str.Find("TITLE")>=0){
+					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
+					str.Format(strSQL, "Title", *m_pLabels[i]->slabel);
+					g_db.ExecuteSQL(str);
+					//break;
+				}
+				else if (str.GetLength()>0){
+					CString str1;
+					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
+					str1.Format(strSQL, str, *m_pLabels[i]->slabel);
+					g_db.ExecuteSQL(str1);
+				}
+			}
+			*/
+
+			/*
+			CRecordset rsPartTemp(&db);
+			rsPartTemp.m_strFilter="bRack<>0";
+			rsPartTemp.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+			*/
+
+			g_db.Close();
+
+			CDialogPartProp dialog;
+			/*dialog.m_sText.Format("Id=%i",m_uiShapeId);*/
+			if (dialog.DoModal() == IDOK){
+
+				if (!g_db.IsOpen()){
+					TCHAR sConnect[1024];
+					g_GetConnectString(sConnect, 1024);
+					//Connect to database
+					g_db.OpenEx(sConnect);
+				}
+
+				strSQL = "SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
+				CRecordset rsTemp(&g_db);
+
+				rsTemp.Open(CRecordset::forwardOnly, strSQL);
+
+				int nCounter = 0;
+				i = 0;
+				bool bFlagModified = false;
+				while (!rsTemp.IsBOF() && !rsTemp.IsEOF()){
+
+					/*
+					if (nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY&&i<m_LabelsCount){
+						///local var
+						CString strName, strValue;
+						str = *m_pLabels[i]->sname;
+						str.MakeUpper();
+
+						rsTemp.GetFieldValue("cNombre", strName);
+
+						if (str.Compare(strName) == 0){
+							str = *m_pLabels[i]->slabel;
+							rsTemp.GetFieldValue("cValor", strValue);
+							if (str.Compare(strValue)){
+								*m_pLabels[i]->slabel = strValue;
+								*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
+
+								//Process parameters
+								if (strName.Compare("NSIDES") == 0){
+									bFlagModified = true;
+								}
+								else if (strName.Compare("DEEP") == 0){
+									bFlagModified = true;
+								}
+
+							}
+						}
+
+						i++;
+					}*/
+
+					rsTemp.MoveNext();
+					nCounter++;
+				}
+
+				/*
+				if (bFlagModified){
+
+					int idata, idata1;
+
+					for (int i = 0; i<m_LabelsCount; i++){
+						CString str = *m_pLabels[i]->sname;
+						str.MakeUpper();
+						if (str.Compare("NSIDES") == 0){
+
+							idata = atoi(*m_pLabels[i]->slabel);
+						}
+						else if (str.Compare("DEEP") == 0){
+
+							idata1 = atoi(*m_pLabels[i]->slabel);
+						}
+					}
+
+				}*/
+			}
+
+			return TRUE;
+		}
+		break;
+	}
+
+	return CShapeContainer::OnCommand(wParam, lParam);
+	//return FALSE;
+}
+
 void CShapeWire::SerializeGbr(CGbrioFile &gbrfile)
 {
 
