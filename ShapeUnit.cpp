@@ -852,16 +852,20 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 #define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
 
 			int i;
+			CString strPrev = "";
 			for(i=0;i<m_LabelsCount;i++){
 				str=*m_pLabels[i]->sname;
 				str.MakeUpper();
-				if(0){//(str.Find("TITLE")>=0){
-					strSQL="INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
-					str.Format(strSQL,"Title",*m_pLabels[i]->slabel);
-					g_db.ExecuteSQL(str);
-					//break;
+				//Filter for repeated labels
+				/*
+				if (str == strPrev){
+					TRACE(_T("Repeated label name %s found in shape unit %s"), *m_pLabels[i]->sname, this->m_sUnitName);
+					continue;
 				}
-				else if(str.GetLength()>0){
+				*/
+				strPrev = str;
+				//Empty title dont allowed
+				if(str.GetLength()>0){
 					CString str1;
 					strSQL="INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
 					str1.Format(strSQL,str,*m_pLabels[i]->slabel);
@@ -869,16 +873,11 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				}
 			}
 
-			/*
-			CRecordset rsPartTemp(&db);
-			rsPartTemp.m_strFilter="bRack<>0";
-			rsPartTemp.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
-			*/
-
+			//Close connection
 			g_db.Close();
 
+			//Show dialog
 			CDialogPartProp dialog;
-			/*dialog.m_sText.Format("Id=%i",m_uiShapeId);*/
 			if(dialog.DoModal()==IDOK){
 
 				if(!g_db.IsOpen()){
@@ -891,34 +890,65 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				strSQL="SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
 				CRecordset rsTemp(&g_db);
 
-				rsTemp.Open(CRecordset::forwardOnly,strSQL);
+				rsTemp.Open(NULL/*CRecordset::forwardOnly*/, strSQL);
 
 				int nCounter=0;
 				i=0;
 				bool bFlagModified=false;
+				CMapStringToPtr mapLabelTypeToKeysvalues;
 				while(!rsTemp.IsBOF()&&!rsTemp.IsEOF()){
 
-					if(nCounter>=DRAFTCABLE_PARTPROP_PROGRAMATICALLY&&i<m_LabelsCount){
-						///local var
+					/*
+					try{
+						CString temp;
+						int nIndex = 0;
+						rsTemp.GetFieldValue(nIndex, temp);
+						temp = temp;
+					}
+					catch(exception ex){}
+					rsTemp.MoveNext();
+					nCounter++;
+					continue;*/
+
+					if(nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY /*&& i < m_LabelsCount*/){
+						//Local var
 						CString strName,strValue;
-						str=*m_pLabels[i]->sname;
-						str.MakeUpper();
 
 						rsTemp.GetFieldValue("cNombre",strName);
 
 						if(str.Compare(strName)==0){
-							str=*m_pLabels[i]->slabel;
 							rsTemp.GetFieldValue("cValor",strValue);
-							if(str.Compare(strValue)){
-								*m_pLabels[i]->slabel=strValue;
-								*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),CSize(0,0));
+
+							//For UML Classes
+							//UML class attributes should have the form "UML:"
+							if (strName.Find(":") > 0){
+								CString strUmlLabelName = strName.Left(strName.Find(":"));
+								void *ptr;
+								if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
+									mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
+								}
+								else{
+									CString key = strUmlLabelName.Right(strName.GetLength() - strName.Find(":") - 1);
+									(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
+								}
+							}
+
+						}
+
+						if (i < m_LabelsCount){
+							str = *m_pLabels[i]->sname;
+							str.MakeUpper();
+							//Value has changed
+							if (str.Compare(strValue)){
+								*m_pLabels[i]->slabel = strValue;
+								*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
 
 								//Process parameters
-								if(strName.Compare("NSIDES")==0){
-									bFlagModified=true;
+								if (strName.Compare("NSIDES") == 0){
+									bFlagModified = true;
 								}
-								else if(strName.Compare("DEEP")==0){
-									bFlagModified=true;
+								else if (strName.Compare("DEEP") == 0){
+									bFlagModified = true;
 								}
 
 							}
@@ -931,6 +961,50 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					nCounter++;
 				}
 
+				//Process UML labels
+				nCounter = 0;
+				i = 0;
+				rsTemp.MoveFirst();
+				while (!rsTemp.IsBOF() && !rsTemp.IsEOF()){
+
+					if (nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY && i < m_LabelsCount){
+						//Local var
+						CString strName, strValue;
+						str = *m_pLabels[i]->sname;
+						str.MakeUpper();
+
+						rsTemp.GetFieldValue("cNombre", strName);
+
+						void *ptr;
+						if (str.Compare(strName) == 0 &&
+							mapLabelTypeToKeysvalues.Lookup(strName, ptr)
+							){
+							//Iterate map
+							CString label = "";
+							POSITION pos = ((CMapStringToString*)mapLabelTypeToKeysvalues[strName])->GetStartPosition();
+							while (pos != NULL)
+							{
+								CString key, value;
+								((CMapStringToString*)mapLabelTypeToKeysvalues[strName])->GetNextAssoc(pos, key, value);
+								if (label != ""){
+									label += "\n";
+								}
+								label += value;
+							}
+							//Modify label
+							*m_pLabels[i]->slabel = label;
+							*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
+						}
+
+						i++;
+					}
+
+					rsTemp.MoveNext();
+					nCounter++;
+				}
+
+				//Update modified shapes
+				//This should be moved to helper function
 				if(bFlagModified){
 
 					int idata,idata1;
