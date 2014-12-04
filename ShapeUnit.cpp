@@ -916,41 +916,43 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 
 						rsTemp.GetFieldValue("cNombre",strName);
 
-						if(str.Compare(strName)==0){
-							rsTemp.GetFieldValue("cValor",strValue);
 
-							//For UML Classes
-							//UML class attributes should have the form "UML:"
-							if (strName.Find(":") > 0){
-								CString strUmlLabelName = strName.Left(strName.Find(":"));
-								void *ptr;
-								if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
-									mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
-								}
-								else{
-									CString key = strUmlLabelName.Right(strName.GetLength() - strName.Find(":") - 1);
-									(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
-								}
+						rsTemp.GetFieldValue("cValor",strValue);
+
+						//For UML Classes
+						//UML class attributes should have the form "UML:"
+						if (strName.Find(":") > 0){
+							CString strUmlLabelName = strName.Left(strName.Find(":"));
+							void *ptr;
+							if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
+								mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
 							}
-
+							else{
+								CString key = strUmlLabelName.Right(strName.GetLength() - strName.Find(":") - 1);
+								(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
+							}
 						}
+
+
 
 						if (i < m_LabelsCount){
 							str = *m_pLabels[i]->sname;
 							str.MakeUpper();
-							//Value has changed
-							if (str.Compare(strValue)){
-								*m_pLabels[i]->slabel = strValue;
-								*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
+							if (str.Compare(strName) == 0){
+								//Value has changed
+								if (str.Compare(strValue)){
+									*m_pLabels[i]->slabel = strValue;
+									*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
 
-								//Process parameters
-								if (strName.Compare("NSIDES") == 0){
-									bFlagModified = true;
-								}
-								else if (strName.Compare("DEEP") == 0){
-									bFlagModified = true;
-								}
+									//Process parameters
+									if (strName.Compare("NSIDES") == 0){
+										bFlagModified = true;
+									}
+									else if (strName.Compare("DEEP") == 0){
+										bFlagModified = true;
+									}
 
+								}
 							}
 						}
 
