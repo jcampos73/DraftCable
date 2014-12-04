@@ -927,10 +927,9 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 							if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
 								mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
 							}
-							else{
-								CString key = strUmlLabelName.Right(strName.GetLength() - strName.Find(":") - 1);
-								(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
-							}
+							
+							CString key = strName.Right(strName.GetLength() - strName.Find(":") - 1);
+							(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
 						}
 
 
@@ -940,6 +939,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 							str.MakeUpper();
 							if (str.Compare(strName) == 0){
 								//Value has changed
+								str = *m_pLabels[i]->slabel;
 								if (str.Compare(strValue)){
 									*m_pLabels[i]->slabel = strValue;
 									*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
