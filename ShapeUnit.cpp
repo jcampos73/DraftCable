@@ -851,8 +851,43 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			g_db.ExecuteSQL(str);
 #define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
 
+			CMapStringToPtr mapLabelNameTypeToKeysvalues;
+
 			int i;
-			CString strPrev = "";
+			CString strPrev = _T("");
+
+			//First loop to load map
+			for (i = 0; i < m_LabelsCount; i++){
+				str = *m_pLabels[i]->slabel;
+				CString seperator = _T("\n");
+
+				if (str.Find("\n") > 0){
+					int position = 0;
+					CString token;
+
+					token = str.Tokenize(seperator, position);
+					while (!token.IsEmpty())
+					{
+						// Get next token.
+						token = str.Tokenize(seperator, position);
+
+						if (token.Find(_T(":")) > 0){
+
+							CString strUmlLabelName = token.Left(token.Find(":"));
+							void *ptr;
+							if (mapLabelNameTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
+								mapLabelNameTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
+							}
+
+							CString value = token.Right(token.GetLength() - token.Find(_T(":")) - 1);
+							(*((CMapStringToString*)mapLabelNameTypeToKeysvalues[*m_pLabels[i]->sname]))[strUmlLabelName] = value;
+
+						}
+					}
+				}
+			}
+
+			//Second loop to load DB
 			for(i=0;i<m_LabelsCount;i++){
 				str=*m_pLabels[i]->sname;
 				str.MakeUpper();
@@ -914,21 +949,21 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 						//Local var
 						CString strName,strValue;
 
-						rsTemp.GetFieldValue("cNombre",strName);
+						rsTemp.GetFieldValue(_T("cNombre"), strName);
 
 
-						rsTemp.GetFieldValue("cValor",strValue);
+						rsTemp.GetFieldValue(_T("cValor"), strValue);
 
 						//For UML Classes
 						//UML class attributes should have the form "UML:"
-						if (strName.Find(":") > 0){
+						if (strName.Find(_T(":")) > 0){
 							CString strUmlLabelName = strName.Left(strName.Find(":"));
 							void *ptr;
 							if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
 								mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
 							}
 							
-							CString key = strName.Right(strName.GetLength() - strName.Find(":") - 1);
+							CString key = strName.Right(strName.GetLength() - strName.Find(_T(":")) - 1);
 							(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
 						}
 
