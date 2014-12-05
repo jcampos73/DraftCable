@@ -101,6 +101,7 @@ protected:
 	};
 	void DoRotate(float fAngle);
 	void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
+	void _DoCreatePolygon(int idata, int idata1);
 
 	// Generated message map functions
 protected:

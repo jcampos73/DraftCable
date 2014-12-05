@@ -880,7 +880,8 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 							}
 
 							CString value = token.Right(token.GetLength() - token.Find(_T(":")) - 1);
-							(*((CMapStringToString*)mapLabelNameTypeToKeysvalues[*m_pLabels[i]->sname]))[strUmlLabelName] = value;
+							(*((CMapStringToString*)mapLabelNameTypeToKeysvalues[*m_pLabels[i]->sname]))
+								[strUmlLabelName] = value;
 
 						}
 					}
@@ -908,6 +909,16 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				}
 			}
 
+
+			//3rd loop to load UML properties in DB
+			POSITION pos = mapLabelNameTypeToKeysvalues.GetStartPosition();
+			while (pos != NULL)
+			{
+				CString key, value;
+				void *ptr;
+				mapLabelNameTypeToKeysvalues.GetNextAssoc(pos, key, ptr);
+			}
+
 			//Close connection
 			g_db.Close();
 
@@ -933,6 +944,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				CMapStringToPtr mapLabelTypeToKeysvalues;
 				while(!rsTemp.IsBOF()&&!rsTemp.IsEOF()){
 
+					//Debug code
 					/*
 					try{
 						CString temp;
@@ -1059,81 +1071,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 						}
 					}
 
-					switch(m_uiShapeType){
-					case ddcShapeNPolygon:
-						{
-
-						//do some cleaning
-						ReleaseBuffers();
-						GlobalFree(m_pPoints[0]);
-						//allocate new space
-						m_pPoints[0]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(idata+2));
-						//recalculate shape
-						m_pPoints[0][0]=idata+1;
-						m_PointspCount=1;
-						CShapePolyline ShPoly;
-						ShPoly.Create(CRect(0,0,150,150),idata);
-						ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1],idata+1);
-						//allocate new space
-						SetupBuffers(CRect(0,0,150,150));
-						Resize();
-						}break;
-					case ddcShapeNCross:
-						{
-
-						//do some cleaning
-						ReleaseBuffers();
-						GlobalFree(m_pPoints[0]);
-						//allocate new space
-						m_pPoints[0]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(3*idata+2));
-						//recalculate shape
-						m_pPoints[0][0]=3*idata+1;
-						m_PointspCount=1;
-						CShapePolyline ShPoly;
-						ShPoly.CreateNCross(CRect(0,0,150,150),idata,idata1);
-						ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1],3*idata+1);
-						//allocate new space
-						SetupBuffers(CRect(0,0,150,150));
-						Resize();
-						}break;
-					case ddcShapeNGear:
-						{
-
-						//do some cleaning
-						ReleaseBuffers();
-						GlobalFree(m_pPoints[0]);
-						//allocate new space
-						m_pPoints[0]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(4*idata+2));
-						//recalculate shape
-						m_pPoints[0][0]=4*idata+1;
-						m_PointspCount=1;
-						CShapePolyline ShPoly;
-						ShPoly.CreateNGear(CRect(0,0,150,150),idata,idata1);
-						ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1],4*idata+1);
-						//allocate new space
-						SetupBuffers(CRect(0,0,150,150));
-						Resize();
-						}break;
-					case ddcShapeNStar:
-						{
-
-						//do some cleaning
-						ReleaseBuffers();
-						GlobalFree(m_pPoints[0]);
-						//allocate new space
-						m_pPoints[0]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(2*idata+2));
-						//recalculate shape
-						m_pPoints[0][0]=2*idata+1;
-						m_PointspCount=1;
-						CShapePolyline ShPoly;
-						ShPoly.CreateNStar(CRect(0,0,150,150),idata,idata1);
-						ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1],2*idata+1);
-						//allocate new space
-						SetupBuffers(CRect(0,0,150,150));
-						Resize();
-						}break;
-
-					}
+					_DoCreatePolygon(idata, idata1);
 
 				}
 			}
@@ -1328,6 +1266,85 @@ void CShapeUnit::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*
 	m_Rect = rectNext;
 	m_Rect += ptOffset;
 	m_Rect.NormalizeRect();
+}
+
+void CShapeUnit::_DoCreatePolygon(int idata, int idata1)
+{
+	switch (m_uiShapeType){
+	case ddcShapeNPolygon:
+	{
+
+		//do some cleaning
+		ReleaseBuffers();
+		GlobalFree(m_pPoints[0]);
+		//allocate new space
+		m_pPoints[0] = (int *)GlobalAlloc(GMEM_ZEROINIT, sizeof(int) * 2 * (idata + 2));
+		//recalculate shape
+		m_pPoints[0][0] = idata + 1;
+		m_PointspCount = 1;
+		CShapePolyline ShPoly;
+		ShPoly.Create(CRect(0, 0, 150, 150), idata);
+		ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1], idata + 1);
+		//allocate new space
+		SetupBuffers(CRect(0, 0, 150, 150));
+		Resize();
+	}break;
+	case ddcShapeNCross:
+	{
+
+		//do some cleaning
+		ReleaseBuffers();
+		GlobalFree(m_pPoints[0]);
+		//allocate new space
+		m_pPoints[0] = (int *)GlobalAlloc(GMEM_ZEROINIT, sizeof(int) * 2 * (3 * idata + 2));
+		//recalculate shape
+		m_pPoints[0][0] = 3 * idata + 1;
+		m_PointspCount = 1;
+		CShapePolyline ShPoly;
+		ShPoly.CreateNCross(CRect(0, 0, 150, 150), idata, idata1);
+		ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1], 3 * idata + 1);
+		//allocate new space
+		SetupBuffers(CRect(0, 0, 150, 150));
+		Resize();
+	}break;
+	case ddcShapeNGear:
+	{
+
+		//do some cleaning
+		ReleaseBuffers();
+		GlobalFree(m_pPoints[0]);
+		//allocate new space
+		m_pPoints[0] = (int *)GlobalAlloc(GMEM_ZEROINIT, sizeof(int) * 2 * (4 * idata + 2));
+		//recalculate shape
+		m_pPoints[0][0] = 4 * idata + 1;
+		m_PointspCount = 1;
+		CShapePolyline ShPoly;
+		ShPoly.CreateNGear(CRect(0, 0, 150, 150), idata, idata1);
+		ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1], 4 * idata + 1);
+		//allocate new space
+		SetupBuffers(CRect(0, 0, 150, 150));
+		Resize();
+	}break;
+	case ddcShapeNStar:
+	{
+
+		//do some cleaning
+		ReleaseBuffers();
+		GlobalFree(m_pPoints[0]);
+		//allocate new space
+		m_pPoints[0] = (int *)GlobalAlloc(GMEM_ZEROINIT, sizeof(int) * 2 * (2 * idata + 2));
+		//recalculate shape
+		m_pPoints[0][0] = 2 * idata + 1;
+		m_PointspCount = 1;
+		CShapePolyline ShPoly;
+		ShPoly.CreateNStar(CRect(0, 0, 150, 150), idata, idata1);
+		ShPoly.GetPoints((LPPOINT)&m_pPoints[0][1], 2 * idata + 1);
+		//allocate new space
+		SetupBuffers(CRect(0, 0, 150, 150));
+		Resize();
+	}break;
+
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
