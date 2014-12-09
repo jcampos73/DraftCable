@@ -102,6 +102,7 @@ protected:
 	void DoRotate(float fAngle);
 	void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
 	void _DoCreatePolygon(int idata, int idata1);
+	void _DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLabelTypeToKeysvalues);
 
 	// Generated message map functions
 protected:
@@ -274,6 +275,7 @@ protected:
 	//This flag is used when deserializing from XML formats, that don't store bounding rect
 	//Default value is false
 	BOOL m_bUnselectAfterResize;
+	BOOL m_bOffsetAfterResize;
 	virtual void GetData(CStringArray& saData){
 		saData.Add(*m_Label.slabel);
 		CString str;

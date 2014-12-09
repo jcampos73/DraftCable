@@ -57,6 +57,8 @@ typedef struct labeltag{
 	BOOL bver;
 	//24/03/2005
 	DWORD style;
+	//09/12/2014
+	BOOL resizeOnDraw;
 
 	labeltag(){
 
@@ -67,7 +69,9 @@ typedef struct labeltag{
 		iSize=0;
 		bver=FALSE;
 		//24/03/2005
-		style=WS_VISIBLE;//for compatibility with serialized drawings of previous vesrions
+		style=WS_VISIBLE;//for compatibility with serialized drawings of previous versions
+		//09/12/2014
+		resizeOnDraw = FALSE;
 	};
 
 	//24/03/2005
@@ -136,6 +140,84 @@ typedef struct labeltag{
 		//24/03/2004
 		style=lbl.style;
 		return *this;
+	};
+
+	void ResizeAuto(CDC *pDC)
+	{
+		if (rect->IsRectEmpty()){
+
+			//Save font
+			CFont *prev_font;
+			if (font == NULL){
+				/*
+				if (iSize <= 10){
+					prev_font = pDC->SelectObject(AfxGetFont(AFX_FONT_SMALL));
+				}
+				else{
+					prev_font = pDC->SelectObject(AfxGetFont(AFX_FONT_NORMAL));
+				}
+				*/
+			}
+			else{
+				prev_font = pDC->SelectObject(font);
+			}
+
+			if (bver){
+
+				//Local variables
+				CString stlabel = "";
+				CSize szac = CSize(0, 0);
+
+				//Check if label has not been initialized
+				/*
+				if (!m_bIni){
+					for (int i = 0; i<m_Label.slabel->GetLength(); i++){
+
+						if (i)stlabel += "\n";
+						stlabel += m_Label.slabel[0][i];
+					}
+					*m_Label.slabel = stlabel;
+					//Set label as initialized
+					m_bIni = TRUE;
+				}
+				*/
+
+				//Calculate bounding rectangle
+				for (int i = 0; i<slabel->GetLength(); i++){
+
+					CString stlabel1 = slabel[0][i];
+					SIZE sz;
+					GetTextExtentPoint32(pDC->m_hDC, stlabel1, lstrlen(stlabel1), &sz);
+
+					szac += CSize(0, sz.cy);
+					if (szac.cx<sz.cx){
+						szac.cx = sz.cx;
+					}
+				}
+
+				//Set bounding rectangle
+				*rect = CRect(rect->TopLeft(), szac);
+			}
+			else{
+				//Check if label has not been initialized
+				/*
+				if (!m_bIni){
+					m_Label.slabel->Replace("\n", "");
+					m_bIni = TRUE;
+				}
+				*/
+
+				//Calculate bounding rectangle
+				SIZE sz;
+				GetTextExtentPoint32(pDC->m_hDC, *slabel, lstrlen(*slabel), &sz);
+
+				//Set bounding rectangle
+				*rect = CRect(rect->TopLeft(), sz);
+			}
+
+			//Restore font
+			pDC->SelectObject(prev_font);
+		}
 	};
 } label;
 

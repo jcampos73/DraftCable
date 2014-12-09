@@ -394,10 +394,29 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),szac);
 			}
 			else{
+				/*
+				TEXTMETRICA metrica;
+				GetTextMetrics(pDC->m_hDC, &metrica);
+				*/
 
 				SIZE sz;
 				GetTextExtentPoint32(pDC->m_hDC, *m_pLabels[i]->slabel, lstrlen(*m_pLabels[i]->slabel), &sz);
-				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),sz);
+
+				int curPos = 0;
+				CString resToken = *m_pLabels[i]->slabel->Tokenize(_T("\n"), curPos);
+
+				int nCount = 1;
+				while (resToken != _T(""))
+				{
+					nCount++;
+					resToken = *m_pLabels[i]->slabel->Tokenize(_T("\n"), curPos);
+				};
+
+				SIZE sz1;
+				sz1 = sz;
+				sz1.cy = sz1.cy * nCount;
+
+				*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),sz1);
 			}
 
 			pDC->SelectObject(prev_font);
@@ -868,15 +887,12 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					token = str.Tokenize(seperator, position);
 					while (!token.IsEmpty())
 					{
-						// Get next token.
-						token = str.Tokenize(seperator, position);
-
 						if (token.Find(_T(":")) > 0){
 
 							CString strUmlLabelName = token.Left(token.Find(":"));
 							void *ptr;
-							if (mapLabelNameTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
-								mapLabelNameTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
+							if (mapLabelNameTypeToKeysvalues.Lookup(*m_pLabels[i]->sname, ptr) == FALSE){
+								mapLabelNameTypeToKeysvalues[*m_pLabels[i]->sname] = new CMapStringToString();
 							}
 
 							CString value = token.Right(token.GetLength() - token.Find(_T(":")) - 1);
@@ -884,6 +900,9 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 								[strUmlLabelName] = value;
 
 						}
+
+						// Get next token.
+						token = str.Tokenize(seperator, position);
 					}
 				}
 			}
@@ -914,10 +933,27 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			POSITION pos = mapLabelNameTypeToKeysvalues.GetStartPosition();
 			while (pos != NULL)
 			{
-				CString key, value;
+				CString key;
 				void *ptr;
+				
 				mapLabelNameTypeToKeysvalues.GetNextAssoc(pos, key, ptr);
-			}
+
+				int nCount = ((CMapStringToString*)ptr)->GetCount();
+
+				POSITION pos1 = ((CMapStringToString*)ptr)->GetStartPosition();
+				while (pos1 != NULL)
+				{
+					CString key1, value1;
+
+					((CMapStringToString*)ptr)->GetNextAssoc(pos1, key1, value1);
+
+					CString str1;
+					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s:%s','%s')";
+					str1.Format(strSQL, key, key1, value1);
+					g_db.ExecuteSQL(str1);
+
+				}	
+			}//end while
 
 			//Close connection
 			g_db.Close();
@@ -933,6 +969,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					g_db.OpenEx(sConnect);
 				}
 
+				//_DoProcessDlgPartProp()
 				strSQL="SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
 				CRecordset rsTemp(&g_db);
 
@@ -944,26 +981,12 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				CMapStringToPtr mapLabelTypeToKeysvalues;
 				while(!rsTemp.IsBOF()&&!rsTemp.IsEOF()){
 
-					//Debug code
-					/*
-					try{
-						CString temp;
-						int nIndex = 0;
-						rsTemp.GetFieldValue(nIndex, temp);
-						temp = temp;
-					}
-					catch(exception ex){}
-					rsTemp.MoveNext();
-					nCounter++;
-					continue;*/
+					if(nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY){
 
-					if(nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY /*&& i < m_LabelsCount*/){
 						//Local var
 						CString strName,strValue;
 
 						rsTemp.GetFieldValue(_T("cNombre"), strName);
-
-
 						rsTemp.GetFieldValue(_T("cValor"), strValue);
 
 						//For UML Classes
@@ -978,8 +1001,6 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 							CString key = strName.Right(strName.GetLength() - strName.Find(_T(":")) - 1);
 							(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
 						}
-
-
 
 						if (i < m_LabelsCount){
 							str = *m_pLabels[i]->sname;
@@ -1011,47 +1032,9 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				}
 
 				//Process UML labels
-				nCounter = 0;
-				i = 0;
-				rsTemp.MoveFirst();
-				while (!rsTemp.IsBOF() && !rsTemp.IsEOF()){
+				_DoProcessUmlLabels(&rsTemp, &mapLabelTypeToKeysvalues);
 
-					if (nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY && i < m_LabelsCount){
-						//Local var
-						CString strName, strValue;
-						str = *m_pLabels[i]->sname;
-						str.MakeUpper();
-
-						rsTemp.GetFieldValue("cNombre", strName);
-
-						void *ptr;
-						if (str.Compare(strName) == 0 &&
-							mapLabelTypeToKeysvalues.Lookup(strName, ptr)
-							){
-							//Iterate map
-							CString label = "";
-							POSITION pos = ((CMapStringToString*)mapLabelTypeToKeysvalues[strName])->GetStartPosition();
-							while (pos != NULL)
-							{
-								CString key, value;
-								((CMapStringToString*)mapLabelTypeToKeysvalues[strName])->GetNextAssoc(pos, key, value);
-								if (label != ""){
-									label += "\n";
-								}
-								label += value;
-							}
-							//Modify label
-							*m_pLabels[i]->slabel = label;
-							*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
-						}
-
-						i++;
-					}
-
-					rsTemp.MoveNext();
-					nCounter++;
-				}
-
+				//_DoProcessModifiedShapes()
 				//Update modified shapes
 				//This should be moved to helper function
 				if(bFlagModified){
@@ -1344,6 +1327,51 @@ void CShapeUnit::_DoCreatePolygon(int idata, int idata1)
 		Resize();
 	}break;
 
+	}
+}
+
+void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLabelTypeToKeysvalues)
+{
+	int nCounter = 0;
+	int i = 0;
+	rsTemp->MoveFirst();
+	while (!rsTemp->IsBOF() && !rsTemp->IsEOF()){
+
+		if (nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY && i < m_LabelsCount){
+			//Local var
+			CString strName, strValue;
+			CString str = *m_pLabels[i]->sname;
+			str.MakeUpper();
+
+			rsTemp->GetFieldValue("cNombre", strName);
+
+			void *ptr;
+			if (str.Compare(strName) == 0 &&
+				mapLabelTypeToKeysvalues->Lookup(strName, ptr)
+				){
+				//Iterate map
+				CString label = "";
+				POSITION pos = ((CMapStringToString*)(*mapLabelTypeToKeysvalues)[strName])->GetStartPosition();
+				while (pos != NULL)
+				{
+					CString key, value;
+					((CMapStringToString*)(*mapLabelTypeToKeysvalues)[strName])->GetNextAssoc(pos, key, value);
+					if (label != ""){
+						label += "\n";
+					}
+					CString str; str.Format(_T("%s:%s"), key, value);
+					label += str;
+				}
+				//Modify label
+				*m_pLabels[i]->slabel = label;
+				*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
+			}
+
+			i++;
+		}
+
+		rsTemp->MoveNext();
+		nCounter++;
 	}
 }
 
@@ -3088,6 +3116,7 @@ CShapeLabel::CShapeLabel(label *lpLbl/*=NULL*/,LPRECT lpRect/*=NULL*/,UINT nId/*
 	m_uiShapeType = ddcShapeLabel;
 	m_bIni = FALSE;
 	m_bUnselectAfterResize = FALSE;
+	m_bOffsetAfterResize = FALSE;
 	m_bNoResize = TRUE;
 	//m_Rect=CRect(0,0,100,100);
 	m_Rect=CRect(0,0,0,0);
@@ -3311,8 +3340,10 @@ void CShapeLabel::OnDraw(CDC *pDC){
 		m_bUnselectAfterResize = FALSE;
 
 		//Offset when loading from svg files
-		int offset = this->m_Rect.CenterPoint().y - this->m_Rect.TopLeft().y;
-		this->m_Rect -= CPoint(0, offset);
+		if (m_bOffsetAfterResize == TRUE){
+			int offset = this->m_Rect.CenterPoint().y - this->m_Rect.TopLeft().y;
+			this->m_Rect -= CPoint(0, offset);
+		}
 	}
 
 	if((!m_Mode) && m_Rect.IsRectEmpty()){
@@ -3474,6 +3505,7 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	this->Create(rect, text, iFontSize, FALSE);
 	this->Unselect();
 	m_bUnselectAfterResize = TRUE;
+	m_bOffsetAfterResize = TRUE;
 }
 
 void CShapeLabel::SerializeDdw(CDdwioFile &ddwfile)
