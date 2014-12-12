@@ -840,6 +840,7 @@ void CShapeUnit::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 
 	switch(LOWORD(wParam)){
+
 	case ID_EDIT_PROPERTIES:
 		if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
 
@@ -857,7 +858,6 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			CString str;
 			CString strSQL="INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')";
 
-
 			str.Format(strSQL,"ID",m_uiShapeId);
 			g_db.ExecuteSQL(str);
 			str.Format(strSQL,"Width0",m_Rect0.Width());
@@ -868,6 +868,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			g_db.ExecuteSQL(str);
 			str.Format(strSQL,"Height",m_Rect.Height());
 			g_db.ExecuteSQL(str);
+
 #define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
 
 			CMapStringToPtr mapLabelNameTypeToKeysvalues;
@@ -905,7 +906,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 						token = str.Tokenize(seperator, position);
 					}
 				}
-			}
+			}//end for
 
 			//Second loop to load DB
 			for(i=0;i<m_LabelsCount;i++){
@@ -926,8 +927,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					str1.Format(strSQL,str,*m_pLabels[i]->slabel);
 					g_db.ExecuteSQL(str1);
 				}
-			}
-
+			}//end for
 
 			//3rd loop to load UML properties in DB
 			POSITION pos = mapLabelNameTypeToKeysvalues.GetStartPosition();
@@ -969,67 +969,15 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					g_db.OpenEx(sConnect);
 				}
 
-				//_DoProcessDlgPartProp()
 				strSQL="SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
 				CRecordset rsTemp(&g_db);
 
 				rsTemp.Open(NULL/*CRecordset::forwardOnly*/, strSQL);
 
-				int nCounter=0;
-				i=0;
-				bool bFlagModified=false;
 				CMapStringToPtr mapLabelTypeToKeysvalues;
-				while(!rsTemp.IsBOF()&&!rsTemp.IsEOF()){
+				bool bFlagModified = false;
+				_DoProcessDlgPartProp(&rsTemp, &mapLabelTypeToKeysvalues, bFlagModified);
 
-					if(nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY){
-
-						//Local var
-						CString strName,strValue;
-
-						rsTemp.GetFieldValue(_T("cNombre"), strName);
-						rsTemp.GetFieldValue(_T("cValor"), strValue);
-
-						//For UML Classes
-						//UML class attributes should have the form "UML:"
-						if (strName.Find(_T(":")) > 0){
-							CString strUmlLabelName = strName.Left(strName.Find(":"));
-							void *ptr;
-							if (mapLabelTypeToKeysvalues.Lookup(strUmlLabelName, ptr) == FALSE){
-								mapLabelTypeToKeysvalues[strUmlLabelName] = new CMapStringToString();
-							}
-							
-							CString key = strName.Right(strName.GetLength() - strName.Find(_T(":")) - 1);
-							(*((CMapStringToString*)mapLabelTypeToKeysvalues[strUmlLabelName]))[key] = strValue;
-						}
-
-						if (i < m_LabelsCount){
-							str = *m_pLabels[i]->sname;
-							str.MakeUpper();
-							if (str.Compare(strName) == 0){
-								//Value has changed
-								str = *m_pLabels[i]->slabel;
-								if (str.Compare(strValue)){
-									*m_pLabels[i]->slabel = strValue;
-									*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
-
-									//Process parameters
-									if (strName.Compare("NSIDES") == 0){
-										bFlagModified = true;
-									}
-									else if (strName.Compare("DEEP") == 0){
-										bFlagModified = true;
-									}
-
-								}
-							}
-						}
-
-						i++;
-					}
-
-					rsTemp.MoveNext();
-					nCounter++;
-				}
 
 				//Process UML labels
 				_DoProcessUmlLabels(&rsTemp, &mapLabelTypeToKeysvalues);
@@ -1373,6 +1321,64 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 		rsTemp->MoveNext();
 		nCounter++;
 	}
+}
+
+void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapLabelTypeToKeysvalues, bool &bFlagModified)
+{
+	int nCounter = 0;
+	int i = 0;
+	//CMapStringToPtr mapLabelTypeToKeysvalues;
+	while (!rsTemp->IsBOF() && !rsTemp->IsEOF()){
+
+		if (nCounter >= DRAFTCABLE_PARTPROP_PROGRAMATICALLY){
+
+			//Local var
+			CString strName, strValue;
+
+			rsTemp->GetFieldValue(_T("cNombre"), strName);
+			rsTemp->GetFieldValue(_T("cValor"), strValue);
+
+			//For UML Classes
+			//UML class attributes should have the form "UML:"
+			if (strName.Find(_T(":")) > 0){
+				CString strUmlLabelName = strName.Left(strName.Find(":"));
+				void *ptr;
+				if (mapLabelTypeToKeysvalues->Lookup(strUmlLabelName, ptr) == FALSE){
+					(*mapLabelTypeToKeysvalues)[strUmlLabelName] = new CMapStringToString();
+				}
+
+				CString key = strName.Right(strName.GetLength() - strName.Find(_T(":")) - 1);
+				(*((CMapStringToString*)(*mapLabelTypeToKeysvalues)[strUmlLabelName]))[key] = strValue;
+			}
+
+			if (i < m_LabelsCount){
+				CString str = *m_pLabels[i]->sname;
+				str.MakeUpper();
+				if (str.Compare(strName) == 0){
+					//Value has changed
+					str = *m_pLabels[i]->slabel;
+					if (str.Compare(strValue)){
+						*m_pLabels[i]->slabel = strValue;
+						*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
+
+						//Process parameters
+						if (strName.Compare("NSIDES") == 0){
+							bFlagModified = true;
+						}
+						else if (strName.Compare("DEEP") == 0){
+							bFlagModified = true;
+						}
+
+					}
+				}
+			}
+
+			i++;
+		}
+
+		rsTemp->MoveNext();
+		nCounter++;
+	}//end while
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -3115,7 +3121,7 @@ CShapeLabel::CShapeLabel(label *lpLbl/*=NULL*/,LPRECT lpRect/*=NULL*/,UINT nId/*
 
 	m_uiShapeType = ddcShapeLabel;
 	m_bIni = FALSE;
-	m_bUnselectAfterResize = FALSE;
+	m_bResizeOnFirstDraw = FALSE;
 	m_bOffsetAfterResize = FALSE;
 	m_bNoResize = TRUE;
 	//m_Rect=CRect(0,0,100,100);
@@ -3333,11 +3339,11 @@ BOOL CShapeLabel::OnCommand( WPARAM wParam, LPARAM lParam ){
 void CShapeLabel::OnDraw(CDC *pDC){
 
 	//Block to get bounding rectangle when loading from svg file
-	if (m_bUnselectAfterResize == TRUE){
+	if (m_bResizeOnFirstDraw == TRUE){
 		ResizeAuto(pDC);
 		this->Unselect();
 		//This would be just a one time operation (after loading)
-		m_bUnselectAfterResize = FALSE;
+		m_bResizeOnFirstDraw = FALSE;
 
 		//Offset when loading from svg files
 		if (m_bOffsetAfterResize == TRUE){
@@ -3504,7 +3510,7 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 
 	this->Create(rect, text, iFontSize, FALSE);
 	this->Unselect();
-	m_bUnselectAfterResize = TRUE;
+	m_bResizeOnFirstDraw = TRUE;
 	m_bOffsetAfterResize = TRUE;
 }
 
