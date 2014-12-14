@@ -103,7 +103,8 @@ protected:
 	void DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot = TRUE);
 	void _DoCreatePolygon(int idata, int idata1);
 	void _DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLabelTypeToKeysvalues);
-	void _DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapLabelTypeToKeysvalues, bool &bFlagModified);
+	void _DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapLabelTypeToKeysvalues, BOOL &bFlagModified);
+	void _DoProcessModifiedShapes(BOOL bFlagModified);
 
 	// Generated message map functions
 protected:

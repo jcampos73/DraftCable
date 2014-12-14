@@ -962,6 +962,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			CDialogPartProp dialog;
 			if(dialog.DoModal()==IDOK){
 
+				//Open conecction to database
 				if(!g_db.IsOpen()){
 					TCHAR sConnect[1024];
 					g_GetConnectString(sConnect,1024);
@@ -969,43 +970,23 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					g_db.OpenEx(sConnect);
 				}
 
+				//Query database
 				strSQL="SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
 				CRecordset rsTemp(&g_db);
-
 				rsTemp.Open(NULL/*CRecordset::forwardOnly*/, strSQL);
 
+				//Extract dialog data unto labels
 				CMapStringToPtr mapLabelTypeToKeysvalues;
-				bool bFlagModified = false;
+				BOOL bFlagModified = false;
 				_DoProcessDlgPartProp(&rsTemp, &mapLabelTypeToKeysvalues, bFlagModified);
-
 
 				//Process UML labels
 				_DoProcessUmlLabels(&rsTemp, &mapLabelTypeToKeysvalues);
 
-				//_DoProcessModifiedShapes()
-				//Update modified shapes
-				//This should be moved to helper function
-				if(bFlagModified){
+				//Update modified shapes (plygons)
+				_DoProcessModifiedShapes(bFlagModified);
 
-					int idata,idata1;
-
-					for(int i=0;i<m_LabelsCount;i++){
-						CString str=*m_pLabels[i]->sname;
-						str.MakeUpper();
-						if(str.Compare("NSIDES")==0){
-
-							idata=atoi(*m_pLabels[i]->slabel);
-						}
-						else if(str.Compare("DEEP")==0){
-
-							idata1=atoi(*m_pLabels[i]->slabel);
-						}
-					}
-
-					_DoCreatePolygon(idata, idata1);
-
-				}
-			}
+			}//if dialog ok
 
 			return TRUE;
 		}
@@ -1323,7 +1304,7 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 	}
 }
 
-void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapLabelTypeToKeysvalues, bool &bFlagModified)
+void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapLabelTypeToKeysvalues, BOOL &bFlagModified)
 {
 	int nCounter = 0;
 	int i = 0;
@@ -1379,6 +1360,31 @@ void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapL
 		rsTemp->MoveNext();
 		nCounter++;
 	}//end while
+}
+
+void CShapeUnit::_DoProcessModifiedShapes(BOOL bFlagModified)
+{
+	if (bFlagModified){
+
+		int idata, idata1;
+
+		for (int i = 0; i<m_LabelsCount; i++){
+			CString str = *m_pLabels[i]->sname;
+			str.MakeUpper();
+			if (str.Compare("NSIDES") == 0){
+
+				idata = atoi(*m_pLabels[i]->slabel);
+			}
+			else if (str.Compare("DEEP") == 0){
+
+				idata1 = atoi(*m_pLabels[i]->slabel);
+			}
+		}
+
+		//Recreated polygon
+		_DoCreatePolygon(idata, idata1);
+
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
