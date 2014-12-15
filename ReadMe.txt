@@ -7,6 +7,7 @@ NEW FEATURES
 1.09.1
 1. Non Modal Place Part Dialog. Drag and drop support from list controls and thumbnail to main view.
 2. Properties added to wires and/or connectors
+3. UML properies added
 1.09
 1. Included basic support for SVG files read/write
 2. Gradient fill of shapes
