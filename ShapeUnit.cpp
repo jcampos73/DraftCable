@@ -596,8 +596,9 @@ void CShapeUnit::Serialize( CArchive& archive )
 
 		//loop
 		int nCount=0;
+		CString prevStrIdent = "";
 		if(!m_bFlagPartEdit)
-		archive>>nCount;
+			archive>>nCount;
 		//archive>>nCount;
 		for(int i=0;i<nCount;i++){
 
@@ -635,7 +636,15 @@ void CShapeUnit::Serialize( CArchive& archive )
 				//27/03/2005
 				//Moved to parent class: CShapeContainer
 				//Has been leaved here for compatibilty with parts in libraries.
-				m_obarrShapearr.Add(pSh);
+				if (pSh->IsKindOf(RUNTIME_CLASS(CShapePin))){
+					if (prevStrIdent != pSh->m_strIdent){
+						m_obarrShapearr.Add(pSh);
+					}
+					prevStrIdent=pSh->m_strIdent;
+				}
+				else{
+					m_obarrShapearr.Add(pSh);
+				}
 			}
 			else{
 				//27/03/2005

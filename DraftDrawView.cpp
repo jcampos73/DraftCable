@@ -1042,7 +1042,8 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		//15/08/2004
 		//Added to prevent pines get connected on selections.
 		//---------------------------------------------------
-		if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE){
+		if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+			pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE){
 			if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
 
 				CShapeContainer *pShContainer = (CShapeContainer *)pSh;
