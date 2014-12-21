@@ -27,6 +27,7 @@ omobject g_OMObjectTable[]={
 	{ddcObject5SelectShape,"Select",5},
 	{ddcObject5DeleteShape,"Delete",5},
 	{ddcObject5ShapeRange,"ShapeRange",5},
+	{ddcObject5CountShapes, "Count", 5 },
 	{ddcObject6IncrementLeft,"IncrementLeft",6},
 	{ddcObject6IncrementTop,"IncrementTop",6},
 	{ddcObject6ScaleWidth,"ScaleWidth",6},
@@ -83,7 +84,7 @@ void cmddeque::push_cmd(std::string strComm,std::string strCommUndo,bool bModifi
 
 	//31/07/2005
 	//Parse command
-	theApp.m_OMParser.OMParse(strComm);
+	theApp.m_OMParser.OMParse(strComm/*, OMPF_JUSTSINTACTICAL*/);
 }
 
 //Clear both command queues
@@ -177,7 +178,7 @@ OMParser::OMParser (){
 //Return codes (ms-dos convention):
 //0	OK
 //1 Error
-int OMParser::OMParse (std::string sCommand,int flags/*=0*/){
+int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NULL*/, int count /*=0*/){
 
 	//Local variables
 	std::list<omobject> liTargetObject;
@@ -345,6 +346,13 @@ int OMParser::OMParse (std::string sCommand,int flags/*=0*/){
 		case ddcObject5DeleteShape:
 			//iData=lpParametersPrev->size();
 			if(!(flags&OMPF_JUSTSINTACTICAL))pDoc->DeleteShape((*lpParametersPrev)[0]->m_lVal);
+			break;
+		case ddcObject5CountShapes:
+			if (output != NULL){
+				CString result;
+				result.Format(_T("%i"), pDoc->m_ObArray.GetCount());
+				strcpy(output, result.GetBuffer(count));
+			}
 			break;
 		case ddcObject6IncrementLeft:
 			iObPrev=ddcObject6IncrementLeft;

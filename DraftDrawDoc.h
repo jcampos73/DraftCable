@@ -52,7 +52,7 @@
 
 enum{CURSOR_NW=0,CURSOR_NE,CURSOR_NS=4,CURSOR_EW,
 CURSOR_4W=8,CURSOR_ARROW,
-CURSOR_DRAW,CURSOR_PENCIL,
+CURSOR_DRAW,CURSOR_PENCIL=11,
 CURSOR_ZOOM_PLUS,CURSOR_ZOOM_MINUS,CURSOR_ROTATE
 };
 
@@ -300,6 +300,8 @@ protected:
 	afx_msg void OnPlaceSheets();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnToolsShell();
 };
 
 /////////////////////////////////////////////////////////////////////////////

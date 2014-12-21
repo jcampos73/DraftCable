@@ -156,6 +156,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DialogShell.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
     <ClCompile Include="Importer.cpp" />
@@ -504,6 +505,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DialogShell.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />

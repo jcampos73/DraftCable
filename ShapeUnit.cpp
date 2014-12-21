@@ -228,7 +228,7 @@ void CShapeUnit::OnLButtonUp(UINT nFlags, CPoint point){
 void CShapeUnit::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
-	if(!m_Mode){
+	if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){//if(!m_Mode){
 		m_Mode=1;
 
 		CString strFile=m_sUnitName;

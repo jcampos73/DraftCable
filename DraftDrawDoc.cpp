@@ -27,6 +27,7 @@
 #include "NameDlg.h"
 #include "DialogNetList.h"
 #include "DialogSaveasDB.h"
+#include "DialogShell.h"
 
 #include "Shape.h"
 #include "ShapeUnit.h"
@@ -82,6 +83,7 @@ BEGIN_MESSAGE_MAP(CDraftDrawDoc, CDocument)
 	ON_COMMAND(ID_PLACE_SHEETS, OnPlaceSheets)
 	//}}AFX_MSG_MAP
 	//ON_COMMAND(ID_SELECT_NET, OnSelectNet)
+	ON_COMMAND(ID_TOOLS_SHELL, &CDraftDrawDoc::OnToolsShell)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -6821,16 +6823,28 @@ void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
 
 }
 
+//Prepare shape to place
 void CDraftDrawDoc::SetShapeToPlace(CString library, CString part)
 {
+	//Set current tool
 	m_iToolSel = _TOOLPLACE_DRAFTCABLE;
 	m_iToolType = _TOOLTYPENORMAL_DRAFTCABLE;
+	m_iCursor = CURSOR_PENCIL;
 
+	//Create new shape
 	m_pSh = new CShapeUnit(NULL, 0, cmdDeque);
 	m_pSh->LoadUnit(library + "." + part);
 	m_pSh->m_pCursorArray = m_CursorArray;
-	m_iCursor = 11;
 
 	AddObject(m_pSh);
 	m_pSh->OnLButtonDown(0, CPoint(0, 0));
+}
+
+void CDraftDrawDoc::OnToolsShell()
+{
+	CDialogShell dlg;
+	if (dlg.DoModal() == IDCANCEL)
+	{
+		return;
+	}
 }

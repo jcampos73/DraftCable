@@ -511,6 +511,7 @@ BEGIN
         MENUITEM "Select",                      ID_BUTTON_SELECT
         MENUITEM "SIC",                         ID_TOOL_SIC
         MENUITEM "Generate rack",               ID_EDIT_RACK
+        MENUITEM "Shell",                       ID_TOOLS_SHELL
     END
     POPUP "Options"
     BEGIN
@@ -782,6 +783,16 @@ BEGIN
     CONTROL         "",IDC_SLIDER_GRADIENT,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,20,99,96,17
 END
 
+IDD_SHELL DIALOGEX 0, 0, 309, 177
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "DC Shell"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,198,156,50,14,NOT WS_VISIBLE
+    PUSHBUTTON      "Cancel",IDCANCEL,252,156,50,14,NOT WS_VISIBLE
+    EDITTEXT        IDC_SHELL,7,7,295,163,ES_MULTILINE | ES_AUTOHSCROLL
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -880,6 +891,14 @@ BEGIN
     END
 
     IDD_FILLSHAPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+
+    IDD_SHELL, DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 302
@@ -1144,28 +1163,29 @@ END
 
 IDR_MAINFRAME ACCELERATORS
 BEGIN
+    VK_CANCEL,      ID_CANCEL,              VIRTKEY, NOINVERT
+    VK_F1,          ID_CONTEXT_HELP,        VIRTKEY, SHIFT, NOINVERT
     "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_ESCAPE,      ID_ESCAPE,              VIRTKEY, NOINVERT
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
     "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
-    "R",            ID_ROTATE,              VIRTKEY, NOINVERT
     "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
-    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
-    VK_CANCEL,      ID_CANCEL,              VIRTKEY, NOINVERT
-    VK_DELETE,      ID_SUP,                 VIRTKEY, NOINVERT
-    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
-    VK_ESCAPE,      ID_ESCAPE,              VIRTKEY, NOINVERT
     VK_F1,          ID_HELP,                VIRTKEY, NOINVERT
-    VK_F1,          ID_CONTEXT_HELP,        VIRTKEY, SHIFT, NOINVERT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
-    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
-    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
-    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
-    VK_RETURN,      ID_OK,                  VIRTKEY, NOINVERT
     VK_TAB,         ID_NEXT_FIELD,          VIRTKEY, NOINVERT
-    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_RETURN,      ID_OK,                  VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    "R",            ID_ROTATE,              VIRTKEY, NOINVERT
+    VK_DELETE,      ID_SUP,                 VIRTKEY, NOINVERT
+    "W",            ID_TOOLS_SHELL,         VIRTKEY, CONTROL, NOINVERT
 END
 
 IDR_CABLEDIT ACCELERATORS

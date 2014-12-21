@@ -1161,9 +1161,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//NEW SHAPE
-	//old code
-	//pDoc->AddObject(pSh);
-	//Check place tool
+	//=======================================================
 	if(pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE &&
 		pShSelected == NULL){
 		//-----------------------
@@ -1205,8 +1203,19 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		//Add new shape
-		pDoc->AddObject(pDoc->m_pSh);
-		pDoc->m_pSh->OnLButtonDown(nFlags, point);
+		int index=pDoc->m_ObArray.GetUpperBound();
+		if (index > -1){
+			if ((CShape*)pDoc->m_ObArray[index] !=
+				pDoc->m_pSh ||
+				pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
+				pDoc->AddObject(pDoc->m_pSh);
+				pDoc->m_pSh->OnLButtonDown(nFlags, point);
+			}
+		}
+		else{
+			pDoc->AddObject(pDoc->m_pSh);
+			pDoc->m_pSh->OnLButtonDown(nFlags, point);
+		}
 	}
 	//=======================================================
 

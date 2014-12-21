@@ -32,7 +32,7 @@ enum{ddcScaleFromTopLeft=0,ddcScaleFromMiddle,ddcScaleFromBottomRight};
 enum{ddcObjectNull=-1,ddcParam,ddcBlockBegin=1,ddcBlockEnd,ddcVar,ddcNew,
 ddcObject1ActiveSheet,ddcObject1ActiveDocument,
 ddcObject4Shapes,ddcObject4Selection,
-ddcObject5AddShape,ddcObject5SelectShape,ddcObject5DeleteShape,ddcObject5ShapeRange,
+ddcObject5AddShape, ddcObject5SelectShape, ddcObject5DeleteShape, ddcObject5ShapeRange, ddcObject5CountShapes,
 ddcObject6IncrementLeft,ddcObject6IncrementTop,ddcObject6ScaleWidth,ddcObject6ScaleHeight};
 
 //Structures
@@ -93,7 +93,7 @@ public:
 	//0	OK
 	//1 Error
 	OMParser ();
-	int OMParse (std::string sCommand,int flags=0);
+	int OMParse(std::string sCommand, int flags = 0, TCHAR* output = NULL, int count = 0);
 
 //Implementation
 protected:
