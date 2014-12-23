@@ -6762,7 +6762,6 @@ void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
 					}
 
 					if (str.CompareNoCase("TB") == 0){
-
 						//SerializePatchP(ar,((CShapeUnit*)pSh)->m_uiShapeId);
 					}
 					//======================================================
@@ -6836,6 +6835,7 @@ void CDraftDrawDoc::SetShapeToPlace(CString library, CString part)
 	m_pSh->LoadUnit(library + "." + part);
 	m_pSh->m_pCursorArray = m_CursorArray;
 
+	//Add object to stack
 	AddObject(m_pSh);
 	m_pSh->OnLButtonDown(0, CPoint(0, 0));
 }

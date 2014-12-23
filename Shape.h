@@ -22,6 +22,9 @@
 #define _DRAFTDRAW_SEL_MOVING_RECT			2		//Place sizing handles
 #define _DRAFTDRAW_SEL_RESIZING_RECT		3
 
+#define _DRAFTDRAW_ELEVATION_DRAW_DISABLE	0
+#define _DRAFTDRAW_ELEVATION_DRAW_ENABLE	1
+
 //maximum number of markers to indicate selection
 #define	_DRAFTDRAW_SEL_MARKERMAX			16
 #define	_DRAFTDRAW_SEL_SIZE					12

@@ -59,12 +59,12 @@ IMPLEMENT_SERIAL(CShape, CObject, 1)
 CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 {
 	//Main variables defaults
-	m_strIdent="";
-	m_strTypeIdent="";
+	m_strIdent = _T("");
+	m_strTypeIdent = _T("");
 	m_uiShapeId=0;
-	m_Type=0;
-	m_TypeSelect=0;
-	m_Mode=0;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_DISABLE;
+	m_TypeSelect = _DRAFTDRAW_SEL_SIZING_RECT;
+	m_Mode = _DRAFTDRAW_MODE_SEL;
 
 	//2.Flags defaults
 	m_bNoResize=FALSE;
@@ -85,7 +85,6 @@ CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 	ZeroMemory(m_MarkerArray,sizeof(int)*_DRAFTDRAW_SEL_MARKERMAX);
 
 	//5.Initialize pointer to parse function
-	/*pfParser=NULL;*/
 	pcmdDeque=cmddq;
 	m_uiShapeType=ddcShape;
 
@@ -112,13 +111,13 @@ CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 
 //Copy constructor
 CShape::CShape(CShape& Sh){
-	m_strIdent="";
-	m_strTypeIdent="";
+	m_strIdent = _T("");
+	m_strTypeIdent = _T("");
 	m_uiShapeId=0;
 
-	m_Type=0;
-	m_TypeSelect=0;
-	m_Mode=0;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_DISABLE;
+	m_TypeSelect = _DRAFTDRAW_SEL_SIZING_RECT;
+	m_Mode = _DRAFTDRAW_MODE_SEL;
 
 	//Flags
 	m_bNoResize=FALSE;
@@ -140,7 +139,6 @@ CShape::CShape(CShape& Sh){
 	ZeroMemory(m_MarkerArray,sizeof(int)*_DRAFTDRAW_SEL_MARKERMAX);
 
 	//Initialize pointer to parse function
-	/*pfParser=NULL;*/
 	pcmdDeque=Sh.pcmdDeque;
 	m_uiShapeType=ddcShape;
 
@@ -1519,7 +1517,7 @@ CShapeRect::CShapeRect(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=
 {
 	//CShape::CShape(lpRect,nId,cmddq);
 	m_uiShapeType=ddcShapeRectangle;
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bGroup=FALSE;
 	m_bDrawDashedRect=FALSE;
 }
@@ -1617,7 +1615,7 @@ IMPLEMENT_SERIAL(CShapeEllipse, CShape, 1)
 CShapeEllipse::CShapeEllipse(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
 {
 	m_uiShapeType=ddcShapeEllipse;
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 
 }
 
@@ -1707,7 +1705,7 @@ IMPLEMENT_SERIAL(CShapeLine, CShape, 1)
 CShapeLine::CShapeLine(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
 {
 	m_uiShapeType=ddcShapeLine;
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bLineResize=TRUE;
 }
 
@@ -1826,7 +1824,7 @@ IMPLEMENT_SERIAL(CShapeRule, CShape, 1)
 
 CShapeRule::CShapeRule()
 {
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bLineResize=TRUE;
 	m_alfa=2*PI*20/360;
 }
@@ -1946,7 +1944,7 @@ IMPLEMENT_SERIAL(CShapeArc, CShape, 1)
 CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,cmddq)
 {
 	m_uiShapeType = ddcShapeArc;
-	m_Type = 1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 
 	b = 20;
 	m_Alfa = 0.0;
@@ -3136,7 +3134,7 @@ IMPLEMENT_SERIAL(CShapePolyline, CShapeContainer, 1)
 CShapePolyline::CShapePolyline(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapeContainer(lpRect,nId,cmddq)
 {
 	m_uiShapeType=ddcShapePolyline;
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bLineResize=TRUE;//resizing as a rectangle
 	m_bAllowsPartialDraw=TRUE;
 
@@ -4310,7 +4308,7 @@ IMPLEMENT_DYNCREATE(CShapeZoomRect, CShape)
 CShapeZoomRect::CShapeZoomRect()
 {
 	CShape::CShape();
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bGroup=FALSE;
 }
 
@@ -4377,7 +4375,7 @@ CShapePicture::CShapePicture(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmd
 {
 
 	m_uiShapeType=ddcShapePicture;
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bGroup=FALSE;
 
 	gpPicture=NULL;
@@ -4519,7 +4517,7 @@ IMPLEMENT_SERIAL(CShapeCurve, CShape, 1)
 CShapeCurve::CShapeCurve(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapePolyline(lpRect,nId,cmddq)
 {
 	m_uiShapeType=ddcShapeCurve;
-	//m_Type=1;
+	//m_Type=_DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	//m_bGroup=FALSE;
 
 }
@@ -4619,7 +4617,7 @@ IMPLEMENT_SERIAL(CShapePolyArc, CShape, 1)
 CShapePolyArc::CShapePolyArc(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShapePolyline(lpRect,nId,cmddq)
 {
 	m_uiShapeType=ddcShapePolyarc;
-	//m_Type=1;
+	//m_Type=_DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	//m_bGroup=FALSE;
 
 }

@@ -597,6 +597,7 @@ void CShapeUnit::Serialize( CArchive& archive )
 		//loop
 		int nCount=0;
 		CString prevStrIdent = "";
+		CString prevLabelName = "";
 		if(!m_bFlagPartEdit)
 			archive>>nCount;
 		//archive>>nCount;
@@ -628,8 +629,11 @@ void CShapeUnit::Serialize( CArchive& archive )
 				m_Rect=CRect(CPoint(0,0),pSh->m_Rect.Size());
 			}
 			else if(pSh->IsKindOf(RUNTIME_CLASS(CShapeLabel))){
-				m_pLabels[indexlabel]=new label( ((CShapeLabel *)pSh)->m_Label );
-				indexlabel++;
+				if (prevLabelName != (*((CShapeLabel *)pSh)->m_Label.sname)){
+					m_pLabels[indexlabel] = new label(((CShapeLabel *)pSh)->m_Label);
+					indexlabel++;
+				}
+				prevLabelName = *(((CShapeLabel *)pSh)->m_Label.sname);
 			}
 			else if(pSh->IsKindOf(RUNTIME_CLASS(CShapeContainer))){
 				((CShapeContainer*)pSh)->m_pShParent=this;
@@ -675,7 +679,6 @@ void CShapeUnit::Serialize( CArchive& archive )
 				archive>>nCount;
 				//archive>>nCount;
 				for(int i=0;i<nCount;i++){
-
 
 					CShape *pSh;
 					archive >> pSh;
@@ -961,7 +964,11 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					str1.Format(strSQL, key, key1, value1);
 					g_db.ExecuteSQL(str1);
 
-				}	
+				}
+
+				delete((CMapStringToString*)ptr);
+				mapLabelNameTypeToKeysvalues[key] = NULL;
+
 			}//end while
 
 			//Close connection
@@ -992,7 +999,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				//Process UML labels
 				_DoProcessUmlLabels(&rsTemp, &mapLabelTypeToKeysvalues);
 
-				//Update modified shapes (plygons)
+				//Update modified shapes (polygons)
 				_DoProcessModifiedShapes(bFlagModified);
 
 			}//if dialog ok
@@ -1283,9 +1290,10 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 
 			rsTemp->GetFieldValue("cNombre", strName);
 
-			void *ptr;
+			void *ptr = NULL;
 			if (str.Compare(strName) == 0 &&
-				mapLabelTypeToKeysvalues->Lookup(strName, ptr)
+				mapLabelTypeToKeysvalues->Lookup(strName, ptr) &&
+				ptr != NULL
 				){
 				//Iterate map
 				CString label = "";
@@ -1300,6 +1308,11 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 					CString str; str.Format(_T("%s:%s"), key, value);
 					label += str;
 				}
+
+				//Asserts
+				delete((CMapStringToString*)ptr);
+				(*mapLabelTypeToKeysvalues)[strName] = NULL;
+
 				//Modify label
 				*m_pLabels[i]->slabel = label;
 				*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
@@ -3606,7 +3619,7 @@ IMPLEMENT_SERIAL(CShapeFrmRect, CShape, 1)
 CShapeFrmRect::CShapeFrmRect(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
 {
 
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 
 	m_Pen.CreatePen(PS_SOLID|PS_DASH,1,RGB(0,0,0));
 }
@@ -3680,7 +3693,7 @@ IMPLEMENT_SERIAL(CShapeJunction, CShapeContainer, 1)
 
 CShapeJunction::CShapeJunction():CShapeContainer()
 {
-	m_Type=1;
+	m_Type = _DRAFTDRAW_ELEVATION_DRAW_ENABLE;
 	m_bNoResize=TRUE;
 	m_Rect=CRect(0,0,20,20);
 }

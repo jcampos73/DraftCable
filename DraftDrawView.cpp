@@ -675,13 +675,11 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 
 		//======================================================================
 
-
 		pSh->OnDraw(pDC);
-
 
 		//Code to draw front projection of shapes
 		/*
-		if(pSh->m_Type){
+		if(pSh->m_Type == _DRAFTDRAW_ELEVATION_DRAW_ENABLE){
 
 			pSh->SetOrg(CPoint(0,m_SeparatorHeight+100));
 			pSh->SetProyect(0,1,0);
