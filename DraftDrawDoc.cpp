@@ -6842,9 +6842,11 @@ void CDraftDrawDoc::SetShapeToPlace(CString library, CString part)
 
 void CDraftDrawDoc::OnToolsShell()
 {
+#ifdef DCABLE_SHELL_DIALOG_ENABLE
 	CDialogShell dlg;
 	if (dlg.DoModal() == IDCANCEL)
 	{
 		return;
 	}
+#endif
 }

@@ -22,6 +22,9 @@
 //28/11/2014
 //For developping not modal place part dialog
 #define DCABLE_PLACEPART_DIALOG_NOT_MODAL
+//24/12/2014
+//Enable shell console in tools menu
+#define DCABLE_SHELL_DIALOG_ENABLE
 
 
 //This parameter is used:

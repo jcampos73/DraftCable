@@ -3535,8 +3535,7 @@ void CShapePolyline::OnDraw(CDC *pDC){
 			for(int i=1;i<m_dwarrPointarr.GetSize();i++){
 
 				point = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(i));
-
-				pDC->LineTo(point);
+				//pDC->LineTo(point);
 
 				//Gradient
 				gfxPath.AddLine(prevPoint.x, prevPoint.y, point.x, point. y);
@@ -3546,11 +3545,6 @@ void CShapePolyline::OnDraw(CDC *pDC){
 				point_top = (point.y < point_top.y ? point : point_top);
 				point_bottom = (point.y > point_bottom.y ? point : point_bottom);
 			}
-			/*
-			if (m_dwarrPointarr.GetSize()>1){
-				point2 = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(1));
-			}
-			*/
 
 			if (point_right.x - point_left.x < point_bottom.y - point_top.y){
 				point1 = point_left;
@@ -3565,6 +3559,12 @@ void CShapePolyline::OnDraw(CDC *pDC){
 			if (m_bTransparent == FALSE)
 			{
 				this->DoFill(pDC, &gfxPath, point1, point2);
+			}
+
+			pDC->MoveTo(m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(0)));
+			for (int i = 1; i<m_dwarrPointarr.GetSize(); i++){
+				point = m_Rect.TopLeft() + CPoint(m_dwarrPointarr.GetAt(i));
+				pDC->LineTo(point);
 			}
 		}
 
