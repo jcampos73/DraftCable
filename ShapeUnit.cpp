@@ -2174,72 +2174,64 @@ WIRE_EDIT_NORMAL:
 
 void CShapeWire::OnDraw(CDC *pDC){
 
-	/*if((!m_Mode)&&(!m_Rect.IsRectEmpty())){*/
+	CShape::OnDraw(pDC);
 
-		CShape::OnDraw(pDC);
-	/*}*/
-	/*else*/	/*if(!m_Rect.IsRectEmpty())*/{
-
-		//Change attributes
-		CPen *prevColor;
-		CPen *newPen;
-		if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
-			newPen=new CPen( PS_GEOMETRIC , 1, RGB(0,0,255) );
-			prevColor=pDC->SelectObject(newPen);
-		}
-
-		//Draw wire
-		pDC->MoveTo(m_Rect.TopLeft());
-		pDC->LineTo(m_Rect.BottomRight());
-
-		//Draw 1st end
-		CPoint point=m_Rect.TopLeft();
-
-		CShape *psh=(CShape *)m_obarrShapearr.GetAt(0);
-
-		psh->m_Rect=CRect(point,CSize(5,5));
-
-		psh->OnDraw(pDC);
-
-		//Draw 2nd end
-		point=m_Rect.BottomRight();
-
-		psh=(CShape *)m_obarrShapearr.GetAt(1);
-
-		psh->m_Rect=CRect(point,CSize(5,5));
-
-		psh->OnDraw(pDC);
-
-		//draw label if exists
-		if(m_ShapeNumber>2){
-			psh=(CShape *)m_obarrShapearr.GetAt(2);
-			if(psh->IsKindOf(RUNTIME_CLASS(CShapeLabel))){
-				CShapeLabel *pLabel=(CShapeLabel *)psh;
-				CRect rectn=m_Rect;rectn.NormalizeRect();
-				if(rectn.Height()>=rectn.Width()){//vertical wire
-					psh->m_Rect=CRect(m_Rect.TopLeft(),CSize(20,80));
-					pLabel->m_Label.bver=true;
-				}
-				else{//horizontal wire
-					psh->m_Rect=CRect(m_Rect.TopLeft(),CSize(80,20));
-					pLabel->m_Label.bver=false;
-				}
-			}
-			psh->OnDraw(pDC);
-		}
-
-		//Change attributes
-		if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
-			prevColor=pDC->SelectObject(prevColor);
-			delete(newPen);
-		}
-
-		//to draw selections
-		CShape::OnDraw(pDC);
-
+	//Change attributes
+	CPen *prevColor;
+	CPen *newPen;
+	if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
+		newPen=new CPen( PS_GEOMETRIC , 1, RGB(0,0,255) );
+		prevColor=pDC->SelectObject(newPen);
 	}
 
+	//Draw wire
+	pDC->MoveTo(m_Rect.TopLeft());
+	pDC->LineTo(m_Rect.BottomRight());
 
+	//Draw 1st end
+	CPoint point=m_Rect.TopLeft();
+
+	CShape *psh=(CShape *)m_obarrShapearr.GetAt(0);
+
+	psh->m_Rect=CRect(point,CSize(5,5));
+
+	psh->OnDraw(pDC);
+
+	//Draw 2nd end
+	point=m_Rect.BottomRight();
+
+	psh=(CShape *)m_obarrShapearr.GetAt(1);
+
+	psh->m_Rect=CRect(point,CSize(5,5));
+
+	psh->OnDraw(pDC);
+
+	//Draw label if exists
+	if(m_ShapeNumber>2){
+		psh=(CShape *)m_obarrShapearr.GetAt(2);
+		if(psh->IsKindOf(RUNTIME_CLASS(CShapeLabel))){
+			CShapeLabel *pLabel=(CShapeLabel *)psh;
+			CRect rectn=m_Rect;rectn.NormalizeRect();
+			if(rectn.Height()>=rectn.Width()){//vertical wire
+				psh->m_Rect=CRect(m_Rect.TopLeft(),CSize(20,80));
+				pLabel->m_Label.bver=true;
+			}
+			else{//horizontal wire
+				psh->m_Rect=CRect(m_Rect.TopLeft(),CSize(80,20));
+				pLabel->m_Label.bver=false;
+			}
+		}
+		psh->OnDraw(pDC);
+	}
+
+	//Change attributes
+	if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
+		prevColor=pDC->SelectObject(prevColor);
+		delete(newPen);
+	}
+
+	//To draw selections
+	CShape::OnDraw(pDC);
 
 }
 

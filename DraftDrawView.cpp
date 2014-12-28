@@ -1201,12 +1201,16 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		//Add new shape
+		//This should be changed to sub-method
 		int index=pDoc->m_ObArray.GetUpperBound();
 		if (index > -1){
 			if ((CShape*)pDoc->m_ObArray[index] !=
-				pDoc->m_pSh ||
-				pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
-				pDoc->AddObject(pDoc->m_pSh);
+				pDoc->m_pSh
+				|| pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
+				if (pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE
+					&& (CShape*)pDoc->m_ObArray[index] !=
+					pDoc->m_pSh)
+					pDoc->AddObject(pDoc->m_pSh);
 				pDoc->m_pSh->OnLButtonDown(nFlags, point);
 			}
 		}
