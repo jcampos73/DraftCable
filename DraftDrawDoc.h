@@ -252,6 +252,7 @@ protected:
 	void ReadStorage(LPSTORAGE pStg);
 	//Do serialization of dd1 file format
 	void DoSerializeDd1(CArchive& ar);
+
 public:
 	static int Split(CString str,LPTSTR *sa,int max);
 	static int Split(CString str, CString dmter, LPTSTR *sa, int max);

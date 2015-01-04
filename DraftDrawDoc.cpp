@@ -6850,3 +6850,4 @@ void CDraftDrawDoc::OnToolsShell()
 	}
 #endif
 }
+

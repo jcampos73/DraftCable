@@ -129,6 +129,9 @@ protected:
 		int& indexPin,
 		CShapeContainer** pShContConnect
 		);
+	//Add a new shape to stack
+	void _DoAddNewShapeToStack(UINT nFlags, CPoint point);
+
 	void GetSheetArea(CRect& rcSheet);
 
 // Generated message map functions

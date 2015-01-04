@@ -1035,82 +1035,75 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 
 		while (pSh){
 
-		int TypeSelectLast = pSh->m_TypeSelect;
+			int TypeSelectLast = pSh->m_TypeSelect;
 
-		//15/08/2004
-		//Added to prevent pines get connected on selections.
-		//---------------------------------------------------
-		if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
-			pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE){
-			if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
+			//To connect
+			if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+				pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE){
+				//bConnectionTmp =_DoGetConnectionTmp(point, pShContConnect)
+				if ((pSh->GetRuntimeClass())->IsDerivedFrom(RUNTIME_CLASS(CShapeContainer))){
 
-				CShapeContainer *pShContainer = (CShapeContainer *)pSh;
-				pShContainer->m_bConnectMake = TRUE;
+					CShapeContainer *pShContainer = (CShapeContainer *)pSh;
+					pShContainer->m_bConnectMake = TRUE;
 
-				//19/01/2005: new connecting mechanism
-				if (!bConnectionTmp)
-					bConnectionTmp = pShContainer->PtInRect(&point, &pShContConnect);
+					//19/01/2005: new connecting mechanism
+					if (!bConnectionTmp)
+						bConnectionTmp = pShContainer->PtInRect(&point, &pShContConnect);
+				}
 			}
-		}
-		//---------------------------------------------------
 
-		//23/10/2004
-		//This if prevents selecting shapes when drawing over them.
-		//The event is passed to shapes in place mode when starting wires
-		//to connect origin pin. When polylines are drawed the event is also passed.
-		//So the if not solves the problem because underlying shapes
-		//continue to be selected when inserting wire / polylines.
-		if (pDoc->m_iToolSel != _TOOLPLACE_DRAFTCABLE/*||
-			(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE&&(pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE||pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE))*/){
-			//23/10/2004
-			//This if prevent selecting big shapes under small ones
-			//in multiple selections.
-			//flag_nodeselect is used to move shapes in multiple selections.
-			if (!flag_nodeselect || TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT)
-				pSh->OnLButtonDown(nFlags, point);
-			//Add to selected shapes array
-			if (pSh->IsSelected()){
-				POSITION pos = m_ObListSel.Find(pSh);
-				if (pos==NULL)
-					m_ObListSel.AddTail(pSh);
+			//To select
+			if (pDoc->m_iToolSel != _TOOLPLACE_DRAFTCABLE
+				){
+				//23/10/2004
+				//This if prevent selecting big shapes under small ones
+				//in multiple selections.
+				//flag_nodeselect is used to move shapes in multiple selections.
+				if (!flag_nodeselect || TypeSelectLast == _DRAFTDRAW_SEL_MOVING_RECT)
+					pSh->OnLButtonDown(nFlags, point);
+				//Add to selected shapes array
+				if (pSh->IsSelected()){
+					POSITION pos = m_ObListSel.Find(pSh);
+					if (pos==NULL)
+						m_ObListSel.AddTail(pSh);
+				}
 			}
-		}
 
-		if (!pSh->m_Mode){
+			if (pSh->m_Mode == _DRAFTDRAW_MODE_SEL){
 
-			flag_atleast_one_selected = true;
-			pShSelected = pSh;
+				flag_atleast_one_selected = true;
+				pShSelected = pSh;
 
-			flag_return = true;
+				flag_return = true;
+				if (DRAFTCABLE_SELECT_INV){
+					index_keep = index - 1;
+				}
+				else{
+					index_keep = index + 1;
+				}
+
+				//This line has been introduced by the fact that if rect mul is deleted,
+				//when some shapes are selected all must be hit with OnLButtonDown
+				//for proper OnMouseMove operation.
+				if (!flag_nodeselect){
+					break;
+				}
+			}
+
+			//Check temp conection
+			if (pSh->m_pshChildConn){
+				pShconn = pSh;
+				pShchild = pSh->m_pshChildConn;
+				//pSh->m_pshChildConn=NULL;
+
+			}
+
 			if (DRAFTCABLE_SELECT_INV){
-				index_keep = index - 1;
+				pSh = (CShape *)pDoc->NextObject(index);
 			}
 			else{
-				index_keep = index + 1;
+				pSh = (CShape *)pDoc->PrevObject(index);
 			}
-
-			//This line has been introduced by the fact that if rect mul is deleted,
-			//when some shapes are selected all must be hit with OnLButtonDown
-			//for proper OnMouseMove operation.
-			if (!flag_nodeselect){
-				break;
-			}
-		}
-
-		//check temp conection
-		if (pSh->m_pshChildConn){
-			pShconn = pSh;
-			pShchild = pSh->m_pshChildConn;
-			//pSh->m_pshChildConn=NULL;
-
-		}
-
-		if (DRAFTCABLE_SELECT_INV){
-			pSh = (CShape *)pDoc->NextObject(index);
-		}
-		else{
-			pSh = (CShape *)pDoc->PrevObject(index);
-		}
 		}//end while
 	//=======================================================
 
@@ -1201,23 +1194,8 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 		//Add new shape
-		//This should be changed to sub-method
-		int index=pDoc->m_ObArray.GetUpperBound();
-		if (index > -1){
-			if ((CShape*)pDoc->m_ObArray[index] !=
-				pDoc->m_pSh
-				|| pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
-				if (pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE
-					&& (CShape*)pDoc->m_ObArray[index] !=
-					pDoc->m_pSh)
-					pDoc->AddObject(pDoc->m_pSh);
-				pDoc->m_pSh->OnLButtonDown(nFlags, point);
-			}
-		}
-		else{
-			pDoc->AddObject(pDoc->m_pSh);
-			pDoc->m_pSh->OnLButtonDown(nFlags, point);
-		}
+		_DoAddNewShapeToStack(nFlags, point);
+
 	}
 	//=======================================================
 
@@ -1789,14 +1767,14 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 
 	//If this if is uncommented place in chain (wires) doesn't work properly
 	//thus a second ored clause is added on 25/10/2003
-	if((nFlags&MK_LBUTTON)||
-		(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE))
+	if((nFlags & MK_LBUTTON)
+		|| (pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE)
+		)
 	{
 		while(pSh){
 			POSITION pos = m_ObListSel.Find(pSh);
-			if((!pSh->m_Mode) ||
-				(pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE) /*||
-				pos != NULL*/
+			if((pSh->m_Mode ==_DRAFTDRAW_MODE_SEL)
+				|| (pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE)
 				){
 				
 				pShMove=pSh;
@@ -4154,4 +4132,27 @@ BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
 	}
 
 	return FALSE;
+}
+
+//Add a new shape to stack
+void CDraftDrawView::_DoAddNewShapeToStack(UINT nFlags, CPoint point)
+{
+	CDraftDrawDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	//This should be changed to sub-method
+	int index = pDoc->m_ObArray.GetUpperBound();
+	if (index > -1){
+		if ((CShape*)pDoc->m_ObArray[index] != pDoc->m_pSh
+			|| pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
+			if ((CShape*)pDoc->m_ObArray[index] != pDoc->m_pSh
+				)
+				pDoc->AddObject(pDoc->m_pSh);
+			pDoc->m_pSh->OnLButtonDown(nFlags, point);
+		}
+	}
+	else{
+		pDoc->AddObject(pDoc->m_pSh);
+		pDoc->m_pSh->OnLButtonDown(nFlags, point);
+	}
 }
