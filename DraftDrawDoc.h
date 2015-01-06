@@ -28,6 +28,7 @@
 #define _TOOLSELECT_DRAFTCABLE					0
 #define _TOOLSELECTMUL_DRAFTCABLE				10//multiple selection tool
 #define _TOOLROTATE_DRAFTCABLE					11//rotate tool
+#define _TOOLSELECTMUL_SELECTED_DRAFTCABLE		12//multiple selection tool
 #define _TOOLPLACE_DRAFTCABLE					1
 #define _TOOLSELECT_ZOOMPLUS					2
 #define _TOOLSELECT_ZOOMMINUS					3
