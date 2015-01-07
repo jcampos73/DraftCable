@@ -1755,16 +1755,8 @@ int CDraftDrawDoc::GetSizeObject(){
 
 void CDraftDrawDoc::OnButtonRect() 
 {
-	// TODO: Add your command handler code here
-	/*
-	if(m_pSh){
-
-		delete(m_pSh);
-	}
-	*/
 	m_pSh=new CShapeRect(NULL,0,cmdDeque);
 	m_pSh->m_pCursorArray=m_CursorArray;
-	
 }
 
 void CDraftDrawDoc::DeleteContents() 
@@ -1858,7 +1850,6 @@ void CDraftDrawDoc::DeleteContents()
 
 void CDraftDrawDoc::OnButtonEllipse() 
 {
-	// TODO: Add your command handler code here
 	m_pSh=new CShapeEllipse(NULL,0,cmdDeque);
 	m_pSh->m_pCursorArray=m_CursorArray;
 }

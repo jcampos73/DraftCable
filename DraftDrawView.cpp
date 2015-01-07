@@ -996,7 +996,8 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//add a member function to perform this action
 	//pSh->m_TypeSelect=pDoc->m_pSh->m_TypeSelect;
 	int idata_deb = pDoc->m_pObArray->GetSize();
-	bool flag_return = false, flag_return1 = false;
+	bool flag_return = false;
+	bool flag_no_deselect = false;
 	bool flag_atleast_one_selected = false;
 	int index;
 	int index_keep = -1;
@@ -1058,25 +1059,26 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 				pSh->OnLButtonDown(nFlags, point);
 
 				//Add to selected shapes array
+				/*
 				if (pSh->IsSelected()){
 					POSITION pos = m_ObListSel.Find(pSh);
 					if (pos == NULL)
 						m_ObListSel.AddTail(pSh);
 				}
+				*/
 				
 				if (pSh->m_Mode == _DRAFTDRAW_MODE_SEL){
 
-					flag_atleast_one_selected = true;
+					POSITION pos = m_ObListSel.Find(pSh);
+					if (pos == NULL)
+						//m_ObListSel.AddTail(pSh);
+						int _dummy = 1;
+					else
+						flag_no_deselect = true;
+
 					pShSelected = pSh;
-
+					flag_atleast_one_selected = true;
 					flag_return = true;
-
-					if (DRAFTCABLE_SELECT_INV){
-						index_keep = index - 1;
-					}
-					else{
-						index_keep = index + 1;
-					}
 
 					break;
 				}
@@ -1099,10 +1101,11 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//New de-selecting mechanism
-	if (pDoc->m_iToolSel != _TOOLROTATE_DRAFTCABLE
+	if ((pDoc->m_iToolSel == _TOOLSELECT_DRAFTCABLE && flag_no_deselect==false)
+		|| pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE
 		//If we are in multiple selection mode
-		&& pDoc->m_iToolSel != _TOOLSELECTMUL_DRAFTCABLE
-		//&& (pDoc->m_iToolSel != _TOOLSELECTMUL_SELECTED_DRAFTCABLE || pShSelected==NULL)
+		//&& pDoc->m_iToolSel != _TOOLSELECTMUL_DRAFTCABLE
+		|| (pDoc->m_iToolSel == _TOOLSELECTMUL_SELECTED_DRAFTCABLE && pShSelected==NULL)
 		){
 		POSITION pos = m_ObListSel.GetHeadPosition();
 		while (pos != NULL)
@@ -1128,10 +1131,18 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 				rect_union.UnionRect(rect_union, rect);
 			}
 		}
+
+		m_ObListSel.RemoveAll();
+	}
+
+	if (pShSelected != NULL){
+		POSITION pos = m_ObListSel.Find(pShSelected);
+		if (pos == NULL)
+			m_ObListSel.AddTail(pShSelected);
 	}
 	//=======================================================
 
-	//NEW SHAPE
+	//STATUS MACHINE
 	//=======================================================
 	if(pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE &&
 		pShSelected == NULL){
@@ -1152,7 +1163,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		pDoc->AddObject(pDoc->m_pSh);
 		pDoc->m_pSh->OnLButtonDown(nFlags, point);
 	}
-	else if (pDoc->m_iToolSel != _TOOLSELECT_DRAFTCABLE){
+	else if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE){
 		//Connect
 		//19/01/2005: new connecting mechanism
 		if(bConnectionTmp){
@@ -1280,10 +1291,22 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		int sizeObArray=pDoc->m_pObArray->GetSize();
 		
 		pSh->OnLButtonDown(nFlags,pDoc->m_pSh->m_Rect);
+		if (pSh->IsSelected()){
+
+			POSITION pos = m_ObListSel.Find(pSh);
+			if (pos == NULL)
+				m_ObListSel.AddTail(pSh);
+		}
 
 		while(index<sizeObArray-1){
 			pSh=(CShape *)pDoc->NextObject(index);
 			pSh->OnLButtonDown(nFlags,pDoc->m_pSh->m_Rect);
+			if (pSh->IsSelected()){
+
+				POSITION pos = m_ObListSel.Find(pSh);
+				if (pos == NULL)
+					m_ObListSel.AddTail(pSh);
+			}
 		}
 
 		pSh=(CShape *)pDoc->NextObject(index);
@@ -1753,7 +1776,7 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		while(pSh){
 			POSITION pos = m_ObListSel.Find(pSh);
-			if((pSh->m_Mode ==_DRAFTDRAW_MODE_SEL)
+			if (pSh->IsSelected()//(pSh->m_Mode == _DRAFTDRAW_MODE_SEL)
 				|| (pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE)
 				){
 				

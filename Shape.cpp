@@ -1561,10 +1561,23 @@ void CShapeRect::OnDraw(CDC *pDC)
 		else{
 			//Draw in current position
 			if(m_TypeSelect!=_DRAFTDRAW_SEL_RESIZING_RECT){
+#ifdef DCABLE_SHAPE_FILL_PROTOTYPE
+				CRect arrRect[2];
+				DoFill(pDC, m_RectLast);
+				pDC->FrameRect(&m_RectLast, &CBrush(RGB(0, 0, 0)));
+#else
 				pDC->Rectangle(m_RectLast);
+#endif
 			}
 
+#ifdef DCABLE_SHAPE_FILL_PROTOTYPE
+			CRect arrRect[2];
+			DoFill(pDC, m_Rect);
+			pDC->FrameRect(&m_Rect, &CBrush(RGB(0, 0, 0)));
+#else
 			pDC->Rectangle(m_Rect);
+#endif
+
 		}
 
 		CShape::OnDraw(pDC);
@@ -1589,10 +1602,6 @@ void CShapeRect::OnDraw(CDC *pDC)
 		else{
 #ifdef DCABLE_SHAPE_FILL_PROTOTYPE
 			CRect arrRect[2];
-			//void Func(int(&myArray)[100]);
-			//SplitRect(m_Rect, &CPoint(0, 1), arrRect);
-			//DoFill(pDC, arrRect[0]);
-			//DoFill(pDC, arrRect[1]);
 			DoFill(pDC, m_Rect);
 			pDC->FrameRect(&m_Rect,&CBrush(RGB(0,0,0)));
 #else

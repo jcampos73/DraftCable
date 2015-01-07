@@ -34,7 +34,7 @@
 #define _TOOLSELECT_ZOOMMINUS					3
 #define _TOOLSELECT_PAN							4
 
-//Selectel tool type
+//Selectel tool type for place tool
 #define _TOOLTYPENORMAL_DRAFTCABLE				0
 #define _TOOLTYPECHAININI_DRAFTCABLE			1
 #define _TOOLTYPECHAIN_DRAFTCABLE				2
