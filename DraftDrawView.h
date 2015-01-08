@@ -132,6 +132,7 @@ protected:
 	//Add a new shape to stack
 	void _DoAddNewShapeToStack(UINT nFlags, CPoint point);
 	BOOL _DoGetConnectionTmp(LPPOINT point, CShapeContainer** pShContConnect, CShape* pSh, BOOL bConnectionTmp);
+	void _DoZoom(CShape* pSh);
 
 	void GetSheetArea(CRect& rcSheet);
 

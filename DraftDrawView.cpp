@@ -1285,53 +1285,8 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		//Next shape
 		pSh=(CShape *)pDoc->NextObject(index);
 	}//end while and if (...) IsKindOf(RUNTIME_CLASS(CShapeWire)) (...)
-	//Disable rect for multiple selections
-	else if((pDoc->m_iToolSel==_TOOLSELECTMUL_DRAFTCABLE)&&(m_RectMul.IsRectEmpty())){
 
-		int sizeObArray=pDoc->m_pObArray->GetSize();
-		
-		pSh->OnLButtonDown(nFlags,pDoc->m_pSh->m_Rect);
-		if (pSh->IsSelected()){
-
-			POSITION pos = m_ObListSel.Find(pSh);
-			if (pos == NULL)
-				m_ObListSel.AddTail(pSh);
-		}
-
-		while(index<sizeObArray-1){
-			pSh=(CShape *)pDoc->NextObject(index);
-			pSh->OnLButtonDown(nFlags,pDoc->m_pSh->m_Rect);
-			if (pSh->IsSelected()){
-
-				POSITION pos = m_ObListSel.Find(pSh);
-				if (pos == NULL)
-					m_ObListSel.AddTail(pSh);
-			}
-		}
-
-		pSh=(CShape *)pDoc->NextObject(index);
-
-		pSh->OnLButtonUp(nFlags,point);
-		pSh->OnLButtonDown(nFlags,pSh->m_Rect);
-
-		m_RectMul=pSh->m_Rect;
-
-#ifdef DRAFTDRAW_RECTMUL_DELETE
-		pDoc->DeleteObject(-1);
-		pDoc->m_iToolSel=_TOOLSELECT_DRAFTCABLE;
-#endif
-
-		if(!m_RectMul.IsRectEmpty()){
-
-			m_RectDraw=m_RectMul;
-			m_RectDraw.InflateRect(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT);
-			InvalidateRect(m_RectDraw,FALSE);
-		}
-
-		return;
-	}
-
-	//Code to place the shape
+	//STATUS MACHINE
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE
 		|| pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE
 		|| pDoc->m_iToolSel==_TOOLROTATE_DRAFTCABLE
@@ -1364,6 +1319,51 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			pSh=(CShape *)pDoc->NextObject(index);
 		}
 		pSh=pShSel;
+	}
+	//Disable rect for multiple selections
+	else if ((pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE) && (m_RectMul.IsRectEmpty())){
+
+		int sizeObArray = pDoc->m_pObArray->GetSize();
+
+		pSh->OnLButtonDown(nFlags, pDoc->m_pSh->m_Rect);
+		if (pSh->IsSelected()){
+
+			POSITION pos = m_ObListSel.Find(pSh);
+			if (pos == NULL)
+				m_ObListSel.AddTail(pSh);
+		}
+
+		while (index<sizeObArray - 1){
+			pSh = (CShape *)pDoc->NextObject(index);
+			pSh->OnLButtonDown(nFlags, pDoc->m_pSh->m_Rect);
+			if (pSh->IsSelected()){
+
+				POSITION pos = m_ObListSel.Find(pSh);
+				if (pos == NULL)
+					m_ObListSel.AddTail(pSh);
+			}
+		}
+
+		pSh = (CShape *)pDoc->NextObject(index);
+
+		pSh->OnLButtonUp(nFlags, point);
+		pSh->OnLButtonDown(nFlags, pSh->m_Rect);
+
+		m_RectMul = pSh->m_Rect;
+
+#ifdef DRAFTDRAW_RECTMUL_DELETE
+		pDoc->DeleteObject(-1);
+		pDoc->m_iToolSel = _TOOLSELECT_DRAFTCABLE;
+#endif
+
+		if (!m_RectMul.IsRectEmpty()){
+
+			m_RectDraw = m_RectMul;
+			m_RectDraw.InflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
+			InvalidateRect(m_RectDraw, FALSE);
+		}
+
+		return;
 	}
 
 	//Connection pin index for shape under selection is 1 for wires
@@ -1493,9 +1493,9 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				m_szWext=CSize(1,1);//default value
 
 				//Calculate
+				//_DoWindowAndViewPortExtend(CRect viewport, CRect window);
 				CSize szVPext;
 				if(szDesign.cx<rect.Width()){
-
 					szVPext.cx=(rect.Width())/szDesign.cx;
 				}
 				else{
@@ -1506,7 +1506,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 
 				if(szDesign.cy<rect.Height()){
-
 					szVPext.cy=(rect.Height())/szDesign.cy;
 				}
 				else{
@@ -1518,7 +1517,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 
 				//Process results
 				if(m_szWext.cx==1&&m_szWext.cy==1){
-
 					(szVPext.cx<szVPext.cy?m_szVPext.cx=m_szVPext.cy=szVPext.cx:m_szVPext.cx=m_szVPext.cy=szVPext.cy);
 				}
 				else{
@@ -1528,6 +1526,8 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 
 				//Execute zoom
+				_DoZoom(pSh);
+				/*
 				szDesign=pDoc->GetSize();
 
 				SetScrollSizes(MM_TEXT,
@@ -1566,14 +1566,17 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 
 				//Execute offset
 				ScrollToPosition(pscrollpos);
+				*/
 
 				//Delete zoom shape and set tool select automatically
 				pDoc->DeleteObject(-1);
 				pDoc->m_iToolSel=_TOOLSELECT_DRAFTCABLE;
+
+				bRedrawAll = TRUE;
 			}
 			//Repeat placement engine
 			else{
-				//Insert point for adding shapes to left tree
+				//Insert point for adding shapes to explorer tree
 				//------
 
 				//------				
@@ -4173,4 +4176,50 @@ BOOL  CDraftDrawView::_DoGetConnectionTmp(LPPOINT point, CShapeContainer** pShCo
 	}
 
 	return bConnectionTmp;
+}
+
+void CDraftDrawView::_DoZoom(CShape* pSh)
+{
+	CDraftDrawDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	CRect rect;
+
+	CSize szDesign = pDoc->GetSize();
+
+	SetScrollSizes(MM_TEXT,
+		CSize(szDesign.cx*m_szVPext.cx, szDesign.cy*m_szVPext.cx),
+		CSize(100 * m_szVPext.cx, 100 * m_szVPext.cx),
+		CSize(10 * m_szVPext.cx, 10 * m_szVPext.cx));
+
+	//Recalcule scales.
+	if (m_szWext.cx == 1 && m_szWext.cy == 1){
+		m_xScale = 1.0 / m_szVPext.cx;
+		m_yScale = 1.0 / m_szVPext.cy;
+	}
+	else{
+		m_xScale = m_szWext.cx;
+		m_yScale = m_szWext.cy;
+	}
+
+	//Origin offset
+	//Drawing is shift so as to center of viewport aligns with
+	//zoom rectangle center.
+	//int origin_x=pscrollpos.x*m_xScale;
+	//int origin_y=pscrollpos.y*m_yScale;
+	CPoint pscrollpos;
+	pscrollpos.x = pSh->m_Rect.CenterPoint().x / m_xScale;
+	pscrollpos.y = pSh->m_Rect.CenterPoint().y / m_yScale;
+	GetClientRect(&rect);
+	CPoint point = rect.CenterPoint();
+	pscrollpos = -CPoint(point.x, point.y) + pscrollpos;//no scale needed for center point!
+
+	//Final check:
+	//origin is not offset if design fits in window.
+	szDesign = pDoc->GetSize();
+	szDesign = CSize(szDesign.cx / m_xScale, szDesign.cy / m_yScale);
+	(rect.Width()>szDesign.cx ? pscrollpos.x = 0 : pscrollpos.x);
+	(rect.Height()>szDesign.cy ? pscrollpos.y = 0 : pscrollpos.y);
+
+	//Execute offset
+	ScrollToPosition(pscrollpos);
 }
