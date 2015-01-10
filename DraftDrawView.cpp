@@ -1357,7 +1357,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 #endif
 
 		if (!m_RectMul.IsRectEmpty()){
-
 			m_RectDraw = m_RectMul;
 			m_RectDraw.InflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
 			InvalidateRect(m_RectDraw, FALSE);
@@ -1396,7 +1395,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		if((pDoc->m_iToolType==_TOOLTYPECHAININI_DRAFTCABLE)||
 			(pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE)){
-
 
 			pSh=(CShape *)pDoc->LastObject(index);
 			//Create a new shape
@@ -1527,46 +1525,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 
 				//Execute zoom
 				_DoZoom(pSh);
-				/*
-				szDesign=pDoc->GetSize();
-
-				SetScrollSizes(MM_TEXT,
-					CSize(szDesign.cx*m_szVPext.cx,szDesign.cy*m_szVPext.cx),
-					CSize(100*m_szVPext.cx,100*m_szVPext.cx),
-					CSize(10*m_szVPext.cx,10*m_szVPext.cx));
-
-				//Recalcule scales.
-				if(m_szWext.cx==1&&m_szWext.cy==1){
-					m_xScale=1.0/m_szVPext.cx;
-					m_yScale=1.0/m_szVPext.cy;
-				}
-				else{
-					m_xScale=m_szWext.cx;
-					m_yScale=m_szWext.cy;
-				}
-
-				//Origin offset
-				//Drawing is shift so as to center of viewport aligns with
-				//zoom rectangle center.
-				//int origin_x=pscrollpos.x*m_xScale;
-				//int origin_y=pscrollpos.y*m_yScale;
-				CPoint pscrollpos;
-				pscrollpos.x=pSh->m_Rect.CenterPoint().x/m_xScale;
-				pscrollpos.y=pSh->m_Rect.CenterPoint().y/m_yScale;
-				GetClientRect(&rect);
-				CPoint point=rect.CenterPoint();
-				pscrollpos=-CPoint(point.x,point.y)+pscrollpos;//no scale needed for center point!
-
-				//Final check:
-				//origin is not offset if design fits in window.
-				szDesign=pDoc->GetSize();
-				szDesign=CSize(szDesign.cx/m_xScale,szDesign.cy/m_yScale);
-				(rect.Width()>szDesign.cx?pscrollpos.x=0:pscrollpos.x);
-				(rect.Height()>szDesign.cy?pscrollpos.y=0:pscrollpos.y);
-
-				//Execute offset
-				ScrollToPosition(pscrollpos);
-				*/
 
 				//Delete zoom shape and set tool select automatically
 				pDoc->DeleteObject(-1);
@@ -1595,7 +1553,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 					//Beware! This mechanism is not very good. It would be better a suitable '=' operator.
 					pSh1->pcmdDeque=pDoc->cmdDeque;
 
-					pDoc->m_pSh=pSh1;//new CShape();
+					pDoc->m_pSh=pSh1;
 					pDoc->m_pSh->m_pCursorArray=pDoc->m_CursorArray;
 
 					if( (pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit)))||
@@ -1614,8 +1572,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 						//pDoc->m_pSh->m_Rect+=point;
 					}
 
-					//???
-					::SetCursor(pDoc->m_CursorArray[10]);
+					::SetCursor(pDoc->m_CursorArray[CURSOR_DRAW]);
 				}
 			}
 		}/* end _TOOLTYPENORMAL_DRAFTCABLE*/
@@ -1626,13 +1583,12 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//debug
-	int idata_deb=pDoc->m_pObArray->GetSize();
+	int dummy_=pDoc->m_pObArray->GetSize();
 
 	if(bRedrawAll){
 		//Puts m_RectDraw to empty rect (OnMouseMove could set m_RectDraw)
 		m_RectDraw=CRect(0,0,0,0);
 		m_RectDraw2=CRect(0,0,0,0);
-		//RedrawWindow();
 		Invalidate();
 	}
 	else{
@@ -2184,8 +2140,6 @@ void CDraftDrawView::OnZoomIn()
 
 void CDraftDrawView::DoZoomIn(CPoint point) 
 {
-	// TODO: Add your command handler code here
-
 	//Calcule first values
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -2196,7 +2150,6 @@ void CDraftDrawView::DoZoomIn(CPoint point)
 	CSize offset=point1-pscrollpos;
 	//offset=CSize(offset.cx*m_xScale,offset.cy*m_yScale);
 
-
 	//Calcule
 	if(m_szWext.cx>1){
 		m_szWext-=CSize(1,1);
@@ -2204,10 +2157,8 @@ void CDraftDrawView::DoZoomIn(CPoint point)
 			CSize(szDesign.cx/m_szWext.cx,szDesign.cy/m_szWext.cx),
 			CSize(SCROLL_SIZE_PAGE/m_szWext.cx,SCROLL_SIZE_PAGE/m_szWext.cx),
 			CSize(SCROLL_SIZE_LINE/m_szWext.cx,SCROLL_SIZE_LINE/m_szWext.cx));
-
 		m_xScale=m_szWext.cx;
 		m_yScale=m_szWext.cy;
-
 	}
 	else{
 		m_szVPext+=CSize(1,1);
@@ -2215,19 +2166,10 @@ void CDraftDrawView::DoZoomIn(CPoint point)
 			CSize(szDesign.cx*m_szVPext.cx,szDesign.cy*m_szVPext.cx),
 			CSize(SCROLL_SIZE_PAGE*m_szVPext.cx,SCROLL_SIZE_PAGE*m_szVPext.cx),
 			CSize(SCROLL_SIZE_LINE*m_szVPext.cx,SCROLL_SIZE_LINE*m_szVPext.cx));
-
 		m_xScale=1.0/m_szVPext.cx;
 		m_yScale=1.0/m_szVPext.cy;
+	}	
 
-	}
-
-	
-
-	//Origin offset
-/*
-	pscrollpos.x=pscrollpos.x/m_xScale;
-	pscrollpos.y=pscrollpos.y/m_yScale;
-*/
 	//Offset origin so as to cursor is as the same point of drawing.
 	pscrollpos.x=(point.x/m_xScale-offset.cx);
 	pscrollpos.y=(point.y/m_yScale-offset.cy);
@@ -2235,15 +2177,14 @@ void CDraftDrawView::DoZoomIn(CPoint point)
 	//Offset gain: align zoom center with center of screen.
 	//Comment this block if you don't want this behaviour.
 	//Try it!
+	CRect rect;
 	//--------------------------------------------------------------------------
 	pscrollpos.x=point.x/m_xScale;
 	pscrollpos.y=point.y/m_yScale;
-	CRect rect;
 	GetClientRect(&rect);
 	point=rect.CenterPoint();
 	pscrollpos=-CPoint(point.x,point.y)+pscrollpos;//no scale needed for center point!
 	//--------------------------------------------------------------------------
-
 
 	//Final check:
 	//origin is not offset if design fits in window.
@@ -2255,10 +2196,8 @@ void CDraftDrawView::DoZoomIn(CPoint point)
 	//Execute offset
 	ScrollToPosition(pscrollpos);
 
-
 	//Redraw window
 	RedrawWindow();
-	
 }
 
 void CDraftDrawView::OnZoomOut() 
@@ -2279,8 +2218,6 @@ void CDraftDrawView::OnZoomOut()
 
 void CDraftDrawView::DoZoomOut(CPoint point) 
 {
-	// TODO: Add your command handler code here
-
 	//Calcule first values
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -2289,7 +2226,6 @@ void CDraftDrawView::DoZoomOut(CPoint point)
 	//pscrollpos=CPoint(pscrollpos.x*m_xScale,pscrollpos.y*m_yScale);
 	CPoint point1=CPoint(point.x/m_xScale,point.y/m_yScale);
 	CSize offset=point1-pscrollpos;
-
 
 	//Calcule
 	if(m_szVPext.cx>1){
@@ -2301,7 +2237,6 @@ void CDraftDrawView::DoZoomOut(CPoint point)
 
 		m_xScale=1.0/m_szVPext.cx;
 		m_yScale=1.0/m_szVPext.cy;
-
 	}
 	else{
 		m_szWext+=CSize(1,1);
@@ -2312,15 +2247,8 @@ void CDraftDrawView::DoZoomOut(CPoint point)
 
 		m_xScale=m_szWext.cx;
 		m_yScale=m_szWext.cy;
-
 	}
 
-	//Origin offset
-
-/*
-	pscrollpos.x=pscrollpos.x/m_xScale;
-	pscrollpos.y=pscrollpos.y/m_yScale;
-*/
 	//Offset origin so as to cursor is as the same point of drawing.
 	pscrollpos.x=(point.x/m_xScale-offset.cx);
 	pscrollpos.y=(point.y/m_yScale-offset.cy);
@@ -2349,7 +2277,6 @@ void CDraftDrawView::DoZoomOut(CPoint point)
 
 	//Redraw window.
 	RedrawWindow();
-	
 }
 
 void CDraftDrawView::OnZoomAll() 

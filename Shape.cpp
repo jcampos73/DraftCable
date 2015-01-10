@@ -1618,7 +1618,6 @@ void CShapeRect::OnDraw(CDC *pDC)
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeEllipse
-/*IMPLEMENT_DYNCREATE(CShapeEllipse, CShape)*/
 IMPLEMENT_SERIAL(CShapeEllipse, CShape, 1)
 
 CShapeEllipse::CShapeEllipse(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/):CShape(lpRect,nId,cmddq)
@@ -1690,8 +1689,11 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 		}
 
 		if(m_bTransparent){
+			CBrush brush(m_crFill);
+			CBrush *prev_brush = pDC->SelectObject(&brush);
+			pDC->SelectStockObject(NULL_BRUSH);
 			pDC->Ellipse(m_Rect);
-
+			pDC->SelectObject(prev_brush);
 		}
 		else{
 			CBrush brush(m_crFill);
@@ -2526,7 +2528,7 @@ void CShapeContainer::OnLButtonUp(UINT nFlags, CPoint point){
 
 void CShapeContainer::OnLButtonDown(UINT nFlags, CPoint point){
 
-	if(m_bConnectMake){//if(1){//if(m_bConnectMake){
+	if(m_bConnectMake){
 		for(int i=0;i<m_obarrShapearr.GetSize();i++){
 
 			CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
