@@ -1485,43 +1485,13 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			if(pSh->IsKindOf(RUNTIME_CLASS(CShapeZoomRect))){
 
 				//Calculate first values
-				CSize szDesign=CSize(pSh->m_Rect.Width(),pSh->m_Rect.Height());//szDesign asigned to zoom rectangle
-				CRect rect;
-				GetClientRect(&rect);
+				CSize szViewport=CSize(pSh->m_Rect.Width(),pSh->m_Rect.Height());//szDesign asigned to zoom rectangle
+				CRect rectWindow;
+				GetClientRect(&rectWindow);
 				m_szWext=CSize(1,1);//default value
 
 				//Calculate
-				//_DoWindowAndViewPortExtend(CRect viewport, CRect window);
-				CSize szVPext;
-				if(szDesign.cx<rect.Width()){
-					szVPext.cx=(rect.Width())/szDesign.cx;
-				}
-				else{
-					szVPext.cx=1;
-					float fdata=szDesign.cx;
-					fdata/=rect.Width();
-					m_szWext.cx=ceil(fdata);
-				}
-
-				if(szDesign.cy<rect.Height()){
-					szVPext.cy=(rect.Height())/szDesign.cy;
-				}
-				else{
-					szVPext.cy=1;
-					float fdata=szDesign.cy;
-					fdata/=rect.Height();
-					m_szWext.cy=ceil(fdata);
-				}
-
-				//Process results
-				if(m_szWext.cx==1&&m_szWext.cy==1){
-					(szVPext.cx<szVPext.cy?m_szVPext.cx=m_szVPext.cy=szVPext.cx:m_szVPext.cx=m_szVPext.cy=szVPext.cy);
-				}
-				else{
-
-					m_szVPext=CSize(1,1);
-					(m_szWext.cx<m_szWext.cy?m_szWext.cx=m_szWext.cy:m_szWext.cy=m_szWext.cx);
-				}
+				_DoCalculateWindowViewPortExtend(szViewport, rectWindow);
 
 				//Execute zoom
 				_DoZoom(pSh);
@@ -4103,6 +4073,40 @@ BOOL  CDraftDrawView::_DoGetConnectionTmp(LPPOINT point, CShapeContainer** pShCo
 	}
 
 	return bConnectionTmp;
+}
+
+void CDraftDrawView::_DoCalculateWindowViewPortExtend(CSize viewport, CRect window)
+{
+	CSize szVPext;
+	if (viewport.cx < window.Width()){
+		szVPext.cx = window.Width() / viewport.cx;
+	}
+	else{
+		szVPext.cx = 1;
+		float fdata = viewport.cx;
+		fdata /= window.Width();
+		m_szWext.cx = ceil(fdata);
+	}
+
+	if (viewport.cy < window.Height()){
+		szVPext.cy = window.Height() / viewport.cy;
+	}
+	else{
+		szVPext.cy = 1;
+		float fdata = viewport.cy;
+		fdata /= window.Height();
+		m_szWext.cy = ceil(fdata);
+	}
+
+	//Process results
+	if (m_szWext.cx == 1 && m_szWext.cy == 1){
+		(szVPext.cx<szVPext.cy ? m_szVPext.cx = m_szVPext.cy = szVPext.cx : m_szVPext.cx = m_szVPext.cy = szVPext.cy);
+	}
+	else{
+
+		m_szVPext = CSize(1, 1);
+		(m_szWext.cx<m_szWext.cy ? m_szWext.cx = m_szWext.cy : m_szWext.cy = m_szWext.cx);
+	}
 }
 
 void CDraftDrawView::_DoZoom(CShape* pSh)
