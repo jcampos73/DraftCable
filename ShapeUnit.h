@@ -13,6 +13,9 @@
 #define SHAPEUNIT_PINTYPE_MASK		0x000000ff
 #define SHAPEUNIT_PINTYPE_JACK		0x00000100
 
+#define SHAPECONTAINER_CONNECTING_PIN_UNIT	0
+#define SHAPECONTAINER_CONNECTING_PIN_WIRE	1
+
 extern char **TABLE_PIN_LABEL;
 
 /////////////////////////////////////////////////////////////////////////////

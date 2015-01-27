@@ -1257,13 +1257,13 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	CShape *pSh=(CShape *)pDoc->FirstObject(index);
 	pSh=(CShape *)pDoc->NextObject(index);
 
-	int indexPin=1;//1 default (wires) MAGIC NUMBER!!!
+	int indexPin = SHAPECONTAINER_CONNECTING_PIN_WIRE;
 
 	//19/01/2005: New connecting mechanism
 	BOOL bConnectionTmp=FALSE;//set when a connection is pending
 	CShapeContainer *pShContConnect=NULL;
 
-	//Preprocessing: connection engine and multiple select rectangle
+	///STATUS MACHINE CONNECT
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE && pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire)))
 		//Loop
 		while(index<pDoc->m_pObArray->GetSize()){
@@ -1272,13 +1272,13 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		int ModeLast=pSh->m_Mode;
 		int TypeLast=pSh->m_TypeSelect;
 
-		//New code under testing
+		//Do prepare for connecting
 		if (_DoGetConnectionTmp(pSh, point, nFlags,
 			bConnectionTmp,
 			indexPin,
 			&pShContConnect
 			) == TRUE){
-			//If the private return TRUE we return now
+			//If the private member return TRUE we return now
 			return;
 		}
 
@@ -1286,7 +1286,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		pSh=(CShape *)pDoc->NextObject(index);
 	}//end while and if (...) IsKindOf(RUNTIME_CLASS(CShapeWire)) (...)
 
-	//STATUS MACHINE
+	//STATUS MACHINE SELECT
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE
 		|| pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE
 		|| pDoc->m_iToolSel==_TOOLROTATE_DRAFTCABLE
@@ -1307,14 +1307,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				//Current position to erase
 				CRect rect;
 				pSh->GetSizingRect(rect);
-				rect.NormalizeRect();
-				//Inflate update rectangle
-				rect.InflateRect(DCABLE_GRIDX_DEFAULT*4,DCABLE_GRIDY_DEFAULT*4);//MAGIC NUMBER
-				//Intersect with sheet
-				rect.IntersectRect(rect,rcSheet);
-				//Add to update rectangle
-				rect_union.UnionRect(rect_union,rect);
-				bRedrawAll=FALSE;
+				bRedrawAll |= _DoAddToUpdateRect(rect_union, rect);
 			}
 			pSh=(CShape *)pDoc->NextObject(index);
 		}
@@ -1428,7 +1421,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 
 					bConnectionTmp=pShContainer->PtInRect(&point,&pShContConnect);
 					if(bConnectionTmp){
-						indexPin=0;
+						indexPin = SHAPECONTAINER_CONNECTING_PIN_UNIT;
 					}
 				}
 
@@ -1466,18 +1459,12 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			CRect rect;
 			pSh->GetSizingRect(rect);
 			pSh->GetRectUpdatePlace(rect);
-			rect.NormalizeRect();
-			//Inflate update rectangle
-			rect.InflateRect(DCABLE_GRIDX_DEFAULT*4,DCABLE_GRIDY_DEFAULT*4);//MAGIC NUMBER
-			//Intersect with sheet
-			rect.IntersectRect(rect,rcSheet);
-			//Add to update rectangle
-			rect_union.UnionRect(rect_union,rect);
+			bRedrawAll |= _DoAddToUpdateRect(rect_union, rect);
 
 			//Pass event to shape
 			/*pDoc->m_pSh->OnLButtonDown(nFlags, point);*/
 		}
-		//REPEAT PREVIOUS PLACMENT
+		//REPEAT PREVIOUS PLACEMENT
 		else if(pDoc->m_iToolType==_TOOLTYPENORMAL_DRAFTCABLE){
 			pSh=(CShape *)pDoc->LastObject(index);
 
@@ -1563,9 +1550,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	else{
 		CRect rect=rect_union;
-		//1st aprox. to update region: inflate rectangle
-		/*rect.InflateRect(_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW);*/
-		//2nd aprox. use las union rect
 		rect.UnionRect(rect,m_RectPrev);
 
 		//Scale update rectangle to current coordinates
@@ -1788,9 +1772,6 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 			int i=0;
 		}
 
-		//1st aprox. to update region: inflate rectangle
-		/*rect.InflateRect(_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW);*/
-		//2nd aprox. use las union rect
 		rect.UnionRect(rect,m_RectPrev);
 
 		//Scale update rectangle to current coordinates
@@ -2605,20 +2586,55 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 		//DRAWING ENGINE
 		//=======================================================
 		if(index_keep!=-1){
-			//Calculate update area
-			#define _SHAPEBORDERX_DRAFTDRAW	30
-			#define _SHAPEBORDERY_DRAFTDRAW	30
-			rect.NormalizeRect();
+
+			CRect rect_union = CRect(0, 0, 0, 0);
 
 			pSh->GetRectUpdatePlace(rect);
+			_DoAddToUpdateRect(rect_union, rect);		
 
-			rect.InflateRect(_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW,_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW);
+			rect = rect_union;
+			rect.UnionRect(rect, m_RectPrev);
+
 			CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
 			CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
 			//rect=CRect(point1,size);
-			m_RectDraw=rect;
-			/*RedrawWindow(CRect(point1,size));*/
-			InvalidateRect(CRect(point1,size),TRUE);
+			m_RectDraw = rect;
+			m_RectPrev = rect_union;//keep last union rect
+
+			InvalidateRect(CRect(point1,size),FALSE);
+
+			/*
+			CRect rect=rect_union;
+
+			rect.UnionRect(rect, m_RectPrev);
+
+			//Scale update rectangle to current coordinates
+			CPoint point1 = CPoint(rect.TopLeft().x / m_xScale, rect.TopLeft().y / m_yScale) - GetScrollPosition();
+			//CPoint point1=rect.TopLeft();
+			CSize size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
+
+			//Scale update rectangle to current coordinates
+			CRect rect2 = rect_union2;
+			CPoint point2 = CPoint(rect2.TopLeft().x / m_xScale, rect2.TopLeft().y / m_yScale) - GetScrollPosition();
+			CSize size2 = CSize(rect2.Width() / m_xScale, rect2.Height() / m_yScale);
+
+			//rect=CRect(point1,size);
+			m_RectDraw = rect;
+			m_RectPrev = rect_union;//keep last union rect
+			m_RectDraw2 = rect_union2;
+
+			//#define DCABLE_ONMOUSEMOVE_ERASING_ENABLE
+#ifdef DCABLE_ONMOUSEMOVE_ERASING_ENABLE
+			InvalidateRect(CRect(point1, size), TRUE);
+			//RedrawWindow(CRect(point1,size));
+#else
+			//Delete curren position
+			InvalidateRect(CRect(point1, size), FALSE);
+			//Delete in original position
+			InvalidateRect(CRect(point2, size2), FALSE);
+#endif			
+			
+			*/
 		}
 		//=======================================================
 		//=======================================================
@@ -2686,16 +2702,14 @@ void CDraftDrawView::OnEscape()
 	//=======================================================
 	if(index_keep!=-1){
 		//Calculate update area
-		#define _SHAPEBORDERX_DRAFTDRAW	30
-		#define _SHAPEBORDERY_DRAFTDRAW	30
+
 		rect.NormalizeRect();
 
 		rect.InflateRect(_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW,_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW);
 		CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
 		CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
-		//rect=CRect(point1,size);
+
 		m_RectDraw=rect;
-		/*RedrawWindow(CRect(point1,size));*/
 		InvalidateRect(CRect(point1,size),TRUE);
 	}
 	//=======================================================
@@ -3965,6 +3979,12 @@ void CDraftDrawView::DoPreventShpOutSchem(CShape *pSh, CRect rcSheet){
 	}
 }
 
+//pSh				Pointer to shape yo test
+//point				point to test
+//nFlags			passed to OnLButtonDown for example
+//bConnectionTmp	set if a temp connection is being made
+//indexPin			index of pDoc->m_pSh being connected
+//pShContConnect	shape that pDoc->m_pSh is being connected to
 BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
 	BOOL& bConnectionTmp,
 	int& indexPin,
@@ -3992,7 +4012,7 @@ BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
 					//Test connection
 					bConnectionTmp = pShContainer->PtInRect(&point, pShContConnect);
 					if (bConnectionTmp){
-						indexPin = 1;
+						indexPin = SHAPECONTAINER_CONNECTING_PIN_WIRE;
 					}
 				}
 				else{
@@ -4024,7 +4044,7 @@ BOOL CDraftDrawView::_DoGetConnectionTmp(CShape *pSh, CPoint point, UINT nFlags,
 
 						if (pSh->m_pshChildConn){
 							pShUnit->m_pshChildConn = pShPin->m_pshChildConn;
-							indexPin = 0;
+							indexPin = SHAPECONTAINER_CONNECTING_PIN_UNIT;
 						}
 					}
 				}
@@ -4153,4 +4173,27 @@ void CDraftDrawView::_DoZoom(CShape* pSh)
 
 	//Execute offset
 	ScrollToPosition(pscrollpos);
+}
+
+BOOL CDraftDrawView::_DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd)
+{
+	//Local variable
+	CDraftDrawDoc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+
+	//Calculate sheet area
+	//=======================================================
+	CSize szDesign = pDoc->GetSize();
+	CRect rcSheet = CRect(CPoint(0, 0), szDesign);
+	rcSheet.DeflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
+	//=======================================================
+
+	rectToAdd.NormalizeRect();
+	//Inflate update rectangle
+	rectToAdd.InflateRect(DCABLE_PADDINGX_DEFAULT, DCABLE_PADDINGY_DEFAULT);
+	//Intersect with sheet
+	rectToAdd.IntersectRect(rectToAdd, rcSheet);
+	//Add to update rectangle
+	rectUpdate.UnionRect(rectUpdate, rectToAdd);
+	return FALSE;
 }

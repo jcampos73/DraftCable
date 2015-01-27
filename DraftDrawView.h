@@ -134,6 +134,7 @@ protected:
 	BOOL _DoGetConnectionTmp(LPPOINT point, CShapeContainer** pShContConnect, CShape* pSh, BOOL bConnectionTmp);
 	void _DoCalculateWindowViewPortExtend(CSize viewport, CRect window);
 	void _DoZoom(CShape* pSh);
+	BOOL _DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd);
 
 	void GetSheetArea(CRect& rcSheet);
 

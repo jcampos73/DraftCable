@@ -36,6 +36,10 @@
 #define DCABLE_PADDINGX_DEFAULT		DCABLE_GRIDX_DEFAULT * 4
 #define DCABLE_PADDINGY_DEFAULT		DCABLE_GRIDX_DEFAULT * 4
 
+//This parameters is like previous one and is not used delete
+#define _SHAPEBORDERX_DRAFTDRAW	30
+#define _SHAPEBORDERY_DRAFTDRAW	30
+
 //Equivalence mm to program units 1mm=5 program unis
 //200 program units = 40 mm
 #define DCABLE_BORDERX_MARK			200
