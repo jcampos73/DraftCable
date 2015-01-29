@@ -1669,7 +1669,7 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 			pDC->Ellipse(m_RectLast);
 		}
 
-		pDC->Ellipse(m_Rect);
+		DoFill(pDC);
 
 		CShape::OnDraw(pDC);
 	}
@@ -1688,24 +1688,71 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 			return;
 		}
 
-		if(m_bTransparent){
-			CBrush brush(m_crFill);
-			CBrush *prev_brush = pDC->SelectObject(&brush);
-			pDC->SelectStockObject(NULL_BRUSH);
-			pDC->Ellipse(m_Rect);
-			pDC->SelectObject(prev_brush);
-		}
-		else{
-			CBrush brush(m_crFill);
-			CBrush *prev_brush=pDC->SelectObject(&brush);
-			pDC->Ellipse(m_Rect);
-			pDC->SelectObject(prev_brush);
-		}
+		DoFill(pDC);
 
 		//To draw selections
 		CShape::OnDraw(pDC);
 	}
 
+}
+
+//Do filling of shape: solid, gradient...
+void CShapeEllipse::DoFill(CDC* pDC, LPRECT lpRect /*= NULL*/)
+{
+	if (m_bTransparent){
+		CBrush brush(m_crFill);
+		CBrush *prev_brush = pDC->SelectObject(&brush);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Ellipse(m_Rect);
+		pDC->SelectObject(prev_brush);
+	}
+	else{
+
+		CRect rect = m_Rect;
+		if (lpRect != NULL){
+			rect = *lpRect;
+		}
+
+		GraphicsPath gfxPath;
+		Gdiplus::Rect tmpRect(rect.left, rect.top, rect.Width(), rect.Height());
+		gfxPath.AddEllipse(tmpRect);
+
+		CPoint point1 = rect.TopLeft();
+		CPoint point2 = CPoint(rect.TopLeft().x, rect.BottomRight().y);
+
+		if (rect.Height() > rect.Width())
+		{
+			point1 = rect.TopLeft();
+			point2 = CPoint(rect.BottomRight().x, rect.TopLeft().y);
+		}
+
+		//Fill the path
+		Graphics grf(pDC->m_hDC);
+		//Gradient position
+		CPoint vt = point2 - point1;
+		//float mod = sqrt((double)vt.x*vt.x + vt.y*vt.y);
+		CPoint point = point1 + CPoint(vt.x * 0 / 10, vt.y * 0 / 10);
+		LinearGradientBrush lgb(Point(point.x, point.y),
+			Point(point2.x, point2.y),
+			Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
+			Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
+			);
+
+		grf.FillPath(&lgb, &gfxPath);
+
+		/*
+		CBrush brush(m_crFill);
+		CBrush *prev_brush = pDC->SelectObject(&brush);
+		pDC->Ellipse(m_Rect);
+		pDC->SelectObject(prev_brush);
+		*/
+
+		CBrush brush(m_crFill);
+		CBrush *prev_brush = pDC->SelectObject(&brush);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Ellipse(m_Rect);
+		pDC->SelectObject(prev_brush);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1319,24 +1319,16 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		int sizeObArray = pDoc->m_pObArray->GetSize();
 
 		pSh->OnLButtonDown(nFlags, pDoc->m_pSh->m_Rect);
-		if (pSh->IsSelected()){
+		//Add to selected array
+		_AddToSelectedArray(pSh);
 
-			POSITION pos = m_ObListSel.Find(pSh);
-			if (pos == NULL)
-				m_ObListSel.AddTail(pSh);
-		}
-
+		//Iterate shapes
 		while (index<sizeObArray - 1){
 			pSh = (CShape *)pDoc->NextObject(index);
 			pSh->OnLButtonDown(nFlags, pDoc->m_pSh->m_Rect);
-			if (pSh->IsSelected()){
-
-				POSITION pos = m_ObListSel.Find(pSh);
-				if (pos == NULL)
-					m_ObListSel.AddTail(pSh);
-			}
+			//Add to selected array
+			_AddToSelectedArray(pSh);
 		}
-
 		pSh = (CShape *)pDoc->NextObject(index);
 
 		pSh->OnLButtonUp(nFlags, point);
@@ -1552,10 +1544,13 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		CRect rect=rect_union;
 		rect.UnionRect(rect,m_RectPrev);
 
+		/*
 		//Scale update rectangle to current coordinates
 		CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
 		//CPoint point1=rect.TopLeft();
 		CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
+		*/
+		CRect rectScaled = _GetScaledUpdateRect(rect);
 
 		//Scale update rectangle to current coordinates
 		CRect rect2=rect_union2;
@@ -1573,7 +1568,7 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		//RedrawWindow(CRect(point1,size));
 #else
 		//Delete curren position
-		InvalidateRect(CRect(point1,size),FALSE);
+		InvalidateRect(rectScaled/*CRect(point1, size)*/, FALSE);
 		//Delete in original position
 		InvalidateRect(CRect(point2,size2),FALSE);
 #endif
@@ -2703,9 +2698,12 @@ void CDraftDrawView::OnEscape()
 	if(index_keep!=-1){
 		//Calculate update area
 
-		rect.NormalizeRect();
+		CRect rect_union = CRect(0, 0, 0, 0);
 
-		rect.InflateRect(_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW,_SHAPEBORDERX_DRAFTDRAW,_SHAPEBORDERY_DRAFTDRAW);
+		_DoAddToUpdateRect(rect_union, rect);
+
+		rect = rect_union;
+
 		CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
 		CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
 
@@ -4196,4 +4194,23 @@ BOOL CDraftDrawView::_DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd)
 	//Add to update rectangle
 	rectUpdate.UnionRect(rectUpdate, rectToAdd);
 	return FALSE;
+}
+
+CRect CDraftDrawView::_GetScaledUpdateRect(CRect rect)
+{
+	//Scale update rectangle to current coordinates
+	CPoint point = CPoint(rect.TopLeft().x / m_xScale, rect.TopLeft().y / m_yScale) - GetScrollPosition();
+
+	CSize size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
+
+	return CRect(point, size);
+}
+
+void CDraftDrawView::_AddToSelectedArray(CShape *pSh)
+{
+	if (pSh->IsSelected()){
+		POSITION pos = m_ObListSel.Find(pSh);
+		if (pos == NULL)
+			m_ObListSel.AddTail(pSh);
+	}
 }

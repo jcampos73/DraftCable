@@ -339,6 +339,10 @@ public:
 	//void OnLButtonDown(UINT nFlags, CPoint point);
 	virtual ~CShapeEllipse();
 
+protected:
+	//Do filling of shape: solid, gradient...
+	virtual void DoFill(CDC* pDC, LPRECT lpRect = NULL);
+
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CShape)
