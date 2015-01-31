@@ -1358,28 +1358,7 @@ void CShape::DoFill(CDC* pDC, LPRECT lpRect /*=NULL*/)
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
 		);
 
-	if (this->m_blendCount == 1){
-
-		//Normaly set to 0.0f or 0.5f
-		//float focus = 0.5f / 10;
-		//float focus = 0.0f / 10;
-		float focus = m_blendPositions[0];
-		
-		//Normally set to 1.0f
-		float scale = m_blendFactors[0];
-		lgb.SetBlendBellShape(focus, scale);
-		//lgb.SetBlendTriangularShape(.5f, 1.0f);
-	}
-	else{
-
-		float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
-		float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
-		lgb.SetBlend(
-			blendFactors,
-			blendPositions,
-			3
-			);
-	}
+	_SetBlend(&lgb);
 
 	grf.FillPath(&lgb, &gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);
@@ -1399,58 +1378,11 @@ void CShape::DoFill(CDC* pDC, void* gfxPath, CPoint point1, CPoint point2)
 		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
 		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
 		);
-	//lgb.SetBlendBellShape(.5f, 1.0f);//SetBlendTriangularShape(.5f, 1.0f);
-	if (this->m_blendCount == 1){
 
-		//Normaly set to 0.0f or 0.5f
-		//float focus = 0.5f / 10;
-		//float focus = 0.0f / 10;
-		float focus = m_blendPositions[0];
+	_SetBlend(&lgb);
 
-		//Normally set to 1.0f
-		float scale = m_blendFactors[0];
-		lgb.SetBlendBellShape(focus, scale);
-		//lgb.SetBlendTriangularShape(.5f, 1.0f);
-	}
-	else{
-
-		float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
-		float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
-		lgb.SetBlend(
-			blendFactors,
-			blendPositions,
-			3
-			);
-	}
 	grf.FillPath(&lgb, (GraphicsPath*)gfxPath);
 	//grf.FillRectangle(&lgb, tmpRect);
-}
-
-//Split rectangle in two rectangles of same size, following vector
-int CShape::SplitRect(CRect rect, LPPOINT vect, CRect(&arrRect)[2])
-{
-	CPoint point;
-	CRect rect1, rect2;
-
-	if (vect->x == 0 && vect->y != 0){
-		point = rect.TopLeft() + CPoint(0, rect.Height()*0.5);
-		rect1 = CRect(rect.TopLeft(), point + CPoint(rect.Width(), 0));
-		//rect1.DeflateRect(0, rect1.Height()*0.10);
-		rect2 = CRect(point, rect.BottomRight());
-		//rect2.DeflateRect(0, rect2.Height()*0.10);
-	}
-	else if (vect->x != 0 && vect->y == 0){
-		point = rect.TopLeft() + CPoint(rect.Width()*0.5, 0);
-		rect1 = CRect(rect.TopLeft(), point + CPoint(0, rect.Height()));
-		//rect1.DeflateRect(rect1.Width()*0.10, rect1.Height()*0.10);
-		rect2 = CRect(point, rect.BottomRight());
-		//rect2.DeflateRect(rect2.Width()*0.10, rect2.Height()*0.10);
-	}
-
-	arrRect[0] = rect1;
-	arrRect[1] = rect2;
-
-	return 2;
 }
 
 //(cx, cy) pivot point
@@ -1505,6 +1437,34 @@ void CShape::DoRotate(float fAngle){
 
 void CShape::DoRotate(float fAngle, CPoint ptPivot, BOOL bUsePivot /*= TRUE*/){
 	/* Abstract class no implement*/
+}
+
+void CShape::_SetBlend(void *plgb)
+{
+	LinearGradientBrush *lgb = (LinearGradientBrush *)plgb;
+
+	if (this->m_blendCount == 1){
+
+		//Normaly set to 0.0f or 0.5f
+		//float focus = 0.5f / 10;
+		//float focus = 0.0f / 10;
+		float focus = m_blendPositions[0];
+
+		//Normally set to 1.0f
+		float scale = m_blendFactors[0];
+		lgb->SetBlendBellShape(focus, scale);
+		//lgb->SetBlendTriangularShape(.5f, 1.0f);
+	}
+	else{
+
+		float blendFactors[3] = { 0.0f, 1.0f, 0.0f };
+		float blendPositions[3] = { 0.0f, 0.5f, 1.0f };
+		lgb->SetBlend(
+			blendFactors,
+			blendPositions,
+			3
+			);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1671,6 +1631,12 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 
 		DoFill(pDC);
 
+		CBrush brush(m_crFill);
+		CBrush *prev_brush = pDC->SelectObject(&brush);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Ellipse(m_Rect);
+		pDC->SelectObject(prev_brush);
+
 		CShape::OnDraw(pDC);
 	}
 
@@ -1690,6 +1656,12 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 
 		DoFill(pDC);
 
+		CBrush brush(m_crFill);
+		CBrush *prev_brush = pDC->SelectObject(&brush);
+		pDC->SelectStockObject(NULL_BRUSH);
+		pDC->Ellipse(m_Rect);
+		pDC->SelectObject(prev_brush);
+
 		//To draw selections
 		CShape::OnDraw(pDC);
 	}
@@ -1700,59 +1672,43 @@ void CShapeEllipse::OnDraw(CDC *pDC)
 void CShapeEllipse::DoFill(CDC* pDC, LPRECT lpRect /*= NULL*/)
 {
 	if (m_bTransparent){
-		CBrush brush(m_crFill);
-		CBrush *prev_brush = pDC->SelectObject(&brush);
-		pDC->SelectStockObject(NULL_BRUSH);
-		pDC->Ellipse(m_Rect);
-		pDC->SelectObject(prev_brush);
+		return;
 	}
-	else{
 
-		CRect rect = m_Rect;
-		if (lpRect != NULL){
-			rect = *lpRect;
-		}
-
-		GraphicsPath gfxPath;
-		Gdiplus::Rect tmpRect(rect.left, rect.top, rect.Width(), rect.Height());
-		gfxPath.AddEllipse(tmpRect);
-
-		CPoint point1 = rect.TopLeft();
-		CPoint point2 = CPoint(rect.TopLeft().x, rect.BottomRight().y);
-
-		if (rect.Height() > rect.Width())
-		{
-			point1 = rect.TopLeft();
-			point2 = CPoint(rect.BottomRight().x, rect.TopLeft().y);
-		}
-
-		//Fill the path
-		Graphics grf(pDC->m_hDC);
-		//Gradient position
-		CPoint vt = point2 - point1;
-		//float mod = sqrt((double)vt.x*vt.x + vt.y*vt.y);
-		CPoint point = point1 + CPoint(vt.x * 0 / 10, vt.y * 0 / 10);
-		LinearGradientBrush lgb(Point(point.x, point.y),
-			Point(point2.x, point2.y),
-			Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
-			Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
-			);
-
-		grf.FillPath(&lgb, &gfxPath);
-
-		/*
-		CBrush brush(m_crFill);
-		CBrush *prev_brush = pDC->SelectObject(&brush);
-		pDC->Ellipse(m_Rect);
-		pDC->SelectObject(prev_brush);
-		*/
-
-		CBrush brush(m_crFill);
-		CBrush *prev_brush = pDC->SelectObject(&brush);
-		pDC->SelectStockObject(NULL_BRUSH);
-		pDC->Ellipse(m_Rect);
-		pDC->SelectObject(prev_brush);
+	CRect rect = m_Rect;
+	if (lpRect != NULL){
+		rect = *lpRect;
 	}
+
+	GraphicsPath gfxPath;
+	Gdiplus::Rect tmpRect(rect.left, rect.top, rect.Width(), rect.Height());
+	gfxPath.AddEllipse(tmpRect);
+
+	CPoint point1 = rect.TopLeft();
+	CPoint point2 = CPoint(rect.TopLeft().x, rect.BottomRight().y);
+
+	if (rect.Height() > rect.Width())
+	{
+		point1 = rect.TopLeft();
+		point2 = CPoint(rect.BottomRight().x, rect.TopLeft().y);
+	}
+
+	//Fill the path
+	Graphics grf(pDC->m_hDC);
+	//Gradient position
+	CPoint vt = point2 - point1;
+	//float mod = sqrt((double)vt.x*vt.x + vt.y*vt.y);
+	CPoint point = point1 + CPoint(vt.x * 0 / 10, vt.y * 0 / 10);
+	LinearGradientBrush lgb(Point(point.x, point.y),
+		Point(point2.x, point2.y),
+		Color(GetRValue(m_crFillBgnd), GetGValue(m_crFillBgnd), GetBValue(m_crFillBgnd)),
+		Color(GetRValue(m_crFill), GetGValue(m_crFill), GetBValue(m_crFill))
+		);
+
+	_SetBlend(&lgb);
+
+	grf.FillPath(&lgb, &gfxPath);
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
