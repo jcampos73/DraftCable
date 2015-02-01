@@ -2967,11 +2967,13 @@ void CDraftDrawDoc::OnArchivoGencable()
 	FILE *fcabl=NULL;
 	FILE *fbridge=NULL;int nBridgeCounter=0;
 	FILE *flog=fopen(g_sDCableBaseDir+"cableado.log","w");
+	FILE *fmat = NULL;
 	BOOL bFlagWarn=FALSE;
 	int index;
 	CStringList *slCables=new CStringList;
 	CString strLocation="RACK";
-
+	CMapStringToString mapCables;
+	CMapStringToString mapConnectors;
 
 	//First of all search for title
 	//==============================================================
@@ -3207,6 +3209,48 @@ void CDraftDrawDoc::OnArchivoGencable()
 					sConnOrg,
 					sConnDest,
 					pSh->m_strTypeIdent.Left(i));
+
+				//Generate list of materials
+				CString str;
+				if (mapCables.Lookup(pSh->m_strTypeIdent.Left(i), str))
+				{
+					int count = atoi(mapCables[pSh->m_strTypeIdent.Left(i)]) + 1;
+					str.Format("%i", count);
+					mapCables[pSh->m_strTypeIdent.Left(i)] = str;
+				}
+				else
+				{
+					mapCables[pSh->m_strTypeIdent.Left(i)] = "1";
+				}
+
+				i = sConnOrg.Find('.');
+				CString s = sConnOrg.Left(i);
+				CString sConn;
+				sConn.Format("%s(%s)", s, sConnNumOrg.Left(1).MakeUpper() == "J" ? "P" : "J");
+				if (mapConnectors.Lookup(sConn, str))
+				{
+					int count = atoi(mapConnectors[sConn]) + 1;
+					str.Format("%i", count);
+					mapConnectors[sConn] = str;
+				}
+				else
+				{
+					mapConnectors[sConn] = "1";
+				}
+
+				i = sConnDest.Find('.');
+				s = sConnDest.Left(i);
+				sConn.Format("%s(%s)", s, sConnNumDest.Left(1).MakeUpper() == "J" ? "P" : "J");
+				if (mapConnectors.Lookup(sConn, str))
+				{
+					int count = atoi(mapConnectors[sConn]) + 1;
+					str.Format("%i", count);
+					mapConnectors[sConn] = str;
+				}
+				else
+				{
+					mapConnectors[sConn] = "1";
+				}
 			}
 			else{
 				fprintf(flog,"Cable sin identificar, se omite de netlist.Coordenadas:(%i,%i)-(%i,%i)\n",
@@ -3220,6 +3264,45 @@ void CDraftDrawDoc::OnArchivoGencable()
 		}
 
 		pSh=(CShape *)NextObject(index);
+	}
+
+	//Generate list of materials
+	POSITION pos = mapCables.GetStartPosition();
+	while (pos != NULL)
+	{
+		if (!fmat){
+			fmat = fopen(g_sDCableBaseDir + "materials.csv", "w");
+		}
+
+		CString key, value;
+		mapCables.GetNextAssoc(pos, key, value);
+
+		CString str; str.Format(_T("%s;%s\n"), key, value);
+
+		fprintf(fmat, str);
+	}
+
+	if (fmat){
+		fprintf(fmat, "\n");
+	}
+
+	pos = mapConnectors.GetStartPosition();
+	while (pos != NULL)
+	{
+		if (!fmat){
+			fmat = fopen(g_sDCableBaseDir + "materials.csv", "w");
+		}
+
+		CString key, value;
+		mapConnectors.GetNextAssoc(pos, key, value);
+
+		CString str; str.Format(_T("%s;%s\n"), key, value);
+
+		fprintf(fmat, str);
+	}
+
+	if (fmat){
+		fclose(fmat);
 	}
 	//==============================================================
 
@@ -3393,6 +3476,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 		}
 
 	}
+
 	//==================================================
 	}
 	else if(!sFileExt.CompareNoCase("htm")||!sFileExt.CompareNoCase("html")){
@@ -6840,5 +6924,20 @@ void CDraftDrawDoc::OnToolsShell()
 		return;
 	}
 #endif
+}
+
+void CDraftDrawDoc::_DoAddEllementsToMap(CMapStringToString map, CString key, int count)
+{
+	CString str;
+	if (map.Lookup(key, str))
+	{
+		int count = atoi(map[key]) + 1;
+		str.Format("%i", count);
+		map[key] = str;
+	}
+	else
+	{
+		map[key] = "1";
+	}
 }
 

@@ -254,6 +254,8 @@ protected:
 	//Do serialization of dd1 file format
 	void DoSerializeDd1(CArchive& ar);
 
+	void _DoAddEllementsToMap(CMapStringToString map, CString key, int count);
+
 public:
 	static int Split(CString str,LPTSTR *sa,int max);
 	static int Split(CString str, CString dmter, LPTSTR *sa, int max);
