@@ -369,11 +369,18 @@ void CDraftDrawApp::OnFileNewRack(){
 		CString str=pDocPrev->GetTitle();
 
 		//Get the rack counter part name
-		str=pDocPrev->GetRackOb(str);
+		//get libray name
+		CString strLib = str.Left(str.Find('.'));
+		//remove library name
+		CString strFile = str.Right(str.GetLength() - str.Find('.') - 1);
+		str = pDocPrev->GetRackOb(strFile, strLib);
 
 		//If it exists open the document
 		if(!str.IsEmpty()){
-			pDoc->OnOpenDocumentPart( str  );
+			//pDoc->OnOpenDocumentPart(str);
+			pDoc->SetPathName1(strLib + "." + str);
+			pDoc->SetTitle(strLib + "." + str);
+			pDoc->OnDatabaseLoad();
 		}
 	}
 	else{

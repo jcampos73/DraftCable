@@ -2,6 +2,16 @@ DraftCable 1.09
 26/11/2014
 ==========
 
+DRAWING ENGINE
+1.09.3
+1.09.2
+1. Improved fill for ellipses
+
+FUNCTIONAL
+1.09.3
+1.09.2
+1. Generation of list of materials
+
 NEW FEATURES
 
 1.09.1
@@ -20,7 +30,7 @@ DraftCable 1.08
 
 DRAWING ENGINE
 
-1.Solved bug in repaiting while resizing saphes from left side
+1.Solved bug in repaiting while resizing shapes from left side
 2.Solved bug while resing shapes from NE handler
 3.Improved drawing of polylines when resizing-moving
 4.Improved erasing of shapes

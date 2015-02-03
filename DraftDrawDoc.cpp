@@ -5645,7 +5645,7 @@ CObject *CDraftDrawDoc::GetCurSelOb(){
 }
 
 //Get rack counter part
-CString CDraftDrawDoc::GetRackOb(CString strName){
+CString CDraftDrawDoc::GetRackOb(CString strName, CString strLib){
 
 	//Get connecyion string to database
 	TCHAR sConnect[1024];
@@ -5659,8 +5659,8 @@ CString CDraftDrawDoc::GetRackOb(CString strName){
 	CRecordset rsConnector(&db);
 
 	//Get the part from database
-	rsConnector.m_strFilter="nNamePart='"+strName+"'";
-	rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	rsConnector.m_strFilter = "nNamePart='" + strName + "' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib = '" + strLib + "')";
+	rsConnector.Open(CRecordset::forwardOnly, "SELECT * FROM tbPart");
 
 	//If nothing found return empty string
 	if(rsConnector.IsEOF()){

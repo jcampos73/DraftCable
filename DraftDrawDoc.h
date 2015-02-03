@@ -124,7 +124,7 @@ public:
 	int GetSheetSerialCount();								//Return number of sheet that will be serialized
 	int GetSheet();											//Get index beginning with 0 of selected sheet
 	CObject *GetCurSelOb();									//Get selected object
-	CString GetRackOb(CString strName);						//Get rack counter part
+	CString GetRackOb(CString strName, CString strLib);		//Get rack counter part
 	void SelectShapes(BOOL bSelect=TRUE,UINT nId=0);		//Select/Deselect shapes
 	void MoveShapes(int x,int y,BOOL bAbsolute=FALSE);		//Move shapes
 	void ScaleShapes(int x,int y,int nScale,BOOL bAbsolute=FALSE);//Scale shapes
