@@ -212,9 +212,7 @@ BOOL CDraftDrawDoc::OnNewDocument()
 	m_szDesign=CSize(1485,1050);
 
 	//Load initial title block: bottom right
-
 	CShapeUnit *pShUnit=new CShapeUnit();
-	//pShUnit->LoadUnit("Standard.title.ddw");
 	pShUnit->LoadUnit("Standard100.title");
 
 	//Control database status
@@ -223,6 +221,7 @@ BOOL CDraftDrawDoc::OnNewDocument()
 	}
 
 	pShUnit->m_pCursorArray=m_CursorArray;
+	pShUnit->pcmdDeque = cmdDeque;
 	pShUnit->m_Mode=_DRAFTDRAW_MODE_DRW;
 
 	pShUnit->m_Rect+=(m_szDesign-pShUnit->m_Rect.Size()-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT));
@@ -388,29 +387,21 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				int index;
 				CShape *pSh=(CShape *)FirstObject(index);
 				pSh=(CShape *)NextObject(index);
-				int idata=GetSizeObject();
+				int idata = GetSizeObject();
+
+				idata++;//For serializing CShapeSheet afterwards
+
 				ar<<idata;
+
+				//Serialize CShapeSheet (sheet dimension A3, A4...)
+				CShapeSheet* pShSheet = new CShapeSheet();
+				pShSheet->m_Rect = CRect(CPoint(0, 0), m_szDesign);
+				ar << pShSheet;
+				obaBuffer.Add(pShSheet);
 				
 				CRect rcFrm=CRect(0,0,0,0);
 				int nCounter=0;
 				while(pSh!=NULL){
-					//27/03/2005
-					//Debuging. Delete ASAP.
-					//----------------------------------------------------------
-					/*
-					int debug_cont=0;//for debugging
-					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
-						CShapeUnit *pShUnit=(CShapeUnit *)pSh;
-						if(pShUnit->m_obarrShapearr.GetSize()>1000){
-							debug_cont=1;
-						}
-					}
-					if(debug_cont){
-						pSh=(CShape *)NextObject(index);
-						continue;
-					}
-					*/
-					//----------------------------------------------------------
 
 					if(pSh->IsKindOf(RUNTIME_CLASS(CShapeRect))){
 						CShapePolyline *pShPoly = new CShapePolyline();
@@ -510,7 +501,6 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				}
 				//ar<<&m_mapIdHWIndex;
 			}
-
 
 			//Clean up
 			for(i=0;i<obaBuffer.GetSize();i++){
@@ -671,6 +661,12 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 					//Load shape
 					ar>>pSh;
+
+					//Set sheet size
+					if (pSh->IsKindOf(RUNTIME_CLASS(CShapeSheet))){
+						m_szDesign = CSize(pSh->m_Rect.Width(), pSh->m_Rect.Height());
+						m_pShArray->SetSize(m_szDesign, CSize(100, 100));
+					}
 
 					//07/04/2005
 					m_fVer=pSh->m_fVer;
@@ -1920,7 +1916,7 @@ void CDraftDrawDoc::OnFileOpen()
 		if(!m_bFlagPartEdit)
 		ChangeSheet(0);
 
-		UpdateAllViews(NULL,1);
+		UpdateAllViews(NULL, 1);
 	}
 	
 }

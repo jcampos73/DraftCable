@@ -891,6 +891,46 @@ protected:
 };
 
 /////////////////////////////////////////////////////////////////////////////
+// CShapeSheet object
+
+class CShapeSheet : public CShape
+{
+	// Construction
+public:
+	CShapeSheet(LPRECT lpRect = NULL, UINT nId = 0, cmddeque *cmddq = NULL);
+	DECLARE_SERIAL(CShapeSheet)
+
+	// Attributes
+public:
+
+	// Operations
+public:
+
+	// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CShapeSheet)
+	//virtual void Serialize( CArchive& archive );
+	//}}AFX_VIRTUAL
+
+	// Implementation
+public:
+
+	//virtual void OnDraw(CDC* pDC);
+	//void OnLButtonUp(UINT nFlags, CPoint point);
+	//void OnLButtonDown(UINT nFlags, CPoint point);
+	virtual ~CShapeSheet();
+
+	// Generated message map functions
+protected:
+	//{{AFX_MSG(CShapeSheet)
+	// NOTE - the ClassWizard will add and remove member functions here.
+	//}}AFX_MSG
+	/*
+	DECLARE_MESSAGE_MAP()
+	*/
+};
+
+/////////////////////////////////////////////////////////////////////////////
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

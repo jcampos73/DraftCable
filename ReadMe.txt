@@ -2,6 +2,10 @@ DraftCable 1.09
 26/11/2014
 ==========
 
+BUGS
+1.09.4
+1. Sheets saved as A3 are loaded again as A4.
+
 DRAWING ENGINE
 1.09.3
 1.09.2

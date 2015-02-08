@@ -1278,6 +1278,9 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			indexPin,
 			&pShContConnect
 			) == TRUE){
+			if (pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE){
+				pDoc->m_iToolType = _TOOLTYPECHAIN_DRAFTCABLE;
+			}
 			//If the private member return TRUE we return now
 			return;
 		}

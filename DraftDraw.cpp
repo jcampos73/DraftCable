@@ -29,6 +29,11 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CDraftDrawApp
 
+#define ID_FILE_MRU_FILE17 ID_FILE_MRU_FILE16 + 1
+#define ID_FILE_MRU_FILE18 ID_FILE_MRU_FILE17 + 1
+#define ID_FILE_MRU_FILE19 ID_FILE_MRU_FILE18 + 1
+#define ID_FILE_MRU_FILE20 ID_FILE_MRU_FILE19 + 1
+
 BEGIN_MESSAGE_MAP(CDraftDrawApp, CWinApp)
 	//{{AFX_MSG_MAP(CDraftDrawApp)
 	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
@@ -46,6 +51,7 @@ BEGIN_MESSAGE_MAP(CDraftDrawApp, CWinApp)
 	ON_COMMAND(ID_FILE_NEW_SHEET, OnFileNewSheet)
 	ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
 	ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
+	ON_COMMAND_RANGE(ID_FILE_MRU_FILE1, ID_FILE_MRU_FILE20, MyMRUFileHandler)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -782,4 +788,53 @@ int CDraftDrawApp::ExitInstance()
 	GdiplusShutdown(g_gdiplusToken);
 
 	return CWinApp::ExitInstance();
+}
+
+void CDraftDrawApp::MyMRUFileHandler(UINT i)
+{
+	/*
+	ASSERT_VALID(this);
+	ENSURE(m_pRecentFileList != NULL);
+
+	ENSURE_ARG(nID >= ID_FILE_MRU_FILE1);
+	ENSURE_ARG(nID < ID_FILE_MRU_FILE1 + (UINT)m_pRecentFileList->GetSize());
+	int nIndex = nID - ID_FILE_MRU_FILE1;
+	ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
+
+	TRACE(traceAppMsg, 0, _T("MRU: open file (%d) '%s'.\n"), (nIndex) + 1,
+	(LPCTSTR)(*m_pRecentFileList)[nIndex]);
+
+	g_bRemoveFromMRU = TRUE;
+	if (OpenDocumentFile((*m_pRecentFileList)[nIndex]) == NULL)
+	{
+	if (g_bRemoveFromMRU)
+	{
+	m_pRecentFileList->Remove(nIndex);
+	}
+	}
+	g_bRemoveFromMRU = TRUE;
+
+	return TRUE;
+	*/
+
+
+	ASSERT_VALID(this);
+	ASSERT(m_pRecentFileList != NULL);
+
+	ASSERT(i >= ID_FILE_MRU_FILE1);
+	ASSERT(i < ID_FILE_MRU_FILE1 + (UINT)m_pRecentFileList->GetSize());
+
+	CString strName, strCurDir, strMessage;
+	int nIndex = i - ID_FILE_MRU_FILE1;
+	ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
+
+	strName.Format("MRU: open file (%d) '%s'.\n", (nIndex)+1, (LPCTSTR)(*m_pRecentFileList)[nIndex]);
+
+	if (OpenDocumentFile((*m_pRecentFileList)[nIndex]) == NULL)
+		m_pRecentFileList->Remove(nIndex);
+	//AfxMessageBox(strName);
+
+
+	GetActiveDocument()->UpdateAllViews(NULL, 1);
+
 }

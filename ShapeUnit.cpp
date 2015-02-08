@@ -650,6 +650,10 @@ void CShapeUnit::Serialize( CArchive& archive )
 					m_obarrShapearr.Add(pSh);
 				}
 			}
+			else if (pSh->IsKindOf(RUNTIME_CLASS(CShapeSheet))){
+				//Do nothing
+				int _dummy = 1;
+			}
 			else{
 				//27/03/2005
 				//Moved to parent class: CShapeContainer

@@ -59,6 +59,7 @@ public:
 
 // Implementation
 protected:
+	void MyMRUFileHandler(UINT i);
 	//{{AFX_MSG(CDraftDrawApp)
 	afx_msg void OnAppAbout();
 		// NOTE - the ClassWizard will add and remove member functions here.

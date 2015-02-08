@@ -4924,3 +4924,32 @@ void CShapePolyArc::OnDraw(CDC* pDC){
 	}//End else if !m_mode 
 
 }//End OnDraw
+
+/////////////////////////////////////////////////////////////////////////////
+// CShapeSheet
+
+IMPLEMENT_SERIAL(CShapeSheet, CShape, 1)
+
+CShapeSheet::CShapeSheet(LPRECT lpRect/*=NULL*/, UINT nId/*=0*/, cmddeque *cmddq /*=NULL*/) :CShape(lpRect, nId, cmddq)
+{
+	m_uiShapeType = ddcShapePolyarc;
+	//m_Type=_DRAFTDRAW_ELEVATION_DRAW_ENABLE;
+	//m_bGroup=FALSE;
+
+}
+
+CShapeSheet::~CShapeSheet()
+{
+}
+
+/*
+BEGIN_MESSAGE_MAP(CShapeSheet, CShape)
+//{{AFX_MSG_MAP(CShapeSheet)
+// NOTE - the ClassWizard will add and remove mapping macros here.
+//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+*/
+
+/////////////////////////////////////////////////////////////////////////////
+// CShapeSheet message handlers
+//use this function to select
