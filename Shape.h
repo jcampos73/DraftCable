@@ -902,10 +902,11 @@ public:
 
 	// Attributes
 public:
+	CSize m_szGrid;
 
 	// Operations
 public:
-
+	virtual void Serialize(CArchive& archive);
 	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CShapeSheet)

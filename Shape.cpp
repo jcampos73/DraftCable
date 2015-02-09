@@ -4952,4 +4952,21 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeSheet message handlers
-//use this function to select
+
+void CShapeSheet::Serialize(CArchive& archive)
+{
+
+	// call base class function first
+	// base class is CObject in this case
+	CShape::Serialize(archive);
+
+	// now do the stuff for our specific class
+
+	if (archive.IsStoring()){
+		archive << m_szGrid;
+	}
+	else{
+		archive >> m_szGrid;
+	}
+
+}

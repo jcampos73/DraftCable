@@ -396,6 +396,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				//Serialize CShapeSheet (sheet dimension A3, A4...)
 				CShapeSheet* pShSheet = new CShapeSheet();
 				pShSheet->m_Rect = CRect(CPoint(0, 0), m_szDesign);
+				pShSheet->m_szGrid = m_szGrid;
 				ar << pShSheet;
 				obaBuffer.Add(pShSheet);
 				
@@ -666,6 +667,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					if (pSh->IsKindOf(RUNTIME_CLASS(CShapeSheet))){
 						m_szDesign = CSize(pSh->m_Rect.Width(), pSh->m_Rect.Height());
 						m_pShArray->SetSize(m_szDesign, CSize(100, 100));
+						m_szGrid = ((CShapeSheet*)pSh)->m_szGrid;
 					}
 
 					//07/04/2005
@@ -3791,6 +3793,7 @@ void CDraftDrawDoc::OnToolOptionPage()
 	ppDialog.AddPage(&page1);
 
 	page1.m_nWidth=m_szGrid.cx;
+	page0.m_szSize = CSize(m_szDesign.cx / 5, m_szDesign.cy / 5);
 
 	if(ppDialog.DoModal()==IDOK){
 
