@@ -110,6 +110,8 @@
 #define IDC_RADIO_CUSTOM                1018
 #define IDC_WIDTH                       1019
 #define IDC_HEIGHT                      1020
+#define IDC_HEIGHT_CT_H                 1020
+#define IDC_STATIC_CT_H                 1020
 #define IDC_RADIO_MILLIM                1021
 #define IDC_RADIO_INCH                  1022
 #define IDC_EDIT1                       1024
@@ -159,6 +161,14 @@
 #define IDC_RADIO_FILL_GRADIENT         1070
 #define IDC_SLIDER_GRADIENT             1071
 #define IDC_SHELL                       1072
+#define IDC_STATIC_A4                   1073
+#define IDC_STATIC_A3                   1074
+#define IDC_STATIC_CUSTOM               1075
+#define IDC_STATIC_A4_W                 1076
+#define IDC_STATIC_A4_H                 1077
+#define IDC_STATIC_A3_W                 1078
+#define IDC_STATIC_A3_H                 1079
+#define IDC_STATIC_CT_W                 1080
 #define IDS_MENU_POLYGON_FIRST          2000
 #define IDS_MENU_POLYGON_RECT           2001
 #define IDS_MENU_POLYGON_PARALEL1       2002
@@ -266,7 +276,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        211
 #define _APS_NEXT_COMMAND_VALUE         32866
-#define _APS_NEXT_CONTROL_VALUE         1073
+#define _APS_NEXT_CONTROL_VALUE         1081
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

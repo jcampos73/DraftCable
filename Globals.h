@@ -44,6 +44,16 @@
 //Euivalence program units-U's. This relationship will be soon replace by a more convenient scale.
 #define DCABLE_GRID_US				20	//20 program units = 1U
 
+//Dots per mm
+#define DCABLE_DPMM					5
+#define INCH_TO_MM					25.4
+
+//Paper sizes
+#define A4_WIDTH_MM					297.0
+#define A4_HEIGHT_MM				210.0
+#define A3_WIDTH_MM					420.0
+#define A3_HEIGHT_MM				297.0
+
 //07/02/2005
 //Enables OLE structured storage in application
 #define DCABLE_COMPOUNDFILE	

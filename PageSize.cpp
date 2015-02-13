@@ -38,9 +38,9 @@ void CPageSize::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CPageSize)
-	DDX_Text(pDX, IDC_HEIGHT, m_nHeight);
+	DDX_Text(pDX, IDC_STATIC_CT_H, m_nHeight);
 	DDV_MinMaxUInt(pDX, m_nHeight, 0, 10000);
-	DDX_Text(pDX, IDC_WIDTH, m_nWidth);
+	DDX_Text(pDX, IDC_STATIC_CT_W, m_nWidth);
 	DDV_MinMaxUInt(pDX, m_nWidth, 0, 10000);
 	//}}AFX_DATA_MAP
 }
@@ -52,6 +52,8 @@ BEGIN_MESSAGE_MAP(CPageSize, CPropertyPage)
 	ON_BN_CLICKED(IDC_RADIO_A4, OnRadioA4)
 	ON_BN_CLICKED(IDC_RADIO_CUSTOM, OnRadioCustom)
 	//}}AFX_MSG_MAP
+	ON_BN_CLICKED(IDC_RADIO_MILLIM, &CPageSize::OnClickedRadioMillim)
+	ON_BN_CLICKED(IDC_RADIO_INCH, &CPageSize::OnClickedRadioInch)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,9 +63,7 @@ BOOL CPageSize::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
 	
-	// TODO: Add extra initialization here
-	GetDlgItem(IDC_RADIO_MILLIM)->SendMessage(BM_SETCHECK,BST_CHECKED);
-	GetDlgItem(IDC_RADIO_INCH)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
+	ChangeUnits(MM);
 
 	ChangeSize(DRAFTCABLE_SIZE_CUSTOM);
 	
@@ -73,8 +73,6 @@ BOOL CPageSize::OnInitDialog()
 
 int CPageSize::ChangeSize(int nSize)
 {
-
-
 	if(nSize==DRAFTCABLE_SIZE_CUSTOM){
 		if(m_szSize==CSize(0,0)){
 			m_szSize=CSize(297,210);
@@ -88,24 +86,82 @@ int CPageSize::ChangeSize(int nSize)
 		}
 	}
 
-
 	switch(nSize){
 	case DRAFTCABLE_SIZE_A4:
 		m_szSize=CSize(297,210);
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_CHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
+		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
+		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
 		break;
 	case DRAFTCABLE_SIZE_A3:
 		m_szSize=CSize(420,297);
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_CHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
+		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
+		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
 		break;
 	case DRAFTCABLE_SIZE_CUSTOM:
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_CHECKED);
+		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, TRUE);
+		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, TRUE);
+		break;
+	}
+
+	return 0;
+}
+
+int CPageSize::ChangeUnits(Units_Type units)
+{
+	CString str;
+
+	UpdateData(TRUE);
+	m_szSize = CSize(m_nWidth, m_nHeight);
+
+	switch (units){
+	case MM:
+		GetDlgItem(IDC_RADIO_MILLIM)->SendMessage(BM_SETCHECK, BST_CHECKED);
+		GetDlgItem(IDC_RADIO_INCH)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
+		SetDlgItemText(IDC_STATIC_A4, _T("millimeters"));
+		SetDlgItemText(IDC_STATIC_A3, _T("millimeters"));
+		SetDlgItemText(IDC_STATIC_CUSTOM, _T("millimeters"));
+
+		str.Format(_T("%.1f"), A4_WIDTH_MM);
+		SetDlgItemText(IDC_STATIC_A4_W, str);
+		str.Format(_T("%.1f"), A4_HEIGHT_MM);
+		SetDlgItemText(IDC_STATIC_A4_H, str);
+		str.Format(_T("%.1f"), A3_WIDTH_MM);
+		SetDlgItemText(IDC_STATIC_A3_W, str);
+		str.Format(_T("%.1f"), A3_HEIGHT_MM);
+		SetDlgItemText(IDC_STATIC_A3_H, str);
+		str.Format(_T("%.1f"), m_szSize.cx * INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_CT_W, str);
+		str.Format(_T("%.1f"), m_szSize.cy * INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_CT_H, str);
+		break;
+	case INCH:
+		GetDlgItem(IDC_RADIO_MILLIM)->SendMessage(BM_SETCHECK, BST_UNCHECKED);
+		GetDlgItem(IDC_RADIO_INCH)->SendMessage(BM_SETCHECK, BST_CHECKED);
+		SetDlgItemText(IDC_STATIC_A4, _T("inches"));
+		SetDlgItemText(IDC_STATIC_A3, _T("inches"));
+		SetDlgItemText(IDC_STATIC_CUSTOM, _T("inches"));
+
+		str.Format(_T("%.1f"), A4_WIDTH_MM / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_A4_W, str);
+		str.Format(_T("%.1f"), A4_HEIGHT_MM / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_A4_H, str);
+		str.Format(_T("%.1f"), A3_WIDTH_MM / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_A3_W, str);
+		str.Format(_T("%.1f"), A3_HEIGHT_MM / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_A3_H, str);
+		str.Format(_T("%.1f"), m_szSize.cx / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_CT_W, str);
+		str.Format(_T("%.1f"), m_szSize.cy / INCH_TO_MM);
+		SetDlgItemText(IDC_STATIC_CT_H, str);
 		break;
 	}
 
@@ -114,20 +170,59 @@ int CPageSize::ChangeSize(int nSize)
 
 void CPageSize::OnRadioA3() 
 {
-	// TODO: Add your control notification handler code here
 	ChangeSize(DRAFTCABLE_SIZE_A3);
 }
 
 void CPageSize::OnRadioA4() 
 {
-	// TODO: Add your control notification handler code here
 	ChangeSize(DRAFTCABLE_SIZE_A4);	
 }
 
 void CPageSize::OnRadioCustom() 
 {
-	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	m_szSize=CSize(m_nWidth,m_nHeight);
 	ChangeSize(DRAFTCABLE_SIZE_CUSTOM);	
+}
+
+
+void CPageSize::OnClickedRadioMillim()
+{
+	ChangeUnits(MM);
+}
+
+
+void CPageSize::OnClickedRadioInch()
+{
+	ChangeUnits(INCH);
+}
+
+float CPageSize::MMToPixel(HDC screen)
+{
+	/*
+	CMDIFrameWnd *pFrame =
+		(CMDIFrameWnd*)theApp.m_pMainWnd;
+
+	if (!pFrame) return;
+
+	// Get the active MDI child window.
+	CMDIChildWnd *pChild =
+		(CMDIChildWnd *)pFrame->GetActiveFrame();
+
+	if (!pChild) return;
+
+	// Get the active view attached to the active MDI child
+	// window.
+	CView *pView = (CView *)pChild->GetActiveView();
+
+	pView->GetDC();
+	*/
+
+	//HDC screen = GetDC()->m_hDC;
+	int hSize = GetDeviceCaps(screen, HORZSIZE);
+	int hRes = GetDeviceCaps(screen, HORZRES);
+	float PixelsPerMM = (float)hRes / hSize;   // pixels per millimeter
+	float PixelsPerInch = PixelsPerMM*25.4; //dpi
+
+	return PixelsPerMM;
 }

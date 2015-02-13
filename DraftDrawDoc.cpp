@@ -3793,11 +3793,31 @@ void CDraftDrawDoc::OnToolOptionPage()
 	ppDialog.AddPage(&page1);
 
 	page1.m_nWidth=m_szGrid.cx;
-	page0.m_szSize = CSize(m_szDesign.cx / 5, m_szDesign.cy / 5);
+
+	CMDIFrameWnd *pFrame =
+		(CMDIFrameWnd*)theApp.m_pMainWnd;
+
+	//if (!pFrame) return NULL;
+
+	// Get the active MDI child window.
+	CMDIChildWnd *pChild =
+		(CMDIChildWnd *)pFrame->GetActiveFrame();
+
+	//if (!pChild) return NULL;
+
+	// Get the active view attached to the active MDI child
+	// window.
+	CView *pView = (CView *)pChild->GetActiveView();
+
+	//if (!pView) return NULL;
+
+	float PixelsPerMM = CPageSize::MMToPixel(pView->GetDC()->m_hDC);
+
+	page0.m_szSize = CSize(m_szDesign.cx / DCABLE_DPMM, m_szDesign.cy / DCABLE_DPMM);
 
 	if(ppDialog.DoModal()==IDOK){
 
-		m_szDesign=CSize(page0.m_szSize.cx*5,page0.m_szSize.cy*5);
+		m_szDesign = CSize(page0.m_szSize.cx * DCABLE_DPMM, page0.m_szSize.cy*DCABLE_DPMM);
 
 		m_pShArray->SetSize(m_szDesign,CSize(100,100));
 

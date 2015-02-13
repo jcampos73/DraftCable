@@ -13,10 +13,11 @@
 class CPageSize : public CPropertyPage
 {
 	DECLARE_DYNCREATE(CPageSize)
-
+	enum Units_Type { MM = 0, INCH = 1 };
 // Construction
 public:
 	int ChangeSize(int nSize);
+	int ChangeUnits(Units_Type units);
 	CSize m_szSize;
 	CPageSize();
 	~CPageSize();
@@ -47,6 +48,10 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 
+public:
+	static float MMToPixel(HDC screen);
+	afx_msg void OnClickedRadioMillim();
+	afx_msg void OnClickedRadioInch();
 };
 
 //{{AFX_INSERT_LOCATION}}
