@@ -52,6 +52,7 @@ public:
 	static float MMToPixel(HDC screen);
 	afx_msg void OnClickedRadioMillim();
 	afx_msg void OnClickedRadioInch();
+	virtual void OnOK();
 };
 
 //{{AFX_INSERT_LOCATION}}

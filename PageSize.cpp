@@ -27,7 +27,7 @@ CPageSize::CPageSize() : CPropertyPage(CPageSize::IDD)
 	m_nHeight = 0;
 	m_nWidth = 0;
 	//}}AFX_DATA_INIT
-	m_szSize=CSize(0,0);
+	m_szSize=CSize(-1,-1);
 }
 
 CPageSize::~CPageSize()
@@ -62,10 +62,10 @@ END_MESSAGE_MAP()
 BOOL CPageSize::OnInitDialog() 
 {
 	CPropertyPage::OnInitDialog();
-	
+
 	ChangeUnits(MM);
 
-	ChangeSize(DRAFTCABLE_SIZE_CUSTOM);
+	ChangeSize(DRAFTCABLE_SIZE_A4);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -74,7 +74,7 @@ BOOL CPageSize::OnInitDialog()
 int CPageSize::ChangeSize(int nSize)
 {
 	if(nSize==DRAFTCABLE_SIZE_CUSTOM){
-		if(m_szSize==CSize(0,0)){
+		if (m_szSize.cx < 0 || m_szSize.cy < 0){
 			m_szSize=CSize(297,210);
 			nSize=DRAFTCABLE_SIZE_A4;
 		}
@@ -120,7 +120,6 @@ int CPageSize::ChangeUnits(Units_Type units)
 	CString str;
 
 	UpdateData(TRUE);
-	m_szSize = CSize(m_nWidth, m_nHeight);
 
 	switch (units){
 	case MM:
@@ -138,9 +137,9 @@ int CPageSize::ChangeUnits(Units_Type units)
 		SetDlgItemText(IDC_STATIC_A3_W, str);
 		str.Format(_T("%.1f"), A3_HEIGHT_MM);
 		SetDlgItemText(IDC_STATIC_A3_H, str);
-		str.Format(_T("%.1f"), m_szSize.cx * INCH_TO_MM);
+		str.Format(_T("%.1f"), m_nWidth * INCH_TO_MM);
 		SetDlgItemText(IDC_STATIC_CT_W, str);
-		str.Format(_T("%.1f"), m_szSize.cy * INCH_TO_MM);
+		str.Format(_T("%.1f"), m_nHeight * INCH_TO_MM);
 		SetDlgItemText(IDC_STATIC_CT_H, str);
 		break;
 	case INCH:
@@ -158,9 +157,9 @@ int CPageSize::ChangeUnits(Units_Type units)
 		SetDlgItemText(IDC_STATIC_A3_W, str);
 		str.Format(_T("%.1f"), A3_HEIGHT_MM / INCH_TO_MM);
 		SetDlgItemText(IDC_STATIC_A3_H, str);
-		str.Format(_T("%.1f"), m_szSize.cx / INCH_TO_MM);
+		str.Format(_T("%.1f"), m_nWidth / INCH_TO_MM);
 		SetDlgItemText(IDC_STATIC_CT_W, str);
-		str.Format(_T("%.1f"), m_szSize.cy / INCH_TO_MM);
+		str.Format(_T("%.1f"), m_nHeight / INCH_TO_MM);
 		SetDlgItemText(IDC_STATIC_CT_H, str);
 		break;
 	}
@@ -181,7 +180,8 @@ void CPageSize::OnRadioA4()
 void CPageSize::OnRadioCustom() 
 {
 	UpdateData(TRUE);
-	m_szSize=CSize(m_nWidth,m_nHeight);
+	m_szSize = CSize(m_nWidth, m_nHeight);
+
 	ChangeSize(DRAFTCABLE_SIZE_CUSTOM);	
 }
 
@@ -222,7 +222,20 @@ float CPageSize::MMToPixel(HDC screen)
 	int hSize = GetDeviceCaps(screen, HORZSIZE);
 	int hRes = GetDeviceCaps(screen, HORZRES);
 	float PixelsPerMM = (float)hRes / hSize;   // pixels per millimeter
-	float PixelsPerInch = PixelsPerMM*25.4; //dpi
+	float PixelsPerInch = PixelsPerMM * INCH_TO_MM; //dpi
 
 	return PixelsPerMM;
+}
+
+void CPageSize::OnOK()
+{
+	if (SendDlgItemMessage(IDC_RADIO_CUSTOM, BM_GETCHECK) == BST_CHECKED){
+		UpdateData(TRUE);
+		m_szSize = CSize(m_nWidth, m_nHeight);
+		if (SendDlgItemMessage(IDC_RADIO_INCH, BM_GETCHECK) == BST_CHECKED){
+			m_szSize = CSize(m_szSize.cx * INCH_TO_MM, m_szSize.cy * INCH_TO_MM);
+		}
+	}
+
+	CPropertyPage::OnOK();
 }
