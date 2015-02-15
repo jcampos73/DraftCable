@@ -25,8 +25,8 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CPageSize)
 	enum { IDD = IDD_PAGESIZE };
-	UINT	m_nHeight;
-	UINT	m_nWidth;
+	float	m_nHeight;
+	float	m_nWidth;
 	//}}AFX_DATA
 
 

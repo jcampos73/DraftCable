@@ -39,9 +39,9 @@ void CPageSize::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CPageSize)
 	DDX_Text(pDX, IDC_STATIC_CT_H, m_nHeight);
-	DDV_MinMaxUInt(pDX, m_nHeight, 0, 10000);
+	DDV_MinMaxFloat(pDX, m_nHeight, 0.0, 10000.0);
 	DDX_Text(pDX, IDC_STATIC_CT_W, m_nWidth);
-	DDV_MinMaxUInt(pDX, m_nWidth, 0, 10000);
+	DDV_MinMaxFloat(pDX, m_nWidth, 0.0, 10000.0);
 	//}}AFX_DATA_MAP
 }
 
@@ -233,7 +233,7 @@ void CPageSize::OnOK()
 		UpdateData(TRUE);
 		m_szSize = CSize(m_nWidth, m_nHeight);
 		if (SendDlgItemMessage(IDC_RADIO_INCH, BM_GETCHECK) == BST_CHECKED){
-			m_szSize = CSize(m_szSize.cx * INCH_TO_MM, m_szSize.cy * INCH_TO_MM);
+			m_szSize = CSize(m_nWidth * INCH_TO_MM, m_nHeight * INCH_TO_MM);
 		}
 	}
 
