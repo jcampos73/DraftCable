@@ -23,6 +23,7 @@ omobject g_OMObjectTable[]={
 	{ddcObject1ActiveDocument,"ActiveDocument",1},
 	{ddcObject4Shapes,"Shapes",4},
 	{ddcObject4Selection,"Selection",4},
+	{ddcObject4Stack, "Stack", 4 },
 	{ddcObject5AddShape,"AddShape",5},
 	{ddcObject5SelectShape,"Select",5},
 	{ddcObject5DeleteShape,"Delete",5},
@@ -386,7 +387,36 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 			break;
 		//02/10/2005
 		case ddcObject4Shapes:
-			iObPrev=ddcObject4Shapes;
+			{
+				iObPrev = ddcObject4Shapes;
+				std::list<omobject>::iterator it2 = it;
+				if (liTargetObject.end() == ++it2){
+					if (output != NULL){
+						CString result = "";
+						CString line;
+						int index;
+						CShape *pSh = (CShape *)pDoc->FirstObject(index);
+						pSh = (CShape *)pDoc->NextObject(index);
+
+						while (pSh != NULL){
+							if (pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
+								CShapeUnit* pShUnit = (CShapeUnit*)pSh;
+								line.Format(_T("%s\r\n"), pShUnit->m_sUnitName);
+							}
+							else{
+								line.Format(_T("%s\r\n"), typeid(*pSh).name());
+							}
+							result += line;
+							pSh = (CShape *)pDoc->NextObject(index);
+						}
+						strcpy(output, result.GetBuffer(count));
+					}
+				}
+			}
+			break;
+		//21/02/2015
+		case ddcObject4Stack:
+			
 			break;
 		}//end switch
 

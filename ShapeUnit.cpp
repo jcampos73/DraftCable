@@ -343,8 +343,47 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 	//Erase rect
 	//	pDC->FillSolidRect(&m_Rect,RGB(255,255,255));
 
+	//Draw lines
+	int i = 0;
+	for (i = 0; i<m_PointspCount; i++){
+
+		//Get pointer to polylines buffer
+		LPPOINT lpPoints = (LPPOINT)&m_pPoints[i][1];
+		int nCount = m_pPoints[i][0];
+
+		//Iterate polylines
+		for (int j = 0; j<nCount; j++){
+
+			m_pPBuffer[j] = CPoint(lpPoints[j]) + rect1.TopLeft();
+		}
+
+		//Draw polyline using MFC
+		pDC->Polyline(m_pPBuffer, nCount);
+	}
+
+	//Draw pin
+	for (i = 0; i<m_obarrShapearr.GetSize(); i++){
+
+		CShape *psh = (CShape *)m_obarrShapearr.GetAt(i);
+
+		//Save original rectangle
+		CRect rect = psh->m_Rect;
+
+		if (psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
+			//This only a patch to avoid leaving things back when dragging
+			psh->m_Rect += m_Rect.TopLeft();
+		}
+		else{
+			psh->m_Rect += rect1.TopLeft();
+		}
+
+		psh->OnDraw(pDC);
+
+		//Restore original rectangle
+		psh->m_Rect = rect;
+	}
+
 	//Draw text
-	int i;
 	for(i=0; i<m_LabelsCount;i++){
 
 		//Resize label to fit text
@@ -455,44 +494,6 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 
 	}//end draw text
 
-	//Draw pin
-	for(i=0;i<m_obarrShapearr.GetSize();i++){
-
-		CShape *psh=(CShape *)m_obarrShapearr.GetAt(i);
-
-		//Save original rectangle
-		CRect rect=psh->m_Rect;
-
-		if(psh->IsKindOf(RUNTIME_CLASS(CShapePin))){
-			//This only a patch to avoid leaving things back when dragging
-			psh->m_Rect+=m_Rect.TopLeft();
-		}
-		else{
-			psh->m_Rect+=rect1.TopLeft();
-		}
-
-		psh->OnDraw(pDC);
-
-		//Restore original rectangle
-		psh->m_Rect=rect;
-	}
-
-	//Draw lines
-	for(i=0; i<m_PointspCount;i++){
-
-		//Get pointer to polylines buffer
-		LPPOINT lpPoints=( LPPOINT)&m_pPoints[i][1];
-		int nCount= m_pPoints[i][0];
-
-		//Iterate polylines
-		for(int j=0;j<nCount;j++){
-
-			m_pPBuffer[j]=CPoint(lpPoints[j])+rect1.TopLeft();
-		}
-
-		//Draw polyline using MFC
-		pDC->Polyline(m_pPBuffer, nCount);
-	}
 }
 
 void CShapeUnit::OnDraw(CDC *pDC){

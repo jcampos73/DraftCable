@@ -511,7 +511,7 @@ BEGIN
         MENUITEM "Select",                      ID_BUTTON_SELECT
         MENUITEM "SIC",                         ID_TOOL_SIC
         MENUITEM "Generate rack",               ID_EDIT_RACK
-        MENUITEM "Shell",                       ID_TOOLS_SHELL
+        MENUITEM "Shell\tCtrl+W",               ID_TOOLS_SHELL
     END
     POPUP "Options"
     BEGIN

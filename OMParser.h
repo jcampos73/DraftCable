@@ -31,7 +31,7 @@ enum{ddcScaleFromTopLeft=0,ddcScaleFromMiddle,ddcScaleFromBottomRight};
 //...
 enum{ddcObjectNull=-1,ddcParam,ddcBlockBegin=1,ddcBlockEnd,ddcVar,ddcNew,
 ddcObject1ActiveSheet,ddcObject1ActiveDocument,
-ddcObject4Shapes,ddcObject4Selection,
+ddcObject4Shapes,ddcObject4Selection,ddcObject4Stack,
 ddcObject5AddShape, ddcObject5SelectShape, ddcObject5DeleteShape, ddcObject5ShapeRange, ddcObject5CountShapes,
 ddcObject6IncrementLeft,ddcObject6IncrementTop,ddcObject6ScaleWidth,ddcObject6ScaleHeight};
 
