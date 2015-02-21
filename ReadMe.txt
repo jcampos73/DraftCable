@@ -12,9 +12,11 @@ DRAWING ENGINE
 1. Improved fill for ellipses
 
 FUNCTIONAL
+1.09.4
 1.09.3
 1.09.2
 1. Generation of list of materials
+2. Improvements in page properties dialog
 
 NEW FEATURES
 

@@ -92,23 +92,23 @@ int CPageSize::ChangeSize(int nSize)
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_CHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
-		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
-		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
+		GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
+		GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
 		break;
 	case DRAFTCABLE_SIZE_A3:
 		m_szSize=CSize(420,297);
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_CHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
-		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
-		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
+		GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, FALSE);
+		GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, FALSE);
 		break;
 	case DRAFTCABLE_SIZE_CUSTOM:
 		GetDlgItem(IDC_RADIO_A4)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_A3)->SendMessage(BM_SETCHECK,BST_UNCHECKED);
 		GetDlgItem(IDC_RADIO_CUSTOM)->SendMessage(BM_SETCHECK,BST_CHECKED);
-		//GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, TRUE);
-		//GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, TRUE);
+		GetDlgItem(IDC_STATIC_CT_W)->SendMessage(WM_ENABLE, TRUE);
+		GetDlgItem(IDC_STATIC_CT_H)->SendMessage(WM_ENABLE, TRUE);
 		break;
 	}
 
@@ -199,26 +199,6 @@ void CPageSize::OnClickedRadioInch()
 
 float CPageSize::MMToPixel(HDC screen)
 {
-	/*
-	CMDIFrameWnd *pFrame =
-		(CMDIFrameWnd*)theApp.m_pMainWnd;
-
-	if (!pFrame) return;
-
-	// Get the active MDI child window.
-	CMDIChildWnd *pChild =
-		(CMDIChildWnd *)pFrame->GetActiveFrame();
-
-	if (!pChild) return;
-
-	// Get the active view attached to the active MDI child
-	// window.
-	CView *pView = (CView *)pChild->GetActiveView();
-
-	pView->GetDC();
-	*/
-
-	//HDC screen = GetDC()->m_hDC;
 	int hSize = GetDeviceCaps(screen, HORZSIZE);
 	int hRes = GetDeviceCaps(screen, HORZRES);
 	float PixelsPerMM = (float)hRes / hSize;   // pixels per millimeter
