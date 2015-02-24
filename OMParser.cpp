@@ -351,7 +351,7 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 		case ddcObject5CountShapes:
 			if (output != NULL){
 				CString result;
-				result.Format(_T("%i"), pDoc->m_ObArray.GetCount());
+				result.Format(_T("%i"), pDoc->m_pObArray->GetCount());
 				strcpy(output, result.GetBuffer(count));
 			}
 			break;
@@ -401,10 +401,10 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 						while (pSh != NULL){
 							if (pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
 								CShapeUnit* pShUnit = (CShapeUnit*)pSh;
-								line.Format(_T("%s\r\n"), pShUnit->m_sUnitName);
+								line.Format(_T("%s, Selected=%i\r\n)"), pShUnit->m_sUnitName, pShUnit->IsSelected());
 							}
 							else{
-								line.Format(_T("%s\r\n"), typeid(*pSh).name());
+								line.Format(_T("%s, Selected=%i\r\n"), typeid(*pSh).name(), pSh->IsSelected());
 							}
 							result += line;
 							pSh = (CShape *)pDoc->NextObject(index);

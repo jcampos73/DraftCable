@@ -584,6 +584,7 @@ void CCableEdit::SaveCable(BOOL bSaveas /*=FALSE*/)
 	}
 	else{
 		CDialogSaveas dlgSaveas;
+		dlgSaveas.m_bConnector = m_bConnector;
 		if(dlgSaveas.DoModal()==IDOK){
 
 			//Prepare filename

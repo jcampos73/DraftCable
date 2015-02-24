@@ -2806,7 +2806,8 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 					pSh->m_Rect=CRect(200,200,400,350);
 					pSh->m_Mode=1;
 					pSh->m_pCursorArray=m_CursorArray;
-					m_pObArray->Add(pSh);
+					//m_pObArray->Add(pSh);
+					AddObject(pSh);
 					//SetPathName1("Standard.Nuevo");//Not set to force query user SaveModified>DoFileSave()>DoSave()
 					SetTitle("Standard.Nuevo");					
 

@@ -110,7 +110,6 @@
 #define IDC_RADIO_CUSTOM                1018
 #define IDC_WIDTH                       1019
 #define IDC_HEIGHT                      1020
-#define IDC_HEIGHT_CT_H                 1020
 #define IDC_STATIC_CT_H                 1020
 #define IDC_RADIO_MILLIM                1021
 #define IDC_RADIO_INCH                  1022
@@ -268,6 +267,8 @@
 #define IDR_FOLDERTABS                  62002
 #define IDS_MSG_CONFDEL1                62003
 #define IDS_MSG_CONFDELN                62004
+#define IDS_LBL_SAVEAS_CABLE            62005
+#define IDS_LBL_SAVEAS_CONNECTOR        62006
 
 // Next default values for new objects
 // 

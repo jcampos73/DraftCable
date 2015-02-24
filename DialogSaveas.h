@@ -23,6 +23,7 @@ public:
 	//}}AFX_DATA
 	CString m_sName;
 	BOOL	m_bTogCabCon;
+	BOOL	m_bConnector;	//Dialog behaviour is different if we are editing a cable or a connector.
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -39,6 +40,8 @@ protected:
 	virtual void OnOK();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
 };
 
 //{{AFX_INSERT_LOCATION}}

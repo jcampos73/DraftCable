@@ -21,6 +21,7 @@ CDialogSaveas::CDialogSaveas(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CDialogSaveas)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+	m_bConnector = FALSE;
 }
 
 
@@ -47,4 +48,24 @@ void CDialogSaveas::OnOK()
 	m_cbName.GetWindowText(m_sName);
 	m_bTogCabCon = (SendDlgItemMessage(IDC_CHECK_TOGGLE_CAB_CON, BM_GETCHECK) == BST_CHECKED);
 	CDialog::OnOK();
+}
+
+
+BOOL CDialogSaveas::OnInitDialog()
+{
+	CDialog::OnInitDialog();
+
+	CString lbl;
+	if (m_bConnector)
+	{
+		lbl.FormatMessage(IDS_LBL_SAVEAS_CABLE);
+		SetDlgItemText(IDC_CHECK_TOGGLE_CAB_CON, lbl);
+	}
+	else{
+		lbl.FormatMessage(IDS_LBL_SAVEAS_CONNECTOR);
+		SetDlgItemText(IDC_CHECK_TOGGLE_CAB_CON, lbl);
+	}
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }

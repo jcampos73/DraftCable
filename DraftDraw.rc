@@ -13,6 +13,52 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SAVEAS DIALOGEX 0, 0, 186, 95
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Guardar como"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    COMBOBOX        IDC_COMBO1,7,53,172,12,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Guardar como cable",IDC_CHECK_TOGGLE_CAB_CON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,99,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_SAVEAS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // Spanish (Spain, Traditional Sort) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESP)
@@ -148,17 +194,6 @@ BEGIN
     LTEXT           "Winword Location:",IDC_STATIC,7,24,121,10
 END
 
-IDD_SAVEAS DIALOGEX 0, 0, 186, 95
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Guardar como"
-FONT 8, "MS Sans Serif", 0, 0, 0x0
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
-    COMBOBOX        IDC_COMBO1,7,53,172,12,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    CONTROL         "Guardar como cable",IDC_CHECK_TOGGLE_CAB_CON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,99,10
-END
-
 IDD_PAGEGRID DIALOG 0, 0, 270, 161
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Grid"
@@ -262,14 +297,6 @@ BEGIN
         RIGHTMARGIN, 209
         TOPMARGIN, 7
         BOTTOMMARGIN, 127
-    END
-
-    IDD_SAVEAS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 88
     END
 
     IDD_PAGEGRID, DIALOG
@@ -1413,9 +1440,11 @@ STRINGTABLE
 BEGIN
     IDS_MSG_CABLEXISTS      "Ya existe un cable con el nombre %1. ¿Desea sobrescribirlo?"
     IDS_MSG_PATCHPCHANGE    "¿La tabla de conexiones ha cambiado desea guardar los cambios?"
-    IDR_FOLDERTABS          "Hoja 1"
-    IDS_MSG_CONFDEL1        "¿Confirma la eliminación del elemento %1?"
-    IDS_MSG_CONFDELN        "¿Confirma la eliminación de los elementos seleccionados?"
+    IDR_FOLDERTABS          "Sheet 1"
+    IDS_MSG_CONFDEL1        "Confirm removal of element %1?"
+    IDS_MSG_CONFDELN        "Confirm removal of selected elements?"
+    IDS_LBL_SAVEAS_CABLE    "Save as cable"
+    IDS_LBL_SAVEAS_CONNECTOR "Save as connector"
 END
 
 STRINGTABLE

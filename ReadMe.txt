@@ -5,11 +5,15 @@ DraftCable 1.09
 BUGS
 1.09.4
 1. Sheets saved as A3 are loaded again as A4.
+2. Solved bug that filtered pins with same name on loading, when placing units
+3. Solved bug that causes all shapes to be selected when you select framec rectangle in part edition mode.
 
 DRAWING ENGINE
+1.09.4
 1.09.3
 1.09.2
 1. Improved fill for ellipses
+2. Improved fill for units
 
 FUNCTIONAL
 1.09.4
