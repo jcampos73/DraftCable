@@ -397,18 +397,17 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 				nodeListPtr->ResetMainPos();
 			}
 
-			if (nodeListPtr != NULL && length/*nodeListPtr->length*/ > 0)
+			if (nodeListPtr != NULL && length > 0)
 			{
 				int childIndex = xmlNodePtr->m_childIndex;
 
-				if (childIndex < length/*nodeListPtr->length*/)
+				if (childIndex < length)
 				{
-					//nodeListPtr->get_item(childIndex, &nodePtr);
 					int index = 0;
 
-					if (nodeListPtr->FindChildElem())
-					{
-						while (index < childIndex && nodeListPtr->FindElem())
+					/*if (nodeListPtr->FindChildElem())
+					{*/
+						while (nodeListPtr->FindElem() && index < childIndex)
 						{
 							index++;
 						}
@@ -416,13 +415,11 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 						nodePtr = new CMarkup();
 						nodePtr = nodeListPtr;
 						//nodeListPtr->ResetChildPos();
-					}
+					/*}*/
 
-					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);// m_xmlDocPtr);
+					CXMLArchiveNode* xmlArchiveNodePtr = new CXMLArchiveNode(this, nodePtr, m_xmlDocPtr);
 
 					m_nodeList.push(xmlArchiveNodePtr);
-
-					//::SysFreeString(nodeNameBSTR);
 
 					return xmlArchiveNodePtr;
 				}
@@ -448,11 +445,9 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 
 		::SysFreeString(nodeNameBSTR);
 #else
-
 		bool bResult=fatherNodePtr->FindElem(nodeName);
 		nodeListPtr = new CMarkup();
 		nodeListPtr = fatherNodePtr;
-		//fatherNodePtr->ResetMainPos();
 #endif
 		//Get child index from m_nodeList
 		int childIndex = 0;
@@ -481,7 +476,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			int index = 0;
 
 			//Check if it has child elements and go inside if so
-			if (nodeListPtr->FindChildElem())
+			if (nodeName.MakeLower()=="svg" && nodeListPtr->FindChildElem())
 			{
 				while (index < childIndex && nodeListPtr->FindElem())
 				{
@@ -597,6 +592,20 @@ CString CXMLArchiveNode::GetChildName(int childIndex)
 
 int CXMLArchiveNode::GetNoChildren()
 {
+#ifdef USE_MSXML
+	if (m_nodePtr == NULL)
+	{
+		return 0;
+	}
+
+	if (m_childNodeListPtr == NULL)
+	{
+		// Get all nodes with this name
+		m_childNodeListPtr = m_nodePtr->childNodes;
+	}
+
+	return m_childNodeListPtr->length;
+#else
 	int length = 0;
 
 	if (m_nodePtr == NULL)
@@ -607,12 +616,14 @@ int CXMLArchiveNode::GetNoChildren()
 	if (m_childNodeListPtr == NULL)
 	{
 		// Get all nodes with this name
-		//m_childNodeListPtr = m_nodePtr->childNodes;
+		/*
 		if (m_nodePtr->FindChildElem())
 		{
 			m_childNodeListPtr = new CMarkup(m_nodePtr->GetDoc());
 			*m_childNodeListPtr = *m_nodePtr;
 			m_childNodeListPtr->IntoElem();
+
+			length = 1;
 
 			//Now count
 			while (m_childNodeListPtr->FindElem())
@@ -624,6 +635,10 @@ int CXMLArchiveNode::GetNoChildren()
 
 			return length;
 		}
+
+		length = 1;//Cause of FindChildElem
+		*/
+
 	}
 
 	while (m_nodePtr->FindElem())
@@ -633,9 +648,6 @@ int CXMLArchiveNode::GetNoChildren()
 
 	m_nodePtr->ResetMainPos();
 
-#ifdef USE_MSXML
-	return m_childNodeListPtr->length;
-#else
 	return length;
 #endif
 }

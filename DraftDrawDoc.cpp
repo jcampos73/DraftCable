@@ -572,16 +572,6 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 		//Svg file (under development)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
 
-			//Old implementation for loading from files
-			//Just in case XML serialization cannot made work
-			/*
-			char buffer[256];
-			buffer[0] = 0;
-			CFile *pfile = ar.GetFile();
-			fini = fopen(pfile->GetFilePath(), "rb");
-			fgets(buffer, 255, fini);
-			*/
-
 			XMLCLASSNODE;
 			//CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
 

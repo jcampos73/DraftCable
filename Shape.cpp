@@ -3360,21 +3360,29 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 	//Tokenize
 	CString resToken;
 	int curPos = 0;
-	resToken = d.Tokenize(_T(" "), curPos);
+	resToken = d.Tokenize(_T(" ,"), curPos);
 	CString x_str = "";
 	CString y_str = "";
 
 	//Point counter
 	int countPoint = 0;
 	CArray<CPoint, CPoint> arrPoints;
+	CArray<CPoint, CPoint> arrPoints2;
 	while (resToken != _T(""))
 	{
 		
 		if (resToken.MakeUpper() == "M" ||
 			resToken.MakeUpper() == "L" ||
+			resToken.MakeUpper() == "C" ||//Cubic
 			resToken.MakeUpper() == "Z"){
-			if (countPoint > 0){
-			arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
+			if (x_str != "" && y_str!= ""){
+				if (arrPoints2.GetCount()>0){
+					arrPoints.Add(arrPoints2[arrPoints2.GetCount()-1]);
+					arrPoints2.RemoveAll();
+				}
+				else{
+					arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
+				}
 				x_str = "";
 				y_str = "";
 			}
@@ -3384,13 +3392,18 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 		{
 			x_str = resToken;
 		}
-		else
+		else if (y_str == "")
 		{
 			y_str = resToken;
 		}
+		else
+		{
+			arrPoints2.Add(CPoint(atoi(x_str), atoi(y_str)));
+			x_str = resToken;
+			y_str = "";
+		}
 
-
-		resToken = d.Tokenize(_T(" "), curPos);
+		resToken = d.Tokenize(_T(" ,"), curPos);
 	};
 
 	/*
