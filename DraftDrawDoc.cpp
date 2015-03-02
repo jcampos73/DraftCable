@@ -580,11 +580,17 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			{
 				CShapePolyline *path = new CShapePolyline();
 				CShape** pShapes; int nCount=0;
-				XMLDATA(*path);
-				//XMLDATA(*path, &pShapes, &nCount);
+				//XMLDATA(*path);
+				XMLDATA2(*path, (CObject***)&pShapes, &nCount);
+				path->m_pCursorArray = m_CursorArray;
+				path->pcmdDeque = cmdDeque;
+				path->Unselect();
 				AddObject(path);
 				if (nCount > 0){
 					for (int i = 0; i < nCount; i++){
+						pShapes[i]->m_pCursorArray = m_CursorArray;
+						pShapes[i]->pcmdDeque = cmdDeque;
+						pShapes[i]->Unselect();
 						AddObject(pShapes[i]);
 					}
 					delete(pShapes);
