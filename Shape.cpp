@@ -3453,7 +3453,8 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive, CShape*** pCreated /*= N
 
 	if (pCreated != NULL && pCount != NULL){
 		*pCount = arrPoly.GetCount();
-		*pCreated = (CShape **)GlobalAlloc(GMEM_ZEROINIT, sizeof(CShape*)*(*pCount));
+		*pCreated = new CShape *[*pCount];
+		//*pCreated = (CShape **)GlobalAlloc(GMEM_ZEROINIT, sizeof(CShape*)*(*pCount));
 		for (int i = 0; i < arrPoly.GetCount(); i++){
 			(*pCreated)[i] = (CShape*)arrPoly[i];
 		}

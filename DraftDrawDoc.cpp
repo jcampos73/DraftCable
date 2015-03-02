@@ -573,17 +573,22 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 		if (nFilterIndex == _DRAFTCABLE_DOC_FILTER_SVG){
 
 			XMLCLASSNODE;
-			//CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar);
 
 			CXMLArchiveNode* curNodePtr = xmlArchive.GetCurrentNode();
 			int numberObjects = curNodePtr->GetNoChildren();
 			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
 			{
 				CShapePolyline *path = new CShapePolyline();
-				CShape** pShapes; int nCount;
+				CShape** pShapes; int nCount=0;
 				XMLDATA(*path);
 				//XMLDATA(*path, &pShapes, &nCount);
 				AddObject(path);
+				if (nCount > 0){
+					for (int i = 0; i < nCount; i++){
+						AddObject(pShapes[i]);
+					}
+					delete(pShapes);
+				}
 			}
 
 			//curNodePtr = xmlArchive.GetCurrentNode();
