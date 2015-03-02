@@ -33,6 +33,8 @@ namespace std
 						xmlArchive.GetNode(_T("svg")/*GetActualClass()->m_lpszClassName*/);
 #define XMLDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
 	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName);}}
+#define XMLDATA2(attrName, pObjs, pCount) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
+	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName, pObjs, pCount);}}
 #define XMLINTDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
 	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, (int&)(attrName));}}
 #define XMLENDNODE { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
@@ -106,6 +108,7 @@ public:
 
 	// Loads into existing objects
 	void DataNode(LPCTSTR attrName, CObject& object);
+	void DataNode(LPCTSTR attrName, CObject& object, CObject*** pObjs, int *pCount);
 
 	// Creates new object when loading
 	void DataNode(LPCTSTR attrName, CObject*& objectPtr);

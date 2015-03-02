@@ -3344,7 +3344,7 @@ void CShapePolyline::Serialize( CArchive& archive )
 
 }
 
-void CShapePolyline::SerializeXml(CXMLArchive& archive)
+void CShapePolyline::SerializeXml(CXMLArchive& archive, CShape*** pCreated /*= NULL*/, int *pCount /*= NULL*/)
 {
 	//Get pointer to current node
 	CXMLArchiveNode* curNodePtr = archive.GetCurrentNode();
@@ -3366,8 +3366,10 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 
 	//Point counter
 	int countPoint = 0;
+	int countPoly = 0;
 	CArray<CPoint, CPoint> arrPoints;
 	CArray<CPoint, CPoint> arrPoints2;
+	CPtrArray arrPoly;
 	while (resToken != _T(""))
 	{
 		
@@ -3385,8 +3387,36 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 				}
 				x_str = "";
 				y_str = "";
+				countPoint++;
 			}
-			countPoint++;
+
+			//New polyline
+			if (resToken.MakeUpper() == "Z"){
+				if (pCreated != NULL && pCount != NULL){
+					LPPOINT pPoints = new POINT[countPoint];
+
+					for (int i = 0; i < arrPoints.GetCount(); i++)
+					{
+						CPoint point = arrPoints.GetAt(i);
+						pPoints[i] = point;
+					}
+
+					if (countPoly == 0){
+						//Create this polyline
+						Create(pPoints, arrPoints.GetCount());
+					}
+					else
+					{
+						//Create new polyline
+						CShapePolyline *pShPoly = new CShapePolyline();
+						pShPoly->Create(pPoints, arrPoints.GetCount());
+						arrPoly.Add(pShPoly);
+					}
+					arrPoints.RemoveAll();
+					arrPoints2.RemoveAll();
+					countPoly++;
+				}
+			}
 		}
 		else if (x_str == "")
 		{
@@ -3406,48 +3436,28 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive)
 		resToken = d.Tokenize(_T(" ,"), curPos);
 	};
 
-	/*
-	int idata = CDraftDrawDoc::Split(d, " ", NULL, 0);
-	LPTSTR *sa = new LPTSTR[idata];
-	CDraftDrawDoc::Split(d, " ", sa, idata);
-
-	CString x_str = "";
-	CString y_str = "";
-	int count = 0;
-	CArray<CPoint, CPoint> arrPoints;
-	for (int i = 0; i < idata; i++)
-	{
-		if (CString(sa[i]).MakeUpper() == "M" ||
-			CString(sa[i]).MakeUpper() == "L" ||
-			CString(sa[i]).MakeUpper() == "Z"){
-			arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
-			x_str = "";
-			y_str = "";
-			count++;
-		}
-		else if (x_str == "")
-		{
-			x_str = sa[i];
-		}
-		else
-		{
-			y_str = sa[i];
-		}
-	}//end for
-	*/
-
 	//Create polyline
 	//Prepare point array
-	LPPOINT pPoints = new POINT[countPoint];
+	if (countPoly == 0){
+		LPPOINT pPoints = new POINT[countPoint];
 
-	for (int i = 0; i < arrPoints.GetCount(); i++)
-	{
-		CPoint point = arrPoints.GetAt(i);
-		pPoints[i] = point;
+		for (int i = 0; i < arrPoints.GetCount(); i++)
+		{
+			CPoint point = arrPoints.GetAt(i);
+			pPoints[i] = point;
+		}
+
+		//Create polyline
+		Create(pPoints, arrPoints.GetCount());
 	}
 
-	//Create polyline
-	Create(pPoints, arrPoints.GetCount());
+	if (pCreated != NULL && pCount != NULL){
+		*pCount = arrPoly.GetCount();
+		*pCreated = (CShape **)GlobalAlloc(GMEM_ZEROINIT, sizeof(CShape*)*(*pCount));
+		for (int i = 0; i < arrPoly.GetCount(); i++){
+			(*pCreated)[i] = (CShape*)arrPoly[i];
+		}
+	}
 }
 
 void CShapePolyline::SerializeDdw(CDdwioFile &ddwfile)

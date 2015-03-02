@@ -580,7 +580,9 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			for (int i = 0; i < numberObjects; i++, curNodePtr->GetNextChildIndex())
 			{
 				CShapePolyline *path = new CShapePolyline();
+				CShape** pShapes; int nCount;
 				XMLDATA(*path);
+				//XMLDATA(*path, &pShapes, &nCount);
 				AddObject(path);
 			}
 
@@ -595,9 +597,6 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				AddObject(text);
 			}
 
-			//XMLDATA(m_itemArray);
-			//XMLDATA(m_singleItem);
-			//XMLENDNODE;
 		}
 		//Binary format
 		//Loading for place is perfomed on CShapeUnit::LoadUnit()

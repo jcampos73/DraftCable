@@ -669,6 +669,23 @@ void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 	m_archivePtr->GetCurrentNode()->Close();
 }
 
+// Loads into existing objects
+void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object, CObject*** pObjs, int *pCount)
+{
+	CString attrname = attrName;
+	attrname.Replace("*", "");
+	m_archivePtr->GetNode(attrname);
+	if (object.IsKindOf(RUNTIME_CLASS(CShapePolyline))){
+		CObject* pObject = &object;
+		((CShapePolyline*)pObject)->SerializeXml(*m_archivePtr, (CShape***) pObjs, pCount);
+	}
+	else if (object.IsKindOf(RUNTIME_CLASS(CShapeLabel))){
+		CObject* pObject = &object;
+		((CShapeLabel*)pObject)->SerializeXml(*m_archivePtr);
+	}
+	m_archivePtr->GetCurrentNode()->Close();
+}
+
 // Creates new object when loading
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject*& objectPtr)
 {
