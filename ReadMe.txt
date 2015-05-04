@@ -2,6 +2,11 @@ DraftCable 1.09
 26/11/2014
 ==========
 
+IMPORTANT NOTIFICATION FOR WINDOWS 7 AND WINDOWS 8
+
+Execute as administrator
+Right clic DraftCable.exe > Properties > Compatibility > Run as administrator
+
 BUGS
 1.09.4
 1. Sheets saved as A3 are loaded again as A4.

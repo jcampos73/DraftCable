@@ -168,7 +168,8 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				}
 
 				//Start new segment/spline
-				ptArray.RemoveAll();
+				ptArray.RemoveAt(0);
+				//ptArray.RemoveAll();
 			}
 			else{
 				//Add point to array
@@ -250,11 +251,10 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	//Create ellipse arc
 	if (ptArray->GetCount() >= 2){
-		CShapeArc* pSh = new CShapeArc();
+		pSh = new CShapeArc();
 		//Create arc
-		pSh->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE);
+		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE);
 		pSh->Unselect();
-		//ptArray->RemoveAll();
 	}
 }
 
