@@ -315,12 +315,15 @@ class CShapeEllipse : public CShape
 public:
 	CShapeEllipse(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	DECLARE_SERIAL( CShapeEllipse )
+	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2);
 
 // Attributes
 public:
 
 // Operations
 public:
+	void GetRectTemp(CRect &rect);
+	void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 
 // Overrides
 	// ClassWizard generated virtual function overrides

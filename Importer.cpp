@@ -80,6 +80,11 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 
 		pShUnit->m_sUnitName = m_xmlDocPtr->GetData();
 
+		//Debug
+		if (pShUnit->m_sUnitName.Find("OR") >= 0){
+			int stop = 1;
+		}
+
 		m_xmlDocPtr->OutOfElem();
 	}
 
@@ -203,6 +208,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		//<PIN pos='70.00000,37.00000' which='0' elec='4' direction='1' part='0' number='2' show='0' length='15' number_pos='0' centre_name='0'></PIN>
 		//Get position of pin
 		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		//If 1 means NOT output, for example
 		CString which = m_xmlDocPtr->GetAttrib("which");
 		CString elec = m_xmlDocPtr->GetAttrib("elec");
 		//1 = S; 0 = N; 3 = E; 2 = W
@@ -215,14 +221,29 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		CString centre_name = m_xmlDocPtr->GetAttrib("centre_name");
 
 		CPoint point0 = GetPointFromStr(pos);
+		CPoint point_copy = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
 		SnapToGrid(&point0, m_szGrid);
-
 		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
 		//Just becouse we don't want empty rectangles
 		pSh->m_Rect = CRect(point0, point0 + CPoint(1, 1));
 		pSh->Unselect();
 		pobarrShapearr->Add(pSh);
+
+		if (which == "1"){
+			CPoint ptOffset = CPoint(-atoi(length), 0);
+			CSize sz(10, 10);
+			ptOffset = CPoint(ptOffset.x * 1, ptOffset.y * 1);
+			ptOffset += CPoint(- sz.cx *.5, - sz.cy *.5);
+
+			CArray<CPoint, CPoint> ptArray;
+			CShape* pSh = NULL;
+
+			ptArray.Add(point0 + ptOffset);
+			ptArray.Add(point0 + ptOffset + sz);
+			DoCreateNotPin(&ptArray, pSh);
+			if (pSh != NULL) pobarrShapearr->Add(pSh);
+		}
 	}
 	CATCH_ALL(e)
 	{
@@ -254,6 +275,15 @@ void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 		pSh = new CShapeArc();
 		//Create arc
 		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE);
+		pSh->Unselect();
+	}
+}
+
+void CImporter::DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+	//Create not pin
+	if (ptArray->GetCount() >= 2){
+		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
+		pSh = new CShapeEllipse(rect);
 		pSh->Unselect();
 	}
 }

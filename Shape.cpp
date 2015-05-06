@@ -1591,6 +1591,14 @@ CShapeEllipse::~CShapeEllipse()
 {
 }
 
+BOOL CShapeEllipse::Create(LPPOINT lpPoint1, LPPOINT lpPoint2)
+{
+	CRect rect = CRect(*lpPoint1, *lpPoint2);
+	rect.NormalizeRect();
+	this->m_Rect = rect;
+	return TRUE;
+}
+
 /*
 BEGIN_MESSAGE_MAP(CShape, CWnd)
 	//{{AFX_MSG_MAP(CShape)
@@ -1709,6 +1717,16 @@ void CShapeEllipse::DoFill(CDC* pDC, LPRECT lpRect /*= NULL*/)
 
 	grf.FillPath(&lgb, &gfxPath);
 
+}
+
+void CShapeEllipse::GetRectTemp(CRect &rect)
+{
+	rect = m_Rect;
+}
+
+void CShapeEllipse::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
+{
+	m_Rect = CRect(ptOffset, m_Rect.Size());
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1990,7 +2008,11 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		point2 = point2 + CPoint(0, point2.y - point1.y);
 		if (lpPoint1->x > lpPoint2->x){
 			point2 = point2 + CPoint(point2.x - point1.x, 0);
-			m_angleStart = -90;
+			
+			//m_angleStart = -90;
+
+			ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			m_angleSweep = +90;
 		}
 		else{
 			point1 = point1 - CPoint(point2.x - point1.x, 0);

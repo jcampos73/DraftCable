@@ -850,6 +850,10 @@ void CShapeUnit::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 		if (psh->IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 			rectTemp += psh->m_Rect.TopLeft();
 		}
+		else if (psh->IsKindOf(RUNTIME_CLASS(CShapeEllipse))){
+			//debug
+			int stop = 1;
+		}
 
 		CPoint offset = rectTemp.TopLeft() - rectBound.TopLeft();
 		offset += ptOffset;

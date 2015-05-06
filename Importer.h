@@ -35,6 +35,7 @@ protected:
 	BOOL DoProcessPin(CObArray* pobarrShapearr);
 	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static void DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	static void DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",");
 };
 
