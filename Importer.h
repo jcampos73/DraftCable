@@ -36,6 +36,6 @@ protected:
 	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static void DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static void DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
-	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",");
+	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
 };
 

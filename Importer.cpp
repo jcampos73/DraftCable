@@ -81,7 +81,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		pShUnit->m_sUnitName = m_xmlDocPtr->GetData();
 
 		//Debug
-		if (pShUnit->m_sUnitName.Find("OR") >= 0){
+		if (pShUnit->m_sUnitName.Find("XNOR") >= 0){
 			int stop = 1;
 		}
 
@@ -155,8 +155,9 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				}
 
 				//Add point to array
-				CPoint point = GetPointFromStr(pos);
-				ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
+				CPoint point = GetPointFromStr(pos, ",", m_scale);
+				ptArray.Add(point0 + point);
+				//ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 
 				//Now create the arc
 				if (ptArray.GetCount()>=2){
@@ -231,7 +232,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		pobarrShapearr->Add(pSh);
 
 		if (which == "1"){
-			CPoint ptOffset = CPoint(-atoi(length), 0);
+			CPoint ptOffset = CPoint(-10/*atoi(length)*/, 0);
 			CSize sz(10, 10);
 			ptOffset = CPoint(ptOffset.x * 1, ptOffset.y * 1);
 			ptOffset += CPoint(- sz.cx *.5, - sz.cy *.5);
@@ -326,7 +327,7 @@ void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
 	m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
 }
 
-POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
+POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/, float scale /*= 0.0f*/)
 {
 	int idata = CDraftDrawDoc::Split(pos, ",", NULL, 0);
 	LPTSTR *sa = new LPTSTR[idata];
@@ -337,6 +338,10 @@ POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/)
 	if (idata >= 2){
 		int x = atoi(sa[0]);
 		int y = atoi(sa[1]);
+		if (scale != 0.0f){
+			x = round(atof(sa[0]) * scale);
+			y = round(atof(sa[1]) * scale);
+		}
 		CPoint point(x, y);
 		//ptArray.Add(point);
 		return point;
