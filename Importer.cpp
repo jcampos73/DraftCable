@@ -179,8 +179,9 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 			}
 			else{
 				//Add point to array
-				CPoint point = GetPointFromStr(pos);
-				ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
+				CPoint point = GetPointFromStr(pos, ",", m_scale);
+				ptArray.Add(point0 + point);
+				//ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 			}
 		}
 		//Create ellipse arc or end Polyline
