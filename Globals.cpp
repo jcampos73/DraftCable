@@ -815,20 +815,29 @@ void _doFixDataBase()
 
 	CRecordset rsPart(&db);
 
-	CString query;
-	query.Format("SELECT iIdPart FROM tbPart WHERE nNamePart LIKE '%s' ORDER BY iIdPart ASC", "blank");
+	TRY{
+		CString query;
+		query.Format("SELECT iIdPart FROM tbPart WHERE nNamePart LIKE '%s' ORDER BY iIdPart ASC", "blank");
 
-	rsPart.Open(CRecordset::forwardOnly,query);
+		rsPart.Open(CRecordset::forwardOnly, query);
 
-	if ((!rsPart.IsBOF()) && (!rsPart.IsEOF())){
-		int nIndex = 0;
-		CString strIdPart;
-		rsPart.GetFieldValue(nIndex, strIdPart);
+		if ((!rsPart.IsBOF()) && (!rsPart.IsEOF())){
+			int nIndex = 0;
+			CString strIdPart;
+			rsPart.GetFieldValue(nIndex, strIdPart);
 
-		CString deleteQuery;
-		deleteQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '%s' AND iIdPart NOT IN (%s)", "blank", strIdPart);
-		db.ExecuteSQL(deleteQuery);
+			CString deleteQuery;
+			deleteQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '%s' AND iIdPart NOT IN (%s)", "blank", strIdPart);
+			db.ExecuteSQL(deleteQuery);
+		}
 	}
+	CATCH_ALL(e)
+	{
+		char msg[255];
+		e->GetErrorMessage(msg, 255);
+		int stop = 1;
+	}
+	END_CATCH_ALL
 
 	rsPart.Close();
 	db.Close();
