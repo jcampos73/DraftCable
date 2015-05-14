@@ -7,6 +7,12 @@ IMPORTANT NOTIFICATION FOR WINDOWS 7 AND WINDOWS 8
 Execute as administrator
 Right clic DraftCable.exe > Properties > Compatibility > Run as administrator
 
+COMPILING SOURCE CODE IN VS 2013
+Download multibyte (MBCS) support for Visual Studio from
+http://go.microsoft.com/fwlink/p/?LinkId=286820
+Id is also advisable to install the binaries from Sourceforge to add the few registry entries
+http://sourceforge.net/projects/draftcable/
+
 BUGS
 1.09.4
 1. Sheets saved as A3 are loaded again as A4.
