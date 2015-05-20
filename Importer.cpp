@@ -225,7 +225,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		CPoint point0 = GetPointFromStr(pos);
 		CPoint point_copy = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
-		SnapToGrid(&point0, m_szGrid);
+		//SnapToGrid(&point0, m_szGrid);
 		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
 		//Just becouse we don't want empty rectangles
 		pSh->m_Rect = CRect(point0, point0 + CPoint(1, 1));
@@ -234,7 +234,7 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 
 		if (which == "1"){
 			CPoint ptOffset = CPoint(-10/*atoi(length)*/, 0);
-			CSize sz(10, 10);
+			CSize sz(5, 5);
 			ptOffset = CPoint(ptOffset.x * 1, ptOffset.y * 1);
 			ptOffset += CPoint(- sz.cx *.5, - sz.cy *.5);
 
