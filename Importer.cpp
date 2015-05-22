@@ -222,9 +222,13 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		CString number_pos = m_xmlDocPtr->GetAttrib("number_pos");
 		CString centre_name = m_xmlDocPtr->GetAttrib("centre_name");
 
+		//Start to process
 		CPoint point0 = GetPointFromStr(pos);
 		CPoint point_copy = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
+
+		//We can not snap here becouse we are going to snap in post processing imported shapes
+		//for normalization to bounding rectangle
 		//SnapToGrid(&point0, m_szGrid);
 		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
 		//Just becouse we don't want empty rectangles
@@ -232,24 +236,49 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		pSh->Unselect();
 		pobarrShapearr->Add(pSh);
 
-		if (which == "1"){
-			CPoint ptOffset = CPoint(-10/*atoi(length)*/, 0);
-			CSize sz(5, 5);
-			ptOffset = CPoint(ptOffset.x * 1, ptOffset.y * 1);
-			ptOffset += CPoint(- sz.cx *.5, - sz.cy *.5);
+		if (which == m_strWhichNotPin){
+			//Get pin length normalized to DraftCable
+			int l = atoi(length) * m_scale / COOR_TO_PIN_LENGTH;
+			CSize sz(DCABLE_PIN_WIDTH, DCABLE_PIN_HEIGHT);
+			CPoint ptOffset = CPoint(-l, 0);
 
+			//Process orientation
+			switch (atoi(direction))
+			{
+				case importerPinW:
+					ptOffset = CPoint(-l, 0);
+					ptOffset += CPoint(0, -sz.cy *.5);
+					break;
+				case importerPinE:
+					ptOffset = CPoint(l, 0);
+					ptOffset += CPoint(0, -sz.cy *.5);
+					break;
+				case importerPinN:
+					ptOffset = CPoint(0, -l);
+					ptOffset += CPoint(-sz.cx *.5, 0);
+					break;
+				case importerPinS:
+					ptOffset = CPoint(0, l);
+					ptOffset += CPoint(-sz.cx *.5, 0);
+					break;
+			}
+
+			//Do create pin
 			CArray<CPoint, CPoint> ptArray;
 			CShape* pSh = NULL;
-
 			ptArray.Add(point0 + ptOffset);
 			ptArray.Add(point0 + ptOffset + sz);
 			DoCreateNotPin(&ptArray, pSh);
+
+			//Add shape to internal array
 			if (pSh != NULL) pobarrShapearr->Add(pSh);
 		}
 	}
 	CATCH_ALL(e)
 	{
-
+		char msg[1024];
+		e->GetErrorMessage(msg, 1024);
+		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
 	}
 	END_CATCH_ALL
 

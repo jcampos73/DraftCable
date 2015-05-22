@@ -6,6 +6,11 @@ from outside
 class CImporter
 {
 public:
+
+	//1 = S; 0 = N; 3 = E; 2 = W
+	enum { importerPinN = 0, importerPinS = 1, importerPinW = 2, importerPinE = 3 };
+	const int COOR_TO_PIN_LENGTH = 5;
+
 	CImporter();
 	~CImporter();
 	//Import library from external system
@@ -26,6 +31,7 @@ protected:
 	const CString m_strTCSymbolNodeGeomPolygonLabel = "POLYGON";
 	const CString m_strTCSymbolNodeGeomPinLabel = "PIN";
 	const CString m_strTCSymbolNodeGeomPolygonPointLabel = "POINT";
+	const CString m_strWhichNotPin = "1";
 
 	//! true if already opened
 	bool m_bOpened;

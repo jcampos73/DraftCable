@@ -32,6 +32,9 @@
 #define DCABLE_GRIDX_DEFAULT		10
 #define DCABLE_GRIDY_DEFAULT		10
 
+#define DCABLE_PIN_WIDTH			5
+#define DCABLE_PIN_HEIGHT			5
+
 //Default padding for shapes to frame rectangle
 #define DCABLE_PADDINGX_DEFAULT		DCABLE_GRIDX_DEFAULT * 4
 #define DCABLE_PADDINGY_DEFAULT		DCABLE_GRIDX_DEFAULT * 4

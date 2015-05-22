@@ -822,7 +822,8 @@ void CDialogPlacePart::DoImportLibrary()
 			}
 		}
 
-		rectUnion.InflateRect(DCABLE_PADDINGX_DEFAULT << 1, DCABLE_PADDINGY_DEFAULT << 1);
+		//rectUnion.InflateRect(DCABLE_PADDINGX_DEFAULT << 1, DCABLE_PADDINGY_DEFAULT << 1);
+		rectUnion.InflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
 		CSize size=rectUnion.Size();
 		rectUnion = CRect(CPoint(0, 0), rectUnion.Size());
 

@@ -858,6 +858,7 @@ void CShapeUnit::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/){
 		CPoint offset = rectTemp.TopLeft() - rectBound.TopLeft();
 		offset += ptOffset;
 
+		//Normalize
 		psh->NormalizeChildShapes(offset);
 	}
 }
