@@ -81,6 +81,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		pShUnit->m_sUnitName = m_xmlDocPtr->GetData();
 
 		//Debug
+		TRACE(_T("Importing part %s.\n"), (LPCTSTR)(pShUnit->m_sUnitName));
 		if (pShUnit->m_sUnitName.Find("XNOR") >= 0){
 			int stop = 1;
 		}
@@ -162,14 +163,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				//Now create the arc
 				if (ptArray.GetCount()>=2){
 					CShape* pSh = NULL;
-					DoCreateArc(&ptArray, pSh);
-					/*
-					CShapeArc* pSh = new CShapeArc();
-					//DoCreatePolyline(&ptArray, pSh);
-					//Create arc
-					pSh->Create(&ptArray[0], &ptArray[1], TRUE);
-					pSh->Unselect();
-					*/
+					DoCreateArc(&ptArray, pSh, arc);
 					if (pSh != NULL) pobarrShapearr->Add(pSh);
 				}
 
@@ -300,12 +294,12 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	}
 }
 
-void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc /*= 1*/){
 	//Create ellipse arc
 	if (ptArray->GetCount() >= 2){
 		pSh = new CShapeArc();
 		//Create arc
-		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE);
+		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE, arc);
 		pSh->Unselect();
 	}
 }

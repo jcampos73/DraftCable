@@ -452,7 +452,7 @@ public:
 	CShapeArc(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	DECLARE_SERIAL( CShapeArc )
 	//Create a allipse arc from an array of points
-	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus = FALSE);
+	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus = FALSE, int arc = 1);
 
 // Attributes
 public:

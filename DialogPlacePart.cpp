@@ -813,6 +813,9 @@ void CDialogPlacePart::DoImportLibrary()
 			CShapeUnit *pSh = (CShapeUnit *)pObArray->GetAt(i);
 			CRect rect;
 			pSh->GetRectTemp(rect);
+
+			TRACE(_T("Importing part %s.\n"),(LPCTSTR)(pSh->m_sUnitName));
+
 			//rectUnion.UnionRect(rectUnion, rect);
 			if (rect.Width()>rectUnion.Width()){
 				rectUnion = CRect(CPoint(0, 0), CSize(rect.Width(), rectUnion.Height()));

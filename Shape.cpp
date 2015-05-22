@@ -1990,7 +1990,7 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 	m_bGdiplus = true;
 }
 
-BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/)
+BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/, int arc /*= 1*/)
 {
 	m_Rect = CRect(*lpPoint1, *lpPoint2);
 	m_Rect.NormalizeRect();
@@ -2027,12 +2027,16 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 			m_angleStart = 90;
 
 			//Seems to work when importing passive
-			//ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			if (arc == 1){
+				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			}
 			m_angleSweep = -90;
 			m_angleStart = 0;
 
 			//Seems to work when importing logic
-			ptOffset += CPoint(lpPoint2->x - lpPoint1->x, 0);
+			if (arc == 2){
+				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, 0);
+			}
 		}
 		else{
 			point1 = point1 - CPoint(point2.x - point1.x, 0);
