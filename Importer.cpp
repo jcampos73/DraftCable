@@ -82,7 +82,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 
 		//Debug
 		TRACE(_T("Importing part %s.\n"), (LPCTSTR)(pShUnit->m_sUnitName));
-		if (pShUnit->m_sUnitName.Find("XNOR") >= 0){
+		if (pShUnit->m_sUnitName=="Inductor"){
 			int stop = 1;
 		}
 

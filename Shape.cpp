@@ -2008,20 +2008,36 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		point2 = point2 + CPoint(0, point2.y - point1.y);
 		if (lpPoint1->x > lpPoint2->x){
 			point2 = point2 + CPoint(point2.x - point1.x, 0);
-			
-			//m_angleStart = -90;
 
-			ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
-			m_angleSweep = +90;
+			if (arc == 1){
+				m_angleStart = -90;
+			}
+			else if (arc == 2){
+				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+				m_angleSweep = +90;
+			}
 		}
 		else{
+			
 			point1 = point1 - CPoint(point2.x - point1.x, 0);
-			m_angleStart = 0;
+
+			if (arc == 1){
+				
+				m_angleStart = 0;
+			}
+			else if (arc == 2){
+				//ptOffset += CPoint(lpPoint1->x - lpPoint2->x, lpPoint1->y - lpPoint2->y);
+				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+				m_angleStart = 90;
+				m_angleSweep = 90;
+			}
 		}
 	}
+	//From down screen to up..
 	else{
 		m_angleSweep = 90;
 		point2 = point2 + CPoint(0, point2.y - point1.y);
+		//From right to left...
 		if (lpPoint1->x > lpPoint2->x){
 			point2 = point2 + CPoint(point2.x - point1.x, 0);
 			m_angleStart = 90;
@@ -2042,13 +2058,16 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 			point1 = point1 - CPoint(point2.x - point1.x, 0);
 			m_angleStart = 0;
 
-			//Seems to work when importing passive
-			//ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
-			//m_angleStart = -90;
-			//m_angleSweep = -90;
-
-			//Seems to work when importing logic
-			ptOffset += CPoint(0, lpPoint2->y - lpPoint1->y);
+			if (arc == 2){
+				//Seems to work when importing passive
+				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, 0);
+				m_angleStart = -90;
+				m_angleSweep = -90;
+			}
+			else if (arc == 1){
+				//Seems to work when importing logic
+				ptOffset += CPoint(0, lpPoint2->y - lpPoint1->y);
+			}
 		}
 	}
 
