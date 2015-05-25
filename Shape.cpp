@@ -1990,7 +1990,7 @@ CShapeArc::CShapeArc(LPRECT lpRect,UINT nId,cmddeque *cmddq):CShape(lpRect,nId,c
 	m_bGdiplus = true;
 }
 
-BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/, int arc /*= 1*/)
+BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FALSE*/, int arc /*= ddcArcCCW*/)
 {
 	m_Rect = CRect(*lpPoint1, *lpPoint2);
 	m_Rect.NormalizeRect();
@@ -2003,31 +2003,37 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 
 	CPoint ptOffset = CPoint(0, 0);
 
+	//From up screen to down (2 > 1)
 	if (lpPoint1->y < lpPoint2->y){
-		m_angleSweep = -90;
-		point2 = point2 + CPoint(0, point2.y - point1.y);
+		
+		//From right to left (1 > 2)
 		if (lpPoint1->x > lpPoint2->x){
-			point2 = point2 + CPoint(point2.x - point1.x, 0);
 
-			if (arc == 1){
+			if (arc == ddcArcCCW){
+				point2 = point2 + CPoint(0, point2.y - point1.y);
+				point2 = point2 + CPoint(point2.x - point1.x, 0);
 				m_angleStart = -90;
+				m_angleSweep = -90;
 			}
-			else if (arc == 2){
-				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			else if (arc == ddcArcCW){
+				point1 = point1 - CPoint(0, point2.y - point1.y);
+				point1 = point1 - CPoint(point2.x - point1.x, 0);
+				m_angleStart = 0;
 				m_angleSweep = +90;
 			}
 		}
+		//From left to right (2 > 1)
 		else{
-			
-			point1 = point1 - CPoint(point2.x - point1.x, 0);
 
-			if (arc == 1){
-				
+			if (arc == ddcArcCCW){
+				point2 = point2 + CPoint(0, point2.y - point1.y);
+				point1 = point1 - CPoint(point2.x - point1.x, 0);
 				m_angleStart = 0;
+				m_angleSweep = -90;
 			}
-			else if (arc == 2){
-				//ptOffset += CPoint(lpPoint1->x - lpPoint2->x, lpPoint1->y - lpPoint2->y);
-				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+			else if (arc == ddcArcCW){
+				point1 = point1 - CPoint(0, point2.y - point1.y);
+				point2 = point2 + CPoint(point2.x - point1.x, 0);
 				m_angleStart = 90;
 				m_angleSweep = 90;
 			}
@@ -2039,48 +2045,35 @@ BOOL CShapeArc::Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus /*= FAL
 		//point2 = point2 + CPoint(0, point2.y - point1.y);
 		//From right to left (1 > 2)
 		if (lpPoint1->x > lpPoint2->x){
-			point2 = point2 + CPoint(0, point2.y - point1.y);
-			//point2 = point2 + CPoint(point2.x - point1.x, 0);
-
-			//Seems to work when importing passive
-			if (arc == 1){
-				m_angleStart = 90;
+			
+			if (arc == ddcArcCCW){
+				//Not tested: it is not used in passive neither logic
+				point1 = point1 - CPoint(0, point2.y - point1.y);
 				point2 = point2 + CPoint(point2.x - point1.x, 0);
-				//This has to be refactored: it is not used in passive neither logic
-				ptOffset += CPoint(lpPoint2->x - lpPoint1->x, lpPoint1->y - lpPoint2->y);
+				m_angleStart = 90;
+				m_angleSweep = 90;
 			}
-			else if (arc == 2){
+			else if (arc == ddcArcCW){
+				point2 = point2 + CPoint(0, point2.y - point1.y);
+				point1 = point1 - CPoint(point2.x - point1.x, 0);
 				m_angleStart = 0;
 				m_angleSweep = -90;
-
-				//Seems to work when importing logic
-			
-				//point2 = point2 + CPoint(point2.x - point1.x, 0);
-				point1 = point1 - CPoint(point2.x - point1.x, 0);
-				//ptOffset += CPoint(lpPoint2->x - lpPoint1->x, 0);
 			}
 		}
 		//From left to right (2 > 1)
 		else{
-			//point2 = point2 + CPoint(0, point2.y - point1.y);
-			//point1 = point1 - CPoint(point2.x - point1.x, 0);
-			m_angleStart = 0;
 
-			if (arc == 2){
+			if (arc == ddcArcCW){
 				point2 = point2 + CPoint(0, point2.y - point1.y);
-				//Seems to work when importing passive
-				//point1 = point1 - CPoint(point2.x - point1.x, 0);
-				//ptOffset += CPoint(lpPoint2->x - lpPoint1->x, 0);
 				point2 = point2 + CPoint(point2.x - point1.x, 0);
 				m_angleStart = -90;
 				m_angleSweep = -90;
 			}
-			else if (arc == 1){
-				//point2 = point2 + CPoint(0, point2.y - point1.y);
+			else if (arc == ddcArcCCW){
 				point1 = point1 - CPoint(0, point2.y - point1.y);
-				//Seems to work when importing logic
 				point1 = point1 - CPoint(point2.x - point1.x, 0);
-				//ptOffset += CPoint(0, lpPoint2->y - lpPoint1->y);
+				m_angleStart = 0;
+				m_angleSweep = 90;
 			}
 		}
 	}

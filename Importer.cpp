@@ -82,7 +82,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 
 		//Debug
 		TRACE(_T("Importing part %s.\n"), (LPCTSTR)(pShUnit->m_sUnitName));
-		if (pShUnit->m_sUnitName=="Inductor"){
+		if (pShUnit->m_sUnitName=="Inductor w/Core"){
 			int stop = 1;
 		}
 
@@ -147,7 +147,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 		{
 			CString pos = m_xmlDocPtr->GetAttrib("pos");
 			int arc = atoi(m_xmlDocPtr->GetAttrib("arc"));
-			if (arc > 0){
+			if (arc > STRAIGHT_SEGMENT){//Greater than 0 is an Arc: 1=CCW, 2=CW
 				//Create ellipse arc or end Polyline
 				if (ptArray.GetCount() >= 2){
 					CShape* pSh = NULL;
@@ -158,26 +158,37 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				//Add point to array
 				CPoint point = GetPointFromStr(pos, ",", m_scale);
 				ptArray.Add(point0 + point);
-				//ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 
 				//Now create the arc
-				if (ptArray.GetCount()>=2){
-					CShape* pSh = NULL;
-					DoCreateArc(&ptArray, pSh, arc);
-					if (pSh != NULL) pobarrShapearr->Add(pSh);
+				if (ptArray.GetCount()>=2)
+				{
+					//For security: check iif it's an arc (vertex should define a rectangle)
+					if(ptArray[0].x != ptArray[1].x
+						&& ptArray[0].y != ptArray[1].y
+					){
+						CShape* pSh = NULL;
+						DoCreateArc(&ptArray, pSh, arc);
+						if (pSh != NULL) pobarrShapearr->Add(pSh);
+					}
+					//If not, proceed with a line
+					else
+					{
+						CShape* pSh = NULL;
+						DoCreatePolyline(&ptArray, pSh);
+						if (pSh != NULL) pobarrShapearr->Add(pSh);
+					}
 				}
 
 				//Start new segment/spline
 				ptArray.RemoveAt(0);
-				//ptArray.RemoveAll();
 			}
 			else{
 				//Add point to array
 				CPoint point = GetPointFromStr(pos, ",", m_scale);
 				ptArray.Add(point0 + point);
-				//ptArray.Add(point0 + CPoint(point.x * m_scale, point.y * m_scale));
 			}
 		}
+
 		//Create ellipse arc or end Polyline
 		if (ptArray.GetCount() >= 2){
 			CShape* pSh = NULL;
@@ -187,7 +198,9 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 	}
 	CATCH_ALL(e)
 	{
-
+		char msg[1024];
+		e->GetErrorMessage(msg, 1024);
+		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
 	}
 	END_CATCH_ALL
 
@@ -367,7 +380,6 @@ POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/, float
 			y = round(atof(sa[1]) * scale);
 		}
 		CPoint point(x, y);
-		//ptArray.Add(point);
 		return point;
 	}
 	return CPoint(0, 0);

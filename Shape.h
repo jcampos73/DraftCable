@@ -449,10 +449,11 @@ class CShapeArc : public CShape
 {
 // Construction
 public:
+	enum { ddcArcCCW = 1, ddcArcCW = 2 };
 	CShapeArc(LPRECT lpRect=NULL,UINT nId=0,cmddeque *cmddq =NULL);
 	DECLARE_SERIAL( CShapeArc )
 	//Create a allipse arc from an array of points
-	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus = FALSE, int arc = 1);
+	BOOL Create(LPPOINT lpPoint1, LPPOINT lpPoint2, BOOL bGdiplus = FALSE, int arc = ddcArcCCW);
 
 // Attributes
 public:

@@ -11,6 +11,8 @@ public:
 	enum { importerPinN = 0, importerPinS = 1, importerPinW = 2, importerPinE = 3 };
 	const int COOR_TO_PIN_LENGTH = 5;
 
+	const int STRAIGHT_SEGMENT = 0;
+
 	CImporter();
 	~CImporter();
 	//Import library from external system
