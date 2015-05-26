@@ -32,6 +32,7 @@ protected:
 	const CString m_strTCSymbolNodeGeomLabel = "TinyCAD";
 	const CString m_strTCSymbolNodeGeomPolygonLabel = "POLYGON";
 	const CString m_strTCSymbolNodeGeomPinLabel = "PIN";
+	const CString m_strTCSymbolNodeGeomEllipseLabel = "ELLIPSE";
 	const CString m_strTCSymbolNodeGeomPolygonPointLabel = "POINT";
 	const CString m_strWhichNotPin = "1";
 
@@ -41,9 +42,12 @@ protected:
 	BOOL DoProcessNode(CShapeUnit*& pSh);
 	BOOL DoProcessPolygon(CObArray* pobarrShapearr);
 	BOOL DoProcessPin(CObArray* pobarrShapearr);
+	BOOL __DoProcessEllipse(CObArray* pobarrShapearr);
 	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static void DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc = 1);
 	static void DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	void __DoAddPolyline(CShape* pSh);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
 };
 

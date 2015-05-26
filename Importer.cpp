@@ -120,6 +120,15 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 			DoProcessPin(pobarrShapearr);
 		}
 
+		//Iterate ellipses
+		m_xmlDocPtr->ResetMainPos();
+		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomEllipseLabel))
+		{
+			//Do process symbol
+			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
+			__DoProcessEllipse(pobarrShapearr);
+		}
+
 		//Go out of node
 		m_xmlDocPtr->OutOfElem();
 	}//end if root node
@@ -292,6 +301,41 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 	return TRUE;
 }
 
+BOOL CImporter::__DoProcessEllipse(CObArray* pobarrShapearr)
+{
+	TRY
+	{
+		//Get position of polygon
+		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CPoint point0 = GetPointFromStr(pos);
+		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
+
+		//Add point to array
+		CArray<CPoint, CPoint> ptArray;
+		CString a = m_xmlDocPtr->GetAttrib("a");
+		CPoint point = GetPointFromStr(a, ",", m_scale);
+		ptArray.Add(point0 + point);
+
+		CString b = m_xmlDocPtr->GetAttrib("b");
+		point = GetPointFromStr(b, ",", m_scale);
+		ptArray.Add(point0 + point);
+
+		CShape* pSh = NULL;
+		__DoCreateEllipse(&ptArray, pSh);
+		if (pSh != NULL) pobarrShapearr->Add(pSh);
+
+	}
+	CATCH_ALL(e)
+	{
+		char msg[1024];
+		e->GetErrorMessage(msg, 1024);
+		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
+	}
+	END_CATCH_ALL
+
+	return TRUE;
+}
+
 void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	//Create Polyline
 	if (ptArray->GetCount() > 0)
@@ -303,7 +347,6 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 			pPoints[i] = (*ptArray)[i];
 		}
 		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
-		//ptArray->RemoveAll();
 	}
 }
 
@@ -318,6 +361,15 @@ void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int a
 }
 
 void CImporter::DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+	//Create not pin
+	if (ptArray->GetCount() >= 2){
+		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
+		pSh = new CShapeEllipse(rect);
+		pSh->Unselect();
+	}
+}
+
+void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	//Create not pin
 	if (ptArray->GetCount() >= 2){
 		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
