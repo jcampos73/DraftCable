@@ -22,7 +22,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 	m_szGrid = szGrip;
 
 	//Load raw xml data into object
-	DoLoadRawData(lpszPathName);
+	__DoLoadRawData(lpszPathName);
 
 	if (m_xmlDocPtr->FindElem(m_strTCRootNodeLabel)){
 		if (!m_xmlDocPtr->IntoElem()){
@@ -42,7 +42,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 				CShapeUnit* pShUnit = NULL;
 
 				//Do process symbol
-				DoProcessNode(pShUnit);
+				__DoProcessNode(pShUnit);
 
 				//Go out of node
 				m_xmlDocPtr->OutOfElem();
@@ -63,7 +63,7 @@ BOOL CImporter::ImportLibrary(LPCTSTR lpszPathName, CObArray *pObArray, CSize sz
 /////////////////////////////////////////////////////////////////////////////
 // CImporter implementation
 
-BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
+BOOL CImporter::__DoProcessNode(CShapeUnit*& pShUnit)
 {
 	//Create CShapeUnit
 	pShUnit = new CShapeUnit();
@@ -105,7 +105,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		{
 			//Do process symbol
 			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
-			DoProcessPolygon(pobarrShapearr);
+			__DoProcessPolygon(pobarrShapearr);
 
 			//Need to normalize and rescale (so we have to store in some place all the points)
 			//to reprocess after (maybe before saving, in upper layer)
@@ -117,7 +117,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 		{
 			//Do process symbol
 			CObArray* pobarrShapearr = &pShUnit->m_obarrShapearr;
-			DoProcessPin(pobarrShapearr);
+			__DoProcessPin(pobarrShapearr);
 		}
 
 		//Iterate ellipses
@@ -136,7 +136,7 @@ BOOL CImporter::DoProcessNode(CShapeUnit*& pShUnit)
 	return TRUE;
 }
 
-BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
+BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 {
 	TRY
 	{
@@ -160,8 +160,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 				//Create ellipse arc or end Polyline
 				if (ptArray.GetCount() >= 2){
 					CShape* pSh = NULL;
-					DoCreatePolyline(&ptArray, pSh);
-					if (pSh != NULL) pobarrShapearr->Add(pSh);
+					__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
 				}
 
 				//Add point to array
@@ -176,15 +175,13 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 						&& ptArray[0].y != ptArray[1].y
 					){
 						CShape* pSh = NULL;
-						DoCreateArc(&ptArray, pSh, arc);
-						if (pSh != NULL) pobarrShapearr->Add(pSh);
+						__DoCreateArc(&ptArray, pSh, arc, pobarrShapearr);
 					}
 					//If not, proceed with a line
 					else
 					{
 						CShape* pSh = NULL;
-						DoCreatePolyline(&ptArray, pSh);
-						if (pSh != NULL) pobarrShapearr->Add(pSh);
+						__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
 					}
 				}
 
@@ -201,8 +198,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 		//Create ellipse arc or end Polyline
 		if (ptArray.GetCount() >= 2){
 			CShape* pSh = NULL;
-			DoCreatePolyline(&ptArray, pSh);
-			if (pSh != NULL) pobarrShapearr->Add(pSh);
+			__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
 		}
 	}
 	CATCH_ALL(e)
@@ -219,7 +215,7 @@ BOOL CImporter::DoProcessPolygon(CObArray* pobarrShapearr)
 	return TRUE;
 }
 
-BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
+BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 {
 	TRY
 	{
@@ -252,43 +248,59 @@ BOOL CImporter::DoProcessPin(CObArray* pobarrShapearr)
 		pSh->Unselect();
 		pobarrShapearr->Add(pSh);
 
+		//Get pin length normalized to DraftCable
+		int l = atoi(length) * m_scale / COOR_TO_PIN_LENGTH;
+		CSize sz(DCABLE_PIN_WIDTH, DCABLE_PIN_HEIGHT);
+		CPoint ptOffset = CPoint(-l, 0);
+		CPoint ptOffset0 = ptOffset;
+
+		//Process orientation
+		switch (atoi(direction))
+		{
+			case importerPinW:
+				ptOffset = CPoint(-l, 0);
+				ptOffset0 = ptOffset;
+				ptOffset += CPoint(0, -sz.cy *.5);
+				break;
+			case importerPinE:
+				ptOffset = CPoint(l, 0);
+				ptOffset0 = ptOffset;
+				ptOffset += CPoint(0, -sz.cy *.5);
+				break;
+			case importerPinN:
+				ptOffset = CPoint(0, -l);
+				ptOffset0 = ptOffset;
+				ptOffset += CPoint(-sz.cx *.5, 0);
+				break;
+			case importerPinS:
+				ptOffset = CPoint(0, l);
+				ptOffset0 = ptOffset;
+				ptOffset += CPoint(-sz.cx *.5, 0);
+				break;
+		}
+
+		
+		//Create pin line
+		CArray<CPoint, CPoint> ptArray;
+		CShape* pShTemp = NULL;
+		ptArray.Add(point0);
+		ptArray.Add(point0 + ptOffset0);
+		__DoCreatePolyline(&ptArray, pShTemp);
+		if (pSh != NULL) pobarrShapearr->Add(pShTemp);
+
 		if (which == m_strWhichNotPin){
-			//Get pin length normalized to DraftCable
-			int l = atoi(length) * m_scale / COOR_TO_PIN_LENGTH;
-			CSize sz(DCABLE_PIN_WIDTH, DCABLE_PIN_HEIGHT);
-			CPoint ptOffset = CPoint(-l, 0);
-
-			//Process orientation
-			switch (atoi(direction))
-			{
-				case importerPinW:
-					ptOffset = CPoint(-l, 0);
-					ptOffset += CPoint(0, -sz.cy *.5);
-					break;
-				case importerPinE:
-					ptOffset = CPoint(l, 0);
-					ptOffset += CPoint(0, -sz.cy *.5);
-					break;
-				case importerPinN:
-					ptOffset = CPoint(0, -l);
-					ptOffset += CPoint(-sz.cx *.5, 0);
-					break;
-				case importerPinS:
-					ptOffset = CPoint(0, l);
-					ptOffset += CPoint(-sz.cx *.5, 0);
-					break;
-			}
-
 			//Do create pin
-			CArray<CPoint, CPoint> ptArray;
-			CShape* pSh = NULL;
+			ptArray.RemoveAll();
+			pShTemp = NULL;
 			ptArray.Add(point0 + ptOffset);
 			ptArray.Add(point0 + ptOffset + sz);
-			DoCreateNotPin(&ptArray, pSh);
+			__DoCreateNotPin(&ptArray, pShTemp);
 
 			//Add shape to internal array
-			if (pSh != NULL) pobarrShapearr->Add(pSh);
+			if (pSh != NULL) pobarrShapearr->Add(pShTemp);
 		}
+
+		//show!=0 means visible pin numbers
 	}
 	CATCH_ALL(e)
 	{
@@ -336,7 +348,7 @@ BOOL CImporter::__DoProcessEllipse(CObArray* pobarrShapearr)
 	return TRUE;
 }
 
-void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+void CImporter::__DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr /*= NULL*/){
 	//Create Polyline
 	if (ptArray->GetCount() > 0)
 	{
@@ -347,20 +359,26 @@ void CImporter::DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 			pPoints[i] = (*ptArray)[i];
 		}
 		((CShapePolyline *)pSh)->Create(pPoints, ptArray->GetCount());
+
+		//Add shape to array
+		if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
 	}
 }
 
-void CImporter::DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc /*= 1*/){
+void CImporter::__DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc /*= 1*/, CObArray* pobarrShapearr /*= NULL*/){
 	//Create ellipse arc
 	if (ptArray->GetCount() >= 2){
 		pSh = new CShapeArc();
 		//Create arc
 		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE, arc);
 		pSh->Unselect();
+
+		//Add shape to array
+		if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
 	}
 }
 
-void CImporter::DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+void CImporter::__DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
 	//Create not pin
 	if (ptArray->GetCount() >= 2){
 		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
@@ -378,7 +396,7 @@ void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh)
 	}
 }
 
-void CImporter::DoLoadRawData(LPCTSTR lpszPathName)
+void CImporter::__DoLoadRawData(LPCTSTR lpszPathName)
 {
 	FILE *f = fopen(lpszPathName, "rb");
 

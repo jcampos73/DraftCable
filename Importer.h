@@ -38,14 +38,14 @@ protected:
 
 	//! true if already opened
 	bool m_bOpened;
-	void DoLoadRawData(LPCTSTR lpszPathName);
-	BOOL DoProcessNode(CShapeUnit*& pSh);
-	BOOL DoProcessPolygon(CObArray* pobarrShapearr);
-	BOOL DoProcessPin(CObArray* pobarrShapearr);
+	void __DoLoadRawData(LPCTSTR lpszPathName);
+	BOOL __DoProcessNode(CShapeUnit*& pSh);
+	BOOL __DoProcessPolygon(CObArray* pobarrShapearr);
+	BOOL __DoProcessPin(CObArray* pobarrShapearr);
 	BOOL __DoProcessEllipse(CObArray* pobarrShapearr);
-	static void DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
-	static void DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc = 1);
-	static void DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	static void __DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc = 1, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
 	void __DoAddPolyline(CShape* pSh);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
