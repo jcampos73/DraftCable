@@ -3275,6 +3275,16 @@ CShape& CShapeLabel::operator++( ){
 	return *this;
 }
 
+void CShapeLabel::GetRectTemp(CRect &rect)
+{
+	rect = m_Rect;
+}
+
+void CShapeLabel::NormalizeChildShapes(CPoint ptOffset /*= CPoint(0, 0)*/)
+{
+	m_Rect = CRect(ptOffset, m_Rect.Size());
+}
+
 void CShapeLabel::ResizeAuto(CDC *pDC)
 {
 	if (m_Rect.IsRectEmpty()){

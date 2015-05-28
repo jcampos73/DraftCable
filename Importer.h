@@ -35,6 +35,7 @@ protected:
 	const CString m_strTCSymbolNodeGeomEllipseLabel = "ELLIPSE";
 	const CString m_strTCSymbolNodeGeomPolygonPointLabel = "POINT";
 	const CString m_strWhichNotPin = "1";
+	const CString m_strShowNumberPin = "3";
 
 	//! true if already opened
 	bool m_bOpened;
@@ -43,10 +44,10 @@ protected:
 	BOOL __DoProcessPolygon(CObArray* pobarrShapearr);
 	BOOL __DoProcessPin(CObArray* pobarrShapearr);
 	BOOL __DoProcessEllipse(CObArray* pobarrShapearr);
-	static void __DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
-	static void __DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc = 1, CObArray* pobarrShapearr = NULL);
-	static void __DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
-	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh);
+	static void __DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateArc(CArray<CPoint, CPoint>* ptArray, int arc = 1, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
 	void __DoAddPolyline(CShape* pSh);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
 };

@@ -248,11 +248,14 @@ public:
 // Attributes
 public:
 	label m_Label;
+	BOOL m_bResizeOnFirstDraw;
 
 // Operations
 public:
 	virtual CShape& operator=( const CShape& Sh );
 	virtual CShape& operator++( );
+	virtual void GetRectTemp(CRect &rect);
+	virtual void NormalizeChildShapes(CPoint ptOffset = CPoint(0, 0));
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -279,7 +282,6 @@ protected:
 	BOOL m_bIni;
 	//This flag is used when deserializing from XML formats, that don't store bounding rect
 	//Default value is false
-	BOOL m_bResizeOnFirstDraw;
 	BOOL m_bOffsetAfterResize;
 	virtual void GetData(CStringArray& saData){
 		saData.Add(*m_Label.slabel);

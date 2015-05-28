@@ -159,8 +159,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 			if (arc > STRAIGHT_SEGMENT){//Greater than 0 is an Arc: 1=CCW, 2=CW
 				//Create ellipse arc or end Polyline
 				if (ptArray.GetCount() >= 2){
-					CShape* pSh = NULL;
-					__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
+					__DoCreatePolyline(&ptArray, pobarrShapearr);
 				}
 
 				//Add point to array
@@ -174,14 +173,12 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 					if(ptArray[0].x != ptArray[1].x
 						&& ptArray[0].y != ptArray[1].y
 					){
-						CShape* pSh = NULL;
-						__DoCreateArc(&ptArray, pSh, arc, pobarrShapearr);
+						__DoCreateArc(&ptArray, arc, pobarrShapearr);
 					}
 					//If not, proceed with a line
 					else
 					{
-						CShape* pSh = NULL;
-						__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
+						__DoCreatePolyline(&ptArray, pobarrShapearr);
 					}
 				}
 
@@ -197,8 +194,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 
 		//Create ellipse arc or end Polyline
 		if (ptArray.GetCount() >= 2){
-			CShape* pSh = NULL;
-			__DoCreatePolyline(&ptArray, pSh, pobarrShapearr);
+			__DoCreatePolyline(&ptArray, pobarrShapearr);
 		}
 	}
 	CATCH_ALL(e)
@@ -282,25 +278,27 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 		
 		//Create pin line
 		CArray<CPoint, CPoint> ptArray;
-		CShape* pShTemp = NULL;
 		ptArray.Add(point0);
 		ptArray.Add(point0 + ptOffset0);
-		__DoCreatePolyline(&ptArray, pShTemp);
-		if (pSh != NULL) pobarrShapearr->Add(pShTemp);
+		__DoCreatePolyline(&ptArray, pobarrShapearr);
 
 		if (which == m_strWhichNotPin){
 			//Do create pin
 			ptArray.RemoveAll();
-			pShTemp = NULL;
 			ptArray.Add(point0 + ptOffset);
 			ptArray.Add(point0 + ptOffset + sz);
-			__DoCreateNotPin(&ptArray, pShTemp);
-
-			//Add shape to internal array
-			if (pSh != NULL) pobarrShapearr->Add(pShTemp);
+			__DoCreateNotPin(&ptArray, pobarrShapearr);
 		}
 
 		//show!=0 means visible pin numbers
+		if (show == m_strShowNumberPin)
+		{
+			CShape* pSh = new CShapeLabel();
+			((CShapeLabel *)pSh)->Create(CRect(point0, point0), number, 10, FALSE);
+			((CShapeLabel *)pSh)->m_bResizeOnFirstDraw = TRUE;
+			//Add shape to array
+			if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
+		}
 	}
 	CATCH_ALL(e)
 	{
@@ -348,11 +346,11 @@ BOOL CImporter::__DoProcessEllipse(CObArray* pobarrShapearr)
 	return TRUE;
 }
 
-void CImporter::__DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr /*= NULL*/){
+void CImporter::__DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr /*= NULL*/){
 	//Create Polyline
 	if (ptArray->GetCount() > 0)
 	{
-		pSh = new CShapePolyline();
+		CShape* pSh = new CShapePolyline();
 		LPPOINT pPoints = new POINT[ptArray->GetCount()];
 		for (int i = 0; i < ptArray->GetCount(); i++)
 		{
@@ -365,10 +363,10 @@ void CImporter::__DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CShape*& pSh
 	}
 }
 
-void CImporter::__DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int arc /*= 1*/, CObArray* pobarrShapearr /*= NULL*/){
+void CImporter::__DoCreateArc(CArray<CPoint, CPoint>* ptArray, int arc /*= 1*/, CObArray* pobarrShapearr /*= NULL*/){
 	//Create ellipse arc
 	if (ptArray->GetCount() >= 2){
-		pSh = new CShapeArc();
+		CShape* pSh = new CShapeArc();
 		//Create arc
 		((CShapeArc*)pSh)->Create(&(*ptArray)[0], &(*ptArray)[1], TRUE, arc);
 		pSh->Unselect();
@@ -378,21 +376,27 @@ void CImporter::__DoCreateArc(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, int
 	}
 }
 
-void CImporter::__DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+void CImporter::__DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr /*= NULL*/){
 	//Create not pin
 	if (ptArray->GetCount() >= 2){
 		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
-		pSh = new CShapeEllipse(rect);
+		CShape *pSh = new CShapeEllipse(rect);
 		pSh->Unselect();
+
+		//Add shape to array
+		if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
 	}
 }
 
-void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh){
+void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr /*= NULL*/){
 	//Create not pin
 	if (ptArray->GetCount() >= 2){
 		CRect rect = new CRect((*ptArray)[0], (*ptArray)[1]);
 		pSh = new CShapeEllipse(rect);
 		pSh->Unselect();
+
+		//Add shape to array
+		if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
 	}
 }
 
