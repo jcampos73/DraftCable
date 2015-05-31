@@ -48,7 +48,8 @@ protected:
 	static void __DoCreateArc(CArray<CPoint, CPoint>* ptArray, int arc = 1, CObArray* pobarrShapearr = NULL);
 	static void __DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr = NULL);
 	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
-	void __DoAddPolyline(CShape* pSh);
+
+	void __DoProcessPinOrientation(int direction, int l, CSize szPin, CPoint& offset, CPoint& offset0);
 	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
 };
 

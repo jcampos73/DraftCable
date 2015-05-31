@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Importer.h"
+#include "Tipography.h"
 
 #include "DraftDrawDoc.h"
 
@@ -251,37 +252,15 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 		CPoint ptOffset0 = ptOffset;
 
 		//Process orientation
-		switch (atoi(direction))
-		{
-			case importerPinW:
-				ptOffset = CPoint(-l, 0);
-				ptOffset0 = ptOffset;
-				ptOffset += CPoint(0, -sz.cy *.5);
-				break;
-			case importerPinE:
-				ptOffset = CPoint(l, 0);
-				ptOffset0 = ptOffset;
-				ptOffset += CPoint(0, -sz.cy *.5);
-				break;
-			case importerPinN:
-				ptOffset = CPoint(0, -l);
-				ptOffset0 = ptOffset;
-				ptOffset += CPoint(-sz.cx *.5, 0);
-				break;
-			case importerPinS:
-				ptOffset = CPoint(0, l);
-				ptOffset0 = ptOffset;
-				ptOffset += CPoint(-sz.cx *.5, 0);
-				break;
-		}
-
-		
+		__DoProcessPinOrientation(atoi(direction), l, sz, ptOffset, ptOffset0);
+	
 		//Create pin line
 		CArray<CPoint, CPoint> ptArray;
 		ptArray.Add(point0);
 		ptArray.Add(point0 + ptOffset0);
 		__DoCreatePolyline(&ptArray, pobarrShapearr);
 
+		//Check if it is a not pin
 		if (which == m_strWhichNotPin){
 			//Do create pin
 			ptArray.RemoveAll();
@@ -294,7 +273,7 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 		if (show == m_strShowNumberPin)
 		{
 			CShape* pSh = new CShapeLabel();
-			((CShapeLabel *)pSh)->Create(CRect(point0, point0), number, 10, FALSE);
+			((CShapeLabel *)pSh)->Create(CRect(point0, point0), number, AFX_FONT_NORMAL_DEFAULT_HEIGHT, FALSE);
 			((CShapeLabel *)pSh)->m_bResizeOnFirstDraw = TRUE;
 			//Add shape to array
 			if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
@@ -397,6 +376,33 @@ void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh,
 
 		//Add shape to array
 		if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
+	}
+}
+
+void CImporter::__DoProcessPinOrientation(int direction, int l, CSize sz, CPoint& offset, CPoint& offset0)
+{
+	switch (direction)
+	{
+	case importerPinW:
+		offset = CPoint(-l, 0);
+		offset0 = offset;
+		offset += CPoint(0, -sz.cy *.5);
+		break;
+	case importerPinE:
+		offset = CPoint(l, 0);
+		offset0 = offset;
+		offset += CPoint(0, -sz.cy *.5);
+		break;
+	case importerPinN:
+		offset = CPoint(0, -l);
+		offset0 = offset;
+		offset += CPoint(-sz.cx *.5, 0);
+		break;
+	case importerPinS:
+		offset = CPoint(0, l);
+		offset0 = offset;
+		offset += CPoint(-sz.cx *.5, 0);
+		break;
 	}
 }
 
