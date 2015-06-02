@@ -367,6 +367,16 @@ void CImporter::__DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CObArray* poba
 	}
 }
 
+void CImporter::__DoCreateNotPin(CPoint point1, CPoint point2, CObArray* pobarrShapearr /*= NULL*/){
+	//Create not pin
+	CRect rect = new CRect(point1,point2);
+	CShape *pSh = new CShapeEllipse(rect);
+	pSh->Unselect();
+
+	//Add shape to array
+	if (pobarrShapearr != NULL) pobarrShapearr->Add(pSh);
+}
+
 void CImporter::__DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr /*= NULL*/){
 	//Create not pin
 	if (ptArray->GetCount() >= 2){

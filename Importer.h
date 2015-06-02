@@ -47,6 +47,7 @@ protected:
 	static void __DoCreatePolyline(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr = NULL);
 	static void __DoCreateArc(CArray<CPoint, CPoint>* ptArray, int arc = 1, CObArray* pobarrShapearr = NULL);
 	static void __DoCreateNotPin(CArray<CPoint, CPoint>* ptArray, CObArray* pobarrShapearr = NULL);
+	static void __DoCreateNotPin(CPoint point1, CPoint point2, CObArray* pobarrShapearr = NULL);
 	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
 
 	void __DoProcessPinOrientation(int direction, int l, CSize szPin, CPoint& offset, CPoint& offset0);

@@ -16,6 +16,10 @@
 #define SCROLL_SIZE_PAGE 100		//Scroll size for page
 #define SCROLL_SIZE_LINE 10			//Scroll size for line
 
+#define UPDATE_HINT_NEWDOC				1
+#define UPDATE_HINT_REGION				2
+#define UPDATE_HINT_SHEET_SIZE_CHANGE	3
+#define UPDATE_HINT_SAVE_BMP			4
 
 class CDraftDrawView : public CFolderView
 {

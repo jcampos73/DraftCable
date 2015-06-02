@@ -3103,19 +3103,19 @@ void CDraftDrawView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	SetScrollSizes(MM_TEXT,pDoc->GetSize()/*CSize(1000,1000)*/,CSize(100,100),CSize(10,10));
 
 	//Sended when changing to or from edit part
-	switch(lHint){//!!!MAGIC NUMBER, in cases
-	case 1:
+	switch(lHint){
+	case UPDATE_HINT_NEWDOC:
 		RedrawWindow();
 		GetFolderFrame()->GetFolderTabCtrl().SelectItem(pDoc->GetSheet());
 		break;
-	case 2:
+	case UPDATE_HINT_REGION:
 		if(pHint&&pHint->IsKindOf(RUNTIME_CLASS(CRgn))){
 			CRgn *rgn=(CRgn *)pHint;
 
 			RedrawWindow(NULL,rgn);
 		}
 		break;
-	case 3:{
+	case UPDATE_HINT_SHEET_SIZE_CHANGE:{
 		//10/05/2005
 		//This implementation does not cope with the problem of placing shapes bigger than the sheet...
 		if(m_bmpCanvas1){
@@ -3160,7 +3160,7 @@ void CDraftDrawView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 
 		}break;
 
-	case 4:
+	case UPDATE_HINT_SAVE_BMP:
 
 		m_bSaveDC=TRUE;
 		break;
