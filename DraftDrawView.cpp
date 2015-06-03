@@ -104,6 +104,13 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 	int buffer2_offset_y=0;
 	BOOL bFlagTransfer = FALSE;
 
+	/*
+	CRect rectUpdate;
+	if (GetUpdateRect(NULL)){
+		GetUpdateRect(rectUpdate);
+		m_RectDraw.UnionRect(m_RectDraw, rectUpdate);
+	}*/
+
 	//04/06/2005
 	//Code to save drawing in a file.
 	CDC *pDCMemory=NULL;
@@ -3099,71 +3106,71 @@ void CDraftDrawView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 
-
-	SetScrollSizes(MM_TEXT,pDoc->GetSize()/*CSize(1000,1000)*/,CSize(100,100),CSize(10,10));
+	SetScrollSizes(MM_TEXT,pDoc->GetSize(),CSize(100,100),CSize(10,10));
 
 	//Sended when changing to or from edit part
 	switch(lHint){
-	case UPDATE_HINT_NEWDOC:
-		RedrawWindow();
-		GetFolderFrame()->GetFolderTabCtrl().SelectItem(pDoc->GetSheet());
-		break;
-	case UPDATE_HINT_REGION:
-		if(pHint&&pHint->IsKindOf(RUNTIME_CLASS(CRgn))){
-			CRgn *rgn=(CRgn *)pHint;
+		case UPDATE_HINT_NEWDOC:
+			RedrawWindow();
+			GetFolderFrame()->GetFolderTabCtrl().SelectItem(pDoc->GetSheet());
+			break;
 
-			RedrawWindow(NULL,rgn);
-		}
-		break;
-	case UPDATE_HINT_SHEET_SIZE_CHANGE:{
-		//10/05/2005
-		//This implementation does not cope with the problem of placing shapes bigger than the sheet...
-		if(m_bmpCanvas1){
+		case UPDATE_HINT_REGION:
+			if(pHint&&pHint->IsKindOf(RUNTIME_CLASS(CRgn))){
+				CRgn *rgn=(CRgn *)pHint;
 
-			delete(m_bmpCanvas1);
-		}
-		m_bmpCanvas1=new CBitmap();
+				RedrawWindow(NULL,rgn);
+			}
+			break;
 
-		//Prepare memory alocation
-		CSize size=pDoc->GetSize();
-		__int32 *Bits=new __int32[size.cx*size.cy];
-		memset(Bits,0xff,size.cx*size.cy*sizeof(__int32));
+		case UPDATE_HINT_SHEET_SIZE_CHANGE:{
+			//10/05/2005
+			//This implementation does not cope with the problem of placing shapes bigger than the sheet...
+			if(m_bmpCanvas1){
 
-		//Create bitmap
-		m_bmpCanvas1->CreateBitmap( size.cx, size.cy, 1, 32, Bits );
+				delete(m_bmpCanvas1);
+			}
+			m_bmpCanvas1=new CBitmap();
 
-		delete(Bits);
+			//Prepare memory alocation
+			CSize size=pDoc->GetSize();
+			__int32 *Bits=new __int32[size.cx*size.cy];
+			memset(Bits,0xff,size.cx*size.cy*sizeof(__int32));
 
-		pDC1->SelectObject(m_bmpCanvas1);
+			//Create bitmap
+			m_bmpCanvas1->CreateBitmap( size.cx, size.cy, 1, 32, Bits );
 
-		//2nd buffer
-		if(m_bmpCanvas2){
+			delete(Bits);
 
-			delete(m_bmpCanvas2);
-		}
-		m_bmpCanvas2=new CBitmap();
+			pDC1->SelectObject(m_bmpCanvas1);
 
-		//Prepare memory alocation
-		Bits=new __int32[size.cx*size.cy];
-		memset(Bits,0xff,size.cx*size.cy*sizeof(__int32));
+			//2nd buffer
+			if(m_bmpCanvas2){
 
-		//Create bitmap
-		m_bmpCanvas2->CreateBitmap( size.cx, size.cy, 1, 32, Bits );
+				delete(m_bmpCanvas2);
+			}
+			m_bmpCanvas2=new CBitmap();
 
-		delete(Bits);
+			//Prepare memory alocation
+			Bits=new __int32[size.cx*size.cy];
+			memset(Bits,0xff,size.cx*size.cy*sizeof(__int32));
 
-		pDC2->SelectObject(m_bmpCanvas2);
+			//Create bitmap
+			m_bmpCanvas2->CreateBitmap( size.cx, size.cy, 1, 32, Bits );
 
+			delete(Bits);
 
-		//Invalidate window
-		Invalidate();
+			pDC2->SelectObject(m_bmpCanvas2);
 
-		}break;
+			//Invalidate window
+			Invalidate();
 
-	case UPDATE_HINT_SAVE_BMP:
+			}
+			break;
 
-		m_bSaveDC=TRUE;
-		break;
+		case UPDATE_HINT_SAVE_BMP:
+			m_bSaveDC=TRUE;
+			break;
 	}
 	
 }
@@ -3180,12 +3187,8 @@ void CDraftDrawView::OnUpdateBtEditRack(CCmdUI *pCmdUI){
 
 void CDraftDrawView::OnSelectNet() 
 {
-	// TODO: Add your command handler code here
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-
-
-	
 
 	CShape *pSh;
 
@@ -3204,13 +3207,10 @@ void CDraftDrawView::OnSelectNet()
 		return;
 	}
 
-
 	//Track all cable length
 	//This loop should be transformed in wire iterators
 	//to be exported to the rest of the program
 	//==============================================================
-
-
 
 	for(i=0;i<2;i++){
 		CShape *pSh1=pSh;
@@ -3275,7 +3275,6 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 		brush.CreatePatternBrush(&bm);
 		//brush_prev=pDC->SelectObject(&brush);
 	}
-
 
 	CSize szDesign=pDoc->GetSize();
 

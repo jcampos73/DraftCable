@@ -20,6 +20,11 @@
 #define _DOCTYPE_RACK							1	//rack document type
 #define _DOCTYPE_PATCHPANEL						2	//patch panel document type
 
+#define UPDATE_HINT_NEWDOC						1
+#define UPDATE_HINT_REGION						2
+#define UPDATE_HINT_SHEET_SIZE_CHANGE			3
+#define UPDATE_HINT_SAVE_BMP					4
+
 //Display patch panel properties
 void SDisplayPatchPProp(UINT nID);
 void SDisplayPatchPProp(CString strID);

@@ -1918,7 +1918,7 @@ void CDraftDrawDoc::OnFileOpen()
 		if(!m_bFlagPartEdit)
 		ChangeSheet(0);
 
-		UpdateAllViews(NULL, 1);
+		UpdateAllViews(NULL, UPDATE_HINT_NEWDOC);
 	}
 	
 }
@@ -2827,7 +2827,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 				//SetupCollections(0);
 			}
 
-			UpdateAllViews(NULL,1);
+			UpdateAllViews(NULL, UPDATE_HINT_NEWDOC);
 			return TRUE;
 			break;
 

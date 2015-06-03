@@ -676,7 +676,7 @@ void CDraftDrawApp::OnEditUndo(){
 			pDDDoc->cmdDeque->m_nIndexCommQue--;
 		}
 
-		pDDDoc->UpdateAllViews(NULL,1);//update all views without a region (lHint=1)
+		pDDDoc->UpdateAllViews(NULL, UPDATE_HINT_NEWDOC);//update all views without a region (lHint=1)
 
 		// Update title (to add '*').
 		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)m_pMainWnd;
@@ -713,7 +713,7 @@ void CDraftDrawApp::OnEditRedo(){
 			pDDDoc->cmdDeque->m_nIndexCommQue++;
 		}
 
-		pDDDoc->UpdateAllViews(NULL,1);//update all views without a region (lHint=1)
+		pDDDoc->UpdateAllViews(NULL, UPDATE_HINT_NEWDOC);//update all views without a region (lHint=1)
 
 		// Update title (to add '*').
 		CMDIFrameWnd *pFrame = (CMDIFrameWnd*)m_pMainWnd;
@@ -835,6 +835,6 @@ void CDraftDrawApp::MyMRUFileHandler(UINT i)
 	//AfxMessageBox(strName);
 
 
-	GetActiveDocument()->UpdateAllViews(NULL, 1);
+	GetActiveDocument()->UpdateAllViews(NULL, UPDATE_HINT_NEWDOC);
 
 }
