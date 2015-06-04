@@ -1694,7 +1694,7 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		while(pSh){
 			POSITION pos = m_ObListSel.Find(pSh);
-			if (pSh->IsSelected()//(pSh->m_Mode == _DRAFTDRAW_MODE_SEL)
+			if (pSh->IsSelected()
 				|| (pSh->m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType==_TOOLTYPECHAIN_DRAFTCABLE)
 				){
 				
@@ -1731,24 +1731,7 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 
 				rect.NormalizeRect();
 
-				//debug
-				if(rect.IsRectEmpty()){
-					int i=0;
-				}
-
-				//Inflate update rectangle
-				rect.InflateRect(DCABLE_GRIDX_DEFAULT*4,DCABLE_GRIDY_DEFAULT*4);//MAGIC NUMBER
-				
-				//Intersect with sheet
-				rect.IntersectRect(rect,rcSheet);
-
-				//debug
-				if(rect.IsRectEmpty()){
-				//	rect.InflateRect(10,10);//this line ensures actualization of sizing vert & horz lines
-				}
-
-				//Add to update rectangle
-				rect_union.UnionRect(rect_union,rect);
+				_DoAddToUpdateRect(rect_union, rect);
 			}
 
 			//Iterate next shape
@@ -1768,39 +1751,22 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 		pSh=pShMove;
 
 		//Calculate update area
-
-		CRect rect=rect_union;//pSh->m_Rect;
-		//rect.NormalizeRect();
-
-		//debug
-		if(rect.IsRectEmpty()){
-			int i=0;
-		}
+		CRect rect=rect_union;
 
 		rect.UnionRect(rect,m_RectPrev);
 
 		//Scale update rectangle to current coordinates
 		CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
-		//CPoint point1=rect.TopLeft();
 		CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
 
 		//rect=CRect(point1,size);
 		m_RectDraw=rect;
 		m_RectPrev=rect_union;//keep last union rect
 
-//#define DCABLE_ONMOUSEMOVE_ERASING_ENABLE
-#ifdef DCABLE_ONMOUSEMOVE_ERASING_ENABLE
-		InvalidateRect(CRect(point1,size),TRUE);
-		//RedrawWindow(CRect(point1,size));
-#else
 		InvalidateRect(CRect(point1,size),FALSE);
-#endif
 
-		/*RedrawWindow();*/
 	}//End if something is being
 	//=======================================================
-
-	/*}*/
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
@@ -4196,6 +4162,25 @@ BOOL CDraftDrawView::_DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd)
 	//Add to update rectangle
 	rectUpdate.UnionRect(rectUpdate, rectToAdd);
 	return FALSE;
+}
+
+void CDraftDrawView::_SetUpdateRect(CRect rectUpdate)
+{
+	CRect rect = rectUpdate;
+
+	rect.UnionRect(rect, m_RectPrev);
+
+	//Scale update rectangle to current coordinates
+	CPoint point1 = CPoint(rect.TopLeft().x / m_xScale, rect.TopLeft().y / m_yScale) - GetScrollPosition();
+	CSize size = CSize(rect.Width() / m_xScale, rect.Height() / m_yScale);
+
+	m_RectDraw = rect;
+	m_RectPrev = rectUpdate;//keep last union rect
+}
+
+CRect CDraftDrawView::_GetUpdateRect()
+{
+	return m_RectDraw;
 }
 
 CRect CDraftDrawView::_GetScaledUpdateRect(CRect rect)

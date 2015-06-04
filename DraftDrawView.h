@@ -134,6 +134,8 @@ protected:
 	void _DoCalculateWindowViewPortExtend(CSize viewport, CRect window);
 	void _DoZoom(CShape* pSh);
 	BOOL _DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd);
+	void _SetUpdateRect(CRect rectToAdd);
+	CRect _GetUpdateRect();
 	CRect _GetScaledUpdateRect(CRect rect);
 
 	void _AddToSelectedArray(CShape *pSh);
