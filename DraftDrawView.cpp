@@ -1648,6 +1648,7 @@ void CDraftDrawView::GetSheetArea(CRect& rcSheet)
 void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point) 
 {
 	//Local variables
+	int index;
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	CSize m_szGrid=pDoc->m_szGrid;
@@ -1665,16 +1666,18 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	//MAPPING ENGINE: scale and snap
 	//=======================================================
 	_DoMappingEngine(point);
-
 	//=======================================================
+
 	//Check if there is something to move
 	//This block will be possibly deleted
 	//=======================================================
+	/*
 	int index;
 	pSh=(CShape *)pDoc->LastObject(index);
 	if(pSh==NULL){
 		return;
 	}
+	*/
 	//=======================================================
 
 	//Calculate sheet area
@@ -1748,23 +1751,7 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	//pShMove is used as flag only
 	if(pShMove>0){
 
-		pSh=pShMove;
-
-		//Calculate update area
-		CRect rect=rect_union;
-
-		rect.UnionRect(rect,m_RectPrev);
-
-		//Scale update rectangle to current coordinates
-		CPoint point1=CPoint(rect.TopLeft().x/m_xScale,rect.TopLeft().y/m_yScale)-GetScrollPosition();
-		CSize size=CSize(rect.Width()/m_xScale,rect.Height()/m_yScale);
-
-		//rect=CRect(point1,size);
-		m_RectDraw=rect;
-		m_RectPrev=rect_union;//keep last union rect
-
-		InvalidateRect(CRect(point1,size),FALSE);
-
+		_SetUpdateRect(rect_union);
 	}//End if something is being
 	//=======================================================
 
@@ -4176,6 +4163,8 @@ void CDraftDrawView::_SetUpdateRect(CRect rectUpdate)
 
 	m_RectDraw = rect;
 	m_RectPrev = rectUpdate;//keep last union rect
+
+	InvalidateRect(CRect(point1, size), FALSE);
 }
 
 CRect CDraftDrawView::_GetUpdateRect()
