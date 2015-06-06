@@ -244,6 +244,12 @@
     <ClCompile Include="DialogShell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SelectionTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShArrayIterator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DraftDraw.rc">
@@ -480,6 +486,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DialogShell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbtsractTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectionTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShArrayIterator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

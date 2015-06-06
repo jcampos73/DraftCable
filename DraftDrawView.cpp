@@ -1064,15 +1064,6 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 				){
 
 				pSh->OnLButtonDown(nFlags, point);
-
-				//Add to selected shapes array
-				/*
-				if (pSh->IsSelected()){
-					POSITION pos = m_ObListSel.Find(pSh);
-					if (pos == NULL)
-						m_ObListSel.AddTail(pSh);
-				}
-				*/
 				
 				if (pSh->m_Mode == _DRAFTDRAW_MODE_SEL){
 
@@ -1128,11 +1119,6 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 
 				//Intersect with sheet
 				//rect.IntersectRect(rect, rcSheet);
-
-				//debug
-				if (rect.IsRectEmpty()){
-					//	rect.InflateRect(10,10);//this line ensures actualization of sizing vert & horz lines
-				}
 
 				//Add to update rectangle
 				rect_union.UnionRect(rect_union, rect);

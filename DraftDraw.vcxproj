@@ -162,6 +162,8 @@
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Markup.cpp" />
     <ClCompile Include="RegExp.cpp" />
+    <ClCompile Include="SelectionTool.cpp" />
+    <ClCompile Include="ShArrayIterator.cpp" />
     <ClCompile Include="StringEx.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
@@ -505,12 +507,15 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AbtsractTool.h" />
     <ClInclude Include="DialogShell.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Markup.h" />
     <ClInclude Include="RegExp.h" />
+    <ClInclude Include="SelectionTool.h" />
+    <ClInclude Include="ShArrayIterator.h" />
     <ClInclude Include="StringEx.h" />
     <ClInclude Include="SvgioFile.h" />
     <ClInclude Include="XMLArchive.h" />
