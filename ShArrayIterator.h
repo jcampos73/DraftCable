@@ -31,7 +31,7 @@ class CShArrayIterator : public std::iterator<std::input_iterator_tag, CShArray>
 private:
 	CShArray* m_pShArray;
 public:
-	CShArrayIterator(CShArray* shArray) { m_pShArray = shArray; }
+	CShArrayIterator(CShArray* shArray): m_pShArray(shArray) {/* m_pShArray = shArray;*/ }
 	CShArrayIterator();
 	~CShArrayIterator();
 };
