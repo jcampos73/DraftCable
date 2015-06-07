@@ -63,11 +63,14 @@ CURSOR_ZOOM_PLUS,CURSOR_ZOOM_MINUS,CURSOR_ROTATE
 #define _DRAFTCABLE_DOC_DEFAULT_JUNCTION		"Standard.junction.ddw"
 
 //Macro
+//Not used delete
+/*
 #define GET_SHAPE(pDoc,Shape){\
 		if(pDoc->m_pSh) delete(pDoc->m_pSh);\
 		pDoc->m_pSh=new(Shape);\
 		pDoc->m_pSh->m_pCursorArray=pDoc->m_CursorArray;\
 }
+*/
 
 extern CString afxWinwordPath;
 
