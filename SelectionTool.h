@@ -9,5 +9,7 @@ public:
 	virtual void MoveTo(CPoint point);
 	virtual void MouseDown(CPoint point);
 	virtual void MouseUp(CPoint point);
+private:
+	CObList* m_pObList;
 };
 
