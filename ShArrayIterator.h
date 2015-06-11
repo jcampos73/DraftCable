@@ -121,24 +121,6 @@ private:
 
 };
 
-class myCObject : public CObject
-{
-public:
-	myCObject(int val)
-	{
-		x = val;
-	}
-	int x;
-};
-
-struct Container : public CObList
-{
-	//Container() : CObList(){};
-	//Container(CObList &lst) : CObList(lst){};
-	myCObject*       GetNext(POSITION& rPosition)       { return dynamic_cast<myCObject*>(CObList::GetNext(rPosition)); }
-	myCObject const* GetNext(POSITION& rPosition) const { return dynamic_cast<const myCObject*>(CObList::GetNext(rPosition)); }
-};
-
 class ListIter : public BaseMFCIter < const CObject*, CObList, POSITION  >
 {
 public:

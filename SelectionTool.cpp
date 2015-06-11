@@ -28,11 +28,12 @@ void CSelectionTool::MouseDown(CPoint point)
 	//1.Iterate all shapes
 	for (ListIter it = ListIter(m_pObList); it != ListIter(); ++it)
 	{
-		//std::cout << "Newfangled: " << it->x << std::endl;
+		
 	}
 
 
 	//If no shape selected start a selection rectangle
+	
 }
 
 void CSelectionTool::MouseUp(CPoint point)
