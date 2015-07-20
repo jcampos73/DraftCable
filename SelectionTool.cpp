@@ -4,12 +4,8 @@
 
 CSelectionTool::CSelectionTool()
 {
-	//Container lst(*m_pObList);
-	//ListIter m_pIter(m_pObList);
-
 
 }
-
 
 CSelectionTool::~CSelectionTool()
 {
@@ -17,11 +13,16 @@ CSelectionTool::~CSelectionTool()
 
 void CSelectionTool::MoveTo(CPoint point)
 {
-
+	//If selection rectangle is being drawn...
+	if (m_Status == ddcStatusCreatingSelectionRect)
+	{
+		//Just call external method to inflate rectangle
+	}
 }
 
 void CSelectionTool::MouseDown(CPoint point)
 {
+	int status = ddcStatusNothingSelected;
 	//Select shape in point
 	//We need a iterator to go though all the shapes in that region of the screen
 
@@ -31,12 +32,17 @@ void CSelectionTool::MouseDown(CPoint point)
 		
 	}
 
-
 	//If no shape selected start a selection rectangle
-	
+	if (status == ddcStatusNothingSelected)
+	{
+		status = ddcStatusCreatingSelectionRect;
+	}
 }
 
 void CSelectionTool::MouseUp(CPoint point)
 {
+	if (m_Status == ddcStatusCreatingSelectionRect)
+	{
 
+	}
 }

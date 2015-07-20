@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DialogShell.cpp" />
+    <ClCompile Include="PenTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
     <ClCompile Include="Importer.cpp" />
@@ -509,6 +510,7 @@
   <ItemGroup>
     <ClInclude Include="AbtsractTool.h" />
     <ClInclude Include="DialogShell.h" />
+    <ClInclude Include="PenTool.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />
