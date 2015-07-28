@@ -27,10 +27,17 @@ void CSelectionTool::MouseDown(CPoint point)
 	//We need a iterator to go though all the shapes in that region of the screen
 
 	//1.Iterate all shapes
-	for (ListIter it = ListIter(m_pObList); it != ListIter(); ++it)
+	//for (ListIter it = ListIter(m_pObList); it != ListIter(); ++it)
+	ListIter it = ListIter(m_pObList);
+	do
 	{
-		
+		//Test if shape is selected
+		//CShape *pSh = (CShape *)it;
+		//it->OnLButtonDown(0, point);
+		//Next shape
+		++it;
 	}
+	while(it != ListIter());
 
 	//If no shape selected start a selection rectangle
 	if (status == ddcStatusNothingSelected)
