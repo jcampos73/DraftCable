@@ -253,6 +253,9 @@
     <ClCompile Include="PenTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AbstractTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DraftDraw.rc">
@@ -491,9 +494,6 @@
     <ClInclude Include="DialogShell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AbtsractTool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SelectionTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -501,6 +501,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PenTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

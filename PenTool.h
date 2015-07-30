@@ -1,5 +1,6 @@
 #pragma once
-class CPenTool
+#include "AbstractTool.h"
+class CPenTool : public CAbstractTool
 {
 public:
 	CPenTool();

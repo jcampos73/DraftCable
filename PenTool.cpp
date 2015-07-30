@@ -18,7 +18,8 @@ void CPenTool::MoveTo(CPoint point)
 
 void CPenTool::MouseDown(CPoint point)
 {
-
+	//Deselect all
+	DeselectAll();
 }
 
 void CPenTool::MouseUp(CPoint point)

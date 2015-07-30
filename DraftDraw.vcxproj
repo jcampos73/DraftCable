@@ -156,6 +156,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AbstractTool.cpp" />
     <ClCompile Include="DialogShell.cpp" />
     <ClCompile Include="PenTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
@@ -508,7 +509,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AbtsractTool.h" />
+    <ClInclude Include="AbstractTool.h" />
     <ClInclude Include="DialogShell.h" />
     <ClInclude Include="PenTool.h" />
     <ClInclude Include="Point3D.h" />

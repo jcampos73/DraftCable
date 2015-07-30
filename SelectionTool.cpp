@@ -6,7 +6,6 @@
 
 CSelectionTool::CSelectionTool()
 {
-
 }
 
 CSelectionTool::~CSelectionTool()
@@ -44,14 +43,7 @@ void CSelectionTool::MouseDown(CPoint point)
 			}
 			else{
 				//Deselect all
-				POSITION pos1 = m_pObListSel->GetHeadPosition();
-				while (pos1 != NULL){
-					//Deselect shape
-					CShape* pSh = (CShape*)m_pObListSel->GetNext(pos1);
-					pSh->Unselect();
-				}
-				//Add to selected
-				m_pObListSel->RemoveAll();
+				DeselectAll();
 				m_pObListSel->AddHead(pSh);
 			}
 		}

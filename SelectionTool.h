@@ -1,5 +1,5 @@
 #pragma once
-#include "AbtsractTool.h"
+#include "AbstractTool.h"
 class CSelectionTool : public CAbstractTool
 {
 public:
@@ -12,7 +12,6 @@ public:
 private:
 	enum Status { ddcStatusNothingSelected = 0, ddcStatusSomeSelected, ddcStatusSomeAlreadySelected, ddcStatusCreatingSelectionRect } m_Status;
 	CObList* m_pObList;
-	CObList* m_pObListSel;
 	CRect m_rect;
 };
 
