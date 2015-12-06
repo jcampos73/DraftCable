@@ -93,3 +93,4 @@ void CSelectionTool::MouseUp(CPoint point)
 		m_Status = static_cast<Status>(status);
 	}
 }
+

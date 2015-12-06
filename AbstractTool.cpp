@@ -9,6 +9,10 @@ CAbstractTool::~CAbstractTool()
 {
 }
 
+void CAbstractTool::MoveTo(CPoint point) {}
+void CAbstractTool::MouseDown(CPoint point) {}
+void CAbstractTool::MouseUp(CPoint point) {}
+
 void CAbstractTool::DeselectAll(){
 	//Deselect all
 	POSITION pos = m_pObListSel->GetHeadPosition();
