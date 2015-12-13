@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DraftDraw", "DraftDraw.vcxproj", "{85E30145-5ADC-4CC6-81F1-F50FD26D6251}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "DraftCable1.0", "Setup\DraftCable1.0\DraftCable1.0.vdproj", "{0112A0D3-FFB4-4BA0-A54C-FE5BBF954BD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{85E30145-5ADC-4CC6-81F1-F50FD26D6251}.Debug|Win32.Build.0 = Debug|Win32
 		{85E30145-5ADC-4CC6-81F1-F50FD26D6251}.Release|Win32.ActiveCfg = Release|Win32
 		{85E30145-5ADC-4CC6-81F1-F50FD26D6251}.Release|Win32.Build.0 = Release|Win32
+		{0112A0D3-FFB4-4BA0-A54C-FE5BBF954BD9}.Debug|Win32.ActiveCfg = Debug
+		{0112A0D3-FFB4-4BA0-A54C-FE5BBF954BD9}.Debug|Win32.Build.0 = Debug
+		{0112A0D3-FFB4-4BA0-A54C-FE5BBF954BD9}.Release|Win32.ActiveCfg = Release
+		{0112A0D3-FFB4-4BA0-A54C-FE5BBF954BD9}.Release|Win32.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

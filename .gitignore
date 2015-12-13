@@ -138,6 +138,10 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 
+#Installers
+*.msi
+*.exe
+
 # =========================
 # Windows detritus
 # =========================

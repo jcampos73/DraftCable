@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="show_book.xsl"?>-->
+<!--<!DOCTYPE catalog SYSTEM "catalog.dtd">-->
+<!--catalog last updated 2000-11-01-->
+<catalog xmlns="">
+  <cable id="">
+     <cable_num></cable_num>
+     <cable_tipo></cable_tipo>
+     <pj_de></pj_de>
+     <de_conector></de_conector>
+     <pj_a></pj_a>
+     <a_conector></a_conector>
+     <de_equipo></de_equipo>
+     <a_equipo></a_equipo>
+     <de_situadoen></de_situadoen>
+     <a_situadoen></a_situadoen>
+     <de_conectortipo></de_conectortipo>
+     <a_conectortipo></a_conectortipo>
+     <clongi></clongi>
+     <cpar></cpar>
+     <wire>
+       <pj_de></pj_de>
+       <pin_de></pin_de>
+       <ref_hilo></ref_hilo>
+       <pj_a></pj_a>
+       <funcion></funcion>
+       <pin_a></pin_a>
+     </wire>
+  </cable>
+</catalog>

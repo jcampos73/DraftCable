@@ -429,10 +429,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			SetCursor(m_pCursorArray[8]);
 		}
 		else if(rect.IsRectEmpty()==TRUE){
-/*
-			CRect rect=m_Rect;
-			rect.NormalizeRect();
-*/
+
 			CPoint point1=rect.TopLeft();
 			CPoint point2=rect.BottomRight();
 

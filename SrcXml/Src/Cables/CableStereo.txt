@@ -1,0 +1,4 @@
+L; ; LEFT; L
+R; ; RIGHT; R
+GND; ; GROUND; GND
+

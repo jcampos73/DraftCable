@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<menus>
+   <summary>
+      <heading></heading> 
+      <subhead></subhead> 
+      <description></description> 
+   </summary>
+   <data>
+      <convencional>
+	  	 <menuitem>
+         	<label>Radiologia convencional</label>
+		 	<titulo>Sala convencional con CR</titulo>
+			<img>imagen</img>
+         	<submenu number="1" url="">
+				<label>Caracteristica 1</label>
+			</submenu>
+         	<submenu number="2" url="">
+				<label>Caracteristica 2</label>
+			</submenu>
+         	<submenu number="3" url="">
+				<label>Caracteristica 3</label>
+			</submenu>
+		 </menuitem>
+      </convencional>
+      <eidos>
+	  	 <menuitem>	  
+         	<label>Radiologia digital</label>
+		 	<titulo>Sala Eidos 3000</titulo>
+			<img>imagen</img>
+         	<submenu number="1" url=""><label>Caracteristica 1</label></submenu> 
+	  	 </menuitem>	  			
+      </eidos>
+      <arcos>
+	  	 <menuitem>	  
+         	<label>Arcos en C</label>
+		 	<titulo>Arcos en C</titulo>
+			<img>imagen</img>
+         	<submenu number="1" url=""><label>Caracteristica 1</label></submenu> 
+	  	 </menuitem>	  			
+      </arcos>
+      <telemandos>
+	  	 <menuitem>	  
+         	<label>Telemandos</label>
+		 	<titulo>Telemandos</titulo>
+			<img>imagen</img>
+         	<submenu number="1" url="">Caracteristica 1</submenu> 
+	  	 </menuitem>	  			
+      </telemandos>
+      <pacs>
+	  	 <menuitem>	  
+         	<label>Hospital Digital</label>
+		 	<titulo>Sistema PACS-Web</titulo>
+			<img>images/pacs.bmp</img>
+         	<submenu number="1" url="">
+				<label>Protocolo DICOM 3.0 soportado</label>
+			</submenu>
+         	<submenu number="2" url="">
+				<label>Caracteristica 2</label>
+			</submenu>
+         	<submenu number="3" url="">
+				<label>Caracteristica 3</label>
+			</submenu> 
+	  	 </menuitem>	  			
+      </pacs>	 	  	  
+      <ris>
+	  	 <menuitem>	  
+         	<label>Hospital Digital</label>
+		 	<titulo>Sistema RIS</titulo>
+			<img>images/ris.bmp</img>
+         	<submenu number="1" url="">
+				<label>Modelado completo del trabajo de una unidad de radiolog&#237;a</label>
+			</submenu>
+         	<submenu number="2" url="">
+				<label>Completamente integrado con sistema PACS y sistema de reconocimiento vocal</label>
+			</submenu>
+         	<submenu number="3" url="">
+				<label>Posibilidad de integracion con otros sistemas de gestion HIS</label>
+			</submenu>
+	  	 </menuitem>	  			
+      </ris>
+      <dicom>
+	  	 <menuitem>	  
+         	<label>Hospital Digital</label>
+		 	<titulo>DICOM</titulo>
+			<img>imagen</img>
+         	<submenu number="1" url="">Caracteristica 1</submenu> 
+	  	 </menuitem>	  			
+      </dicom>
+	</data>
+</menus>
