@@ -2871,7 +2871,7 @@ BOOL CDraftDrawView::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERI
 	return CScrollView::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
-void CDraftDrawView::OnTimer(UINT nIDEvent) 
+void CDraftDrawView::OnTimer(UINT_PTR nIDEvent) 
 {
 	// TODO: Add your message handler code here and/or call default
 	KillTimer(1);

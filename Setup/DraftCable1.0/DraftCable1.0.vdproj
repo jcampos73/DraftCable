@@ -394,15 +394,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.12.0.x86"
                     {
-                    "Name" = "8:.NET Framework 2.0"
-                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.8.0.x86"
-                    {
-                    "Name" = "8:Visual C++ Runtime Libraries (x86)"
-                    "ProductCode" = "8:Microsoft.Visual.C++.8.0.x86"
+                    "Name" = "8:Visual C++ 2013 Runtime Libraries (x86)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.12.0.x86"
                     }
                 }
             }
@@ -431,6 +426,43 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.12.0.x86"
+                    {
+                    "Name" = "8:Visual C++ 2013 Runtime Libraries (x86)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.12.0.x86"
+                    }
+                }
+            }
+        }
+        "Release64"
+        {
+        "DisplayName" = "8:Release64"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Release64\\DraftCable1.0.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.12.0.x64"
+                    {
+                    "Name" = "8:Visual C++ 2013 Runtime Libraries (x64)"
+                    "ProductCode" = "8:Microsoft.Visual.C++.12.0.x64"
+                    }
                 }
             }
         }
@@ -456,7 +488,7 @@
         {
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_002B73EC07994EEE895A55C6A5C0F575"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableAUC.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableAUC.txt"
             "TargetName" = "8:CableAUC.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -476,7 +508,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_09B5B001FDED412D8DC0F72F7D9E98A8"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcXml\\Src2\\gen_html2.exe"
+            "SourcePath" = "8:..\\..\\SrcXml\\Src2\\gen_html2.exe"
             "TargetName" = "8:gen_html2.exe"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -496,7 +528,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A7133DA5F324D8986330A7941C7A600"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Cable232carga2.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Cable232carga2.txt"
             "TargetName" = "8:Cable232carga2.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -516,7 +548,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A780C63C6074B71A7E25220524E458A"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcXml\\Src2\\wiring.xsl"
+            "SourcePath" = "8:..\\..\\SrcXml\\Src2\\wiring.xsl"
             "TargetName" = "8:wiring.xsl"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -536,7 +568,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0AFA8FA8152E4EED959200A47819539C"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\ocx\\MSBIND.DLL"
+            "SourcePath" = "8:..\\..\\ocx\\MSBIND.DLL"
             "TargetName" = "8:MSBIND.DLL"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -556,7 +588,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0B0257AE6F434181A58E776A29FAC812"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\TB.txt"
+            "SourcePath" = "8:..\\..\\Connector\\TB.txt"
             "TargetName" = "8:TB.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -576,7 +608,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0E4CB4870DC54AD3862F436EECB55F56"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\plantilla_cabl1.doc"
+            "SourcePath" = "8:..\\..\\plantilla_cabl1.doc"
             "TargetName" = "8:plantilla_cabl1.doc"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -596,7 +628,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1C39C21BE43441B3BB282F64A4458A8E"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CablePS2.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CablePS2.txt"
             "TargetName" = "8:CablePS2.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -616,7 +648,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_20FF2977C8A54F7CB906708A19460458"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableUSB.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableUSB.txt"
             "TargetName" = "8:CableUSB.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -636,7 +668,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_22584BBF449F469F92E99630293FD7DC"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Cable516.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Cable516.txt"
             "TargetName" = "8:Cable516.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -656,7 +688,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_276E4D2FEEDC4508ADE4176E04CBCE79"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\AC.txt"
+            "SourcePath" = "8:..\\..\\Connector\\AC.txt"
             "TargetName" = "8:AC.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -676,7 +708,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C9A014510C54934A9B42ACA83E35D92"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\ocx\\MSDATGRD.OCX"
+            "SourcePath" = "8:..\\..\\ocx\\MSDATGRD.OCX"
             "TargetName" = "8:MSDATGRD.OCX"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -696,7 +728,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2E247354B49A44E6A558885A48C6C951"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\UtilsCPP.dll"
+            "SourcePath" = "8:..\\..\\UtilsCPP.dll"
             "TargetName" = "8:UtilsCPP.dll"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -716,7 +748,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_34293EDFE97444C397B3E9E4C83F135E"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\ocx\\MSADODC.OCX"
+            "SourcePath" = "8:..\\..\\ocx\\MSADODC.OCX"
             "TargetName" = "8:MSADODC.OCX"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -736,7 +768,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3FECA10659A44C62B10FF0F1574EDF9A"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcXml\\Src2\\bridges.xsl"
+            "SourcePath" = "8:..\\..\\SrcXml\\Src2\\bridges.xsl"
             "TargetName" = "8:bridges.xsl"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -756,7 +788,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4051CCEDC10A4DC8B376AEB59F40DB60"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\hlp\\DraftCable.chm"
+            "SourcePath" = "8:..\\..\\hlp\\DraftCable.chm"
             "TargetName" = "8:DraftCable.chm"
             "Tag" = "8:"
             "Folder" = "8:_AB249B6B350344F7BB228FF9B19F24C1"
@@ -776,7 +808,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_40A12A6B8BAB4B54BF8D562E3C6BCAEB"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\MONO_TELE35.txt"
+            "SourcePath" = "8:..\\..\\Connector\\MONO_TELE35.txt"
             "TargetName" = "8:MONO_TELE35.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -796,7 +828,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4109DFE169D34CC89BE5DB076C4E0965"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\MisProyectos\\RisPacsStd\\RPStd28Sheet1.dd1"
+            "SourcePath" = "8:..\\..\\MisProyectos\\RisPacsStd\\RPStd28Sheet1.dd1"
             "TargetName" = "8:RPStd28Sheet1.dd1"
             "Tag" = "8:"
             "Folder" = "8:_528B3D1020704F8182E92BB5E331B803"
@@ -816,7 +848,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44C469C2C9114D5DB58BB1E7E33209E3"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Lib\\gdiplus.dll"
+            "SourcePath" = "8:..\\..\\Lib\\gdiplus.dll"
             "TargetName" = "8:gdiplus.dll"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -836,7 +868,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_524D2034A65745DD81E852645D429887"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\SUCKO.txt"
+            "SourcePath" = "8:..\\..\\Connector\\SUCKO.txt"
             "TargetName" = "8:SUCKO.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -856,7 +888,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_54678A07457A451A857994400475B8F6"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\STEREO_TELE35.txt"
+            "SourcePath" = "8:..\\..\\Connector\\STEREO_TELE35.txt"
             "TargetName" = "8:STEREO_TELE35.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -876,7 +908,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_56067265FABD46CE8FA26F2D045C98AA"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Wire.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Wire.txt"
             "TargetName" = "8:Wire.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -896,7 +928,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_589E0EDFB5A944948641CF067C4EAD27"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\CableAUC.txt"
+            "SourcePath" = "8:..\\..\\Connector\\CableAUC.txt"
             "TargetName" = "8:CableAUC.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -916,7 +948,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5E7F82874DD2473298479059A9D6A769"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableVGA.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableVGA.txt"
             "TargetName" = "8:CableVGA.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -936,7 +968,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_67D14FC695EB457B9B7B4A529CB5A99D"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\DIBAPIDLL.dll"
+            "SourcePath" = "8:..\\..\\DIBAPIDLL.dll"
             "TargetName" = "8:DIBAPIDLL.dll"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -956,7 +988,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A9A5E7CAB974F9BAB3E0A33B47657AB"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\RCA.txt"
+            "SourcePath" = "8:..\\..\\Connector\\RCA.txt"
             "TargetName" = "8:RCA.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -976,7 +1008,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_73D8107D174549C1985450B9CE1C0A80"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcXml\\Src2\\wiring.xml"
+            "SourcePath" = "8:..\\..\\SrcXml\\Src2\\wiring.xml"
             "TargetName" = "8:wiring.xml"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -996,7 +1028,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7A3616928611423489863D79B64C14AD"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\db\\dc.mdb"
+            "SourcePath" = "8:..\\..\\db\\dc.mdb"
             "TargetName" = "8:dc.mdb"
             "Tag" = "8:"
             "Folder" = "8:_19CC2DF7601244B0BF4744B8B5EE2543"
@@ -1016,7 +1048,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_811CEF9511834B569B785863E679BDD3"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\MisProyectos\\Disco\\Disco005.dd1"
+            "SourcePath" = "8:..\\..\\MisProyectos\\Disco\\Disco005.dd1"
             "TargetName" = "8:Disco005.dd1"
             "Tag" = "8:"
             "Folder" = "8:_7AFB29617F3F42DDA22BBF902B374A36"
@@ -1036,7 +1068,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8271F0E15AD948258956C22BEE8F5795"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Cable232.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Cable232.txt"
             "TargetName" = "8:Cable232.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1056,7 +1088,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_85B305DF1B844ADB8AC85696F3CF90FE"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableStereo.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableStereo.txt"
             "TargetName" = "8:CableStereo.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1076,7 +1108,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_87C711927FEF463ABF6F9973C381D3D6"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\RF_TV.txt"
+            "SourcePath" = "8:..\\..\\Connector\\RF_TV.txt"
             "TargetName" = "8:RF_TV.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1096,7 +1128,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8852BD2539454CDEBDF314593CA14A83"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcXml\\Src2\\bridges.xml"
+            "SourcePath" = "8:..\\..\\SrcXml\\Src2\\bridges.xml"
             "TargetName" = "8:bridges.xml"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1116,7 +1148,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A305DE26CE64B44811058D95E268E7E"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\WIRE.txt"
+            "SourcePath" = "8:..\\..\\Connector\\WIRE.txt"
             "TargetName" = "8:WIRE.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1136,7 +1168,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A9051461B094160BAEBEA47EBC9FDAC"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Release\\DraftCable.exe"
+            "SourcePath" = "8:..\\..\\Release\\DraftCable.exe"
             "TargetName" = "8:DraftCable.exe"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1156,7 +1188,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8DD5ECEDD57B4A3A86B0DE22DEDE3500"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableAud4H16P.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableAud4H16P.txt"
             "TargetName" = "8:CableAud4H16P.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1176,7 +1208,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_95922982842C4C61A7DB0228C10A0F26"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\Logical.txt"
+            "SourcePath" = "8:..\\..\\Connector\\Logical.txt"
             "TargetName" = "8:Logical.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1196,7 +1228,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_996F9EA8BC144A05BA5B937D4EDD407E"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Cable232carga.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Cable232carga.txt"
             "TargetName" = "8:Cable232carga.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1216,7 +1248,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A07B7ED330C548A4B692792D5C78AE49"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\SrcBas\\UtilsVB\\UtilsVB.dll"
+            "SourcePath" = "8:..\\..\\SrcBas\\UtilsVB\\UtilsVB.dll"
             "TargetName" = "8:UtilsVB.dll"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1236,7 +1268,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7918A02DFBA46049D2D7336398EAAB4"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Release.txt"
+            "SourcePath" = "8:..\\..\\Release.txt"
             "TargetName" = "8:Release.txt"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1256,7 +1288,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7C02EF4B48E40CBB908CC18E075AF0D"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\Cable220Vac.txt"
+            "SourcePath" = "8:..\\..\\Cables\\Cable220Vac.txt"
             "TargetName" = "8:Cable220Vac.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1276,7 +1308,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8077CE140A5459ABA6CEA39AC83129E"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\plantilla_puent.doc"
+            "SourcePath" = "8:..\\..\\plantilla_puent.doc"
             "TargetName" = "8:plantilla_puent.doc"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1296,7 +1328,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B87CA4C3DEF44F0AA1CFCCAE9EF63942"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\MisProyectos\\RisPacsStd\\RPStd28Sheet2.dd1"
+            "SourcePath" = "8:..\\..\\MisProyectos\\RisPacsStd\\RPStd28Sheet2.dd1"
             "TargetName" = "8:RPStd28Sheet2.dd1"
             "Tag" = "8:"
             "Folder" = "8:_528B3D1020704F8182E92BB5E331B803"
@@ -1316,7 +1348,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA4E601DD9AC4CF0B31E3A6F3864C9DE"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableMono.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableMono.txt"
             "TargetName" = "8:CableMono.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1336,7 +1368,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BED03DDD676C4EC5ADD44F6CAA987AD9"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\DC_JACK.txt"
+            "SourcePath" = "8:..\\..\\Connector\\DC_JACK.txt"
             "TargetName" = "8:DC_JACK.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1356,7 +1388,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BEE414E19EA94FB2939872958A02CE05"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\SCART.txt"
+            "SourcePath" = "8:..\\..\\Connector\\SCART.txt"
             "TargetName" = "8:SCART.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1376,7 +1408,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C067D7B668CF4CE39DF86C2F6005D29F"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\RJ45_516.txt"
+            "SourcePath" = "8:..\\..\\Connector\\RJ45_516.txt"
             "TargetName" = "8:RJ45_516.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1396,7 +1428,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D69ADFB6B9B04DCE9087AE9AB47118CA"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\PS2.txt"
+            "SourcePath" = "8:..\\..\\Connector\\PS2.txt"
             "TargetName" = "8:PS2.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1416,7 +1448,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF5159257A504A968007D3265F415DA7"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableBusPanel.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableBusPanel.txt"
             "TargetName" = "8:CableBusPanel.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1436,7 +1468,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4113A940B79480989C147BE42205318"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\BusPanel.txt"
+            "SourcePath" = "8:..\\..\\Connector\\BusPanel.txt"
             "TargetName" = "8:BusPanel.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1456,7 +1488,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5005648BA584ADA97F248930F9ACA3F"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\IEC_CEE22.txt"
+            "SourcePath" = "8:..\\..\\Connector\\IEC_CEE22.txt"
             "TargetName" = "8:IEC_CEE22.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1476,7 +1508,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E65345CF2C134A37A52ACD2D76E593CF"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableWire.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableWire.txt"
             "TargetName" = "8:CableWire.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1496,7 +1528,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EDE509286FA44DD6B78794183E295A9A"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\CableALT.txt"
+            "SourcePath" = "8:..\\..\\Connector\\CableALT.txt"
             "TargetName" = "8:CableALT.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1516,7 +1548,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE55ACCBD16343BBA605E370A833356A"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableALT.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableALT.txt"
             "TargetName" = "8:CableALT.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1536,7 +1568,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F318BF6A34824F1A8BF49C73745934CA"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Cables\\CableAlim.txt"
+            "SourcePath" = "8:..\\..\\Cables\\CableAlim.txt"
             "TargetName" = "8:CableAlim.txt"
             "Tag" = "8:"
             "Folder" = "8:_BC9314FCB9164D49ADD5E7B699848E5D"
@@ -1556,7 +1588,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F49996E6EBF34444A31C06CEA1A68A66"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\VGA.txt"
+            "SourcePath" = "8:..\\..\\Connector\\VGA.txt"
             "TargetName" = "8:VGA.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1576,7 +1608,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4BABDE2FBE54D93BA0F3FEED077FB86"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\Connector\\CANON_CD30.txt"
+            "SourcePath" = "8:..\\..\\Connector\\CANON_CD30.txt"
             "TargetName" = "8:CANON_CD30.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
@@ -1596,7 +1628,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4D131D15DF24F1590D829715B6D5733"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\ocx\\MSSTDFMT.DLL"
+            "SourcePath" = "8:..\\..\\ocx\\MSSTDFMT.DLL"
             "TargetName" = "8:MSSTDFMT.DLL"
             "Tag" = "8:"
             "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
@@ -1616,7 +1648,7 @@
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FBEB0CFC1A34495A93E49204B856ADDA"
             {
-            "SourcePath" = "8:..\\..\\..\\DraftCable\\MisProyectos\\HomeCine\\HomeCine.dd1"
+            "SourcePath" = "8:..\\..\\MisProyectos\\HomeCine\\HomeCine.dd1"
             "TargetName" = "8:HomeCine.dd1"
             "Tag" = "8:"
             "Folder" = "8:_9A82E531D47441719A75BCCD6A7A11B8"
@@ -1813,7 +1845,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DraftCable1.0"
         "ProductCode" = "8:{C5B3DAF2-6358-439F-A4E7-79A991B0FE38}"
-        "PackageCode" = "8:{78E0F9FC-2671-4BD7-BC77-92F70B7E6499}"
+        "PackageCode" = "8:{5C266FE2-4C14-441C-B5BB-4D0F7A38C8E6}"
         "UpgradeCode" = "8:{0D0C8C99-9A9A-41E7-8F95-728A7B48037C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
