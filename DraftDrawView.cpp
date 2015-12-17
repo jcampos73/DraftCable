@@ -1479,10 +1479,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 			//Repeat placement engine
 			else{
-				//Insert point for adding shapes to explorer tree
-				//------
-
-				//------				
 
 				//Create a new shape
 				CRuntimeClass* pRuntimeClass=pSh->GetRuntimeClass( );

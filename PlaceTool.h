@@ -1,15 +1,14 @@
 #pragma once
-class CAbstractTool
+#include "AbstractTool.h"
+class CPlaceTool : public CAbstractTool
 {
 public:
-	CAbstractTool();
-	~CAbstractTool();
+	CPlaceTool();
+	~CPlaceTool();
 public:
 	virtual void MoveTo(CPoint point);
 	virtual void MouseDown(CPoint point);
 	virtual void MouseUp(CPoint point);
 protected:
-	CObList* m_pObList;
-	CObList* m_pObListSel;
-	virtual void DeselectAll();
+	CShape* __DoCreateNewItem();
 };

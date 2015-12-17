@@ -6,6 +6,7 @@
 
 CSelectionTool::CSelectionTool()
 {
+	m_Status = ddcStatusNothingSelected;
 }
 
 CSelectionTool::~CSelectionTool()
@@ -38,10 +39,7 @@ void CSelectionTool::MouseDown(CPoint point)
 		pSh->OnLButtonDown(0, point);
 		if (pSh->IsSelected()){
 			status = ddcStatusSomeSelected;
-			if (m_pObListSel->Find(pSh)){
-				status = ddcStatusSomeAlreadySelected;
-			}
-			else{
+			if (m_pObListSel->Find(pSh)==false){
 				//Deselect all
 				DeselectAll();
 				m_pObListSel->AddHead(pSh);
