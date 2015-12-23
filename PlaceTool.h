@@ -10,5 +10,5 @@ public:
 	virtual void MouseDown(CPoint point);
 	virtual void MouseUp(CPoint point);
 protected:
-	CShape* __DoCreateNewItem();
+	
 };

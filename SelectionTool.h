@@ -9,7 +9,7 @@ public:
 	virtual void MoveTo(CPoint point);
 	virtual void MouseDown(CPoint point);
 	virtual void MouseUp(CPoint point);
-private:
+protected:
 	enum Status { ddcStatusNothingSelected = 0, ddcStatusSomeSelected, ddcStatusCreatingSelectionRect } m_Status;
 	CRect m_rect;
 };

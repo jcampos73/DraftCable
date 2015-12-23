@@ -10,8 +10,12 @@ public:
 	virtual void MoveTo(CPoint point);
 	virtual void MouseDown(CPoint point);
 	virtual void MouseUp(CPoint point);
-private:
-	enum Status { ddcStatusDrawingNone = 0, ddcStatusPolyDrawingIni, ddcStatusPolyDrawing } m_Status;
+protected:
+	enum Status { ddcStatusNothingDrawing = 0, ddcStatusBeginPolyDrawing, ddcStatusPolyDrawing, ddcStatusPenDrawing } m_Status;
 	LinkType m_LinkType;
+
+	virtual void __DoState(CPoint point, EventType eventType);
+	void __DoStateBeginPoly(CPoint point, EventType eventType);
+	void __DoStateDrawing(CPoint point, EventType eventType);
 };
 

@@ -89,7 +89,7 @@ public:
 protected:
 	//This array it is not used but will contain selected shape to keep track of them,
 	//so as never forggeting to unselect them
-	CObList m_ObListSel;			//Object array for storing selected shapes (not used yet)
+	CObList m_ObListSel;			//Object array for storing selected shapes
 
 	BOOL m_bFlagSelNet;				//This members are for showing context menu item
 	BOOL m_bFlagEditTB;				//This members are for showing context menu item

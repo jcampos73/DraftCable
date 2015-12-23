@@ -412,6 +412,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractTool.cpp" />
+    <ClCompile Include="ConnectorTool.cpp" />
     <ClCompile Include="DialogShell.cpp" />
     <ClCompile Include="PenTool.cpp" />
     <ClCompile Include="PlaceTool.cpp" />
@@ -1104,6 +1105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractTool.h" />
+    <ClInclude Include="ConnectorTool.h" />
     <ClInclude Include="DialogShell.h" />
     <ClInclude Include="PenTool.h" />
     <ClInclude Include="PlaceTool.h" />
