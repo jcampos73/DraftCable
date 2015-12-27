@@ -13,10 +13,11 @@ protected:
 	enum EventType { ddcEventMouseDown, ddcEventMouseUp };
 	CPoint m_ptMouseDownPrev;
 	CDraftDrawDoc *pDoc;
-	CObList *m_pObList;
+	//CObList *m_pObList;
 	CObList *m_pObListSel;
 
 	virtual void DeselectAll();
-	virtual CShape* __DoCreateNewItem();
+	virtual CShape* GetCurrentShape();
+	virtual CShape* __DoCreateNewItem(CPoint point);
 	virtual void __DoState(CPoint point, EventType eventType);
 };

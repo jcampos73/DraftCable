@@ -60,7 +60,7 @@ void CConnectorTool::__DoStateConnecting(CPoint point, EventType eventType)
 	if (m_ptMouseDownPrev != point){
 		//Try to connect destiny. If not connected then
 		if (!__DoConnectShapes(point)){
-			__DoCreateNewItem();
+			__DoCreateNewItem(point);
 		}
 	}
 }

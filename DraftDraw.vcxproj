@@ -415,7 +415,6 @@
     <ClCompile Include="ConnectorTool.cpp" />
     <ClCompile Include="DialogShell.cpp" />
     <ClCompile Include="PenTool.cpp" />
-    <ClCompile Include="PlaceTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
     <ClCompile Include="Importer.cpp" />
@@ -1108,7 +1107,6 @@
     <ClInclude Include="ConnectorTool.h" />
     <ClInclude Include="DialogShell.h" />
     <ClInclude Include="PenTool.h" />
-    <ClInclude Include="PlaceTool.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
     <ClInclude Include="Importer.h" />

@@ -31,11 +31,12 @@ void CSelectionTool::MouseDown(CPoint point)
 
 #ifndef DRAFTCABLE_MFC_CONTAINER_WRAP
 	//1.Iterate all shapes
-
-	POSITION pos = m_pObList->GetHeadPosition();
-	while (status == ddcStatusNothingSelected && pos != NULL){
+	int index;
+	CShape *pSh = (CShape *)pDoc->LastObject(index);
+	pSh = (CShape *)pDoc->PrevObject(index);
+	while (status == ddcStatusNothingSelected && pSh != NULL){
 		//Test if shape is selected
-		CShape* pSh = (CShape*)m_pObList->GetNext(pos);
+
 		pSh->OnLButtonDown(0, point);
 		if (pSh->IsSelected()){
 			status = ddcStatusSomeSelected;
@@ -45,6 +46,8 @@ void CSelectionTool::MouseDown(CPoint point)
 				m_pObListSel->AddHead(pSh);
 			}
 		}
+
+		pSh = (CShape *)pDoc->PrevObject(index);
 	}//End while
 
 #endif
@@ -73,19 +76,23 @@ void CSelectionTool::MouseDown(CPoint point)
 
 void CSelectionTool::MouseUp(CPoint point)
 {
+	int index;
 	int status = ddcStatusNothingSelected;
+
 	if (m_Status == ddcStatusCreatingSelectionRect)
 	{
-		POSITION pos = m_pObList->GetHeadPosition();
+		CShape *pSh = (CShape *)pDoc->LastObject(index);
+		pSh = (CShape *)pDoc->PrevObject(index);
 
-		while (pos != NULL){
+		while (pSh != NULL){
 			//Test if shape is selected
-			CShape* pSh = (CShape*)m_pObList->GetNext(pos);
 			pSh->OnLButtonDown(0, m_rect);
 			if (pSh->IsSelected()){
 				status = ddcStatusSomeSelected;
 				m_pObListSel->AddHead(pSh);
 			}
+
+			pSh = (CShape *)pDoc->PrevObject(index);
 		}
 
 		m_Status = static_cast<Status>(status);

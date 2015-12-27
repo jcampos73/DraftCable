@@ -35,15 +35,17 @@ void CPenTool::__DoState(CPoint point, EventType eventType)
 {
 	switch (m_Status){
 		case ddcStatusNothingDrawing:
-			DeselectAll();
-			CShape *pSh;
-			//If poly set status to...
-			if (pSh->IsPoly()){
-				m_Status = ddcStatusBeginPolyDrawing;
-			}
-			else
 			{
-				m_Status = ddcStatusPenDrawing;
+				DeselectAll();
+				CShape *pSh = GetCurrentShape();
+				//If poly set status to...
+				if (pSh->IsPoly()){
+					m_Status = ddcStatusBeginPolyDrawing;
+				}
+				else
+				{
+					m_Status = ddcStatusPenDrawing;
+				}
 			}
 			break;
 		case ddcStatusBeginPolyDrawing:
@@ -75,14 +77,19 @@ void CPenTool::__DoStateBeginPoly(CPoint point, EventType eventType)
 
 void CPenTool::__DoStateDrawing(CPoint point, EventType eventType)
 {
+	CShape *pSh = NULL;
 	if (m_ptMouseDownPrev != point){
 		switch (eventType)
 		{
 		case ddcStatusPenDrawing:
 			//We are done
+			pSh = __DoCreateNewItem(point);
+			pSh->OnLButtonDown(0, point);
 			break;
 		case ddcStatusPolyDrawing:
 			//Pass event to shape
+			pSh = GetCurrentShape();
+			pSh->OnLButtonDown(0, point);
 			break;
 		}
 	}
