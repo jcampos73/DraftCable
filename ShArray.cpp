@@ -353,11 +353,20 @@ void CShArray::RemoveAt( SIZE szIndex, SIZE szCount /*= CSize(1,1)*/ ){
 			if(m_pddDoc){
 				POSITION pos;
 				CDraftDrawDoc *pddDoc=(CDraftDrawDoc *)m_pddDoc;
-				for(pos=m_vvRows[i][j].GetHeadPosition(); pos!= NULL; ){
-					CObject *pobj=m_vvRows[i][j].GetNext( pos ) ;
-					CShape *psh=(CShape *)pobj;
-					pddDoc->DeleteShape(psh->m_uiShapeId,FALSE);//Do not use brute force option
+				CObList *pObLst = &m_vvRows[i][j];
+				TRY
+				{
+					if (pObLst!=NULL) for (pos = m_vvRows[i][j].GetHeadPosition(); pos != NULL;){
+						CObject *pobj=m_vvRows[i][j].GetNext( pos ) ;
+						CShape *psh=(CShape *)pobj;
+						pddDoc->DeleteShape(psh->m_uiShapeId,FALSE);//Do not use brute force option
+					}
 				}
+				CATCH_ALL(e)
+				{
+
+				}
+				END_CATCH_ALL
 			}
 
 			m_vvRows[i][j].RemoveAll();

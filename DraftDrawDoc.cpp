@@ -658,16 +658,18 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				CRect rcFrm=CRect(0,0,0,0);
 
 				//Shape loading block
+				BOOL bFlagSheet = FALSE;
 				for(int i=0;i<nCount;i++){
 
 					//Load shape
 					ar>>pSh;
 
 					//Set sheet size
-					if (pSh->IsKindOf(RUNTIME_CLASS(CShapeSheet))){
+					if (pSh->IsKindOf(RUNTIME_CLASS(CShapeSheet)) && bFlagSheet == FALSE){
 						m_szDesign = CSize(pSh->m_Rect.Width(), pSh->m_Rect.Height());
 						m_pShArray->SetSize(m_szDesign, CSize(100, 100));
 						m_szGrid = ((CShapeSheet*)pSh)->m_szGrid;
+						bFlagSheet = TRUE;
 					}
 
 					//07/04/2005
@@ -781,6 +783,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 						//int debug_count=pShCont->m_obarrShapearr.GetSize();
 
+						//Comment if assertion on loading, but then connection are not rebuild properly
 						pShCont->DoPasteConnections(mapIdtoId,m_pmapShapeIdtoObj);
 
 						//debug_count=pShCont->m_obarrShapearr.GetSize();
