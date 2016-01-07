@@ -644,7 +644,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 				//This is a trick to bypass unit heading when serializing for part editor.
 				if(m_bFlagPartEdit){
-					CShapeUnit ShUnit;//CShapeContainer ShUnit;//!!!
+					CShapeUnit ShUnit;
 					ShUnit.m_bFlagPartEdit=TRUE;
 					ShUnit.Serialize(ar);
 				}
@@ -1526,26 +1526,6 @@ int CDraftDrawDoc::AddObject(CObject *newElement,UINT nId /*=0*/)
 	int nIndex=m_pObArray->Add(newElement);
 	//((CShape *)newElement)->m_uiShapeId=nIndex+1;
 
-	//Manage command queues
-	//All code to push commands into queues is being moved to CShape implementation.
-	/*
-	CString str;
-	str.Format("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i).Select",
-		ddcShapeRectangle,
-		((CShape *)newElement)->m_Rect.left,
-		((CShape *)newElement)->m_Rect.top,
-		((CShape *)newElement)->m_Rect.right,
-		((CShape *)newElement)->m_Rect.bottom,
-		((CShape *)newElement)->m_uiShapeId);
-	std::string strCommand=str;
-	m_dqCommands.push_back(strCommand);
-	
-	str.Format("ActiveSheet.Shapes(%i).Select.Delete",((CShape *)newElement)->m_uiShapeId);
-    strCommand=str;
-	m_dqCommandsUndo.push_back(strCommand);
-	m_nIndexCommQue+=1;
-	*/
-
 	//26/01/2005
 	//Add shape to screen map
 /*
@@ -1558,7 +1538,7 @@ int CDraftDrawDoc::AddObject(CObject *newElement,UINT nId /*=0*/)
 
 	//05/12/2004
 	//Increment counter for shape identification
-	if(nId>0){
+	if(nId>=0){
 		(*m_pmapShapeIdtoObj)[nId]=newElement;
 		//28/02/2004
 		//This bug is very important because when deserializing shapes
