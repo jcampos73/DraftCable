@@ -67,50 +67,6 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Cursor
-//
-
-IDC_CURSOR_4W           CURSOR                  "res\\4WAY03.CUR"
-IDC_CURSOR_EW           CURSOR                  "res\\EW_06.CUR"
-IDC_CURSOR_NE           CURSOR                  "res\\NE_06.CUR"
-IDC_CURSOR_NS           CURSOR                  "res\\NS_06.CUR"
-IDC_CURSOR_NW           CURSOR                  "res\\NW_06.CUR"
-IDC_DRAW                CURSOR                  "res\\DRAW.CUR"
-IDC_PENCIL              CURSOR                  "res\\PENCIL.CUR"
-IDC_ZOOM_PLUS           CURSOR                  "res\\cursor1.cur"
-IDC_ZOOM_MINUS          CURSOR                  "res\\cur00001.cur"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_CONTEXT MENU
-BEGIN
-    POPUP "0"
-    BEGIN
-        MENUITEM "&Edit Net Alias",             ID_EDIT_NETALIAS
-        MENUITEM "Select &Net",                 ID_SELECT_NET
-        MENUITEM "Edit TB",                     ID_EDIT_TB
-        MENUITEM SEPARATOR
-        MENUITEM "Move to &Top",                ID_ORDER_TOP
-        MENUITEM "Move to &Bottom",             ID_ORDER_BOTTOM
-        MENUITEM "&Properties",                 ID_EDIT_PROPERTIES
-        MENUITEM "F&ormat Shape",               ID_EDIT_FORMATSHAPE
-    END
-END
-
-IDR_EDITDROPDOWN MENU
-BEGIN
-    POPUP "0"
-    BEGIN
-        MENUITEM "1",                           ID_0_1
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Dialog
 //
 
@@ -328,6 +284,50 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Cursor
+//
+
+IDC_CURSOR_4W           CURSOR                  "res\\4WAY03.CUR"
+IDC_CURSOR_EW           CURSOR                  "res\\EW_06.CUR"
+IDC_CURSOR_NE           CURSOR                  "res\\NE_06.CUR"
+IDC_CURSOR_NS           CURSOR                  "res\\NS_06.CUR"
+IDC_CURSOR_NW           CURSOR                  "res\\NW_06.CUR"
+IDC_DRAW                CURSOR                  "res\\DRAW.CUR"
+IDC_PENCIL              CURSOR                  "res\\PENCIL.CUR"
+IDC_ZOOM_PLUS           CURSOR                  "res\\cursor1.cur"
+IDC_ZOOM_MINUS          CURSOR                  "res\\cur00001.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_CONTEXT MENU
+BEGIN
+    POPUP "0"
+    BEGIN
+        MENUITEM "&Edit Net Alias",             ID_EDIT_NETALIAS
+        MENUITEM "Select &Net",                 ID_SELECT_NET
+        MENUITEM "Edit TB",                     ID_EDIT_TB
+        MENUITEM SEPARATOR
+        MENUITEM "Move to &Top",                ID_ORDER_TOP
+        MENUITEM "Move to &Bottom",             ID_ORDER_BOTTOM
+        MENUITEM "&Properties",                 ID_EDIT_PROPERTIES
+        MENUITEM "F&ormat Shape",               ID_EDIT_FORMATSHAPE
+    END
+END
+
+IDR_EDITDROPDOWN MENU
+BEGIN
+    POPUP "0"
+    BEGIN
+        MENUITEM "1",                           ID_0_1
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -386,269 +386,6 @@ LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MODERN
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Cursor
-//
-
-IDC_ROTATE              CURSOR                  "res\\cur00002.cur"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MAINFRAME MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM SEPARATOR
-        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Exit",                       ID_APP_EXIT
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
-        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
-        MENUITEM SEPARATOR
-        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
-        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
-        MENUITEM "&List",                       ID_VIEW_LIST
-        MENUITEM "&Details",                    ID_VIEW_DETAILS
-        MENUITEM SEPARATOR
-        POPUP "Organize &icons"
-        BEGIN
-            MENUITEM "By &name",                    ID_VIEW_BYNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
-        END
-        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About DraftDraw...",         ID_APP_ABOUT
-    END
-END
-
-IDR_DRAFTDTYPE MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        POPUP "New"
-        BEGIN
-            MENUITEM "&Design\tCtrl+N",             ID_FILE_NEW
-            MENUITEM "Schematic sheet",             ID_FILE_NEW_SHEET
-            MENUITEM "RACK layout",                 ID_FILE_NEW_RACK
-            MENUITEM "Patch panel",                 ID_FILE_NEW_PATCHP
-            MENUITEM SEPARATOR
-            MENUITEM "&Component",                  ID_FILE_NEW_COMPONENTE
-        END
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Close",                      ID_FILE_CLOSE
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Save &as...",                 ID_FILE_SAVE_AS
-        POPUP "Save sheets"
-        BEGIN
-            MENUITEM "Save current sheet",          ID_FILE_SAVE_SHEET_CURRENT
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "Print pre&view",              ID_FILE_PRINT_PREVIEW
-        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Exit",                       ID_APP_EXIT
-        MENUITEM SEPARATOR
-        MENUITEM "&Generate wiring...",         ID_ARCHIVO_GENCABLE
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cut\tCtrl+X",                 ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-        MENUITEM SEPARATOR
-        MENUITEM "Edit component",              ID_EDIT_PART
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
-        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
-        MENUITEM SEPARATOR
-        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
-        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
-        MENUITEM "&List",                       ID_VIEW_LIST
-        MENUITEM "&Details",                    ID_VIEW_DETAILS
-        MENUITEM SEPARATOR
-        POPUP "Organize &icons"
-        BEGIN
-            MENUITEM "By &name",                    ID_VIEW_BYNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
-        END
-        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
-        MENUITEM "Density graph...",            ID_VIEW_GRAPH_DEN
-    END
-    POPUP "&Insert"
-    BEGIN
-        MENUITEM "Component",                   ID_PLACE_PART
-        MENUITEM "Cable",                       ID_PLACE_WIRE
-        MENUITEM "Bus",                         ID_PLACE_BUS
-        MENUITEM SEPARATOR
-        MENUITEM "Left port",                   ID_PLACE_PORT
-        MENUITEM "Right port",                  ID_PLACE_PORTRIGHT
-        MENUITEM "Bus entry",                   ID_PLACE_BUSENTRY
-        MENUITEM "No-connect",                  ID_PLACE_NOCON
-        MENUITEM "Bus junction",                ID_PLACE_BUSJUNC
-        MENUITEM SEPARATOR
-        MENUITEM "Rectangle",                   ID_BUTTON_RECT
-        MENUITEM "Elipse",                      ID_BUTTON_ELLIPSE
-        MENUITEM "Line",                        ID_BUTTON_LINE
-        MENUITEM "Polyline",                    ID_BUTTON_POLYLINE
-        MENUITEM "Elipse arc",                  ID_BUTTON_ARC
-        MENUITEM "Poligon",                     ID_IMG_POLYGONPOPUP
-        MENUITEM SEPARATOR
-        MENUITEM "Text",                        ID_PLACE_TEXT
-        MENUITEM "Image",                       ID_PLACE_PICTURE
-        MENUITEM SEPARATOR
-        POPUP "Insert schematic sheets"
-        BEGIN
-            MENUITEM "From file",                   ID_PLACE_SHEETS
-        END
-    END
-    POPUP "Ima&ge"
-    BEGIN
-        POPUP "&Rotate"
-        BEGIN
-            MENUITEM "Rotate 90º CW",               ID_ROTATE_ROTATE90CW
-            MENUITEM "Rotate 90º CCW",              ID_ROTATE_ROTATE90CCW
-        END
-        MENUITEM "Horizontal flip",             ID_IMG_FLIPVERT
-        MENUITEM "Vertical flip",               ID_IMG_FLIPVERT
-    END
-    POPUP "&Tools"
-    BEGIN
-        MENUITEM "Select",                      ID_BUTTON_SELECT
-        MENUITEM "SIC",                         ID_TOOL_SIC
-        MENUITEM "Generate rack",               ID_EDIT_RACK
-        MENUITEM "Shell\tCtrl+W",               ID_TOOLS_SHELL
-    END
-    POPUP "Options"
-    BEGIN
-        MENUITEM "Page properties...",          ID_TOOL_OPTION_PAGE
-        MENUITEM "Configuration...",            ID_TOOL_CONFIG
-    END
-    POPUP "&Window"
-    BEGIN
-        MENUITEM "&New window",                 ID_WINDOW_NEW
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
-        MENUITEM "&Mosaic",                     ID_WINDOW_TILE_HORZ
-        MENUITEM "&Organize icons",             ID_WINDOW_ARRANGE
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "Help &contents",              ID_HELP_FINDER
-        MENUITEM SEPARATOR
-        MENUITEM "&About DraftCable...",        ID_APP_ABOUT
-    END
-END
-
-IDR_PATCHPTYPE MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        POPUP "Nuevo"
-        BEGIN
-            MENUITEM "&Diseño\tCtrl+N",             ID_FILE_NEW
-            MENUITEM "&Componente",                 ID_FILE_NEW_COMPONENTE
-            MENUITEM "Nuevo alzado de RACK",        ID_FILE_NEW_RACK
-        END
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Close",                      ID_FILE_CLOSE
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM "Save &as...",                 ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "Print pre&view",              ID_FILE_PRINT_PREVIEW
-        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "&Exit",                       ID_APP_EXIT
-        MENUITEM SEPARATOR
-        MENUITEM "&Generate cable sheets...",   ID_ARCHIVO_GENCABLE
-    END
-    POPUP "&Edit"
-    BEGIN
-        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
-        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
-        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-        MENUITEM SEPARATOR
-        MENUITEM "Edit part",                   ID_EDIT_PART
-    END
-    POPUP "&View"
-    BEGIN
-        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
-        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
-        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
-        MENUITEM SEPARATOR
-        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
-        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
-        MENUITEM "&List",                       ID_VIEW_LIST
-        MENUITEM "&Details",                    ID_VIEW_DETAILS
-        MENUITEM SEPARATOR
-        POPUP "Organize &icons"
-        BEGIN
-            MENUITEM "By &name",                    ID_VIEW_BYNAME
-            MENUITEM SEPARATOR
-            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
-        END
-        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
-    END
-    POPUP "&Tools"
-    BEGIN
-        MENUITEM "&Line",                       ID_BUTTON_LINE
-        MENUITEM SEPARATOR
-        MENUITEM "Select",                      ID_BUTTON_SELECT
-    END
-    POPUP "Options"
-    BEGIN
-        MENUITEM "Page properties...",          ID_TOOL_OPTION_PAGE
-        MENUITEM "Configuration...",            ID_TOOL_CONFIG
-    END
-    POPUP "&Window"
-    BEGIN
-        MENUITEM "&New window",                 ID_WINDOW_NEW
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
-        MENUITEM "&Mosaic",                     ID_WINDOW_TILE_HORZ
-        MENUITEM "&Organze icons",              ID_WINDOW_ARRANGE
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About DraftCable...",        ID_APP_ABOUT
-    END
-END
-
-IDR_DEBUG_CONTEXT MENU
-BEGIN
-    POPUP "0"
-    BEGIN
-        MENUITEM "Info",                        ID_DEBUG_EDIT_SHPINFO
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // Dialog
 //
 
@@ -658,7 +395,7 @@ CAPTION "Acerca de DraftDraw"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "DraftDraw Versión 1.09.3",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "DraftDraw Versión 1.09.4",IDC_STATIC,40,10,119,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2002",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "Aceptar",IDOK,178,7,50,14,WS_GROUP
 END
@@ -934,6 +671,269 @@ BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_ROTATE              CURSOR                  "res\\cur00002.cur"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM SEPARATOR
+        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       ID_APP_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
+        MENUITEM SEPARATOR
+        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
+        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
+        MENUITEM "&List",                       ID_VIEW_LIST
+        MENUITEM "&Details",                    ID_VIEW_DETAILS
+        MENUITEM SEPARATOR
+        POPUP "Organize &icons"
+        BEGIN
+            MENUITEM "By &name",                    ID_VIEW_BYNAME
+            MENUITEM SEPARATOR
+            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
+        END
+        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About DraftDraw...",         ID_APP_ABOUT
+    END
+END
+
+IDR_DRAFTDTYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        POPUP "New"
+        BEGIN
+            MENUITEM "&Design\tCtrl+N",             ID_FILE_NEW
+            MENUITEM "Schematic sheet",             ID_FILE_NEW_SHEET
+            MENUITEM "RACK layout",                 ID_FILE_NEW_RACK
+            MENUITEM "Patch panel",                 ID_FILE_NEW_PATCHP
+            MENUITEM SEPARATOR
+            MENUITEM "&Component",                  ID_FILE_NEW_COMPONENTE
+        END
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &as...",                 ID_FILE_SAVE_AS
+        POPUP "Save sheets"
+        BEGIN
+            MENUITEM "Save current sheet",          ID_FILE_SAVE_SHEET_CURRENT
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       ID_APP_EXIT
+        MENUITEM SEPARATOR
+        MENUITEM "&Generate wiring...",         ID_ARCHIVO_GENCABLE
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cut\tCtrl+X",                 ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM SEPARATOR
+        MENUITEM "Edit component",              ID_EDIT_PART
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
+        MENUITEM SEPARATOR
+        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
+        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
+        MENUITEM "&List",                       ID_VIEW_LIST
+        MENUITEM "&Details",                    ID_VIEW_DETAILS
+        MENUITEM SEPARATOR
+        POPUP "Organize &icons"
+        BEGIN
+            MENUITEM "By &name",                    ID_VIEW_BYNAME
+            MENUITEM SEPARATOR
+            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
+        END
+        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
+        MENUITEM "Density graph...",            ID_VIEW_GRAPH_DEN
+    END
+    POPUP "&Insert"
+    BEGIN
+        MENUITEM "Component",                   ID_PLACE_PART
+        MENUITEM "Cable",                       ID_PLACE_WIRE
+        MENUITEM "Bus",                         ID_PLACE_BUS
+        MENUITEM SEPARATOR
+        MENUITEM "Left port",                   ID_PLACE_PORT
+        MENUITEM "Right port",                  ID_PLACE_PORTRIGHT
+        MENUITEM "Bus entry",                   ID_PLACE_BUSENTRY
+        MENUITEM "No-connect",                  ID_PLACE_NOCON
+        MENUITEM "Bus junction",                ID_PLACE_BUSJUNC
+        MENUITEM SEPARATOR
+        MENUITEM "Rectangle",                   ID_BUTTON_RECT
+        MENUITEM "Elipse",                      ID_BUTTON_ELLIPSE
+        MENUITEM "Line",                        ID_BUTTON_LINE
+        MENUITEM "Polyline",                    ID_BUTTON_POLYLINE
+        MENUITEM "Elipse arc",                  ID_BUTTON_ARC
+        MENUITEM "Poligon",                     ID_IMG_POLYGONPOPUP
+        MENUITEM SEPARATOR
+        MENUITEM "Text",                        ID_PLACE_TEXT
+        MENUITEM "Image",                       ID_PLACE_PICTURE
+        MENUITEM SEPARATOR
+        POPUP "Insert schematic sheets"
+        BEGIN
+            MENUITEM "From file",                   ID_PLACE_SHEETS
+        END
+    END
+    POPUP "Ima&ge"
+    BEGIN
+        POPUP "&Rotate"
+        BEGIN
+            MENUITEM "Rotate 90º CW",               ID_ROTATE_ROTATE90CW
+            MENUITEM "Rotate 90º CCW",              ID_ROTATE_ROTATE90CCW
+        END
+        MENUITEM "Horizontal flip",             ID_IMG_FLIPVERT
+        MENUITEM "Vertical flip",               ID_IMG_FLIPVERT
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "Select",                      ID_BUTTON_SELECT
+        MENUITEM "SIC",                         ID_TOOL_SIC
+        MENUITEM "Generate rack",               ID_EDIT_RACK
+        MENUITEM "Shell\tCtrl+W",               ID_TOOLS_SHELL
+    END
+    POPUP "Options"
+    BEGIN
+        MENUITEM "Page properties...",          ID_TOOL_OPTION_PAGE
+        MENUITEM "Configuration...",            ID_TOOL_CONFIG
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Mosaic",                     ID_WINDOW_TILE_HORZ
+        MENUITEM "&Organize icons",             ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Help &contents",              ID_HELP_FINDER
+        MENUITEM SEPARATOR
+        MENUITEM "&About DraftCable...",        ID_APP_ABOUT
+    END
+END
+
+IDR_PATCHPTYPE MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        POPUP "Nuevo"
+        BEGIN
+            MENUITEM "&Diseño\tCtrl+N",             ID_FILE_NEW
+            MENUITEM "&Componente",                 ID_FILE_NEW_COMPONENTE
+            MENUITEM "Nuevo alzado de RACK",        ID_FILE_NEW_RACK
+        END
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Close",                      ID_FILE_CLOSE
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &as...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "Con&figure printer...",       ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent file",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       ID_APP_EXIT
+        MENUITEM SEPARATOR
+        MENUITEM "&Generate cable sheets...",   ID_ARCHIVO_GENCABLE
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM SEPARATOR
+        MENUITEM "Edit part",                   ID_EDIT_PART
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&Divide",                     ID_WINDOW_SPLIT
+        MENUITEM SEPARATOR
+        MENUITEM "Bi&g icon",                   ID_VIEW_LARGEICON
+        MENUITEM "S&mall icon",                 ID_VIEW_SMALLICON
+        MENUITEM "&List",                       ID_VIEW_LIST
+        MENUITEM "&Details",                    ID_VIEW_DETAILS
+        MENUITEM SEPARATOR
+        POPUP "Organize &icons"
+        BEGIN
+            MENUITEM "By &name",                    ID_VIEW_BYNAME
+            MENUITEM SEPARATOR
+            MENUITEM "&Organize automatically",     ID_VIEW_AUTOARRANGE
+        END
+        MENUITEM "Alig&n icons",                ID_VIEW_LINEUP
+    END
+    POPUP "&Tools"
+    BEGIN
+        MENUITEM "&Line",                       ID_BUTTON_LINE
+        MENUITEM SEPARATOR
+        MENUITEM "Select",                      ID_BUTTON_SELECT
+    END
+    POPUP "Options"
+    BEGIN
+        MENUITEM "Page properties...",          ID_TOOL_OPTION_PAGE
+        MENUITEM "Configuration...",            ID_TOOL_CONFIG
+    END
+    POPUP "&Window"
+    BEGIN
+        MENUITEM "&New window",                 ID_WINDOW_NEW
+        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Mosaic",                     ID_WINDOW_TILE_HORZ
+        MENUITEM "&Organze icons",              ID_WINDOW_ARRANGE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About DraftCable...",        ID_APP_ABOUT
+    END
+END
+
+IDR_DEBUG_CONTEXT MENU
+BEGIN
+    POPUP "0"
+    BEGIN
+        MENUITEM "Info",                        ID_DEBUG_EDIT_SHPINFO
+    END
+END
 
 
 /////////////////////////////////////////////////////////////////////////////
