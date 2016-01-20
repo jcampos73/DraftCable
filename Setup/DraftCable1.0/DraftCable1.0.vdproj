@@ -261,6 +261,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_AA52C8B304D34A22968F12A2B6598976"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B8077CE140A5459ABA6CEA39AC83129E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -292,6 +298,12 @@
         "Entry"
         {
         "MsmKey" = "8:_C067D7B668CF4CE39DF86C2F6005D29F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C17D4728403F4A04A5465C45102D8626"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -423,7 +435,7 @@
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
-            "ComponentsUrl" = "8:"
+            "ComponentsUrl" = "8:C:\\Users\\jesus\\Source\\Repos\\DraftCable\\Redist"
                 "Items"
                 {
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.12.0.x86"
@@ -1306,6 +1318,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA52C8B304D34A22968F12A2B6598976"
+            {
+            "SourcePath" = "8:..\\..\\Redist\\vcredist_x86.exe"
+            "TargetName" = "8:vcredist_x86.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8077CE140A5459ABA6CEA39AC83129E"
             {
             "SourcePath" = "8:..\\..\\plantilla_puent.doc"
@@ -1412,6 +1444,26 @@
             "TargetName" = "8:RJ45_516.txt"
             "Tag" = "8:"
             "Folder" = "8:_62C2E9C7A21A45BF8EFFFEA0EC3477C8"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C17D4728403F4A04A5465C45102D8626"
+            {
+            "SourcePath" = "8:..\\..\\res\\icon1.ico"
+            "TargetName" = "8:icon1.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1845,7 +1897,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:DraftCable1.0"
         "ProductCode" = "8:{32865D05-70C1-47AB-A1F5-44462708A379}"
-        "PackageCode" = "8:{9E8601FA-AE5D-40E5-AE3E-85A6769EF2FE}"
+        "PackageCode" = "8:{61FBF4CA-15DB-467E-8891-607D3C028191}"
         "UpgradeCode" = "8:{0D0C8C99-9A9A-41E7-8F95-728A7B48037C}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2029,6 +2081,20 @@
             "Folder" = "8:_C06F72C5095B4F7492DE31B1B97F57A7"
             "WorkingFolder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
             "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_840A18952EFA429A9077B4D63F7F3C80"
+            {
+            "Name" = "8:DraftCable"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_8A9051461B094160BAEBEA47EBC9FDAC"
+            "Folder" = "8:_7AD066E67F894001B1581F9344FC5946"
+            "WorkingFolder" = "8:_6A6C3BA089A04367A6F37B3028F2752E"
+            "Icon" = "8:_C17D4728403F4A04A5465C45102D8626"
             "Feature" = "8:"
             }
         }
