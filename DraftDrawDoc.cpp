@@ -1512,7 +1512,7 @@ CObject * CDraftDrawDoc::EndObject()
 return NULL;
 }
 
-int CDraftDrawDoc::AddObject(CObject *newElement,UINT nId /*=0*/)
+int CDraftDrawDoc::AddObject(CObject *newElement,int/*UINT*/ nId /*=0*/)
 {
 #ifdef _LIST_STG
 
