@@ -6944,3 +6944,10 @@ void CDraftDrawDoc::_DoAddEllementsToMap(CMapStringToString map, CString key, in
 	}
 }
 
+//Process all the Unit tests
+void CDraftDrawDoc::_DoProcessAllTtests()
+{
+	//Construct test class (inheritted from CDraftDrawTest)
+
+	//Execute tests
+}

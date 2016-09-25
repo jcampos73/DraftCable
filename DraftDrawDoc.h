@@ -16,6 +16,7 @@
 
 #include "Resource.h"
 #include "DialogPlacePart.h"
+//#include "AbstractTool.h"
 
 //04/12/2004
 //View types
@@ -176,8 +177,9 @@ public:
 	int GetCursor();
 
 	//This two members determine program status
-	int m_iToolSel;		//Selected tool: place, selection...
-	int m_iToolType;	//Selected tool type: normal, chain...
+	int m_iToolSel;			//Selected tool: place, selection...
+	int m_iToolType;		//Selected tool type: normal, chain...
+	CObject* m_tooSel;	//Selected tool
 
 	int m_iTypeDocument;//Document type 0->schematic;1->rack;2->patch panel
 	CSize m_szGrid;
@@ -258,6 +260,7 @@ protected:
 	void DoSerializeDd1(CArchive& ar);
 
 	void _DoAddEllementsToMap(CMapStringToString map, CString key, int count);
+	void CDraftDrawDoc::_DoProcessAllTtests();
 
 public:
 	static int Split(CString str,LPTSTR *sa,int max);

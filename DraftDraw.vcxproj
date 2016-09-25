@@ -414,6 +414,7 @@
     <ClCompile Include="AbstractTool.cpp" />
     <ClCompile Include="ConnectorTool.cpp" />
     <ClCompile Include="DialogShell.cpp" />
+    <ClCompile Include="DraftDrawTest.cpp" />
     <ClCompile Include="PenTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
@@ -424,6 +425,7 @@
     <ClCompile Include="ShArrayIterator.cpp" />
     <ClCompile Include="StringEx.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
+    <ClCompile Include="TestSelectionTool.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
     <ClCompile Include="_recordset.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -1106,6 +1108,7 @@
     <ClInclude Include="AbstractTool.h" />
     <ClInclude Include="ConnectorTool.h" />
     <ClInclude Include="DialogShell.h" />
+    <ClInclude Include="DraftDrawTest.h" />
     <ClInclude Include="PenTool.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
@@ -1116,6 +1119,7 @@
     <ClInclude Include="ShArrayIterator.h" />
     <ClInclude Include="StringEx.h" />
     <ClInclude Include="SvgioFile.h" />
+    <ClInclude Include="TestSelectionTool.h" />
     <ClInclude Include="XMLArchive.h" />
     <ClInclude Include="_recordset.h" />
     <ClInclude Include="adodc.h" />
