@@ -37,6 +37,9 @@
 #include "GbrioFile.h"
 #include "CDib.h"
 
+//Tools
+#include "SelectionTool.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -144,6 +147,8 @@ CDraftDrawDoc::CDraftDrawDoc()
 	m_iIdPart=0;
 
 	m_pDlgPlacePart = NULL;
+
+	m_tooSel = NULL;
 }
 
 CDraftDrawDoc::~CDraftDrawDoc()
@@ -206,6 +211,11 @@ BOOL CDraftDrawDoc::OnNewDocument()
 	m_szGrid=CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT);//initial grid
 
 	m_iToolSel=_TOOLSELECT_DRAFTCABLE;
+	if (m_tooSel != NULL)
+	{
+		delete(m_tooSel);
+	}
+	m_tooSel = (LPUNKNOWN)new CSelectionTool();
 
 	//A4 size in 0.1 millimeter
 	//m_szDesign=CSize(2970,2100);
@@ -2359,6 +2369,11 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 			m_iToolSel=_TOOLSELECT_DRAFTCABLE;
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
+			if (m_tooSel != NULL)
+			{
+				delete(m_tooSel);
+			}
+			m_tooSel = (LPUNKNOWN)new CSelectionTool();
 			::SetCursor(m_CursorArray[9]);
 			return TRUE;
 
@@ -5044,6 +5059,11 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 	SetModifiedFlag(FALSE);     // start off with unmodified
 	m_iToolSel=_TOOLSELECT_DRAFTCABLE;
+	if (m_tooSel != NULL)
+	{
+		delete(m_tooSel);
+	}
+	m_tooSel = (LPUNKNOWN)new CSelectionTool();
 
 	return TRUE;
 

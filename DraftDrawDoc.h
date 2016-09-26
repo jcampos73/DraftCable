@@ -179,7 +179,7 @@ public:
 	//This two members determine program status
 	int m_iToolSel;			//Selected tool: place, selection...
 	int m_iToolType;		//Selected tool type: normal, chain...
-	CObject* m_tooSel;	//Selected tool
+	LPUNKNOWN m_tooSel;		//Selected tool
 
 	int m_iTypeDocument;//Document type 0->schematic;1->rack;2->patch panel
 	CSize m_szGrid;
