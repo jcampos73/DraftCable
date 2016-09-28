@@ -1,10 +1,15 @@
 #pragma once
 #include "DraftDrawDoc.h"
-class CAbstractTool
+class CAbstractTool : public CObject
 {
 public:
 	CAbstractTool();
+	DECLARE_SERIAL(CAbstractTool);
 	~CAbstractTool();
+	CDraftDrawDoc *pDoc;
+	//CObList *m_pObList;
+	CObList *m_pObListSel;
+
 public:
 	virtual void MoveTo(CPoint point);
 	virtual void MouseDown(CPoint point);
@@ -12,9 +17,6 @@ public:
 protected:
 	enum EventType { ddcEventMouseDown, ddcEventMouseUp };
 	CPoint m_ptMouseDownPrev;
-	CDraftDrawDoc *pDoc;
-	//CObList *m_pObList;
-	CObList *m_pObListSel;
 
 	virtual void DeselectAll();
 	virtual CShape* GetCurrentShape();

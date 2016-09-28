@@ -15,6 +15,10 @@
 //Dialogs
 #include "DialogGraphDen.h"
 
+//Tools
+#include "SelectionTool.h"
+#include "PenTool.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -945,6 +949,15 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//Snap to grid
 	SnapToGrid(&point);
 	//=======================================================
+
+	//New state pattern tests
+	/*
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
+		return;
+	}
+	*/
 
 	//=======================================================
 	//INITIALIZE

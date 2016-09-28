@@ -3,13 +3,16 @@
 
 #include "AbstractTool.h"
 
+IMPLEMENT_SERIAL(CAbstractTool, CObject, 1)
 
 CAbstractTool::CAbstractTool()
 {
+	//m_pObListSel = new CObList();
 }
 
 CAbstractTool::~CAbstractTool()
 {
+	//delete(m_pObListSel);
 }
 
 void CAbstractTool::MoveTo(CPoint point) {}

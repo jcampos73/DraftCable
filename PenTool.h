@@ -4,6 +4,8 @@ class CPenTool : public CAbstractTool
 {
 public:
 	enum LinkType { ddcLinkTypeNone = 0, ddcLinkTypeLink };
+	CPenTool();
+	DECLARE_SERIAL(CPenTool);
 	CPenTool(LinkType linkType);
 	~CPenTool();
 public:

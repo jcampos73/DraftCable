@@ -4,6 +4,7 @@ class CConnectorTool : public CAbstractTool
 {
 public:
 	CConnectorTool();
+	DECLARE_SERIAL(CConnectorTool);
 	~CConnectorTool();
 public:
 	virtual void MoveTo(CPoint point);

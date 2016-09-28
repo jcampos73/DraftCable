@@ -39,6 +39,7 @@
 
 //Tools
 #include "SelectionTool.h"
+#include "PenTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -211,11 +212,9 @@ BOOL CDraftDrawDoc::OnNewDocument()
 	m_szGrid=CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT);//initial grid
 
 	m_iToolSel=_TOOLSELECT_DRAFTCABLE;
-	if (m_tooSel != NULL)
-	{
-		delete(m_tooSel);
-	}
+	if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
 	m_tooSel = (LPUNKNOWN)new CSelectionTool();
+	((CAbstractTool*)m_tooSel)->pDoc = this;
 
 	//A4 size in 0.1 millimeter
 	//m_szDesign=CSize(2970,2100);
@@ -2369,11 +2368,9 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 			m_iToolSel=_TOOLSELECT_DRAFTCABLE;
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
-			if (m_tooSel != NULL)
-			{
-				delete(m_tooSel);
-			}
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
 			m_tooSel = (LPUNKNOWN)new CSelectionTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
 			::SetCursor(m_CursorArray[9]);
 			return TRUE;
 
@@ -2436,6 +2433,9 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 			m_iToolSel=_TOOLPLACE_DRAFTCABLE;
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CPenTool(CPenTool::ddcLinkTypeNone);
+			((CAbstractTool*)m_tooSel)->pDoc = this;
 			hCursor=::SetCursor(m_CursorArray[10]);
 			m_iCursor=10;
 			break;
@@ -5059,11 +5059,9 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 	SetModifiedFlag(FALSE);     // start off with unmodified
 	m_iToolSel=_TOOLSELECT_DRAFTCABLE;
-	if (m_tooSel != NULL)
-	{
-		delete(m_tooSel);
-	}
+	if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
 	m_tooSel = (LPUNKNOWN)new CSelectionTool();
+	((CAbstractTool*)m_tooSel)->pDoc = this;
 
 	return TRUE;
 

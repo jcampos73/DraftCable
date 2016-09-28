@@ -4,6 +4,7 @@ class CSelectionTool : public CAbstractTool
 {
 public:
 	CSelectionTool();
+	DECLARE_SERIAL(CSelectionTool);
 	~CSelectionTool();
 public:
 	virtual void MoveTo(CPoint point);

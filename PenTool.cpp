@@ -2,8 +2,15 @@
 
 #include "PenTool.h"
 
+IMPLEMENT_SERIAL(CPenTool, CAbstractTool, 1)
 
-CPenTool::CPenTool(LinkType linkType = ddcLinkTypeNone)
+CPenTool::CPenTool()
+{
+	m_LinkType = ddcLinkTypeNone;
+	m_Status = ddcStatusNothingDrawing;
+}
+
+CPenTool::CPenTool(LinkType linkType)
 {
 	m_LinkType = linkType;
 	m_Status = ddcStatusNothingDrawing;

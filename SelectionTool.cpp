@@ -4,6 +4,8 @@
 
 //#define DRAFTCABLE_MFC_CONTAINER_WRAP
 
+IMPLEMENT_SERIAL(CSelectionTool,CAbstractTool, 1)
+
 CSelectionTool::CSelectionTool()
 {
 	m_Status = ddcStatusNothingSelected;

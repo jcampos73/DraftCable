@@ -2,6 +2,7 @@
 
 #include "ConnectorTool.h"
 
+IMPLEMENT_SERIAL(CConnectorTool, CAbstractTool, 1)
 
 CConnectorTool::CConnectorTool()
 {
