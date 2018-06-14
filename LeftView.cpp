@@ -139,10 +139,10 @@ void CLeftView::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 	//Initialize tree control with root elements
 	if(hitem==NULL){
 
-		hRoot=AddOneItem(NULL, "All", 
+		hRoot=AddOneItem(NULL, _T("All"), 
 		(HTREEITEM)TVI_LAST, iMyComp,TRUE);
 
-		hHD=AddOneItem(hRoot, "Design", 
+		hHD=AddOneItem(hRoot, _T("Design"), 
 		(HTREEITEM)TVI_LAST, iHardDrv,TRUE);
 
 		//This code shoul be modified to add right view HWND as parameter.
@@ -151,13 +151,13 @@ void CLeftView::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 		ASSERT(pWnd->IsKindOf( RUNTIME_CLASS( CSplitterWnd ) ) );
 		pWnd=((CSplitterWnd *)pWnd)->GetPane(0,1);
 
-		HTREEITEM hSheet=AddOneItem(hHD, "Hoja1", 
+		HTREEITEM hSheet=AddOneItem(hHD, _T("Hoja1"), 
 		(HTREEITEM)TVI_LAST, iSheet,TRUE,(DWORD)pWnd->m_hWnd);
 
-		AddOneItem(hSheet, "Parts", 
+		AddOneItem(hSheet, _T("Parts"), 
 		(HTREEITEM)TVI_LAST, iFolderClose,FALSE);
 
-		hRadio=AddOneItem(hSheet, "Wires", 
+		hRadio=AddOneItem(hSheet, _T("Wires"), 
 		(HTREEITEM)TVI_LAST, iFolderClose,FALSE);
 
 		GetTreeCtrl().SelectSetFirstVisible( hRadio );
@@ -166,7 +166,7 @@ void CLeftView::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 
 }
 
-HTREEITEM CLeftView::AddOneItem(HTREEITEM hParent, LPSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data/*=0*/)
+HTREEITEM CLeftView::AddOneItem(HTREEITEM hParent, LPTSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data/*=0*/)
 {
 	HTREEITEM hItem;       // return value
 	TV_ITEM tvI;           // item structure

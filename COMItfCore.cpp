@@ -92,7 +92,7 @@ void ReleaseVariant(VARIANTARG *pvarg)
         }
         else 
         {
-            MessageBox(g_hwndApp, "ReleaseVariant: Array contains non-variant type", g_szAppTitle, MB_OK | MB_ICONSTOP);
+            MessageBox(g_hwndApp, _T("ReleaseVariant: Array contains non-variant type"), g_szAppTitle, MB_OK | MB_ICONSTOP);
         }
 
         // Free the array itself.
@@ -121,7 +121,7 @@ void ReleaseVariant(VARIANTARG *pvarg)
                 break;
 
             default:
-                MessageBox(g_hwndApp, "ReleaseVariant: Unknown type",g_szAppTitle, MB_OK | MB_ICONSTOP);
+                MessageBox(g_hwndApp, _T("ReleaseVariant: Unknown type"),g_szAppTitle, MB_OK | MB_ICONSTOP);
                 break;
         }
     }

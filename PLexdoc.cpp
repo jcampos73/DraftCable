@@ -82,7 +82,7 @@ void CPLexdoc::Serialize(CArchive& ar)
 	*/
 
 	//Syncronize archive with standart input
-	FILE *file_new=freopen( ar.GetFile( )->GetFilePath(), "r", stdin );
+	FILE *file_new=_wfreopen( ar.GetFile( )->GetFilePath(), _T("r"), stdin );
 	ios_base::sync_with_stdio(true);
 
 	//std::fstream does not have attach

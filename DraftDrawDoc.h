@@ -60,8 +60,8 @@ CURSOR_ZOOM_PLUS,CURSOR_ZOOM_MINUS,CURSOR_ROTATE
 };
 
 //Default parts
-#define _DRAFTCABLE_DOC_DEFAULT_BUSJUNC			"Standard.busjunc.ddw"
-#define _DRAFTCABLE_DOC_DEFAULT_JUNCTION		"Standard.junction.ddw"
+#define _DRAFTCABLE_DOC_DEFAULT_BUSJUNC			_T("Standard.busjunc.ddw")
+#define _DRAFTCABLE_DOC_DEFAULT_JUNCTION		_T("Standard.junction.ddw")
 
 //Macro
 //Not used delete
@@ -251,7 +251,7 @@ protected:
 	//Prepare list of sheet to be saved
 	void DoListSheetSave(CList<int,int> *pshLst);
 	//Prepare file extensions for OnFileSaveAs dialog.
-	void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtensions);
+	void CDraftDrawDoc::DoFileExtensions(std::wstring& sFilter,CStringArray& saExtensions);
 	//Writes in supplied storage objects that implements persistenece
 	void WriteStorage(LPSTORAGE pStg);
 	//Reads from storage persistent objects

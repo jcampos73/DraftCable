@@ -175,7 +175,7 @@ void CTBEditView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			CStringArray *pDocCables1=pDoc->m_obaCables1[m_nIndex];
 			CStringArray *pDocCables2=pDoc->m_obaCables2[m_nIndex];
 
-			char buffer[MAX_PATH];		//buffer to read text lines from file
+			TCHAR buffer[MAX_PATH];		//buffer to read text lines from file
 
 
 			CString sPath;
@@ -196,13 +196,13 @@ void CTBEditView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 			if(nIndex1>=0){
 				CString strCable1=pDocCables1[0][nIndex1];
 			
-				sPath=strCable1.Right(strCable1.GetLength()-strCable1.Find(";")-1);
-				sName=strCable1.Left(strCable1.Find(";"));
+				sPath=strCable1.Right(strCable1.GetLength()-strCable1.Find(_T(";"))-1);
+				sName=strCable1.Left(strCable1.Find(_T(";")));
 
-				FILE *fin=fopen(g_sDCableBaseDir+"Cables\\"+sPath,"r");
+				FILE *fin=_wfopen(g_sDCableBaseDir+_T("Cables\\")+sPath,_T("r"));
 
 				int i=0;
-				while(fgets(buffer,MAX_PATH,fin)){
+				while(fgetws(buffer,MAX_PATH,fin)){
 
 					i++;
 				}
@@ -216,13 +216,13 @@ m_nCountTotalMax1+=m_nCountMax1;
 			if(nIndex2>=0){
 				CString strCable2=pDocCables2[0][nIndex2];
 			
-				sPath=strCable2.Right(strCable2.GetLength()-strCable2.Find(";")-1);
-				sName=strCable2.Left(strCable2.Find(";"));
+				sPath=strCable2.Right(strCable2.GetLength()-strCable2.Find(_T(";"))-1);
+				sName=strCable2.Left(strCable2.Find(_T(";")));
 
-				FILE *fin=fopen(g_sDCableBaseDir+"Cables\\"+sPath,"r");
+				FILE *fin=_wfopen(g_sDCableBaseDir+_T("Cables\\")+sPath,_T("r"));
 
 				int i=0;
-				while(fgets(buffer,MAX_PATH,fin)){
+				while(fgetws(buffer,MAX_PATH,fin)){
 
 					i++;
 				}
@@ -254,15 +254,12 @@ m_nCountTotalMax2+=m_nCountMax2;
 				CString strCable1=pDocCables1[0][nIndex1];
 				
 
-				sPath=strCable1.Right(strCable1.GetLength()-strCable1.Find(";")-1);
-				sName=strCable1.Left(strCable1.Find(";"));
+				sPath=strCable1.Right(strCable1.GetLength()-strCable1.Find(_T(";"))-1);
+				sName=strCable1.Left(strCable1.Find(_T(";")));
 
-				FILE *fin=fopen(g_sDCableBaseDir+"Cables\\"+sPath,"r");
+				FILE *fin=_wfopen(g_sDCableBaseDir+_T("Cables\\")+sPath,_T("r"));
 
 				//Creates controls
-
-
-
 				
 				int x_min=10;
 				int x_width2=190,x_width3=50,x_width4=200;
@@ -295,7 +292,7 @@ m_nCountTotalMax2+=m_nCountMax2;
 					x_offset+=x_width2+x_gap;
 
 					CString sStr;
-					sStr.Format("%i%c",y_coor,x_coor);
+					sStr.Format(_T("%i%c"),y_coor,x_coor);
 					pCombo2->Create( WS_CHILD|WS_VISIBLE|CBS_DROPDOWNLIST, CRect(x_offset,y_offset+i*30,x_offset+x_width3,y_offset+190+i*30), this, nIndexi+1200+i );
 					//j=pCombo2->AddString(sStr);
 					//pCombo2->SetCurSel(j);
@@ -323,7 +320,7 @@ m_nCountTotalMax2+=m_nCountMax2;
 					if(x_coor>'F'){
 
 						CString str;
-						str.Format("nivel%i",nCountLevel);
+						str.Format(_T("nivel%i"),nCountLevel);
 						nCountLevel++;
 
 						CButton *p_btGroup=new CButton();
@@ -336,45 +333,33 @@ m_nCountTotalMax2+=m_nCountMax2;
 						x_coor='A';
 						y_coor++;
 
-
-
 					}
-
-
 					
 				}
-				//nCountWire=i;
-				//m_nCountMax1=i;
-				
 
 				y_offset+=i*30;
 
-
 				fclose(fin);
-
 
 			}
 
 			y_coor=y_coor0;
 			x_coor=x_coor0;
 
-
 			//Add first cable
 
 			if(nIndex1>=0){
 
-				FILE *fin=fopen(g_sDCableBaseDir+"Cables\\"+sPath,"r");
-
-
+				FILE *fin=_wfopen(g_sDCableBaseDir+_T("Cables\\")+sPath,_T("r"));
 				
 				int k=0;
-				while(fgets(buffer,MAX_PATH,fin)){
+				while(fgetws(buffer,MAX_PATH,fin)){
 
 					//pre-process string
-					std::string str=buffer;
+					std::wstring str=buffer;
 
-					while((str.find_first_of("\n\r"))!=std::string::npos){
-						str.replace(str.find_first_of("\n\r"),1,"");
+					while((str.find_first_of(_T("\n\r")))!=std::string::npos){
+						str.replace(str.find_first_of(_T("\n\r")),1,_T(""));
 					}
 
 					if(str.length()==0){
@@ -390,14 +375,14 @@ m_nCountTotalMax2+=m_nCountMax2;
 
 						//add patch panel cell
 						CString sStr;
-						sStr.Format("%i%c",y_coor,x_coor);
+						sStr.Format(_T("%i%c"),y_coor,x_coor);
 
-						j=GetDlgItem(nIndexi+1200+i)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::string(sStr).c_str());
+						j=GetDlgItem(nIndexi+1200+i)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::wstring(sStr).c_str());
 
 					}
 
 					//add cable name
-					int j=GetDlgItem(nIndexi+1000+k)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::string(sName).c_str());
+					int j=GetDlgItem(nIndexi+1000+k)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::wstring(sName).c_str());
 
 					//set cur sel in combos
 					GetDlgItem(nIndexi+1000+k)->SendMessage(CB_SETCURSEL,j,0);
@@ -431,9 +416,6 @@ m_nCountTotalMax2+=m_nCountMax2;
 			y_coor=y_coor0;
 			x_coor=x_coor0;
 
-
-
-
 			//Add second cable
 
 			if(nIndex2>=0){
@@ -441,23 +423,18 @@ m_nCountTotalMax2+=m_nCountMax2;
 
 				CString strCable2=pDocCables2[0][nIndex2];
 			
-				sPath=strCable2.Right(strCable2.GetLength()-strCable2.Find(";")-1);
-				sName=strCable2.Left(strCable2.Find(";"));
+				sPath=strCable2.Right(strCable2.GetLength()-strCable2.Find(_T(";"))-1);
+				sName=strCable2.Left(strCable2.Find(_T(";")));
 
-
-
-
-				FILE *fin=fopen(g_sDCableBaseDir+"Cables\\"+sPath,"r");
-
-
+				FILE *fin=_wfopen(g_sDCableBaseDir+_T("Cables\\")+sPath,_T("r"));
 				
 				int k=0;
-				while(fgets(buffer,MAX_PATH,fin)){
+				while(fgetws(buffer,MAX_PATH,fin)){
 
-					std::string str=buffer;
+					std::wstring str=buffer;
 
-					while((str.find_first_of("\n\r"))!=std::string::npos){
-						str.replace(str.find_first_of("\n\r"),1,"");
+					while((str.find_first_of(_T("\n\r")))!=std::string::npos){
+						str.replace(str.find_first_of(_T("\n\r")),1,_T(""));
 					}
 
 					if(str.length()==0){
@@ -472,12 +449,12 @@ m_nCountTotalMax2+=m_nCountMax2;
 						int j=GetDlgItem(nIndexi+1500+i)->SendMessage(CB_ADDSTRING,0,(LPARAM)str.c_str());
 
 						CString sStr;
-						sStr.Format("%i%c",y_coor,x_coor);
+						sStr.Format(_T("%i%c"),y_coor,x_coor);
 
-						j=GetDlgItem(nIndexi+1400+i)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::string(sStr).c_str());
+						j=GetDlgItem(nIndexi+1400+i)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::wstring(sStr).c_str());
 
 					}
-					int j=GetDlgItem(nIndexi+1600+k)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::string(sName).c_str());
+					int j=GetDlgItem(nIndexi+1600+k)->SendMessage(CB_ADDSTRING,0,(LPARAM)std::wstring(sName).c_str());
 					GetDlgItem(nIndexi+1600+k)->SendMessage(CB_SETCURSEL,j,0);
 					GetDlgItem(nIndexi+1500+k)->SendMessage(CB_SETCURSEL,k,0);
 

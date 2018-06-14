@@ -23,7 +23,7 @@ public:
 
 
 	CCableEdit(CWnd* pParent = NULL);   // standard constructor
-	CCableEdit(LPCSTR lpcsCableFile,BOOL bConnector = FALSE,CWnd* pParent = NULL);   // standard constructor
+	CCableEdit(LPCTSTR lpcsCableFile,BOOL bConnector = FALSE,CWnd* pParent = NULL);   // standard constructor
 
 
 // Dialog Data

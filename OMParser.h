@@ -62,9 +62,9 @@ public:
 	//1.When user hits redo button m_dqCommands is advanced (back to front).
 	//2.When user hits undo button m_dqCommandsUndo is retroceded (front to back).
 	//Deque to store visual basic commands
-	std::deque<std::string> m_dqCommands;
+	std::deque<std::wstring> m_dqCommands;
 	//Deque to store visual basic undo commands
-	std::deque<std::string> m_dqCommandsUndo;
+	std::deque<std::wstring> m_dqCommandsUndo;
 	//index to both queues
 	int m_nIndexCommQue;
 	//direction flag
@@ -75,7 +75,7 @@ public:
 	//construction
 	cmddeque(int nSize = 32);
 	//operations
-	void push_cmd(std::string strComm,std::string strCommUndo,bool bModified =false);
+	void push_cmd(std::wstring strComm,std::wstring strCommUndo,bool bModified =false);
 	void clear();
 	void check_size();
 	bool is_modified();
@@ -93,13 +93,13 @@ public:
 	//0	OK
 	//1 Error
 	OMParser ();
-	int OMParse(std::string sCommand, int flags = 0, TCHAR* output = NULL, int count = 0);
+	int OMParse(std::wstring sCommand, int flags = 0, TCHAR* output = NULL, int count = 0);
 
 //Implementation
 protected:
 	int m_nBlockDeep;
-	std::map<std::string,omobject*> m_sblTable;
-	BOOL IdFromName(std::string sName,omobject *lpOb);
+	std::map<std::wstring,omobject*> m_sblTable;
+	BOOL IdFromName(std::wstring sName,omobject *lpOb);
 };
 
 

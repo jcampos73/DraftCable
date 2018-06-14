@@ -99,8 +99,8 @@ BOOL CDialogPlacePart::OnInitDialog()
 
 	}
 
-	m_lcPart.InsertColumn(0,"Part",LVCFMT_LEFT,100,0);
-	m_sPart="";
+	m_lcPart.InsertColumn(0,_T("Part"),LVCFMT_LEFT,100,0);
+	m_sPart=_T("");
 
 	HANDLE handle=::FindFirstFile(sPath,&FindFileData);
 
@@ -141,7 +141,7 @@ BOOL CDialogPlacePart::OnInitDialog()
 
 	CRecordset rsLib(&g_db);
 
-	rsLib.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
+	rsLib.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbLibrary"));
 
 	//Iterate throw libraries
 	while(!rsLib.IsEOF()){
@@ -149,7 +149,7 @@ BOOL CDialogPlacePart::OnInitDialog()
 		rsLib.GetFieldValue(_T("nNameLib"), str);
 		int nIndex=m_cbLibrary.AddString(str);
 		rsLib.GetFieldValue(_T("iIdLib"), str);
-		m_cbLibrary.SetItemData(nIndex,atoi(str));
+		m_cbLibrary.SetItemData(nIndex,_wtoi(str));
 		rsLib.MoveNext();
 	}
 	
@@ -173,7 +173,7 @@ BOOL CDialogPlacePart::OnInitDialog()
 	int iData=IDD;
 	if(iData=IDD_PLACEPART2){
 
-		m_pPPView->Create(NULL,"MyView",WS_CHILD|WS_VISIBLE|WS_BORDER,CRect(10,60,300,260),this,1000);
+		m_pPPView->Create(NULL,_T("MyView"),WS_CHILD|WS_VISIBLE|WS_BORDER,CRect(10,60,300,260),this,1000);
 	}
 	*/
 
@@ -193,12 +193,12 @@ BOOL CDialogPlacePart::OnInitDialog()
 	//Enable buttons
 	if(m_dwType==1){
 		m_lcPart.ModifyStyle(LVS_SINGLESEL,LVS_EDITLABELS);
-		GetDlgItem(IDOK)->SetWindowText("&Editar");
+		GetDlgItem(IDOK)->SetWindowText(_T("&Editar"));
 		GetDlgItem(IDC_BUTTON_NEW)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_BUTTON_DEL)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_BUTTON_NEWLIB)->ShowWindow(SW_SHOW);
 		GetDlgItem(IDC_BUTTON_IMPLIB)->ShowWindow(SW_SHOW);
-		SetWindowText("SIC Sistema de Información de Componentes");
+		SetWindowText(_T("SIC Sistema de Información de Componentes"));
 		GetDlgItem(IDC_CHECK_ALL)->ShowWindow(SW_HIDE);
 	}
 
@@ -212,23 +212,23 @@ void CDialogPlacePart::UpdatePartList(){
 
 	CRecordset rs(&g_db);
 
-	rs.m_strFilter.Format("iIdLib = %i",m_iLibrary);
-	rs.m_strSort="nNamePart DESC";
+	rs.m_strFilter.Format(_T("iIdLib = %i"),m_iLibrary);
+	rs.m_strSort=_T("nNamePart DESC");
 
 	if(m_dwType!=1 && SendDlgItemMessage(IDC_CHECK_ALL,BM_GETCHECK)!=BST_CHECKED){
 		CDraftDrawApp *pApp=(CDraftDrawApp *)AfxGetApp();
 		switch(pApp->GetActiveDocType()){
 			case _DOCTYPE_RACK:
-				rs.m_strFilter+="AND bRackType = 1";
+				rs.m_strFilter+=_T("AND bRackType = 1");
 				break;
 			default:
-				rs.m_strFilter+="AND bRackType = 0";
+				rs.m_strFilter+=_T("AND bRackType = 0");
 				break;
 
 		}
 	}
 
-	rs.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	rs.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 
 	m_lcPart.DeleteAllItems();
 
@@ -236,12 +236,12 @@ void CDialogPlacePart::UpdatePartList(){
 	m_bFlagHdlItemChanged=FALSE;
 	while(!rs.IsEOF()){
 
-		m_lcPart.InsertColumn(0,"Part",LVCFMT_LEFT,100,0);
+		m_lcPart.InsertColumn(0,_T("Part"),LVCFMT_LEFT,100,0);
 		CString str;
 		rs.GetFieldValue(_T("nNamePart"), str);
 		m_lcPart.InsertItem(0,str);
 		rs.GetFieldValue(_T("iIdPart"), str);
-		m_lcPart.SetItemData(0,atoi(str));
+		m_lcPart.SetItemData(0,_wtoi(str));
 		rs.MoveNext();
 	}
 	m_bFlagHdlItemChanged=TRUE;
@@ -322,7 +322,7 @@ void CDialogPlacePart::OnItemchangedListpart(NMHDR* pNMHDR, LRESULT* pResult)
 		int nIndex=m_cbLibrary.GetCurSel();
 		m_cbLibrary.GetLBText(nIndex,m_sLibrary);
 
-		m_pPPView->m_pShape->LoadUnit(m_sLibrary+"."+str);
+		m_pPPView->m_pShape->LoadUnit(m_sLibrary+_T(".")+str);
 
 		m_pPPView->m_pShape->m_Rect-=(m_pPPView->m_pShape->m_Rect.TopLeft()-CPoint(10,10));
 		m_pPPView->m_pShape->m_RectLast-=(m_pPPView->m_pShape->m_Rect.TopLeft()-CPoint(10,10));
@@ -367,12 +367,12 @@ void CDialogPlacePart::OnButtonNew( ){
 	//Find next.
 	LVFINDINFO lvInfo;
 	lvInfo.flags=LVFI_PARTIAL|LVFI_WRAP;
-	lvInfo.psz="Nuevo";
+	lvInfo.psz=_T("Nuevo");
 	int nIndex=m_lcPart.FindItem(&lvInfo);
 	int nIndexLast=-1;//find memory
 	int nOrder=0;//ordinal
 	int nLenMax=0;//max length
-	CString strPrefix="Nuevo";//new element prefix
+	CString strPrefix=_T("Nuevo");//new element prefix
 	CString str;//aux function
 	while(nIndex!=-1&&nIndex>nIndexLast){
 
@@ -380,7 +380,7 @@ void CDialogPlacePart::OnButtonNew( ){
 		str=m_lcPart.GetItemText(nIndex,0);
 
 		//this will be substituted by a rebuild reg-expression
-		int i = std::string(str).find_last_not_of(_T("0123456789"));
+		int i = std::wstring(str).find_last_not_of(_T("0123456789"));
 		if(i>nLenMax){
 			nLenMax=i;
 			strPrefix=str.Left(i+1);//hold prefix
@@ -389,8 +389,8 @@ void CDialogPlacePart::OnButtonNew( ){
 		}
 
 		//this will be substituted by find reg-expression
-		if(atoi(str.Right(str.GetLength()-i-1))>nOrder&&i==nLenMax){
-			nOrder=atoi(str.Right(str.GetLength()-i-1));
+		if(_wtoi(str.Right(str.GetLength()-i-1))>nOrder&&i==nLenMax){
+			nOrder=_wtoi(str.Right(str.GetLength()-i-1));
 		}
 
 		//find memory & find next
@@ -400,7 +400,7 @@ void CDialogPlacePart::OnButtonNew( ){
 	}//find loop end
 
 	//Build new element
-	str.Format("%03i",nOrder+1);
+	str.Format(_T("%03i"),nOrder+1);
 	strPrefix+=str;
 
 	//Inser new element
@@ -424,8 +424,8 @@ void CDialogPlacePart::OnEndlabeleditListpart(NMHDR* pNMHDR, LRESULT* pResult)
 	//Process name changing.
 	if(!m_bFlagNew){
 		if(pDispInfo->item.mask&LVIF_TEXT){
-			str.Format("%i",pDispInfo->item.lParam);
-			strQuery.Format("UPDATE tbPart SET nNamePart='"+CString(pDispInfo->item.pszText)+"',bTextBin=1,iIdLib=%i WHERE iIdPart="+str,m_iLibrary); 
+			str.Format(_T("%i"),pDispInfo->item.lParam);
+			strQuery.Format(_T("UPDATE tbPart SET nNamePart='")+CString(pDispInfo->item.pszText)+_T("',bTextBin=1,iIdLib=%i WHERE iIdPart=")+str,m_iLibrary); 
 			g_db.ExecuteSQL(strQuery);
 			m_lcPart.SetItemText(pDispInfo->item.iItem,0,pDispInfo->item.pszText);
 		}
@@ -445,7 +445,7 @@ void CDialogPlacePart::OnEndlabeleditListpart(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	//Insert new element
-	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
+	//strQuery.Format(_T("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('")+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+_T("',1,%i)"),m_iLibrary);
 	strQuery.Format(_T("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
@@ -470,7 +470,7 @@ void CDialogPlacePart::OnEndlabeleditListpart(NMHDR* pNMHDR, LRESULT* pResult)
 	//Select new item
 	LVFINDINFO lvFindInfo;
 	lvFindInfo.flags=LVFI_PARAM ;
-	lvFindInfo.lParam=atoi(str);
+	lvFindInfo.lParam=_wtoi(str);
 	int nIndex=m_lcPart.FindItem(&lvFindInfo);
 	if(nIndex>0){
 		LVITEM lvItem;
@@ -545,7 +545,7 @@ void CDialogPlacePart::OnButtonDel( ){
 	   {
 		   int nItem=m_lcPart.GetNextSelectedItem(pos);
 
-		   strQuery.Format("DELETE FROM tbPart WHERE iIdPart=%i",m_lcPart.GetItemData(nItem));
+		   strQuery.Format(_T("DELETE FROM tbPart WHERE iIdPart=%i"),m_lcPart.GetItemData(nItem));
 			m_db.ExecuteSQL(strQuery);
 	   }
 	}
@@ -565,7 +565,7 @@ int CDialogPlacePart::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// Specialized creation code
 	int iData=IDD;
 	if(iData=IDD_PLACEPART2){
-		m_pPPView->Create(NULL,"MyView",WS_CHILD|WS_VISIBLE|WS_BORDER,
+		m_pPPView->Create(NULL,_T("MyView"),WS_CHILD|WS_VISIBLE|WS_BORDER,
 			CRect(10,60,300,260),this,1000);
 	}
 	
@@ -602,7 +602,7 @@ void CDialogPlacePart::LoadUnit(LPCTSTR lpszUnit /*=NULL*/){
 	int nIndex=m_cbLibrary.GetCurSel();
 	m_cbLibrary.GetLBText(nIndex,m_sLibrary);
 
-	m_pPPView->m_pShape->LoadUnit(m_sLibrary+"."+str);
+	m_pPPView->m_pShape->LoadUnit(m_sLibrary+_T(".")+str);
 
 	m_pPPView->m_pShape->m_Rect-=(m_pPPView->m_pShape->m_Rect.TopLeft()-CPoint(10,10));
 
@@ -635,7 +635,7 @@ void CDialogPlacePart::OnButtonNewlib()
 			rsLib.GetFieldValue(_T("nNameLib"), strName);
 			int nIndex=m_cbLibrary.AddString(strName);
 			rsLib.GetFieldValue(_T("iIdLib"), str);
-			m_cbLibrary.SetItemData(nIndex,atoi(str));
+			m_cbLibrary.SetItemData(nIndex,_wtoi(str));
 			rsLib.MoveNext();
 		}
 
@@ -710,7 +710,7 @@ void CDialogPlacePart::DoInsertNewLibrary(LPCTSTR lpszLibName, BOOL bCheckExists
 		rsLib.GetFieldValue(_T("nNameLib"), strName);
 		int nIndex = m_cbLibrary.AddString(strName);
 		rsLib.GetFieldValue(_T("iIdLib"), str);
-		m_cbLibrary.SetItemData(nIndex, atoi(str));
+		m_cbLibrary.SetItemData(nIndex, _wtoi(str));
 		rsLib.MoveNext();
 	}
 
@@ -748,7 +748,7 @@ void CDialogPlacePart::DoInsertPart(LPCTSTR lpszPartName)
 	//Insert new element
 	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) VALUES ('"+m_lcPart.GetItemText(pDispInfo->item.iItem,0)+"',1,%i)",m_iLibrary);
 	strQuery.Format(_T("INSERT INTO tbPartView SELECT * FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
-	//strQuery.Format("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) SELECT nNamePart,bTextBin,iIdLib FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')", m_iLibrary);
+	//strQuery.Format(_T("INSERT INTO tbPart (nNamePart,bTextBin,iIdLib) SELECT nNamePart,bTextBin,iIdLib FROM tbPartView WHERE nNamePart='blank' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='Plantillas')"), m_iLibrary);
 	g_db.ExecuteSQL(strQuery);
 
 	CRecordset rs(&g_db);
@@ -770,7 +770,7 @@ void CDialogPlacePart::DoImportLibrary()
 {
 	CDraftDrawDoc *pDoc = theApp.GetActiveDocument();
 
-	std::string sFilter = _T("External library file (*.xml)|*.xml||"); //All Files (*.*)|*.*||;
+	std::wstring sFilter = _T("External library file (*.xml)|*.xml||");//All Files (*.*)|*.*||;
 	CStringArray saExtensions;
 	saExtensions.Add(_T("xml"));
 
@@ -790,7 +790,7 @@ void CDialogPlacePart::DoImportLibrary()
 		int nFilterIndex = fdialog.m_ofn.nFilterIndex;
 		if ((!offset) || (fdialog.m_ofn.lpstrFile[offset] == 0)){
 
-			strFile += "." + saExtensions[fdialog.m_ofn.nFilterIndex - 1];
+			strFile += _T(".") + saExtensions[fdialog.m_ofn.nFilterIndex - 1];
 			sFilter = saExtensions[fdialog.m_ofn.nFilterIndex - 1];
 		}
 
@@ -858,7 +858,7 @@ void CDialogPlacePart::DoImportLibrary()
 			pDoc->m_bFlagPartEdit = TRUE;
 			CObArray* prevObArray = pDoc->m_pObArray;
 			pDoc->m_pObArray = &pSh->m_obarrShapearr;
-			pDoc->OnDatabaseSave(strLib + "." + strFile);
+			pDoc->OnDatabaseSave(strLib + _T(".") + strFile);
 			pDoc->m_pObArray = prevObArray;
 			//Restore flag
 			pDoc->m_bFlagPartEdit = bFlagPartEdit;

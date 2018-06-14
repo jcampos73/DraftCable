@@ -53,7 +53,7 @@ CArchiveDb::~CArchiveDb()
 		CRecordset rsConnector(&db);
 
 		rsConnector.m_strFilter="nNamePart='"+m_nNamePart+"'";
-		rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+		rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 
 
 		if(rsConnector.IsEOF()){
@@ -74,8 +74,8 @@ CArchiveDb::~CArchiveDb()
 
 			//AfxMessageBox(strQuery);
 
-			FILE *fout=fopen(_T("log_debugdb.txt"),_T("w"));
-			std::string str(strQuery);
+			FILE *fout=_wfopen(_T("log_debugdb.txt"),_T("w"));
+			std::wstring str(strQuery);
 			fwrite(str.c_str(),sizeof(char),str.length(),fout);
 			fclose(fout);
 

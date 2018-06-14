@@ -100,7 +100,7 @@ BOOL CDraftDrawApp::InitInstance()
 
 	//Added 31/10/2004
 	if(!LoadProfileSettings()){
-		AfxMessageBox("No se ha podido verificar la información de Licencia!",MB_ICONSTOP|MB_OK,-1);
+		AfxMessageBox(_T("No se ha podido verificar la información de Licencia!"),MB_ICONSTOP|MB_OK,-1);
 		return FALSE;
 	}
 
@@ -611,7 +611,7 @@ pDDDoc->ChangeSheet(iData);
 
 
 	CString str;
-	str.Format("Hoja %i",iData+1);
+	str.Format(_T("Hoja %i"),iData+1);
 	pChldFrame->m_wndFolderFrame.GetFolderTabCtrl().AddItem(str);
 
 /*
@@ -657,7 +657,7 @@ void CDraftDrawApp::OnEditUndo(){
 
 	if(pDDDoc->cmdDeque->m_nIndexCommQue>0||(GetActiveDocument()->cmdDeque->m_nIndexCommQue==0&&GetActiveDocument()->cmdDeque->m_bBackwards)){
 
-		std::string sCommand;
+		std::wstring sCommand;
 
 		if(!pDDDoc->cmdDeque->m_bBackwards)
 			pDDDoc->cmdDeque->m_nIndexCommQue--;
@@ -694,7 +694,7 @@ void CDraftDrawApp::OnEditRedo(){
 
 	if(pDDDoc->cmdDeque->m_nIndexCommQue<idata){
 
-		std::string sCommand;
+		std::wstring sCommand;
 
 		if(pDDDoc->cmdDeque->m_bBackwards)
 			pDDDoc->cmdDeque->m_nIndexCommQue++;
@@ -773,10 +773,10 @@ void CDraftDrawApp::WinHelp(DWORD dwData, UINT nCmd)
 	switch (nCmd)
 	{
 		case HELP_CONTEXT: 
-			::HtmlHelp(NULL, ".\\hlp\\DraftCable.chm",HH_HELP_CONTEXT, dwData );
+			::HtmlHelp(NULL, _T(".\\hlp\\DraftCable.chm"),HH_HELP_CONTEXT, dwData );
 			break;
 		case HELP_FINDER: 
-			::HtmlHelp(NULL, ".\\hlp\\DraftCable.chm",HH_DISPLAY_TOPIC, 0);
+			::HtmlHelp(NULL, _T(".\\hlp\\DraftCable.chm"),HH_DISPLAY_TOPIC, 0);
 		         break;	
 	}
 }
@@ -828,7 +828,7 @@ void CDraftDrawApp::MyMRUFileHandler(UINT i)
 	int nIndex = i - ID_FILE_MRU_FILE1;
 	ASSERT((*m_pRecentFileList)[nIndex].GetLength() != 0);
 
-	strName.Format("MRU: open file (%d) '%s'.\n", (nIndex)+1, (LPCTSTR)(*m_pRecentFileList)[nIndex]);
+	strName.Format(_T("MRU: open file (%d) '%s'.\n"), (nIndex)+1, (LPCTSTR)(*m_pRecentFileList)[nIndex]);
 
 	if (OpenDocumentFile((*m_pRecentFileList)[nIndex]) == NULL)
 		m_pRecentFileList->Remove(nIndex);

@@ -70,7 +70,7 @@ CFont * CTipography::GetFont(int index)
 		   CLIP_DEFAULT_PRECIS,       // nClipPrecision
 		   DEFAULT_QUALITY,           // nQuality
 		   DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-		   "Arial");                 // lpszFacename
+		   _T("Arial"));                 // lpszFacename
 */
 
 	}
@@ -95,7 +95,7 @@ void CTipography::Initialize()
 		CLIP_DEFAULT_PRECIS,		// nClipPrecision
 		DEFAULT_QUALITY,			// nQuality
 		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-		"Arial");					// lpszFacename
+		_T("Arial"));					// lpszFacename
 
 	m_pFont[1]=new CFont();
 	m_pFont[1]->CreateFont(
@@ -112,7 +112,7 @@ void CTipography::Initialize()
 		CLIP_DEFAULT_PRECIS,		// nClipPrecision
 		DEFAULT_QUALITY,			// nQuality
 		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-		"Arial");					// lpszFacename
+		_T("Arial"));					// lpszFacename
 
 	m_pFont[2]=new CFont();
 	m_pFont[2]->CreateFont(
@@ -129,7 +129,7 @@ void CTipography::Initialize()
 		CLIP_DEFAULT_PRECIS,		// nClipPrecision
 		DEFAULT_QUALITY,			// nQuality
 		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-		"Arial");					// lpszFacename
+		_T("Arial"));					// lpszFacename
 
 	m_pFont[3]=new CFont();
 	m_pFont[3]->CreateFont(
@@ -146,6 +146,6 @@ void CTipography::Initialize()
 		CLIP_DEFAULT_PRECIS,		// nClipPrecision
 		DEFAULT_QUALITY,			// nQuality
 		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-		"Arial");					// lpszFacename
+		_T("Arial"));					// lpszFacename
 
 }

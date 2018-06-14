@@ -43,7 +43,7 @@ CGbrioFile::~CGbrioFile()
 void CGbrioFile::WriteLineTo(CPoint point)
 {
 	CString strCommand;
-	strCommand.Format("X%05iY%05i*\n",point.x,point.y);
+	strCommand.Format(_T("X%05iY%05i*\n"),point.x,point.y);
 
 	m_par->WriteString(strCommand);
 }
@@ -51,10 +51,10 @@ void CGbrioFile::WriteLineTo(CPoint point)
 void CGbrioFile::WriteMoveTo(CPoint point)
 {
 
-	CString strCommand1="D02*\n";
+	CString strCommand1=_T("D02*\n");
 	CString strCommand2;
-	strCommand2.Format("X%05iY%05i*\n",point.x,point.y);
-	CString strCommand3="D01*\n";
+	strCommand2.Format(_T("X%05iY%05i*\n"),point.x,point.y);
+	CString strCommand3=_T("D01*\n");
 
 	m_par->WriteString(strCommand1);
 	m_par->WriteString(strCommand2);
@@ -73,7 +73,7 @@ void CGbrioFile::WriteMoveTo(CPoint point)
 
 CDdwioFile::CDdwioFile(CArchiveDb *par)
 {
-	m_stCommandLast="";
+	m_stCommandLast=_T("");
 	m_par=par;
 
 	m_bOrg=FALSE;
@@ -87,16 +87,16 @@ CDdwioFile::~CDdwioFile()
 void CDdwioFile::WritePin(POINT point,UINT uiPinnumber,UINT uiPos,DWORD dwStyle,int iPinType/* = 0*/){
 
 	//WRITE COMMAND
-	CString strCommand="[pin]\n";
+	CString strCommand=_T("[pin]\n");
 
 	CPoint rpoint=CPoint(point)-m_POrg;
-	if(m_stCommandLast.CompareNoCase("[pin]")){
+	if(m_stCommandLast.CompareNoCase(_T("[pin]"))){
 
-		m_stCommandLast="[pin]";
+		m_stCommandLast=_T("[pin]");
 		m_par->WriteString(strCommand);
 	}
 
-	strCommand.Format("%i,%i,%i,%i,%i,%i\n",
+	strCommand.Format(_T("%i,%i,%i,%i,%i,%i\n"),
 		rpoint.x,rpoint.y,uiPinnumber,uiPos,dwStyle,iPinType);
 
 	m_par->WriteString(strCommand);
@@ -113,15 +113,15 @@ void CDdwioFile::WriteLabel(label *lb){
 	}
 
 	//WRITE COMMAND
-	CString strCommand="[label]\n";
+	CString strCommand=_T("[label]\n");
 
-	if(m_stCommandLast.CompareNoCase("[label]")){
+	if(m_stCommandLast.CompareNoCase(_T("[label]"))){
 
-		m_stCommandLast="[label]";
+		m_stCommandLast=_T("[label]");
 		m_par->WriteString(strCommand);
 	}
 
-	strCommand="";
+	strCommand=_T("");
 	CString stfield;
 
 	CPoint p[4];
@@ -136,14 +136,14 @@ void CDdwioFile::WriteLabel(label *lb){
 
 		CPoint point=CPoint(p[i])-m_POrg;
 
-		stfield.Format("%i,%i,",point.x,point.y);
+		stfield.Format(_T("%i,%i,"),point.x,point.y);
 		strCommand+=stfield;
 
 	}
 
 	CPoint point=CPoint(p[i])-m_POrg;
 
-	stfield.Format("%i,%i\n",point.x,point.y);
+	stfield.Format(_T("%i,%i\n"),point.x,point.y);
 
 	strCommand+=stfield;
 
@@ -151,23 +151,23 @@ void CDdwioFile::WriteLabel(label *lb){
 
 
 	//---------
-	std::string ststr=*lb->slabel;
-	int idata=ststr.find("\n");
-	while(idata!=std::string::npos){
+	std::wstring ststr=*lb->slabel;
+	int idata=ststr.find(_T("\n"));
+	while(idata!=std::wstring::npos){
 		ststr=ststr.substr(0,idata)+ststr.substr(idata+1,ststr.length()-idata-1);
-		idata=ststr.find("\n");
+		idata=ststr.find(_T("\n"));
 	}
 	//---------
 
 
 	strCommand=ststr.c_str();//*lb->slabel;
-	strCommand+=",";
+	strCommand+=_T(",");
 	strCommand+=ststr.c_str();//*lb->slabel;
-	strCommand+="\n";
+	strCommand+=_T("\n");
 
 	m_par->WriteString(strCommand);
 
-	strCommand.Format("%i,%i\n",lb->bver,lb->iSize);
+	strCommand.Format(_T("%i,%i\n"),lb->bver,lb->iSize);
 
 	m_par->WriteString(strCommand);
 
@@ -201,15 +201,15 @@ void CDdwioFile::WritePolyline(LPPOINT lpPoints, int nCount )
 
 	}
 
-	CString strCommand="[polyline]\n";
+	CString strCommand=_T("[polyline]\n");
 
-	if(m_stCommandLast.CompareNoCase("[polyline]")){
+	if(m_stCommandLast.CompareNoCase(_T("[polyline]"))){
 
-		m_stCommandLast="[polyline]";
+		m_stCommandLast=_T("[polyline]");
 		m_par->WriteString(strCommand);
 	}
 
-	strCommand.Format("%i,",nCount);
+	strCommand.Format(_T("%i,"),nCount);
 	CString stfield;
 
 	int i;
@@ -217,14 +217,14 @@ void CDdwioFile::WritePolyline(LPPOINT lpPoints, int nCount )
 
 		CPoint point=CPoint(lpPoints[i])-m_POrg;
 
-		stfield.Format("%i,%i,",point.x,point.y);
+		stfield.Format(_T("%i,%i,"),point.x,point.y);
 		strCommand+=stfield;
 
 	}
 
 	CPoint point=CPoint(lpPoints[i])-m_POrg;
 
-	stfield.Format("%i,%i\n",point.x,point.y);
+	stfield.Format(_T("%i,%i\n"),point.x,point.y);
 
 	strCommand+=stfield;
 
@@ -242,11 +242,11 @@ void CDdwioFile::WriteRect(CRect *rect){
 	}
 
 	//COMMAND
-	CString strCommand="[rectangle]\n";
+	CString strCommand=_T("[rectangle]\n");
 
-	if(m_stCommandLast.CompareNoCase("[rectangle]")){
+	if(m_stCommandLast.CompareNoCase(_T("[rectangle]"))){
 
-		m_stCommandLast="[rectangle]";
+		m_stCommandLast=_T("[rectangle]");
 		m_par->WriteString(strCommand);
 	}
 
@@ -256,7 +256,7 @@ void CDdwioFile::WriteRect(CRect *rect){
 	CPoint point1=rect->TopLeft()-m_POrg;
 	CPoint point2=rect->BottomRight()-m_POrg;
 	
-	strCommand.Format("%i,%i,%i,%i\n",
+	strCommand.Format(_T("%i,%i,%i,%i\n"),
 		point1.x,
 		point1.y,
 		point2.x,
@@ -276,11 +276,11 @@ void CDdwioFile::WriteEllipse(CRect *rect,LPCOLORREF lpcrFill/*=NULL*/){
 	}
 
 	//COMMAND
-	CString strCommand="[ellipse]\n";
+	CString strCommand=_T("[ellipse]\n");
 
-	if(m_stCommandLast.CompareNoCase("[ellipse]")){
+	if(m_stCommandLast.CompareNoCase(_T("[ellipse]"))){
 
-		m_stCommandLast="[ellipse]";
+		m_stCommandLast=_T("[ellipse]");
 		m_par->WriteString(strCommand);
 	}
 
@@ -291,14 +291,14 @@ void CDdwioFile::WriteEllipse(CRect *rect,LPCOLORREF lpcrFill/*=NULL*/){
 	CPoint point2=rect->BottomRight()-m_POrg;
 	
 	if(!lpcrFill){
-		strCommand.Format("%i,%i,%i,%i\n",
+		strCommand.Format(_T("%i,%i,%i,%i\n"),
 			point1.x,
 			point1.y,
 			point2.x,
 			point2.y);
 	}
 	else{
-		strCommand.Format("%i,%i,%i,%i,0x%08x\n",
+		strCommand.Format(_T("%i,%i,%i,%i,0x%08x\n"),
 			point1.x,
 			point1.y,
 			point2.x,
@@ -322,11 +322,11 @@ void CDdwioFile::WriteUnit(CString name,CRect *rect,LPCTSTR lpszLabel){
 
 
 	//COMMAND
-	CString strCommand="["+name+"]\n";
+	CString strCommand=_T("[")+name+_T("]\n");
 
-	if(m_stCommandLast.CompareNoCase("["+name+"]")){
+	if(m_stCommandLast.CompareNoCase(_T("[")+name+_T("]"))){
 
-		m_stCommandLast="["+name+"]";
+		m_stCommandLast=_T("[")+name+_T("]");
 		m_par->WriteString(strCommand);
 	}
 
@@ -337,7 +337,7 @@ void CDdwioFile::WriteUnit(CString name,CRect *rect,LPCTSTR lpszLabel){
 	CPoint point2=rect->BottomRight()-m_POrg;
 	
 	if(lpszLabel){
-		strCommand.Format("%i,%i,%i,%i,%s\n",
+		strCommand.Format(_T("%i,%i,%i,%i,%s\n"),
 			point1.x,
 			point1.y,
 			point2.x,
@@ -345,7 +345,7 @@ void CDdwioFile::WriteUnit(CString name,CRect *rect,LPCTSTR lpszLabel){
 			lpszLabel);
 	}
 	else{
-		strCommand.Format("%i,%i,%i,%i\n",
+		strCommand.Format(_T("%i,%i,%i,%i\n"),
 			point1.x,
 			point1.y,
 			point2.x,
@@ -362,18 +362,18 @@ void CDdwioFile::WriteConnect(int *pConn,int nCount){
 
 
 	//COMMAND
-	CString strCommand="[*connection]\n";
+	CString strCommand=_T("[*connection]\n");
 
-	if(m_stCommandLast.CompareNoCase("[*connection]")){
+	if(m_stCommandLast.CompareNoCase(_T("[*connection]"))){
 
-		m_stCommandLast="[*connection]";
+		m_stCommandLast=_T("[*connection]");
 		m_par->WriteString(strCommand);
 	}
 
 
 	//WRITE DATA
 	
-	strCommand.Format("%i,%i,%i,%i\n",
+	strCommand.Format(_T("%i,%i,%i,%i\n"),
 		pConn[0],
 		pConn[1],
 		pConn[2],
@@ -385,17 +385,17 @@ void CDdwioFile::WriteConnect(int *pConn,int nCount){
 void CDdwioFile::WriteSheet(LPCTSTR lpszLabel){
 
 	//COMMAND
-	CString name="*SHEET";
+	CString name=_T("*SHEET");
 
 	if(lpszLabel!=NULL){
 		name=lpszLabel;
 	}
 
-	CString strCommand="["+name+"]\n";
+	CString strCommand=_T("[")+name+_T("]\n");
 
-	if(m_stCommandLast.CompareNoCase("["+name+"]")){
+	if(m_stCommandLast.CompareNoCase(_T("[")+name+_T("]"))){
 
-		m_stCommandLast="["+name+"]";
+		m_stCommandLast=_T("[")+name+_T("]");
 		m_par->WriteString(strCommand);
 	}
 }
@@ -414,16 +414,16 @@ void CDdwioFile::WriteUnit(CString name,LPPOINT lpPoints, int nCount,LPCTSTR lps
 
 
 	//COMMAND
-	CString strCommand="["+name+"]\n";
+	CString strCommand=_T("[")+name+_T("]\n");
 
-	if(m_stCommandLast.CompareNoCase("["+name+"]")){
+	if(m_stCommandLast.CompareNoCase(_T("[")+name+_T("]"))){
 
-		m_stCommandLast="["+name+"]";
+		m_stCommandLast=_T("[")+name+_T("]");
 		m_par->WriteString(strCommand);
 	}
 
 	//WRITE DATA
-	strCommand.Format("%i,",nCount);
+	strCommand.Format(_T("%i,"),nCount);
 	CString stfield;
 
 	int i=0;
@@ -431,14 +431,14 @@ void CDdwioFile::WriteUnit(CString name,LPPOINT lpPoints, int nCount,LPCTSTR lps
 
 		CPoint point=CPoint(lpPoints[i])-m_POrg;
 
-		stfield.Format("%i,%i,",point.x,point.y);
+		stfield.Format(_T("%i,%i,"),point.x,point.y);
 		strCommand+=stfield;
 
 	}
 
 	CPoint point=CPoint(lpPoints[i])-m_POrg;
 
-	stfield.Format("%i,%i",point.x,point.y);
+	stfield.Format(_T("%i,%i"),point.x,point.y);
 
 	strCommand+=stfield;
 
@@ -446,11 +446,11 @@ void CDdwioFile::WriteUnit(CString name,LPPOINT lpPoints, int nCount,LPCTSTR lps
 
 	//WRITE LABEL
 	if(lpszLabel){
-		strCommand.Format(",%s\n",
+		strCommand.Format(_T(",%s\n"),
 			lpszLabel);
 	}
 	else{
-		strCommand="\n";
+		strCommand=_T("\n");
 	}
 
 	m_par->WriteString(strCommand);

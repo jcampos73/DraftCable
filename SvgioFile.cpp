@@ -21,7 +21,7 @@ CSvgioFile::~CSvgioFile()
 void CSvgioFile::WriteLineTo(CPoint point)
 {
 	CString strCommand1;
-	strCommand1.Format("L %i %i ", point.x, point.y);
+	strCommand1.Format(_T("L %i %i "), point.x, point.y);
 
 	coorStr += strCommand1;
 }
@@ -30,7 +30,7 @@ void CSvgioFile::WriteMoveTo(CPoint point)
 {
 
 	CString strCommand1;
-	strCommand1.Format("M %i %i ", point.x, point.y);
+	strCommand1.Format(_T("M %i %i "), point.x, point.y);
 
 	coorStr += strCommand1;
 }

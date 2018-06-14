@@ -194,11 +194,11 @@ BOOL CFolderTabCtrl::Create(DWORD dwStyle, const RECT& rc,
 //16/12/2004
 //Create buttons
 CButton *pBtn=new CButton();
-pBtn->Create("",WS_VISIBLE|WS_CHILD|BS_ICON,CRect(15,0,30,15),this,1000);
+pBtn->Create(_T(""),WS_VISIBLE|WS_CHILD|BS_ICON,CRect(15,0,30,15),this,1000);
 HICON hicon=::LoadIcon(AfxGetInstanceHandle( ),MAKEINTRESOURCE(IDI_ARROW_RIGHT));
 pBtn->SetIcon(hicon);
 pBtn=new CButton();
-pBtn->Create("",WS_VISIBLE|WS_CHILD|BS_ICON,CRect(0,0,15,15),this,1001);
+pBtn->Create(_T(""), WS_VISIBLE | WS_CHILD | BS_ICON, CRect(0, 0, 15, 15), this, 1001);
 hicon=::LoadIcon(AfxGetInstanceHandle( ),MAKEINTRESOURCE(IDI_ARROW_LEFT));
 pBtn->SetIcon(hicon);
 

@@ -28,7 +28,7 @@ CCableEdit::CCableEdit(CWnd* pParent /*=NULL*/)
 	m_strFile = _T("");
 	//}}AFX_DATA_INIT
 }
-CCableEdit::CCableEdit(LPCSTR lpcsCableFile, BOOL bConnector /*= FALSE*/, CWnd* pParent /*=NULL*/)
+CCableEdit::CCableEdit(LPCTSTR lpcsCableFile, BOOL bConnector /*= FALSE*/, CWnd* pParent /*=NULL*/)
 	: CDialog(CCableEdit::IDD, pParent)
 {
 	m_bModified=FALSE;
@@ -118,7 +118,7 @@ void CCableEdit::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 		int index=m_lcCable.GetSelectionMark();
 		if(index<0){
 			index=m_lcCable.GetItemCount();
-			m_lcCable.InsertItem(index,"");
+			m_lcCable.InsertItem(index,_T(""));
 		}
 
 
@@ -843,7 +843,7 @@ void CCableEdit::DoPrepareCtrl()
 		LPTSTR *listCable = (LPTSTR *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, nCount*sizeof(CString*));
 		int i;
 		for (i = 0; i<nCount; i++){
-			listCable[i] = new char[256];
+			listCable[i] = new TCHAR[256];
 		}
 		AfxGetCables(listCable, nCount, 255);
 		for (i = 0; i<nCount; i++){
@@ -866,7 +866,7 @@ void CCableEdit::DoPrepareCtrl()
 		LPTSTR *listCable = (LPTSTR *)GlobalAlloc(GMEM_FIXED | GMEM_ZEROINIT, nCount*sizeof(CString*));
 		int i;
 		for (i = 0; i<nCount; i++){
-			listCable[i] = new char[256];
+			listCable[i] = new TCHAR[256];
 		}
 		AfxGetConnector(listCable, nCount, 255);
 		for (i = 0; i<nCount; i++){
@@ -898,10 +898,10 @@ void CCableEdit::DoPrepareCtrl()
 		m_iColumn[2] = _COLDEFWIDTH_CABLEDIT;
 		m_iColumn[3] = _COLDEFWIDTH_CABLEDIT;
 
-		m_lcCable.InsertColumn(0, "PIN", LVCFMT_LEFT, m_iColumn[0], 0);
-		m_lcCable.InsertColumn(1, "REF.HILO", LVCFMT_LEFT, m_iColumn[1], 1);
-		m_lcCable.InsertColumn(2, "FUNCTION", LVCFMT_LEFT, m_iColumn[2], 2);
-		m_lcCable.InsertColumn(3, "PIN", LVCFMT_LEFT, m_iColumn[3], 3);
+		m_lcCable.InsertColumn(0, _T("PIN"), LVCFMT_LEFT, m_iColumn[0], 0);
+		m_lcCable.InsertColumn(1, _T("REF.HILO"), LVCFMT_LEFT, m_iColumn[1], 1);
+		m_lcCable.InsertColumn(2, _T("FUNCTION"), LVCFMT_LEFT, m_iColumn[2], 2);
+		m_lcCable.InsertColumn(3, _T("PIN"), LVCFMT_LEFT, m_iColumn[3], 3);
 
 		m_nColumn = 4;
 	}
@@ -909,8 +909,8 @@ void CCableEdit::DoPrepareCtrl()
 		m_iColumn[0] = _COLDEFWIDTH_CABLEDIT;
 		m_iColumn[1] = _COLDEFWIDTH_CABLEDIT;
 
-		m_lcCable.InsertColumn(0, "PIN", LVCFMT_LEFT, m_iColumn[0], 0);
-		m_lcCable.InsertColumn(1, "REF.HILO", LVCFMT_LEFT, m_iColumn[1], 1);
+		m_lcCable.InsertColumn(0, _T("PIN"), LVCFMT_LEFT, m_iColumn[0], 0);
+		m_lcCable.InsertColumn(1, _T("REF.HILO"), LVCFMT_LEFT, m_iColumn[1], 1);
 
 		m_nColumn = 2;
 	}

@@ -9,9 +9,9 @@ public:
 	CPenTool(LinkType linkType);
 	~CPenTool();
 public:
-	virtual void MoveTo(CPoint point);
-	virtual void MouseDown(CPoint point);
-	virtual void MouseUp(CPoint point);
+	virtual CRect MoveTo(CPoint point);
+	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseUp(CPoint point);
 protected:
 	enum Status { ddcStatusNothingDrawing = 0, ddcStatusBeginPolyDrawing, ddcStatusPolyDrawing, ddcStatusPenDrawing } m_Status;
 	LinkType m_LinkType;
@@ -19,5 +19,6 @@ protected:
 	virtual void __DoState(CPoint point, EventType eventType);
 	void __DoStateBeginPoly(CPoint point, EventType eventType);
 	void __DoStateDrawing(CPoint point, EventType eventType);
+	BOOL __DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd);
 };
 

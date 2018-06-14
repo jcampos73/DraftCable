@@ -11,15 +11,16 @@ public:
 	CObList *m_pObListSel;
 
 public:
-	virtual void MoveTo(CPoint point);
-	virtual void MouseDown(CPoint point);
-	virtual void MouseUp(CPoint point);
+	virtual CRect MoveTo(CPoint point);
+	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseUp(CPoint point);
 protected:
 	enum EventType { ddcEventMouseDown, ddcEventMouseUp };
 	CPoint m_ptMouseDownPrev;
 
-	virtual void DeselectAll();
+	virtual CRect DeselectAll();
 	virtual CShape* GetCurrentShape();
+	virtual void _DoAddNewShapeToStack(UINT nFlags, CPoint point);
 	virtual CShape* __DoCreateNewItem(CPoint point);
 	virtual void __DoState(CPoint point, EventType eventType);
 };

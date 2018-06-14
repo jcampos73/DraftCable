@@ -132,6 +132,7 @@ public:
 public:
 	virtual CShape& operator=( const CShape& Sh );
 	virtual CShape& operator++( );
+	virtual BOOL PtInRect(CPoint point);
 	virtual void Select(BOOL bSelect=TRUE);//select shape
 	virtual BOOL IsSelected();//Is shape selected?
 	virtual void Unselect();//unselect shape

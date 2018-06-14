@@ -524,6 +524,15 @@
     <ClInclude Include="DraftDrawTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dibapi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UtilsCPP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mpi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\4WAY03.CUR">
@@ -722,10 +731,22 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test.txt" />
+    <Text Include="ToDo_ConvertToUnicode.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\bmp_box.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="GdiPlus.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="UtilsCPP.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="DIBAPIDLL.lib">
+      <Filter>Source Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>

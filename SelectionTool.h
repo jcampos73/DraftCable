@@ -7,11 +7,13 @@ public:
 	DECLARE_SERIAL(CSelectionTool);
 	~CSelectionTool();
 public:
-	virtual void MoveTo(CPoint point);
-	virtual void MouseDown(CPoint point);
-	virtual void MouseUp(CPoint point);
+	virtual CRect MoveTo(CPoint point);
+	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseUp(CPoint point);
 protected:
 	enum Status { ddcStatusNothingSelected = 0, ddcStatusSomeSelected, ddcStatusCreatingSelectionRect } m_Status;
 	CRect m_rect;
+
+	void _AddToSelectedArray(CShape *pSh);
 };
 

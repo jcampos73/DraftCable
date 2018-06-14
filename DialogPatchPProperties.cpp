@@ -57,7 +57,7 @@ BOOL CDialogPatchPProperties::OnInitDialog()
 	LPTSTR *listCable=(LPTSTR *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,nCount*sizeof(CString*));
 	int i;
 	for(i=0;i<nCount;i++){
-		listCable[i]=new char[256];
+		listCable[i]=new TCHAR[256];
 	}		
 	AfxGetCables(listCable,nCount,255);
 	for(i=0;i<nCount;i++){
@@ -75,7 +75,7 @@ BOOL CDialogPatchPProperties::OnInitDialog()
 
 	//Configures combo box control
 	//-----------------------------------------------------------------
-	std::map<std::string,int>::iterator it1=m_mapCableNum.begin();
+	std::map<std::wstring,int>::iterator it1=m_mapCableNum.begin();
 	while(it1!=m_mapCableNum.end()){
 		m_cbName1.AddString(it1->first.c_str());
 		m_cbName2.AddString(it1->first.c_str());
@@ -86,7 +86,7 @@ BOOL CDialogPatchPProperties::OnInitDialog()
 
 	//List control
 	//-----------------------------------------------------------------
-	TCHAR buffer[MAX_PATH]="Número";
+	TCHAR buffer[MAX_PATH]=_T("Número");
 	LVCOLUMN lvColumn;
 	lvColumn.pszText=buffer;
 	lvColumn.mask=LVCF_ORDER|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
@@ -99,7 +99,7 @@ BOOL CDialogPatchPProperties::OnInitDialog()
 
 
 
-	strcpy(buffer,"Cable Tipo");
+	wcscpy(buffer,_T("Cable Tipo"));
 	lvColumn.mask=LVCF_ORDER|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
 	lvColumn.cx=100;
 	lvColumn.iSubItem=1;
@@ -110,8 +110,8 @@ BOOL CDialogPatchPProperties::OnInitDialog()
 	SendDlgItemMessage(IDC_LIST2,LVM_INSERTCOLUMN,1,(LPARAM)&lvColumn);
 	*/
 
-	m_lcList1.InsertColumn(1,"Cable Tipo",LVCFMT_LEFT,100,1);
-	m_lcList2.InsertColumn(1,"Cable Tipo",LVCFMT_LEFT,100,1);
+	m_lcList1.InsertColumn(1,_T("Cable Tipo"),LVCFMT_LEFT,100,1);
+	m_lcList2.InsertColumn(1,_T("Cable Tipo"),LVCFMT_LEFT,100,1);
 
 	//-----------------------------------------------------------------
 
@@ -149,10 +149,10 @@ BOOL CDialogPatchPProperties::OnCommand(WPARAM wParam, LPARAM lParam)
 		//Get number of items in list ctrl
 		int nCount=SendDlgItemMessage(nId,LVM_GETITEMCOUNT,0,0);
 		//Insert item
-		TCHAR buffer[MAX_PATH]="Item1";
+		TCHAR buffer[MAX_PATH]=_T("Item1");
 		LVITEM lvItem;
 		lvItem.mask=LVIF_TEXT|LVIF_PARAM;
-		lvItem.pszText=strcpy(buffer,str);
+		lvItem.pszText=wcscpy(buffer,str);
 		lvItem.lParam=m_cbFile1.GetItemData( nIndex );
 		lvItem.iItem=nCount;
 		lvItem.iSubItem=0;
@@ -201,7 +201,7 @@ void CDialogPatchPProperties::OnOK()
 			str=buffer;
 			lvItem.iSubItem=1;
 			SendDlgItemMessage(nId,LVM_GETITEMTEXT,j,(LPARAM)&lvItem);
-			str+=";";
+			str+=_T(";");
 			str+=buffer;
 			pstraCable->Add(str);
 		}

@@ -17,7 +17,7 @@ public:
 	CDialogPatchPProperties(CWnd* pParent = NULL);   // standard constructor
 	CStringArray *m_pstraCable1;
 	CStringArray *m_pstraCable2;
-	std::map<std::string,int> m_mapCableNum;
+	std::map<std::wstring,int> m_mapCableNum;
 
 // Dialog Data
 	//{{AFX_DATA(CDialogPatchPProperties)

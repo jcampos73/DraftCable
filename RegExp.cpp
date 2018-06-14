@@ -25,7 +25,7 @@
 // Utility definitions.
 #define	FAIL(m)	{ regerror(m); return(NULL); }
 #define	ISREPN(c)	((c) == _T('*') || (c) == _T('+') || (c) == _T('?'))
-#define	META "^$.[()|?+*\\"
+#define	META _T("^$.[()|?+*\\")
 
 // Flags to be passed up and down.
 #define	HASWIDTH 01	// Known never to match null string.
@@ -115,7 +115,7 @@ CRegExp* CRegExp::RegComp(const TCHAR *exp)
 		// strong reason, but sufficient in the absence of others.
 		if (flags&SPSTART)
 		{
-			char *longest = NULL;
+			TCHAR *longest = NULL;
 			size_t len = 0;
 
 			for (; scan != NULL; scan = regnext(scan))
@@ -143,9 +143,9 @@ CRegExp* CRegExp::RegComp(const TCHAR *exp)
 
 TCHAR *CRegExp::reg(int paren, int *flagp)
 {
-	char *ret = NULL;
-	char *br;
-	char *ender;
+	TCHAR *ret = NULL;
+	TCHAR *br;
+	TCHAR *ender;
 	int parno;
 	int flags;
 

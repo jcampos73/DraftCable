@@ -51,6 +51,6 @@ protected:
 	static void __DoCreateEllipse(CArray<CPoint, CPoint>* ptArray, CShape*& pSh, CObArray* pobarrShapearr = NULL);
 
 	void __DoProcessPinOrientation(int direction, int l, CSize szPin, CPoint& offset, CPoint& offset0);
-	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = ",", float scale = 0.0f);
+	static POINT GetPointFromStr(LPCTSTR input, LPCTSTR delimiter = _T(","), float scale = 0.0f);
 };
 

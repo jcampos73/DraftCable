@@ -91,7 +91,7 @@ BOOL CDialogNetList::OnInitDialog()
 
 	// Load a Shell Large icon image
 	SHFILEINFO shfi;
-	SHGetFileInfo( ".doc", FILE_ATTRIBUTE_NORMAL, &shfi, sizeof( SHFILEINFO ), 
+	SHGetFileInfo( _T(".doc"), FILE_ATTRIBUTE_NORMAL, &shfi, sizeof( SHFILEINFO ), 
 				   SHGFI_ICON | SHGFI_USEFILEATTRIBUTES);
 
 
@@ -102,7 +102,7 @@ BOOL CDialogNetList::OnInitDialog()
 	hIcon = shfi.hIcon;
 	//SHGetFileInfo is not able to get the icon for .htm files.
 	//Could it work IShellFolder::GetAttributesOf ?
-	SHGetFileInfo( ".xml", FILE_ATTRIBUTE_NORMAL, &shfi, sizeof( SHFILEINFO ), 
+	SHGetFileInfo( _T(".xml"), FILE_ATTRIBUTE_NORMAL, &shfi, sizeof( SHFILEINFO ), 
 				   SHGFI_ICON | SHGFI_USEFILEATTRIBUTES);
 	hIcon = shfi.hIcon;
 	int iItem2=m_ilIcons.Add(hIcon);
@@ -110,10 +110,10 @@ BOOL CDialogNetList::OnInitDialog()
 
 	m_lcList.SetImageList(&m_ilIcons,LVSIL_NORMAL   );
 
-	m_lcList.InsertColumn(0,"Nombre",LVCFMT_LEFT,100,0);
+	m_lcList.InsertColumn(0,_T("Nombre"),LVCFMT_LEFT,100,0);
 
-	m_lcList.InsertItem(0,"Plantilla Standard.doc",iItem1);
-	m_lcList.InsertItem(1,"Plantilla Standard.html",iItem2);
+	m_lcList.InsertItem(0,_T("Plantilla Standard.doc"),iItem1);
+	m_lcList.InsertItem(1,_T("Plantilla Standard.html"),iItem2);
 	m_lcList.SetItemState(1, LVIS_SELECTED, LVIS_SELECTED);
 	m_lcList.SetSelectionMark(1);
 

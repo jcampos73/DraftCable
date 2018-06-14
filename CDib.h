@@ -32,8 +32,8 @@ public:
 	int GetSizeHeader()
 		{return sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD) * m_nColorTableEntries;}
 	CSize GetDimensions();
-	BOOL AttachMapFile(const char* strPathname, BOOL bShare = FALSE);
-	BOOL CopyToMapFile(const char* strPathname);
+	BOOL AttachMapFile(const TCHAR* strPathname, BOOL bShare = FALSE);
+	BOOL CopyToMapFile(const TCHAR* strPathname);
 	BOOL AttachMemory(LPVOID lpvMem, BOOL bMustDelete = FALSE, HGLOBAL hGlobal = NULL);
 	BOOL Draw(CDC* pDC, CPoint origin, CSize size);  // hasta que implementamos CreateDibSection
 	HBITMAP CreateSection(CDC* pDC = NULL);

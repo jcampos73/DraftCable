@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -38,49 +38,53 @@
     <ProjectGuid>{85E30145-5ADC-4CC6-81F1-F50FD26D6251}</ProjectGuid>
     <RootNamespace>DraftDraw</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release64|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -347,7 +351,7 @@
       <AdditionalDependencies>GdiPlus.lib;DIBAPIDLL.lib;UtilsCPP.lib;htmlhelp.lib;mpiwin32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>Debug/DraftCable.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\SrcBoost\UtilsCPP\Debug;..\Lib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\UtilsCPP\Debug;..\Lib\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/DraftCable.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -1108,7 +1112,9 @@
     <ClInclude Include="AbstractTool.h" />
     <ClInclude Include="ConnectorTool.h" />
     <ClInclude Include="DialogShell.h" />
+    <ClInclude Include="dibapi.h" />
     <ClInclude Include="DraftDrawTest.h" />
+    <ClInclude Include="mpi.h" />
     <ClInclude Include="PenTool.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />
@@ -1120,6 +1126,7 @@
     <ClInclude Include="StringEx.h" />
     <ClInclude Include="SvgioFile.h" />
     <ClInclude Include="TestSelectionTool.h" />
+    <ClInclude Include="UtilsCPP.h" />
     <ClInclude Include="XMLArchive.h" />
     <ClInclude Include="_recordset.h" />
     <ClInclude Include="adodc.h" />
@@ -1192,6 +1199,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <Content Include="DIBAPIDLL.dll">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="res\4WAY03.CUR" />
     <None Include="res\arrow_le.ico" />
     <None Include="res\arrow_ri.ico" />
@@ -1258,12 +1269,21 @@
     <None Include="DraftDraw.reg" />
     <None Include="ReadMe.txt" />
     <None Include="Todo.txt" />
+    <Content Include="UtilsCPP.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test.txt" />
+    <Text Include="ToDo_ConvertToUnicode.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\bmp_box.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="DIBAPIDLL.lib" />
+    <Library Include="GdiPlus.lib" />
+    <Library Include="UtilsCPP.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

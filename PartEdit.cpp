@@ -31,7 +31,7 @@ CPartEdit::CPartEdit(CWnd* pParent /*=NULL*/)
 
 	//Font initialization
 	m_bVertical=FALSE;
-	m_sFont="Arial, 12";
+	m_sFont=_T("Arial, 12");
 	m_iSize=12;
 }
 
@@ -65,9 +65,9 @@ BOOL CPartEdit::OnInitDialog()
 	//Configures combo box control
 	//-----------------------------------------------------------------
 
-	m_cbProperty.AddString("Connector");
-	m_cbProperty.AddString("Card");
-	m_cbProperty.SelectString(-1,"Connector");
+	m_cbProperty.AddString(_T("Connector"));
+	m_cbProperty.AddString(_T("Card"));
+	m_cbProperty.SelectString(-1,_T("Connector"));
 
 	//-----------------------------------------------------------------
 
@@ -86,10 +86,10 @@ BOOL CPartEdit::OnInitDialog()
 	//m_iColumn[3]=_COLDEFWIDTH_PARTEDIT;
 
 	//Prepare columns
-	m_lcRegister.InsertColumn(0,"ID",LVCFMT_LEFT,m_iColumn[0],0);
-	m_lcRegister.InsertColumn(1,"TIPO",LVCFMT_LEFT,m_iColumn[1],1);
-	//m_lcCable.InsertColumn(2,"FUNCTION",LVCFMT_LEFT,m_iColumn[2],2);
-	//m_lcCable.InsertColumn(3,"PIN",LVCFMT_LEFT,m_iColumn[3],3);
+	m_lcRegister.InsertColumn(0,_T("ID"),LVCFMT_LEFT,m_iColumn[0],0);
+	m_lcRegister.InsertColumn(1,_T("TIPO"),LVCFMT_LEFT,m_iColumn[1],1);
+	//m_lcCable.InsertColumn(2,_T("FUNCTION"),LVCFMT_LEFT,m_iColumn[2],2);
+	//m_lcCable.InsertColumn(3,_T("PIN"),LVCFMT_LEFT,m_iColumn[3],3);
 
 	DWORD dwStyle = m_lcRegister.SendMessage(LVM_GETEXTENDEDLISTVIEWSTYLE);
 	dwStyle |= LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT;
@@ -100,7 +100,7 @@ BOOL CPartEdit::OnInitDialog()
 
 	//Load list control (register)
 	//-----------------------------------------------------------------
-	DoLoadListCtrl("", 0);
+	DoLoadListCtrl(_T(""), 0);
 	//-----------------------------------------------------------------
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -119,7 +119,7 @@ void CPartEdit::OnDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 	CString sConnect=m_lcRegister.GetItemText(index,1);
 
 	//Old code
-	//sConnect+=".txt";
+	//sConnect+=_T(".txt");
 
 	//Prepare cable/connector editor
 	CCableEdit dialog(sConnect,TRUE);
@@ -164,7 +164,7 @@ void CPartEdit::SetItemText(int nIndex,CShapePin *pShPin = NULL, int nPin = -1)
 	}
 	else if(pShPin != NULL &&
 		pShPin->m_TypePin >= 0 && pShPin->m_TypePin < AfxGetConnectorCount()){
-		char *pch=TABLE_PIN_LABEL[pShPin->m_TypePin];
+		TCHAR *pch=TABLE_PIN_LABEL[pShPin->m_TypePin];
 		m_lcRegister.SetItemText(nIndex,1,TABLE_PIN_LABEL[pShPin->m_TypePin]);
 	}
 	else
@@ -173,7 +173,7 @@ void CPartEdit::SetItemText(int nIndex,CShapePin *pShPin = NULL, int nPin = -1)
 	}
 }
 
-void CPartEdit::DoLoadListCtrl(CString strIdent = "", int nTypePin = 0)
+void CPartEdit::DoLoadListCtrl(CString strIdent = _T(""), int nTypePin = 0)
 {
 	//Load list control (register)
 	//-----------------------------------------------------------------

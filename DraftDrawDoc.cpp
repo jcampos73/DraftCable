@@ -52,15 +52,15 @@ static char THIS_FILE[] = __FILE__;
 
 #define _DCABLE_DATABASEDLG_TREE
 
-//"18;W311;Flex STP CAT 5E PG;J1;J0D;CHASIS SSIF 1R;CHASIS SSIOL 1R;RACK SICAM;RACK SICAM;RJ 45 M apantalldo;RJ 45 M apantalldo;;cable516.txt;4;\n"
-char CABLFILE_LINE[256]={
-"18;%s;Flex STP CAT 5E PG;%s;%s;%s;%s;%s;%s;%s;%s;;%s;4;\n"
+//_T("18;W311;Flex STP CAT 5E PG;J1;J0D;CHASIS SSIF 1R;CHASIS SSIOL 1R;RACK SICAM;RACK SICAM;RJ 45 M apantalldo;RJ 45 M apantalldo;;cable516.txt;4;\n")
+TCHAR CABLFILE_LINE[256]={
+_T("18;%s;Flex STP CAT 5E PG;%s;%s;%s;%s;%s;%s;%s;%s;;%s;4;\n")
 };
-char BRIDGEFILE_LINE[256]={
-"%s;%s;%s;%s;\n"
+TCHAR BRIDGEFILE_LINE[256] = {
+_T("%s;%s;%s;%s;\n")
 };
 
-CString afxWinwordPath="C:\\Archivos de programa\\Microsoft Office\\Office";
+CString afxWinwordPath=_T("C:\\Archivos de programa\\Microsoft Office\\Office");
 
 /////////////////////////////////////////////////////////////////////////////
 // CDraftDrawDoc
@@ -193,7 +193,7 @@ CDraftDrawDoc::~CDraftDrawDoc()
 /////////////////////////////////////////////////////////////////////////////
 // CDraftDrawDoc statical members
 
-//std::string CDraftDrawDoc::m_sFilter = _DRAFTCABLE_DOC_FILTER_STR;//"Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|Draft Draw Files 1 (*.dd1)|*.dd1|"; //All Files (*.*)|*.*||;
+//std::wstring CDraftDrawDoc::m_sFilter = _DRAFTCABLE_DOC_FILTER_STR;//_T("Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|Draft Draw Files 1 (*.dd1)|*.dd1|"); //All Files (*.*)|*.*||;
 
 BOOL CDraftDrawDoc::OnNewDocument()
 {
@@ -222,7 +222,7 @@ BOOL CDraftDrawDoc::OnNewDocument()
 
 	//Load initial title block: bottom right
 	CShapeUnit *pShUnit=new CShapeUnit();
-	pShUnit->LoadUnit("Standard100.title");
+	pShUnit->LoadUnit(_T("Standard100.title"));
 
 	//Control database status
 	if(g_db.IsOpen()){
@@ -564,7 +564,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 						wstring wstr=saCodecs[nFilterIndex-1];
 
-						savebmp(hBitmap,hPal,saCodecs[nFilterIndex-1].c_str(),strPath+"1");
+						savebmp(hBitmap,hPal,saCodecs[nFilterIndex-1].c_str(),strPath+_T("1"));
 
 						break;
 					}
@@ -644,7 +644,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					CMDIFrameWnd *pMFrame=(CMDIFrameWnd *)AfxGetMainWnd();
 					CChildFrame* pChldFrame=(CChildFrame*)pMFrame->MDIGetActive();
 					CString str;
-					str.Format("Hoja %i",nIndex+1);
+					str.Format(_T("Hoja %i"),nIndex+1);
 					pChldFrame->m_wndFolderFrame.GetFolderTabCtrl().AddItem(str);
 					pChldFrame->m_wndFolderFrame.GetFolderTabCtrl().RecomputeLayout();
 					pChldFrame->m_wndFolderFrame.ShowControls(CFolderFrame::bestFit);
@@ -851,16 +851,16 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				*/
 
 				//Local buffer
-				char buffer[256];
+				TCHAR buffer[256];
 				buffer[0]=0;
 
 				CFile *pfile=ar.GetFile();
 
-				fini=fopen(pfile->GetFilePath(),"rb");
+				fini=_wfopen(pfile->GetFilePath(),_T("rb"));
 
-				fgets(buffer,255,fini);
+				fgetws(buffer,255,fini);
 
-				char *pchar=strchr(buffer,'\n');
+				TCHAR *pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				CShapeUnit *shShapeUnit;
@@ -871,7 +871,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				int track=-1;
 				CString sTrackName;
 				int nIndex;
-				while(strlen(buffer)!=0){
+				while(wcslen(buffer)!=0){
 
 					switch(track){
 
@@ -1017,7 +1017,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							CChildFrame* pChldFrame=(CChildFrame*)pMFrame->MDIGetActive();
 
 							CString str;
-							str.Format("Hoja %i",nIndex+1);
+							str.Format(_T("Hoja %i"),nIndex+1);
 							pChldFrame->m_wndFolderFrame.GetFolderTabCtrl().AddItem(str);
 
 							pChldFrame->m_wndFolderFrame.GetFolderTabCtrl().RecomputeLayout();
@@ -1045,14 +1045,14 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			else{
 
 
-				char buffer[256];
+				TCHAR buffer[256];
 				buffer[0]=0;
 
 
 				//To load parts from db
 				//CArchiveDb ardb(NULL,CArchive::load   );
 				//CDatabase db;
-				//std::stringstream g_sout;
+				//std::wstringstream g_sout;
 				//g_bFlagDb=FALSE;//Set to true if part is stored in database
 				g_bFlagDbEnable=TRUE;//Set to true if database storage is enabled
 
@@ -1074,8 +1074,8 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 					CRecordset rsConnector(&g_db);
 
-					rsConnector.m_strFilter="nNamePart='"+CString(strFile)+"' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
-					rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+					rsConnector.m_strFilter=_T("nNamePart='")+CString(strFile)+_T("' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
+					rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 					
 					CString str;
 
@@ -1083,13 +1083,13 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 
 						bFlagDb=TRUE;
 
-						rsConnector.GetFieldValue("nTextPart",str);
+						rsConnector.GetFieldValue(_T("nTextPart"),str);
 					}
 
 
-					sout=std::stringstream(ios_base::in);
+					sout=std::wstringstream(ios_base::in);
 
-					sout.str(std::string(str));
+					sout.str(std::wstring(str));
 
 				}
 */
@@ -1108,14 +1108,14 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				*/
 				//old code sample 2
 				/*
-				fini=fdopen(pfile->m_hFile,"r");
+				fini=fdopen(pfile->m_hFile,_T("r"));
 				*/
 
 				//old code sample 3
 				/*
-				fini=fopen(pfile->GetFilePath(),"rb");
+				fini=_wfopen(pfile->GetFilePath(),_T("rb"));
 
-				fgets(buffer,255,fini);
+				fgetws(buffer,255,fini);
 				char *pchar=strchr(buffer,'\n');
 				*pchar=0;
 				*/
@@ -1136,9 +1136,9 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				}
 				else{
 
-					fini=fopen(pfile->GetFilePath(),"rb");
+					fini=_wfopen(pfile->GetFilePath(),_T("rb"));
 					if(!fini){
-						::AfxMessageBox("No se puede cargar.",MB_ICONSTOP|MB_OK);
+						::AfxMessageBox(_T("No se puede cargar."),MB_ICONSTOP|MB_OK);
 						return;
 					}
 				}
@@ -1147,7 +1147,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				//21/12/2004
 				//Read string from database or file
 				CString stline;
-				std::string stdline;
+				std::wstring stdline;
 				if(g_bFlagDb&&g_bFlagDbEnable){
 
 					ar.ReadString(stline);
@@ -1156,26 +1156,26 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 					stline=CString(stdline.c_str());
 */
 					if(stline.IsEmpty()){
-						::AfxMessageBox("Archivo vacío.",MB_ICONSTOP|MB_OK);
+						::AfxMessageBox(_T("Archivo vacío."),MB_ICONSTOP|MB_OK);
 						return;
 					}
 
-					strncpy(buffer,stline,255);
+					wcsncpy(buffer, stline, 255);
 					buffer[254]=0;
 				}
 				else{
 
-					if(!fgets(buffer,255,fini)){
-						::AfxMessageBox("Archivo vacío.",MB_ICONSTOP|MB_OK);
+					if(!fgetws(buffer,255,fini)){
+						::AfxMessageBox(_T("Archivo vacío."),MB_ICONSTOP|MB_OK);
 						return;
 					}
 
-					char *pchar=strchr(buffer,'\n');
+					TCHAR *pchar=wcschr(buffer,'\n');
 					*pchar=0;
 				}
 
 				int track=-1;
-				while(strlen(buffer)!=0){
+				while(wcslen(buffer)!=0){
 
 					switch(track){
 
@@ -1672,7 +1672,7 @@ void CDraftDrawDoc::DeleteObject(int index, BOOL bDoNotRemoveFromArray /*= FALSE
 		CShape *pShTemp = (CShape *)(*m_pObArray)[i];
 		if (pShTemp == pSh){
 			//TRACE becouse having copies in array is not good
-			TRACE("Duplicated Shape in m_pObArray at pos %i, while deleting %i\n", i, index);
+			TRACE(_T("Duplicated Shape in m_pObArray at pos %i, while deleting %i\n"), i, index);
 			if (bDoNotRemoveFromArray == FALSE){
 				m_pObArray->RemoveAt(i);
 			}
@@ -1886,9 +1886,9 @@ void CDraftDrawDoc::OnFileOpen()
 	}
 
 
-	//static char BASED_CODE szFilter[] = "Chart Files (*.xlc)|*.xlc|Worksheet Files (*.xls)|*.xls|Data Files (*.xlc;*.xls)|*.xlc; *.xls|All Files (*.*)|*.*||";
-	static char BASED_CODE szFilter[] = _DRAFTCABLE_DOC_FILTER_STR"All Files (*.*)|*.*||";
-	static char BASED_CODE szExt[] = "*.dd1";
+	//static char BASED_CODE szFilter[] = _T("Chart Files (*.xlc)|*.xlc|Worksheet Files (*.xls)|*.xls|Data Files (*.xlc;*.xls)|*.xlc; *.xls|All Files (*.*)|*.*||");
+	static TCHAR BASED_CODE szFilter[] = _T(_DRAFTCABLE_DOC_FILTER_STR _T("All Files (*.*)|*.*||"));// +_T("All Files (*.*)|*.*||");
+	static TCHAR BASED_CODE szExt[] = _T("*.dd1");
 
 	CFileDialog fdialog(
 		TRUE,		//open dialog box
@@ -1962,9 +1962,8 @@ void CDraftDrawDoc::OnFileSaveAs()
 
 	//Prepare file extensions filter string
 	CStringArray saExtensions;
-	static std::string sFilter;
+	static std::wstring sFilter;
 	DoFileExtensions(sFilter,saExtensions);
-
 
 	CString strFile;
 
@@ -1972,9 +1971,17 @@ void CDraftDrawDoc::OnFileSaveAs()
 
 	do{
 
-	CString str=this->m_strTitle + ".dd1";
-	static char BASED_CODE szExt[] = "*.dd1";
+	CString str=this->m_strTitle + _T(".dd1");
+	static TCHAR BASED_CODE szExt[] = _T("*.dd1");
 
+	//explicit CFileDialog(BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
+	//	LPCTSTR lpszDefExt = NULL,
+	//	LPCTSTR lpszFileName = NULL,
+	//	DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+	//	LPCTSTR lpszFilter = NULL,
+	//	CWnd* pParentWnd = NULL,
+	//	DWORD dwSize = 0,
+	//	BOOL bVistaStyle = TRUE);
 	CFileDialog fdialog(
 		FALSE,		//save dialog box
 		NULL,
@@ -1999,22 +2006,22 @@ void CDraftDrawDoc::OnFileSaveAs()
 
 			case 1:
 
-				strFile+=".ddw";
+				strFile+=_T(".ddw");
 				break;
 
 			case 2:
 
-				strFile+=".gbr";
+				strFile+=_T(".gbr");
 				break;
 
 			case 3:
 
-				strFile+=".cut";
+				strFile+=_T(".cut");
 				break;
 
 			}
 */
-			strFile+="."+saExtensions[fdialog.m_ofn.nFilterIndex-1];
+			strFile+=_T(".")+saExtensions[fdialog.m_ofn.nFilterIndex-1];
 			sFilter=saExtensions[fdialog.m_ofn.nFilterIndex-1];
 		}
 
@@ -2028,7 +2035,7 @@ void CDraftDrawDoc::OnFileSaveAs()
 
 		if (hFind != INVALID_HANDLE_VALUE){
 
-			result=AfxMessageBox("File allready exists, overwrite?",MB_YESNOCANCEL,0);
+			result=AfxMessageBox(_T("File allready exists, overwrite?"),MB_YESNOCANCEL,0);
 
 		}
 
@@ -2075,7 +2082,7 @@ void CDraftDrawDoc::OnPartSaveAs()
 #ifndef _DCABLE_DATABASEDLG_TREE
 	CNameDlg dlg;
 	dlg.m_Name=strFile;
-	if (dlg.DoModal() == IDCANCEL || dlg.m_Name == "")
+	if (dlg.DoModal() == IDCANCEL || dlg.m_Name == _T(""))
 	{
 		return;
 	}
@@ -2083,8 +2090,8 @@ void CDraftDrawDoc::OnPartSaveAs()
 #else
 	CDialogSaveasDB dlg;
 	dlg.m_Name=strFile;
-	dlg.m_ofn.lpstrFilter=_DRAFTCABLE_DOC_FILTER_STR;//m_sFilter.c_str();
-	if (dlg.DoModal() == IDCANCEL )//|| dlg.m_Name == "")
+	dlg.m_ofn.lpstrFilter=_T(_DRAFTCABLE_DOC_FILTER_STR);//m_sFilter.c_str();
+	if (dlg.DoModal() == IDCANCEL )//|| dlg.m_Name == _T(""))
 	{
 		return;
 	}
@@ -2097,7 +2104,7 @@ void CDraftDrawDoc::OnPartSaveAs()
 	/*
 	if (hFind != INVALID_HANDLE_VALUE){
 
-		result=AfxMessageBox("File allready exists, overwrite?",MB_YESNOCANCEL,0);
+		result=AfxMessageBox(_T("File allready exists, overwrite?"),MB_YESNOCANCEL,0);
 
 	}
 	*/
@@ -2477,7 +2484,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 				m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 				m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-				m_pSh->LoadUnit(dialog->m_sLibrary+"."+dialog->m_sPart);
+				m_pSh->LoadUnit(dialog->m_sLibrary+_T(".")+dialog->m_sPart);
 				m_pSh->m_pCursorArray=m_CursorArray;
 				m_iCursor=11;
 
@@ -2499,7 +2506,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 			m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-			m_pSh->LoadUnit("Standard.noconnect.ddw");
+			m_pSh->LoadUnit(_T("Standard.noconnect.ddw"));
 			m_pSh->m_pCursorArray=m_CursorArray;
 			m_iCursor=11;
 
@@ -2518,7 +2525,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 			m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-			m_pSh->LoadUnit("Standard.port_left.ddw");
+			m_pSh->LoadUnit(_T("Standard.port_left.ddw"));
 			m_pSh->m_pCursorArray=m_CursorArray;
 			m_iCursor=11;
 
@@ -2537,7 +2544,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 			m_pSh=new CShapeUnit(NULL,0,cmdDeque);
-			m_pSh->LoadUnit("Standard.port_right.ddw");
+			m_pSh->LoadUnit(_T("Standard.port_right.ddw"));
 			m_pSh->m_pCursorArray=m_CursorArray;
 			m_iCursor=11;
 
@@ -2579,7 +2586,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 				//Get parameters from dialog
 				DWORD dwStyle=pin.m_iShape;
-				UINT uiPinnumber=atoi(pin.m_stNumber.GetBuffer(10));
+				UINT uiPinnumber=_wtoi(pin.m_stNumber.GetBuffer(10));
 
 				//Create new shape pin
 				CShapePin *pShpin=new CShapePin(uiPinnumber,_DRAFTDRAW_SEL_RESIZING_RECT_S,dwStyle,cmdDeque);
@@ -2649,7 +2656,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 				lf.lfClipPrecision=2;
 				lf.lfQuality=1;
 				lf.lfPitchAndFamily=34;
-				strcpy(lf.lfFaceName,"Arial");
+				wcscpy(lf.lfFaceName,_T("Arial"));
 
 				pShlabel->m_Label.font=new CFont();
 				pShlabel->m_Label.font->CreateFontIndirect(&lf);
@@ -2720,7 +2727,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 						lf.lfClipPrecision=2;
 						lf.lfQuality=1;
 						lf.lfPitchAndFamily=34;
-						strcpy(lf.lfFaceName,"Arial");
+						wcscpy(lf.lfFaceName,_T("Arial"));
 
 						pShLabelSel->m_Label.font=new CFont();
 						pShLabelSel->m_Label.font->CreateFontIndirect(&lf);
@@ -2806,8 +2813,8 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 					pSh->m_pCursorArray=m_CursorArray;
 					//m_pObArray->Add(pSh);
 					AddObject(pSh);
-					//SetPathName1("Standard.Nuevo");//Not set to force query user SaveModified>DoFileSave()>DoSave()
-					SetTitle("Standard.Nuevo");					
+					//SetPathName1(_T("Standard.Nuevo"));//Not set to force query user SaveModified>DoFileSave()>DoSave()
+					SetTitle(_T("Standard.Nuevo"));					
 
 				}
 			}
@@ -2840,7 +2847,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			*/
 
 			m_pSh=new CShapeUnit();
-			m_pSh->LoadUnit("Standard.junction.ddw");
+			m_pSh->LoadUnit(_T("Standard.junction.ddw"));
 			m_pSh->m_pCursorArray=m_CursorArray;
 			m_iCursor=11;
 
@@ -2855,7 +2862,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 
 			m_pSh=new CShapeUnit();
-			m_pSh->LoadUnit("Standard.busjunc.ddw");
+			m_pSh->LoadUnit(_T("Standard.busjunc.ddw"));
 			m_pSh->m_pCursorArray=m_CursorArray;
 			m_iCursor=11;
 
@@ -2963,12 +2970,12 @@ void CDraftDrawDoc::OnArchivoGencable()
 	//Declarations
 	FILE *fcabl=NULL;
 	FILE *fbridge=NULL;int nBridgeCounter=0;
-	FILE *flog=fopen(g_sDCableBaseDir+"cableado.log","w");
+	FILE *flog=_wfopen(g_sDCableBaseDir+_T("cableado.log"),_T("w"));
 	FILE *fmat = NULL;
 	BOOL bFlagWarn=FALSE;
 	int index;
 	CStringList *slCables=new CStringList;
-	CString strLocation="RACK";
+	CString strLocation=_T("RACK");
 	CMapStringToString mapCables;
 	CMapStringToString mapConnectors;
 
@@ -2980,12 +2987,12 @@ void CDraftDrawDoc::OnArchivoGencable()
 		if(pSh->IsKindOf(RUNTIME_CLASS(CShapeUnit))){
 			CString str=pSh->m_strIdent;
 			str.MakeUpper();
-			if(str.Find("TITLE")>=0){
+			if(str.Find(_T("TITLE"))>=0){
 				CShapeUnit *pShUnit=(CShapeUnit *)pSh;
 				for(int i=0;i<pShUnit->m_LabelsCount;i++){
 					CString str=*pShUnit->m_pLabels[i]->sname;
 					str.MakeUpper();
-					if(str.Find("TITLE")>=0){
+					if(str.Find(_T("TITLE"))>=0){
 						strLocation=*pShUnit->m_pLabels[i]->slabel;
 						break;
 					}
@@ -3006,12 +3013,12 @@ void CDraftDrawDoc::OnArchivoGencable()
 		CRuntimeClass* pRuntimeClass=pSh->GetRuntimeClass( );
 
 		CString sName=CString(pRuntimeClass->m_lpszClassName);
-		if(!sName.Compare("CShapeWire")){
+		if(!sName.Compare(_T("CShapeWire"))){
 			if(!pSh->m_strIdent.IsEmpty()){
 
-				CString sIdOrg="",sIdDest="";
-				CString sConnOrg="",sConnDest="";
-				CString sConnNumOrg="",sConnNumDest="";
+				CString sIdOrg=_T(""),sIdDest=_T("");
+				CString sConnOrg=_T(""),sConnDest=_T("");
+				CString sConnNumOrg=_T(""),sConnNumDest=_T("");
 				CShape *pShOrg=NULL,*pShDest=NULL;
 
 				//keep a register of written cables
@@ -3034,8 +3041,8 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 						std::fstream fout;
 
-						strBridge.Format("%s~bridge%03i.txt",AfxGetCablePath(),nBridgeCounter);
-						strBridgeTitle.Format("~bridge%03i.txt",nBridgeCounter);
+						strBridge.Format(_T("%s~bridge%03i.txt"),AfxGetCablePath(),nBridgeCounter);
+						strBridgeTitle.Format(_T("~bridge%03i.txt"),nBridgeCounter);
 						nBridgeCounter++;
 						fout.open(strBridge,std::ios_base::out);
 
@@ -3049,15 +3056,15 @@ void CDraftDrawDoc::OnArchivoGencable()
 								idata2=(*piaParameter)[i+3];
 							}
 
-							fout<<idata1<<";;;"<<idata2<<"\n";
+							fout<<idata1<<_T(";;;")<<idata2<<_T("\n");
 						}
 
-						fout<<"\n";
+						fout<<_T("\n");
 						fout.close();
 					}
 
 					if(!fbridge){
-						fbridge=fopen(g_sDCableBaseDir+"puentes.txt","w");
+						fbridge=_wfopen(g_sDCableBaseDir+_T("puentes.txt"),_T("w"));
 					}
 
 					//Find origin & destination
@@ -3090,7 +3097,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 					//Write to file
 					int i=strBridgeTitle.Find('.');
-					fprintf(fbridge,BRIDGEFILE_LINE,
+					fwprintf(fbridge,BRIDGEFILE_LINE,
 						pSh->m_strIdent,
 						sIdOrg,
 						sIdDest,
@@ -3110,7 +3117,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 					CShape *pSh=(CShape *)pShCont00->m_obarrShapearr[i];
 					CRuntimeClass* pRuntimeClass=pSh->GetRuntimeClass( );
 					CString sName=CString(pRuntimeClass->m_lpszClassName);
-					if(!sName.Compare("CShapePin")){
+					if(!sName.Compare(_T("CShapePin"))){
 						CShapeContainer *pShCont=(CShapeContainer *)pSh;
 						if(pShCont->m_pshConn){
 							CShape *pSh=pShCont->m_pshConn;
@@ -3125,10 +3132,10 @@ void CDraftDrawDoc::OnArchivoGencable()
 										CShapePin *pShPin=(CShapePin *)pSh;
 										if(pShPin->m_pshConn==pShCont00){
 											if(pShPin->m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-												sConnNumOrg.Format("J%i",pShPin->m_uiPinnumber);
+												sConnNumOrg.Format(_T("J%i"),pShPin->m_uiPinnumber);
 											}
 											else{
-												sConnNumOrg.Format("P%i",pShPin->m_uiPinnumber);
+												sConnNumOrg.Format(_T("P%i"),pShPin->m_uiPinnumber);
 											}
 											int nDefaultPin = 0;
 											if(pShPin->m_TypePin >= 0 && pShPin->m_TypePin < AfxGetConnectorCount()){
@@ -3145,7 +3152,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 											BOOL bLogical=AfxIsConnectorLogical(pShPin->m_TypePin);
 											
 											if((!bLogical)&&AfxGetConnectorPintCount(pShPin->m_TypePin)!=AfxGetCableWireCount(pShCont00->m_strTypeIdent)){
-												fprintf(flog,"No coincide el número de pines:%s a %s\n",
+												fwprintf(flog,_T("No coincide el número de pines:%s a %s\n"),
 													pShCont00->m_strIdent,
 													pShUnit->m_strIdent
 													);
@@ -3172,10 +3179,10 @@ void CDraftDrawDoc::OnArchivoGencable()
 					sIdDest=pShDest->m_strIdent;
 					if(pShPinDest){
 						if(pShPinDest->m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-							sConnNumDest.Format("J%i",pShPinDest->m_uiPinnumber);
+							sConnNumDest.Format(_T("J%i"),pShPinDest->m_uiPinnumber);
 						}
 						else{
-							sConnNumDest.Format("P%i",pShPinDest->m_uiPinnumber);
+							sConnNumDest.Format(_T("P%i"),pShPinDest->m_uiPinnumber);
 						}
 						int nDefaultPin = 0;
 						if(pShPinDest->m_TypePin>= 0 && pShPinDest->m_TypePin < AfxGetConnectorCount()){
@@ -3189,13 +3196,13 @@ void CDraftDrawDoc::OnArchivoGencable()
 				//============================================
 
 				if(!fcabl){
-					fcabl=fopen(g_sDCableBaseDir+"cableado.txt","w");
+					fcabl=_wfopen(g_sDCableBaseDir+_T("cableado.txt"),_T("w"));
 				}
 
 
-				//"18;W311;Flex STP CAT 5E PG;J1;J0D;CHASIS SSIF 1R;CHASIS SSIOL 1R;RACK SICAM;RACK SICAM;RJ 45 M apantalldo;RJ 45 M apantalldo;;cable516.txt;4;\n"
+				//_T("18;W311;Flex STP CAT 5E PG;J1;J0D;CHASIS SSIF 1R;CHASIS SSIOL 1R;RACK SICAM;RACK SICAM;RJ 45 M apantalldo;RJ 45 M apantalldo;;cable516.txt;4;\n")
 				i=pSh->m_strTypeIdent.Find('.');
-				fprintf(fcabl,CABLFILE_LINE,
+				fwprintf(fcabl,CABLFILE_LINE,
 					pSh->m_strIdent,
 					sConnNumOrg,
 					sConnNumDest,
@@ -3211,46 +3218,46 @@ void CDraftDrawDoc::OnArchivoGencable()
 				CString str;
 				if (mapCables.Lookup(pSh->m_strTypeIdent.Left(i), str))
 				{
-					int count = atoi(mapCables[pSh->m_strTypeIdent.Left(i)]) + 1;
-					str.Format("%i", count);
+					int count = _wtoi(mapCables[pSh->m_strTypeIdent.Left(i)]) + 1;
+					str.Format(_T("%i"), count);
 					mapCables[pSh->m_strTypeIdent.Left(i)] = str;
 				}
 				else
 				{
-					mapCables[pSh->m_strTypeIdent.Left(i)] = "1";
+					mapCables[pSh->m_strTypeIdent.Left(i)] = _T("1");
 				}
 
 				i = sConnOrg.Find('.');
 				CString s = sConnOrg.Left(i);
 				CString sConn;
-				sConn.Format("%s(%s)", s, sConnNumOrg.Left(1).MakeUpper() == "J" ? "P" : "J");
+				sConn.Format(_T("%s(%s)"), s, sConnNumOrg.Left(1).MakeUpper() == _T("J") ? _T("P") : _T("J"));
 				if (mapConnectors.Lookup(sConn, str))
 				{
-					int count = atoi(mapConnectors[sConn]) + 1;
-					str.Format("%i", count);
+					int count = _wtoi(mapConnectors[sConn]) + 1;
+					str.Format(_T("%i"), count);
 					mapConnectors[sConn] = str;
 				}
 				else
 				{
-					mapConnectors[sConn] = "1";
+					mapConnectors[sConn] = _T("1");
 				}
 
 				i = sConnDest.Find('.');
 				s = sConnDest.Left(i);
-				sConn.Format("%s(%s)", s, sConnNumDest.Left(1).MakeUpper() == "J" ? "P" : "J");
+				sConn.Format(_T("%s(%s)"), s, sConnNumDest.Left(1).MakeUpper() == _T("J") ? _T("P") : _T("J"));
 				if (mapConnectors.Lookup(sConn, str))
 				{
-					int count = atoi(mapConnectors[sConn]) + 1;
-					str.Format("%i", count);
+					int count = _wtoi(mapConnectors[sConn]) + 1;
+					str.Format(_T("%i"), count);
 					mapConnectors[sConn] = str;
 				}
 				else
 				{
-					mapConnectors[sConn] = "1";
+					mapConnectors[sConn] = _T("1");
 				}
 			}
 			else{
-				fprintf(flog,"Cable sin identificar, se omite de netlist.Coordenadas:(%i,%i)-(%i,%i)\n",
+				fwprintf(flog,_T("Cable sin identificar, se omite de netlist.Coordenadas:(%i,%i)-(%i,%i)\n"),
 					pSh->m_Rect.TopLeft().x,
 					pSh->m_Rect.TopLeft().y,
 					pSh->m_Rect.BottomRight().x,
@@ -3268,7 +3275,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 	while (pos != NULL)
 	{
 		if (!fmat){
-			fmat = fopen(g_sDCableBaseDir + "materials.csv", "w");
+			fmat = _wfopen(g_sDCableBaseDir + _T("materials.csv"), _T("w"));
 		}
 
 		CString key, value;
@@ -3276,18 +3283,18 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 		CString str; str.Format(_T("%s;%s\n"), key, value);
 
-		fprintf(fmat, str);
+		fwprintf(fmat, str);
 	}
 
 	if (fmat){
-		fprintf(fmat, "\n");
+		fwprintf(fmat, _T("\n"));
 	}
 
 	pos = mapConnectors.GetStartPosition();
 	while (pos != NULL)
 	{
 		if (!fmat){
-			fmat = fopen(g_sDCableBaseDir + "materials.csv", "w");
+			fmat = _wfopen(g_sDCableBaseDir + _T("materials.csv"), _T("w"));
 		}
 
 		CString key, value;
@@ -3295,7 +3302,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 		CString str; str.Format(_T("%s;%s\n"), key, value);
 
-		fprintf(fmat, str);
+		fwprintf(fmat, str);
 	}
 
 	if (fmat){
@@ -3314,7 +3321,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 			if(it1!=m_mapIdHWView.end()){
 				CShapeContainer *pShCont=(CShapeContainer *)pSh;
 				std::fstream fout;
-				fout.open("~bridge.txt",std::ios_base::out);
+				fout.open(_T("~bridge.txt"),std::ios_base::out);
 
 				for(int i=0;i<pShCont->m_iaParameter.GetSize();i+=6){
 					int idata1=0;
@@ -3326,7 +3333,7 @@ void CDraftDrawDoc::OnArchivoGencable()
 						idata2=pShCont->m_iaParameter[i+3];
 					}
 
-					fout<<idata1<<";;;"<<idata2<<"\n";
+					fout<<idata1<<_T(";;;")<<idata2<<_T("\n");
 				}
 
 				fout.close();
@@ -3344,13 +3351,13 @@ void CDraftDrawDoc::OnArchivoGencable()
 		fclose(flog);
 	}
 	if(bFlagWarn){
-		if(::AfxMessageBox("Hay algunos warnings, desea continuar?",MB_YESNO|MB_ICONEXCLAMATION,-1)==IDNO){
+		if(::AfxMessageBox(_T("Hay algunos warnings, desea continuar?"),MB_YESNO|MB_ICONEXCLAMATION,-1)==IDNO){
 
 			HINSTANCE hinstance=ShellExecute(
 				AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-				"open",						//LPCTSTR lpVerb,
-				"Notepad.exe",				//LPCTSTR lpFile, 
-				"cableado.log",				//LPCTSTR lpParameters, 
+				_T("open"),						//LPCTSTR lpVerb,
+				_T("Notepad.exe"),				//LPCTSTR lpFile, 
+				_T("cableado.log"),				//LPCTSTR lpParameters, 
 				g_sDCableBaseDir,			//LPCTSTR lpDirectory,
 				SW_SHOWNORMAL				//INT nShowCmd
 			);
@@ -3360,9 +3367,9 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 		HINSTANCE hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			"Notepad.exe",				//LPCTSTR lpFile, 
-			"cableado.log",				//LPCTSTR lpParameters, 
+			_T("open"),						//LPCTSTR lpVerb,
+			_T("Notepad.exe"),				//LPCTSTR lpFile, 
+			_T("cableado.log"),				//LPCTSTR lpParameters, 
 			g_sDCableBaseDir,			//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
 		);
@@ -3376,20 +3383,20 @@ void CDraftDrawDoc::OnArchivoGencable()
 	if(nIndex>=0){
 		sFileExt=sFileName.Right(sFileName.GetLength()-nIndex-1);
 	}
-	if(!sFileExt.CompareNoCase("doc")){
+	if(!sFileExt.CompareNoCase(_T("doc"))){
 	//CALL WORD
 	//==================================================
 	if(fcabl){
-		fprintf(fcabl,"\n");
+		fwprintf(fcabl,_T("\n"));
 		fclose(fcabl);
 
 		CString sWinwordPath=afxWinwordPath;
-		sWinwordPath+="\\WINWORD.EXE";
+		sWinwordPath+=_T("\\WINWORD.EXE");
 /*
 		HINSTANCE hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			sWinwordPath,//"C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE",//LPCTSTR lpFile, 
+			_T("open"),						//LPCTSTR lpVerb,
+			sWinwordPath,//_T("C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE"),//LPCTSTR lpFile, 
 			"\""+g_sDCableBaseDir+"plantilla_cabl1.doc"+"\"",				//LPCTSTR lpParameters, 
 			NULL,						//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
@@ -3397,9 +3404,9 @@ void CDraftDrawDoc::OnArchivoGencable()
 */
 
 
-		std::string sFilter = "Microsoft Word Document (*.doc)|*.doc||"; //All Files (*.*)|*.*||;
+		std::wstring sFilter = _T("Microsoft Word Document (*.doc)|*.doc||"); //All Files (*.*)|*.*||;
 		CStringArray saExtensions;
-		saExtensions.Add("doc");
+		saExtensions.Add(_T("doc"));
 
 
 		CFileDialog fdialog(
@@ -3423,24 +3430,24 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 			if((!offset)||(fdialog.m_ofn.lpstrFile[offset]==0)){
 
-				strFile+="."+saExtensions[fdialog.m_ofn.nFilterIndex-1];
+				strFile+=_T(".")+saExtensions[fdialog.m_ofn.nFilterIndex-1];
 				sFilter=saExtensions[fdialog.m_ofn.nFilterIndex-1];
 			}
 
-			LaunchWord(g_sDCableBaseDir+"plantilla_cabl1.doc",strFile);//g_sDCableBaseDir+"cableado.doc"
+			LaunchWord(g_sDCableBaseDir+_T("plantilla_cabl1.doc"),strFile);//g_sDCableBaseDir+_T("cableado.doc")
 
 		}
 	}
 	if(fbridge){
-		fprintf(fbridge,"\n");
+		fwprintf(fbridge,_T("\n"));
 		fclose(fbridge);
 
 		CString sWinwordPath=afxWinwordPath;
-		sWinwordPath+="\\WINWORD.EXE";
+		sWinwordPath+=_T("\\WINWORD.EXE");
 
-		std::string sFilter = "Microsoft Word Document (*.doc)|*.doc||"; //All Files (*.*)|*.*||;
+		std::wstring sFilter = _T("Microsoft Word Document (*.doc)|*.doc||"); //All Files (*.*)|*.*||;
 		CStringArray saExtensions;
-		saExtensions.Add("doc");
+		saExtensions.Add(_T("doc"));
 
 
 		CFileDialog fdialog(
@@ -3464,11 +3471,11 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 			if((!offset)||(fdialog.m_ofn.lpstrFile[offset]==0)){
 
-				strFile+="."+saExtensions[fdialog.m_ofn.nFilterIndex-1];
+				strFile+=_T(".")+saExtensions[fdialog.m_ofn.nFilterIndex-1];
 				sFilter=saExtensions[fdialog.m_ofn.nFilterIndex-1];
 			}
 
-			LaunchWord(g_sDCableBaseDir+"plantilla_puent.doc",strFile);//g_sDCableBaseDir+"cableado.doc"
+			LaunchWord(g_sDCableBaseDir+_T("plantilla_puent.doc"),strFile);//g_sDCableBaseDir+_T("cableado.doc")
 
 		}
 
@@ -3476,29 +3483,29 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 	//==================================================
 	}
-	else if(!sFileExt.CompareNoCase("htm")||!sFileExt.CompareNoCase("html")){
+	else if(!sFileExt.CompareNoCase(_T("htm"))||!sFileExt.CompareNoCase(_T("html"))){
 	//CALL HTML GEN
 	//==================================================
 	if(fcabl){
-		fprintf(fcabl,"\n");
+		fwprintf(fcabl, _T("\n"));
 		fclose(fcabl);
 
 		::SetCurrentDirectory(g_sDCableBaseDir);
 
-		CString sGeneratorPath=".\\";
-		sGeneratorPath+="\\gen_html2.exe";
+		CString sGeneratorPath=_T(".\\");
+		sGeneratorPath+=_T("\\gen_html2.exe");
 
 		HINSTANCE hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			sGeneratorPath,//"C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE",//LPCTSTR lpFile, 
-			"\""+g_sDCableBaseDir+"plantilla_cabl1.doc"+"\"",				//LPCTSTR lpParameters, 
+			_T("open"),						//LPCTSTR lpVerb,
+			sGeneratorPath,//_T("C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE"),//LPCTSTR lpFile, 
+			_T("\"")+g_sDCableBaseDir+_T("plantilla_cabl1.doc")+_T("\""),				//LPCTSTR lpParameters, 
 			NULL,						//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
 		);
 
-		CString sPathBase=g_sDCableBaseDir;//"C:\\2002\\DraftCable\\Src\\";
-		CString sPath="\"file://"+sPathBase+"testfile.htm\"";
+		CString sPathBase=g_sDCableBaseDir;//_T("C:\\2002\\DraftCable\\Src\\");
+		CString sPath=_T("\"file://")+sPathBase+_T("testfile.htm\"");
 
 
 
@@ -3563,8 +3570,8 @@ void CDraftDrawDoc::OnArchivoGencable()
 		//Execute Internet Explorer
 		hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			CString(vResult.bstrVal),//"C:\\Archivos de programa\\Internet Explorer\\IEXPLORE.EXE",//"C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE",//LPCTSTR lpFile, 
+			_T("open"),						//LPCTSTR lpVerb,
+			CString(vResult.bstrVal),//_T("C:\\Archivos de programa\\Internet Explorer\\IEXPLORE.EXE"),//_T("C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE"),//LPCTSTR lpFile, 
 			sPath,//"\"file://C:\\2002\\DraftCable\\Src\\testfile.htm\"",				//LPCTSTR lpParameters, 
 			NULL,						//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
@@ -3581,25 +3588,25 @@ void CDraftDrawDoc::OnArchivoGencable()
 
 	}
 	if(fbridge){
-		fprintf(fbridge,"\n");
+		fwprintf(fbridge,_T("\n"));
 		fclose(fbridge);
 
 		::SetCurrentDirectory(g_sDCableBaseDir);
 
-		CString sGeneratorPath=".\\";
-		sGeneratorPath+="\\gen_html2.exe";
+		CString sGeneratorPath=_T(".\\");
+		sGeneratorPath+=_T("\\gen_html2.exe");
 
 		HINSTANCE hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			sGeneratorPath,//"C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE",//LPCTSTR lpFile, 
-			"-bridges",					//LPCTSTR lpParameters, 
+			_T("open"),						//LPCTSTR lpVerb,
+			sGeneratorPath,//_T("C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE"),//LPCTSTR lpFile, 
+			_T("-bridges"),					//LPCTSTR lpParameters, 
 			NULL,						//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
 		);
 
-		CString sPathBase=g_sDCableBaseDir;//"C:\\2002\\DraftCable\\Src\\";
-		CString sPath="\"file://"+sPathBase+"bridges.htm\"";
+		CString sPathBase=g_sDCableBaseDir;//_T("C:\\2002\\DraftCable\\Src\\");
+		CString sPath = _T("\"file://") + sPathBase + _T("bridges.htm\"");
 
 
 
@@ -3664,8 +3671,8 @@ void CDraftDrawDoc::OnArchivoGencable()
 		//Execute Internet Explorer
 		hinstance=ShellExecute(
 			AfxGetMainWnd( )->m_hWnd,	//HWND hwnd, 
-			"open",						//LPCTSTR lpVerb,
-			CString(vResult.bstrVal),//"C:\\Archivos de programa\\Internet Explorer\\IEXPLORE.EXE",//"C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE",//LPCTSTR lpFile, 
+			_T("open"),						//LPCTSTR lpVerb,
+			CString(vResult.bstrVal),//_T("C:\\Archivos de programa\\Internet Explorer\\IEXPLORE.EXE"),//_T("C:\\Archivos de programa\\Microsoft Office\\Office\\WINWORD.EXE"),//LPCTSTR lpFile, 
 			sPath,//"\"file://C:\\2002\\DraftCable\\Src\\testfile.htm\"",				//LPCTSTR lpParameters, 
 			NULL,						//LPCTSTR lpDirectory,
 			SW_SHOWNORMAL				//INT nShowCmd
@@ -3685,9 +3692,9 @@ void CDraftDrawDoc::OnArchivoGencable()
 	}
 	else{
 		if(fcabl){
-			fprintf(fcabl,"\n");
+			fwprintf(fcabl,_T("\n"));
 			fclose(fcabl);
-			AfxMessageBox("Formato no soportado",MB_OK|MB_ICONSTOP,-1);
+			AfxMessageBox(_T("Formato no soportado"),MB_OK|MB_ICONSTOP,-1);
 		}
 	}
 
@@ -3745,7 +3752,7 @@ CShape * CDraftDrawDoc::FindShape(CShape *pShSearch,CShape **pShSearchChild/*=NU
 				CShape *pSh=(CShape *)pShCont00->m_obarrShapearr[i];
 				CRuntimeClass* pRuntimeClass=pSh->GetRuntimeClass( );
 				CString sName=CString(pRuntimeClass->m_lpszClassName);
-				if(!sName.Compare("CShapePin")){
+				if(!sName.Compare(_T("CShapePin"))){
 					CShapeContainer *pShCont=(CShapeContainer *)pSh;
 					if(pShCont->m_pshConn){
 						CShape *pSh=pShCont->m_pshConn;
@@ -3783,7 +3790,7 @@ CShape * CDraftDrawDoc::FindShape(CShape *pShSearch,CShape **pShSearchChild/*=NU
 void CDraftDrawDoc::OnToolOptionPage() 
 {
 	// TODO: Add your command handler code here
-	CDialogPageProperties ppDialog("Propiedades Página Plano");
+	CDialogPageProperties ppDialog(_T("Propiedades Página Plano"));
 
 	CPageSize page0;
 	CPageGrid page1;
@@ -3835,7 +3842,7 @@ void CDraftDrawDoc::OnToolConfig()
 
 	if(dialogConfig.DoModal()==IDOK){
 		afxWinwordPath=dialogConfig.m_sPath;
-		AfxGetApp()->WriteProfileString("Settings","WinwordPath",afxWinwordPath);
+		AfxGetApp()->WriteProfileString(_T("Settings"),_T("WinwordPath"),afxWinwordPath);
 	}
 }
 
@@ -4184,7 +4191,7 @@ void CDraftDrawDoc::DisplayPatchPProp(UINT nID){
 			while(pSh){
 				if(pSh->IsKindOf(RUNTIME_CLASS(CShapeWire))){
 
-					dialogPatchP.m_mapCableNum[std::string(pSh->m_strIdent)]=index;
+					dialogPatchP.m_mapCableNum[std::wstring(pSh->m_strIdent)]=index;
 				}
 
 				pSh=(CShape *)NextObject(index);
@@ -4281,7 +4288,7 @@ void CDraftDrawDoc::DisplayPatchPProp(CString strID){
 			while(pSh){
 				if(pSh->IsKindOf(RUNTIME_CLASS(CShapeWire))){
 
-					dialogPatchP.m_mapCableNum[std::string(pSh->m_strIdent)]=index;
+					dialogPatchP.m_mapCableNum[std::wstring(pSh->m_strIdent)]=index;
 				}
 
 				pSh=(CShape *)NextObject(index);
@@ -4387,8 +4394,8 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 
 	CRecordset rsConnector(&db);
 
-	rsConnector.m_strFilter="bRack<>0";
-	rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	rsConnector.m_strFilter=_T("bRack<>0");
+	rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 
 	int nIndex=1;
 	float fCountUMax=0.0;//Maximum number of U's in rack
@@ -4397,22 +4404,22 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 	CString strNameRack;//full qualified rack name (with library path).
 
 	CRecordset rsLib(&db);
-	rsConnector.GetFieldValue("iIdLib",str);
-	rsLib.m_strFilter="iIdLib="+str;
-	rsLib.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
-	rsLib.GetFieldValue("nNameLib",strLib);
+	rsConnector.GetFieldValue(_T("iIdLib"),str);
+	rsLib.m_strFilter=_T("iIdLib=")+str;
+	rsLib.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbLibrary"));
+	rsLib.GetFieldValue(_T("nNameLib"),strLib);
 	rsLib.Close();
 
-	rsConnector.GetFieldValue("nNamePart",str);
+	rsConnector.GetFieldValue(_T("nNamePart"),str);
 	CString strU;
-	rsConnector.GetFieldValue("fU",strU);
-	fCountUMax=atof(strU)  /*-30.0*/;
+	rsConnector.GetFieldValue(_T("fU"),strU);
+	fCountUMax=_wtof(strU)  /*-30.0*/;
 
 
 	m_pSh=new CShapeUnit();
 	str=/*CString(DCABLE_RACKDIR)+*/str;
-	strNameRack=strLib+"."+str;
-	m_pSh->LoadUnit(strLib+"."+str);
+	strNameRack=strLib+_T(".")+str;
+	m_pSh->LoadUnit(strLib+_T(".")+str);
 	m_pSh->m_pCursorArray=m_CursorArray;
 	m_iCursor=11;
 
@@ -4472,7 +4479,7 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 				//remove library name
 				strFile=strFile.Right(strFile.GetLength()-strFile.Find('.')-1);
 
-				rsConnector.m_strFilter="nNamePart='"+strFile+"' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
+				rsConnector.m_strFilter=_T("nNamePart='")+strFile+_T("' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
 				rsConnector.Requery();
 
 				if(rsConnector.IsEOF()){
@@ -4482,24 +4489,24 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 
 				CString str;
 				CString strId;
-				rsConnector.GetFieldValue("iIdRack",str);
-				rsConnector.GetFieldValue("iIdPart",strId);
+				rsConnector.GetFieldValue(_T("iIdRack"),str);
+				rsConnector.GetFieldValue(_T("iIdPart"),strId);
 
-				if(atoi(str)<=0){
+				if(_wtoi(str)<=0){
 					//2nd query
-					rsConnector.m_strFilter="iIdRack="+strId;
+					rsConnector.m_strFilter=_T("iIdRack=")+strId;
 					rsConnector.Requery();
 					if(rsConnector.IsEOF()){
 						pSh=(CShape *)pSchDoc->NextObject(index);
 						continue;
 					}
 					else{
-						rsConnector.GetFieldValue("iIdPart",str);
+						rsConnector.GetFieldValue(_T("iIdPart"),str);
 					}
 				}
 
 
-				rsConnector.m_strFilter="iIdPart="+str+"";
+				rsConnector.m_strFilter=_T("iIdPart=")+str+_T("");
 				rsConnector.Requery();
 
 				//1st iteration: only compute part height and create new rack as neccesary
@@ -4508,8 +4515,8 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 					//Compute height when available
 					//...
 					CString strU;
-					rsConnector.GetFieldValue("fU",strU);
-					fCountU+=atof(strU);
+					rsConnector.GetFieldValue(_T("fU"),strU);
+					fCountU+=_wtof(strU);
 					//Create new rack when available
 					//...
 					if(fCountU>fCountUMax){
@@ -4529,18 +4536,18 @@ void CDraftDrawDoc::LoadRack(CDraftDrawDoc *pSchDoc){
 
 
 				CRecordset rsLib(&db);
-				rsConnector.GetFieldValue("iIdLib",str);
-				rsLib.m_strFilter="iIdLib="+str;
-				rsLib.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
-				rsLib.GetFieldValue("nNameLib",strLib);
+				rsConnector.GetFieldValue(_T("iIdLib"),str);
+				rsLib.m_strFilter=_T("iIdLib=")+str;
+				rsLib.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbLibrary"));
+				rsLib.GetFieldValue(_T("nNameLib"),strLib);
 				rsLib.Close();
 
-				rsConnector.GetFieldValue("nNamePart",str);
+				rsConnector.GetFieldValue(_T("nNamePart"),str);
 
 
 				m_pSh=new CShapeUnit();
 				str=/*CString(DCABLE_RACKDIR)+*/str;
-				m_pSh->LoadUnit(strLib+"."+str);
+				m_pSh->LoadUnit(strLib+_T(".")+str);
 				m_pSh->m_pCursorArray=m_CursorArray;
 				m_iCursor=11;
 
@@ -4725,7 +4732,7 @@ BOOL CDraftDrawDoc::OnSaveDocument(LPCTSTR lpszPathName)
 			0, &pStgRoot) == S_OK);
 		//Create a new stream
 		//LPSTREAM pStream = NULL;
-		VERIFY(pStgRoot->CreateStream(T2COLE("maindoc"),
+		VERIFY(pStgRoot->CreateStream(T2COLE(_T("maindoc")),
 			STGM_READWRITE | STGM_SHARE_EXCLUSIVE | STGM_CREATE,
 			0, 0, &pStream) == S_OK);
 		ASSERT(pStream != NULL);
@@ -4825,7 +4832,7 @@ int CDraftDrawDoc::Split(CString str,LPTSTR *sa,int max){
 	while(index>=0){
 		CString l_str=str.Left(index);
 		if(sa!=NULL && count<max){
-			strcpy(sa[count],(LPCTSTR)l_str);
+			wcscpy(sa[count],(LPCTSTR)l_str);
 		}
 		str=str.Right(str.GetLength()-index-1);
 		index = str.Find('|');
@@ -4841,7 +4848,7 @@ int CDraftDrawDoc::Split(CString str,CString dmter, LPTSTR *sa, int max){
 	while (index >= 0){
 		CString l_str = str.Left(index);
 		if (sa != NULL && count<max){
-			strcpy(sa[count], (LPCTSTR)l_str);
+			wcscpy(sa[count], (LPCTSTR)l_str);
 		}
 		str = str.Right(str.GetLength() - index - 1);
 		index = str.Find(dmter);
@@ -4851,7 +4858,7 @@ int CDraftDrawDoc::Split(CString str,CString dmter, LPTSTR *sa, int max){
 	CString end_str = str0.Right(dmter.GetLength());
 	if (end_str != dmter){
 		if (sa != NULL && count<max){
-			strcpy(sa[count], (LPCTSTR)str);
+			wcscpy(sa[count], (LPCTSTR)str);
 		}
 		count++;
 	}
@@ -4873,10 +4880,10 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 	//Parse file name to find out filter type.
 
-	std::string str=_DRAFTCABLE_DOC_FILTER_STR;
-	CString cstr=_DRAFTCABLE_DOC_FILTER_STR;
+	std::wstring str=_T(_DRAFTCABLE_DOC_FILTER_STR);
+	CString cstr=_T(_DRAFTCABLE_DOC_FILTER_STR);
 	
-	//regex("...");
+	//regex(_T("..."));
 	//int idata=split(str,NULL,0);
 	int idata=Split(cstr,NULL,0);
 
@@ -4891,7 +4898,7 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 	for(i=0;i<idata;i++){
 		CString strName(lpszPathName);
-		CString strExt="(*."+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+")";
+		CString strExt=_T("(*.")+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+_T(")");
 		if(CString(sa[i]).Find(strExt)>=0){
 			nFilterIndex=(i>>1)+1;
 			break;
@@ -4912,7 +4919,7 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		//Open storage
 		USES_CONVERSION;
 		//LPSTORAGE pStgRoot = NULL;
-		if (::StgOpenStorage(T2OLE(lpszPathName), NULL,
+		if (::StgOpenStorage(T2OLE((LPTSTR)lpszPathName), NULL,
 			STGM_READ | STGM_SHARE_EXCLUSIVE,
 			NULL, 0, &pStgRoot) == S_OK){
 			ASSERT(pStgRoot != NULL);
@@ -4922,7 +4929,7 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 			if (!OnOpenDocument2(lpszPathName)){
 
-				AfxMessageBox("Archivo de almacenamiento no disponible o no legible");
+				AfxMessageBox(_T("Archivo de almacenamiento no disponible o no legible"));
 				return FALSE;
 			}
 			else{
@@ -4940,7 +4947,7 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 		while (pEnum->Next(1, &statstg, NULL) == NOERROR){
 
 			if (statstg.type == STGTY_STREAM){
-				if (_wcsicmp(statstg.pwcsName, T2OLE("maindoc")) == 0){
+				if (_wcsicmp(statstg.pwcsName, T2OLE(_T("maindoc"))) == 0){
 					//Open stream
 					VERIFY(pStgRoot->OpenStream(statstg.pwcsName, NULL,
 						STGM_READ | STGM_SHARE_EXCLUSIVE,
@@ -4959,7 +4966,7 @@ BOOL CDraftDrawDoc::OnOpenDocument(LPCTSTR lpszPathName)
 
 
 		if (pStream == NULL){
-			AfxMessageBox("Archivo de almacenamiento con formato incorrecto.");
+			AfxMessageBox(_T("Archivo de almacenamiento con formato incorrecto."));
 			//Release method
 			pStgRoot->Release();
 			return FALSE;
@@ -5195,7 +5202,7 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 #ifndef _DCABLE_DATABASEDLG_TREE
 		CNameDlg dlg;
 		dlg.m_Name=strFile;
-		if (dlg.DoModal() == IDCANCEL || dlg.m_Name == "")
+		if (dlg.DoModal() == IDCANCEL || dlg.m_Name == _T(""))
 		{
 			return;
 		}
@@ -5204,7 +5211,7 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 		//Save DB dialog
 		CDialogSaveasDB dlg;
 		dlg.m_Name=strFile;
-		dlg.m_ofn.lpstrFilter=_DRAFTCABLE_DOC_FILTER_STR;
+		dlg.m_ofn.lpstrFilter=_T(_DRAFTCABLE_DOC_FILTER_STR);
 		if (dlg.DoModal() == IDCANCEL )
 		{
 			return;
@@ -5225,25 +5232,25 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 
 	if (!db.OpenEx(sConnect))
 	{
-		AfxMessageBox("No se puede conectar con la base de datos.");
+		AfxMessageBox(_T("No se puede conectar con la base de datos."));
 		return;
 	}
 
 	//Get library ID
 	CRecordset rs(&db);
 
-	rs.m_strFilter="nNameLib='"+strLib+"'";
-	rs.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
+	rs.m_strFilter=_T("nNameLib='")+strLib+_T("'");
+	rs.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbLibrary"));
 
 	CString sIdLib;
-	rs.GetFieldValue("iIdLib",sIdLib);
+	rs.GetFieldValue(_T("iIdLib"),sIdLib);
 
 	rs.Close();
 
 	//Select part in library
 
-	rs.m_strFilter="nNamePart='"+strFile+"' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
-	rs.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	rs.m_strFilter=_T("nNamePart='")+strFile+_T("' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
+	rs.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 
 	BOOL bEOF=rs.IsEOF();
 
@@ -5251,25 +5258,25 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 	CString strQuery;
 	CString strRack;
 	CString strIdRack;
-	strRack.Format("%i",(m_iTypeDocument==_DOCTYPE_RACK));
+	strRack.Format(_T("%i"),(m_iTypeDocument==_DOCTYPE_RACK));
 	if(m_iTypeDocument==_DOCTYPE_RACK && m_pDocRack){
-		strIdRack.Format("%i",m_pDocRack->m_iIdPart);
+		strIdRack.Format(_T("%i"),m_pDocRack->m_iIdPart);
 	}
 	else{
-		strIdRack="0";
+		strIdRack=_T("0");
 	}
 
 	//Set counter to zero: rack chasis part height is calculated during serialization.
 	m_fUTemp=0;
 	if(bEOF){
-		strQuery="INSERT INTO tbPart (nNamePart,iIdRack,fU,bTextPart,bTextBin,bRackType,iIdLib) VALUES ('"+strFile+"',"+strIdRack+",%f,0x%s,1,"+strRack+","+sIdLib+")";
+		strQuery=_T("INSERT INTO tbPart (nNamePart,iIdRack,fU,bTextPart,bTextBin,bRackType,iIdLib) VALUES ('")+strFile+_T("',")+strIdRack+_T(",%f,0x%s,1,")+strRack+_T(",")+sIdLib+_T(")");
 	}
 	else{
-		strQuery="UPDATE tbPart SET iIdRack="+strIdRack+",fU=%f,bTextPart=0x%s,bTextBin=1,bRackType="+strRack+" WHERE nNamePart='"+strFile+"' AND iIdLib="+sIdLib;
+		strQuery=_T("UPDATE tbPart SET iIdRack=")+strIdRack+_T(",fU=%f,bTextPart=0x%s,bTextBin=1,bRackType=")+strRack+_T(" WHERE nNamePart='")+strFile+_T("' AND iIdLib=")+sIdLib;
 
 		//For debuging
-		//FILE *fout=fopen("log_debugdb.txt","w");
-		//std::string str(strQuery);
+		//FILE *fout=_wfopen(_T("log_debugdb.txt"),_T("w"));
+		//std::wstring str(strQuery);
 		//fwrite(str.c_str(),sizeof(char),str.length(),fout);
 		//fclose(fout);
 
@@ -5286,7 +5293,7 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 	if (FAILED(CreateILockBytesOnHGlobal(rs.m_OleObject.m_hData,FALSE,
 			   &pLockBytes)))
 	{
-		AfxMessageBox("Unable to retrieve LockBytes");
+		AfxMessageBox(_T("Unable to retrieve LockBytes"));
 		return;
 	}
 	*/
@@ -5296,7 +5303,7 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 		  STGM_CREATE | STGM_READWRITE | STGM_SHARE_EXCLUSIVE, 0,
 		  &pStorage)))
 	{
-	AfxMessageBox("Failure creating storage on LockBytes");
+	AfxMessageBox(_T("Failure creating storage on LockBytes"));
 	pLockBytes->Release();
 	return;
 	}
@@ -5360,7 +5367,7 @@ void CDraftDrawDoc::OnDatabaseSave(CString strFile /*=""*/)
 	CString str;
 
 	for(unsigned int i=0;i<dwFileLen;i++){
-		str.Format("%02X",pStorage[i]);
+		str.Format(_T("%02X"),pStorage[i]);
 		strData+=str;
 	}
 
@@ -5412,7 +5419,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 
 	if (!db.OpenEx(sConnect))
 	{
-		AfxMessageBox("Access ODBC Driver not installed");
+		AfxMessageBox(_T("Access ODBC Driver not installed"));
 		return;
 	}
 
@@ -5423,7 +5430,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 	if (rsObjName.IsEOF())
 	{
 	  rsObjName.Close();
-	  AfxMessageBox("No objects exist in the database.");
+	  AfxMessageBox(_T("No objects exist in the database."));
 	  return;
 	}
 
@@ -5440,15 +5447,15 @@ void CDraftDrawDoc::OnDatabaseLoad()
 
 	/*CContainerItem * pItem = new CContainerItem;*/
 
-	//rs.m_strFilter = "Name = '" + dlg.m_ObjectName + "'";
-	//rs.m_strFilter = "(nNamePart = '" + strFile + "') AND (bTextBin=1) AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
-	rs.m_strFilter = "(nNamePart = '" + strFile + "') AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
-	rs.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+	//rs.m_strFilter = _T("Name = '") + dlg.m_ObjectName + _T("'");
+	//rs.m_strFilter = _T("(nNamePart = '") + strFile + _T("') AND (bTextBin=1) AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
+	rs.m_strFilter = _T("(nNamePart = '") + strFile + _T("') AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
+	rs.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 
 	CString strType;
 	CString strId;
-	rs.GetFieldValue("bTextBin",strType);
-	rs.GetFieldValue("iIdPart",strId);
+	rs.GetFieldValue(_T("bTextBin"),strType);
+	rs.GetFieldValue(_T("iIdPart"),strId);
 
 	if(rs.IsEOF()){
 		return;
@@ -5459,7 +5466,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 	if (FAILED(CreateILockBytesOnHGlobal(rs.m_OleObject.m_hData, FALSE,
 				&pLockBytes)))
 	{
-	  AfxMessageBox("Unable to retrieve LockBytes");
+	  AfxMessageBox(_T("Unable to retrieve LockBytes"));
 	  return;
 	}
 
@@ -5469,7 +5476,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 
 	if (FAILED(hr))
 	{
-	 AfxMessageBox("Failure opening storage");
+	 AfxMessageBox(_T("Failure opening storage"));
 	 pLockBytes->Release();
 	 return;
 	}
@@ -5477,7 +5484,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 
 	CDBVariant dbTextPart;
 	CString strName;
-	if(atoi(strType)){
+	if(_wtoi(strType)){
 	
 		rs.GetFieldValue(_T("bTextPart"), dbTextPart);
 	
@@ -5501,7 +5508,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 	file.Attach(pStorage, INITIAL_ALLOC_SIZE, CFile::modeRead|CFile::shareExclusive);
 	*/
 	CMemFile *file;
-	if(atoi(strType)){
+	if(_wtoi(strType)){
 	file=new CMemFile(pStorage, dbTextPart.m_pbinary->m_dwDataLength, 0);
 	}
 	else{
@@ -5549,7 +5556,7 @@ void CDraftDrawDoc::OnDatabaseLoad()
 		}
 
 		//Store part identifier as document member
-		m_iIdPart=atoi(strId);
+		m_iIdPart=_wtoi(strId);
 	}
 	CATCH_ALL(e)
 	{
@@ -5680,29 +5687,29 @@ CString CDraftDrawDoc::GetRackOb(CString strName, CString strLib){
 	CRecordset rsConnector(&db);
 
 	//Get the part from database
-	rsConnector.m_strFilter = "nNamePart='" + strName + "' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib = '" + strLib + "')";
-	rsConnector.Open(CRecordset::forwardOnly, "SELECT * FROM tbPart");
+	rsConnector.m_strFilter = _T("nNamePart='") + strName + _T("' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib = '") + strLib + _T("')");
+	rsConnector.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbPart"));
 
 	//If nothing found return empty string
 	if(rsConnector.IsEOF()){
-		return "";
+		return _T("");
 	}
 
 	//Get id of rack part
 	CString str;
-	rsConnector.GetFieldValue("iIdRack",str);
+	rsConnector.GetFieldValue(_T("iIdRack"),str);
 
 	//If we don't have rack part
-	if(atoi(str)<=0){
-		return "";
+	if(_wtoi(str)<=0){
+		return _T("");
 	}
 
 	//Get rack part to database
-	rsConnector.m_strFilter="iIdPart="+str+"";
+	rsConnector.m_strFilter=_T("iIdPart=")+str+_T("");
 	rsConnector.Requery();
 
 	//Get part name
-	rsConnector.GetFieldValue("nNamePart",str);
+	rsConnector.GetFieldValue(_T("nNamePart"),str);
 
 	//Close connection
 	rsConnector.Close();
@@ -6027,8 +6034,8 @@ void CDraftDrawDoc::OnToolSic()
 			return;
 		}
 
-		SetPathName1(pdlgSIC.m_sLibrary+"."+pdlgSIC.m_sPart);
-		SetTitle(pdlgSIC.m_sLibrary+"."+pdlgSIC.m_sPart);
+		SetPathName1(pdlgSIC.m_sLibrary+_T(".")+pdlgSIC.m_sPart);
+		SetTitle(pdlgSIC.m_sLibrary+_T(".")+pdlgSIC.m_sPart);
 		OnDatabaseLoad();
 	}
 
@@ -6211,7 +6218,7 @@ void CDraftDrawDoc::WriteStorage(LPSTORAGE pStg){
 			USES_CONVERSION;
 			LPSTREAM pStream=NULL;
 			CString str;
-			str.Format("object%i",index2);
+			str.Format(_T("object%i"),index2);
 			VERIFY(pStg->CreateStream(T2COLE(str),
 				STGM_READWRITE|STGM_SHARE_EXCLUSIVE|STGM_CREATE,
 				0,0,&pStream)==S_OK);
@@ -6250,7 +6257,7 @@ void CDraftDrawDoc::ReadStorage(LPSTORAGE pStg){
 	while(pEnum->Next(1,&statstg,NULL)==NOERROR){
 
 		if(statstg.type==STGTY_STREAM){
-			if(_wcsicmp(statstg.pwcsName,T2OLE("maindoc"))!=0){
+			if(_wcsicmp(statstg.pwcsName,T2OLE(_T("maindoc")))!=0){
 				//Open stream
 
 				LPSTREAM pStream=NULL;
@@ -6308,18 +6315,18 @@ void CDraftDrawDoc::ReadStorage(LPSTORAGE pStg){
 }
 
 //Prepare file extensions for OnFileSaveAs dialog.
-void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtensions){
+void CDraftDrawDoc::DoFileExtensions(std::wstring& sFilter,CStringArray& saExtensions){
 
 	saCodecs.RemoveAll();
 
-	//static char BASED_CODE szFilter[] = "Chart Files (*.xlc)|*.xlc|Worksheet Files (*.xls)|*.xls|Data Files (*.xlc;*.xls)|*.xlc; *.xls|All Files (*.*)|*.*||";
-	sFilter =_DRAFTCABLE_DOC_FILTER_STR;//m_sFilter;//static std::string sFilter = "Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|Draft Draw Files 1 (*.dd1)|*.dd1|"; //All Files (*.*)|*.*||;
-	saExtensions.Add("ddw");
-	saExtensions.Add("gbr");
-	saExtensions.Add("cut");
-	saExtensions.Add("dxf");
-	saExtensions.Add("dd1");
-	saExtensions.Add("svg");
+	//static char BASED_CODE szFilter[] = _T("Chart Files (*.xlc)|*.xlc|Worksheet Files (*.xls)|*.xls|Data Files (*.xlc;*.xls)|*.xlc; *.xls|All Files (*.*)|*.*||");
+	sFilter =_T(_DRAFTCABLE_DOC_FILTER_STR);//m_sFilter;//static std::wstring sFilter = _T("Draft Draw Files (*.ddw)|*.ddw|Gerber Files (*.gbr)|*.gbr|Cut Files (*.cut)|*.cut|Draft Draw Files 1 (*.dd1)|*.dd1|"); //All Files (*.*)|*.*||;
+	saExtensions.Add(_T("ddw"));
+	saExtensions.Add(_T("gbr"));
+	saExtensions.Add(_T("cut"));
+	saExtensions.Add(_T("dxf"));
+	saExtensions.Add(_T("dd1"));
+	saExtensions.Add(_T("svg"));
 	saCodecs.Add(L"none");
 	saCodecs.Add(L"none");
 	saCodecs.Add(L"none");
@@ -6370,8 +6377,7 @@ void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtens
 		TCHAR sA[1024];//sA[1024];
 
 
-
-		WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].FormatDescription, cCharacters, sA, cbAnsi, NULL, NULL);
+		//WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].FormatDescription, cCharacters, sA, cbAnsi, NULL, NULL);
 
 				
 		sFilter+=sA;
@@ -6382,18 +6388,18 @@ void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtens
 		cCharacters=wcslen(pImageCodecInfo[j].FilenameExtension)+1;
 		cbAnsi = cCharacters*2;
 
-		WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].FilenameExtension, cCharacters, sA, cbAnsi, NULL, NULL);
+		//WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].FilenameExtension, cCharacters, sA, cbAnsi, NULL, NULL);
 
-		sFilter+=" (";
+		sFilter+=_T(" (");
 		sFilter+=sA;
-		sFilter+=")|";
+		sFilter += _T(")|");
 		sFilter+=sA;
-		sFilter+="|";
+		sFilter += _T("|");
 
 		cCharacters=wcslen(pImageCodecInfo[j].MimeType)+1;
 		cbAnsi = cCharacters*2;
 
-		WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].MimeType, cCharacters, sA, cbAnsi, NULL, NULL);
+		//WideCharToMultiByte(CP_ACP, 0, pImageCodecInfo[j].MimeType, cCharacters, sA, cbAnsi, NULL, NULL);
 
 		//saCodecs.Add(sA);
 		saCodecs.Add(pImageCodecInfo[j].MimeType);
@@ -6403,8 +6409,8 @@ void CDraftDrawDoc::DoFileExtensions(std::string& sFilter,CStringArray& saExtens
 	GdiplusShutdown(gdiplusToken);
 	//**************************************************************************
 
-	sFilter+="All Files (*.*)|*.*||";
-	saExtensions.Add("");
+	sFilter+=_T("All Files (*.*)|*.*||");
+	saExtensions.Add(_T(""));
 	saCodecs.Add(L"none");
 }
 void CDraftDrawDoc::OnFileSaveSheetCurrent() 
@@ -6412,7 +6418,7 @@ void CDraftDrawDoc::OnFileSaveSheetCurrent()
 	// TODO: Add your command handler code here
 	//Prepare file extensions filter string
 	CStringArray saExtensions;
-	static std::string sFilter;
+	static std::wstring sFilter;
 	DoFileExtensions(sFilter,saExtensions);
 
 
@@ -6449,7 +6455,7 @@ void CDraftDrawDoc::OnFileSaveSheetCurrent()
 		nFilterIndex=fdialog.m_ofn.nFilterIndex;
 
 		if((!offset)||(fdialog.m_ofn.lpstrFile[offset]==0)){
-			strFile+="."+saExtensions[fdialog.m_ofn.nFilterIndex-1];
+			strFile+=_T(".")+saExtensions[fdialog.m_ofn.nFilterIndex-1];
 			sFilter=saExtensions[fdialog.m_ofn.nFilterIndex-1];
 		}
 
@@ -6463,7 +6469,7 @@ void CDraftDrawDoc::OnFileSaveSheetCurrent()
 
 		if (hFind != INVALID_HANDLE_VALUE){
 
-			result=AfxMessageBox("File allready exists, overwrite?",MB_YESNOCANCEL,0);
+			result=AfxMessageBox(_T("File allready exists, overwrite?"),MB_YESNOCANCEL,0);
 
 		}
 
@@ -6512,7 +6518,7 @@ void CDraftDrawDoc::OnPlaceSheets()
 
 	//Prepare file extensions filter string
 	CStringArray saExtensions;
-	static std::string sFilter;
+	static std::wstring sFilter;
 	DoFileExtensions(sFilter,saExtensions);
 
 
@@ -6553,9 +6559,9 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 
 	//Parse file name to find out filter type.
 
-	std::string str=_DRAFTCABLE_DOC_FILTER_STR;
+	std::wstring str=_T(_DRAFTCABLE_DOC_FILTER_STR);
 
-	//regex("...");
+	//regex(_T("..."));
 	int idata=split(str,NULL,0);
 
 	LPTSTR *sa=new LPTSTR[idata];
@@ -6568,7 +6574,7 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 
 	for(i=0;i<idata;i++){
 		CString strName(lpszPathName);
-		CString strExt="(*."+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+")";
+		CString strExt=_T("(*.")+strName.Right(strName.GetLength()-strName.ReverseFind('.')-1)+_T(")");
 		if(CString(sa[i]).Find(strExt)>=0){
 			nFilterIndex=i+1;
 			break;
@@ -6583,7 +6589,7 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 	//Open storage
 	USES_CONVERSION;
 	LPSTORAGE pStgRoot=NULL;
-	if(::StgOpenStorage(T2OLE(lpszPathName), NULL,
+	if(::StgOpenStorage(T2OLE((LPTSTR)lpszPathName), NULL,
 		STGM_READ | STGM_SHARE_EXCLUSIVE,
 		NULL,0,&pStgRoot)==S_OK){
 		ASSERT(pStgRoot!=NULL);
@@ -6591,7 +6597,7 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 	}
 	else{
 		
-		AfxMessageBox("Archivo de almacenamiento no disponible o no legible");
+		AfxMessageBox(_T("Archivo de almacenamiento no disponible o no legible"));
 		return FALSE;
 	}
 
@@ -6605,7 +6611,7 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 	while(pEnum->Next(1,&statstg,NULL)==NOERROR){
 
 		if(statstg.type==STGTY_STREAM){
-			if(_wcsicmp(statstg.pwcsName,T2OLE("maindoc"))==0){
+			if(_wcsicmp(statstg.pwcsName,T2OLE(_T("maindoc")))==0){
 				//Open stream
 				VERIFY(pStgRoot->OpenStream(statstg.pwcsName, NULL,
 					STGM_READ|STGM_SHARE_EXCLUSIVE,
@@ -6624,7 +6630,7 @@ BOOL CDraftDrawDoc::OnInsertDocument(LPCTSTR lpszPathName)
 
 
 	if(pStream==NULL){
-		AfxMessageBox("Archivo de almacenamiento con formato incorrecto.");
+		AfxMessageBox(_T("Archivo de almacenamiento con formato incorrecto."));
 		//Release method
 		pStgRoot->Release();
 		return FALSE;
@@ -6857,7 +6863,7 @@ void CDraftDrawDoc::DoSerializeDd1(CArchive& ar){
 						str = str.Left(nIndex);
 					}
 
-					if (str.CompareNoCase("TB") == 0){
+					if (str.CompareNoCase(_T("TB")) == 0){
 						//SerializePatchP(ar,((CShapeUnit*)pSh)->m_uiShapeId);
 					}
 					//======================================================
@@ -6928,7 +6934,7 @@ void CDraftDrawDoc::SetShapeToPlace(CString library, CString part)
 
 	//Create new shape
 	m_pSh = new CShapeUnit(NULL, 0, cmdDeque);
-	m_pSh->LoadUnit(library + "." + part);
+	m_pSh->LoadUnit(library + _T(".") + part);
 	m_pSh->m_pCursorArray = m_CursorArray;
 
 	//Add object to stack
@@ -6952,13 +6958,13 @@ void CDraftDrawDoc::_DoAddEllementsToMap(CMapStringToString map, CString key, in
 	CString str;
 	if (map.Lookup(key, str))
 	{
-		int count = atoi(map[key]) + 1;
-		str.Format("%i", count);
+		int count = _wtoi(map[key]) + 1;
+		str.Format(_T("%i"), count);
 		map[key] = str;
 	}
 	else
 	{
-		map[key] = "1";
+		map[key] = _T("1");
 	}
 }
 

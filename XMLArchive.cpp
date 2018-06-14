@@ -46,7 +46,7 @@ CXMLArchive::CXMLArchive(const CString& fileName, UINT nMode,
 			{
 				//varResult = m_xmlDocPtr->load(_variant_t(fileName));
 
-				FILE *f = fopen(m_fileName, "rb");
+				FILE *f = _wfopen(m_fileName, _T("rb"));
 
 				// reading data - zlib will detect if zipped or not...
 				TCHAR tInString[4096];
@@ -476,7 +476,7 @@ CXMLArchiveNode* CXMLArchive::GetNode(LPCTSTR nodeNameStr)
 			int index = 0;
 
 			//Check if it has child elements and go inside if so
-			if (nodeName.MakeLower()=="svg" && nodeListPtr->FindChildElem())
+			if (nodeName.MakeLower()==_T("svg") && nodeListPtr->FindChildElem())
 			{
 				while (index < childIndex && nodeListPtr->FindElem())
 				{
@@ -656,7 +656,7 @@ int CXMLArchiveNode::GetNoChildren()
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 {
 	CString attrname = attrName;
-	attrname.Replace("*", "");
+	attrname.Replace(_T("*"), _T(""));
 	m_archivePtr->GetNode(attrname);
 	if (object.IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 		CObject* pObject = &object;
@@ -673,7 +673,7 @@ void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object)
 void CXMLArchiveNode::DataNode(LPCTSTR attrName, CObject& object, CObject*** pObjs, int *pCount)
 {
 	CString attrname = attrName;
-	attrname.Replace("*", "");
+	attrname.Replace(_T("*"), _T(""));
 	m_archivePtr->GetNode(attrname);
 	if (object.IsKindOf(RUNTIME_CLASS(CShapePolyline))){
 		CObject* pObject = &object;
@@ -762,7 +762,7 @@ CObject* CXMLArchiveNode::CreateObject(const CString& className)
 
 	if (pClass == NULL)
 	{
-		TRACE1("You did not declare the class %s DECLARE_XMLSERIAL", (const char *)className);
+		TRACE1("You did not declare the class %s DECLARE_XMLSERIAL", (const TCHAR *)className);
 		ASSERT(FALSE);
 		return NULL;
 	}

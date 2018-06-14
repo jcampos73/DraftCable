@@ -61,7 +61,7 @@ BOOL CDialogPin::OnInitDialog()
 	HWND hWnd;
 	GetDlgItem(IDC_COMBO_SHAPE,&hWnd);
 	CWnd *pWnd=GetDlgItem(IDC_COMBO_NUMBER);
-	pWnd->SetWindowText("1");
+	pWnd->SetWindowText(_T("1"));
 
 
 	strcpy(m_Str,"Unit pin");
@@ -98,7 +98,7 @@ BOOL CDialogPin::OnInitDialog()
 	LPTSTR *listConnector=(LPTSTR *)GlobalAlloc(GMEM_FIXED|GMEM_ZEROINIT,nCount*sizeof(CString*));
 	int i;
 	for(i=0;i<nCount;i++){
-		listConnector[i]=new char[256];
+		listConnector[i]=new TCHAR[256];
 	}		
 	AfxGetConnector(listConnector,nCount,255);
 	for(i=0;i<nCount;i++){

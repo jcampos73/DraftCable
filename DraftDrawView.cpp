@@ -19,6 +19,9 @@
 #include "SelectionTool.h"
 #include "PenTool.h"
 
+#define TEST_PENTOOL
+#define TEST_SELTOOL
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -157,7 +160,7 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 	PrepareBuffer(pDoc, pDC);
 
 	//CListCtrl& refCtrl = GetListCtrl();
-	//refCtrl.InsertItem(0, "Item!");
+	//refCtrl.InsertItem(0, _T("Item!"));
 
 
 	//MAP MODE
@@ -794,7 +797,7 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 		hPal = NULL;
 
 		//Commom save dialog
-		static char BASED_CODE szFilter[] = "Windows bmp (*.bmp)|*.bmp|Gif (*.gif)|*.gif|All Files (*.*)|*.*||";
+		static TCHAR BASED_CODE szFilter[] = _T("Windows bmp (*.bmp)|*.bmp|Gif (*.gif)|*.gif|All Files (*.*)|*.*||");
 
 		CString strPath=pDoc->GetPathName();
 		savebmp(hBitmap,hPal,pDoc->saCodecs[pDoc->nFilterIndex-1].c_str(),strPath);
@@ -951,13 +954,25 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//New state pattern tests
-	/*
+#ifdef TEST_SELTOOL
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
+		if (!rect_union.IsRectEmpty())
+		{
+			_SetUpdateRect(rect_union);
+		}
+		return;
+		return;
+	}
+#endif
+#ifdef TEST_PENTOOL
+	else if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
 		return;
 	}
-	*/
+#endif
 
 	//=======================================================
 	//INITIALIZE
@@ -1241,6 +1256,25 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	SnapToGrid(&point);
 	//=======================================================
 
+#ifdef TEST_SELTOOL
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
+		if (!rect_union.IsRectEmpty())
+		{
+			_SetUpdateRect(rect_union);
+		}
+		return;
+	}
+#endif
+#ifdef TEST_PENTOOL
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
+
+	}
+#endif
+
 	//Calculate sheet area
 	//=======================================================
 	CSize szDesign=pDoc->GetSize();
@@ -1323,7 +1357,9 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		pSh=pShSel;
 	}
 	//Disable rect for multiple selections
-	else if ((pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE) && (m_RectMul.IsRectEmpty())){
+	else if ((pDoc->m_iToolSel == _TOOLSELECTMUL_DRAFTCABLE)
+		//&& (m_RectMul.IsRectEmpty())
+		){
 
 		int sizeObArray = pDoc->m_pObArray->GetSize();
 
@@ -1497,12 +1533,12 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 				CRuntimeClass* pRuntimeClass=pSh->GetRuntimeClass( );
 
 				CString sName=CString(pRuntimeClass->m_lpszClassName);
-				if(sName.Compare("CShape")&&sName.Compare("CShapeContainer")){
+				if(sName.Compare(_T("CShape"))&&sName.Compare(_T("CShapeContainer"))){
 
 					//copy & increment
 					CShape* pSh1 = (CShape*)pRuntimeClass->CreateObject();
 					*pSh1=*pSh;
-					(*pSh1)++;
+					++(*pSh1);
 
 					//Beware! This mechanism is not very good. It would be better a suitable '=' operator.
 					pSh1->pcmdDeque=pDoc->cmdDeque;
@@ -1662,18 +1698,28 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	//=======================================================
 	_DoMappingEngine(point);
 	//=======================================================
-
-	//Check if there is something to move
-	//This block will be possibly deleted
-	//=======================================================
-	/*
-	int index;
-	pSh=(CShape *)pDoc->LastObject(index);
-	if(pSh==NULL){
+#ifdef TEST_SELTOOL
+	//if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+	//	((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+	//	CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MoveTo(point);
+	//	if (!rect_union.IsRectEmpty())
+	//	{
+	//		_SetUpdateRect(rect_union);
+	//	}
+	//	return;
+	//}
+#endif
+#ifdef TEST_PENTOOL
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MoveTo(point);
+		if (!rect_union.IsRectEmpty())
+		{
+			_SetUpdateRect(rect_union);
+		}
 		return;
 	}
-	*/
-	//=======================================================
+#endif
 
 	//Calculate sheet area
 	//=======================================================
@@ -1974,7 +2020,7 @@ int idata_deb=pDoc->m_pObArray->GetSize();
 
 
 #ifdef _DEBUG
-submenu->AppendMenu(MF_STRING,ID_DEBUG_EDIT_SHPINFO,"Info");
+submenu->AppendMenu(MF_STRING,ID_DEBUG_EDIT_SHPINFO,_T("Info"));
 #endif
 
 
@@ -2366,7 +2412,7 @@ int idata_deb=pDoc->m_pObArray->GetSize();
 			lf.lfClipPrecision=2;
 			lf.lfQuality=1;
 			lf.lfPitchAndFamily=34;
-			strcpy(lf.lfFaceName,"Arial");
+			wcscpy(lf.lfFaceName,_T("Arial"));
 
 			pShlabel->m_Label.font=new CFont();
 			pShlabel->m_Label.font->CreateFontIndirect(&lf);
@@ -2378,12 +2424,12 @@ int idata_deb=pDoc->m_pObArray->GetSize();
 
 			if(pShlabel->m_Label.bver){
 
-				CString stlabel="";
+				CString stlabel=_T("");
 				CSize szac=CSize(0,0);
 
 				for(int i=0;i<pShlabel->m_Label.slabel->GetLength();i++){
 					
-					if(i)stlabel+="\n";
+					if(i)stlabel+=_T("\n");
 					stlabel+=pShlabel->m_Label.slabel[0][i];
 
 
@@ -3287,7 +3333,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				//pDC->Rectangle(rect);
 				//}
 			}
-			CString str;str.Format("%i",nIndex);
+			CString str;str.Format(_T("%i"),nIndex);
 			pDC->TextOut(rect.CenterPoint().x,rect.TopLeft().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3318,7 +3364,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				//pDC->Rectangle(rect);
 				//}
 			}
-			CString str;str.Format("%i",nIndex);
+			CString str;str.Format(_T("%i"),nIndex);
 			pDC->SetBkMode(TRANSPARENT);
 			pDC->TextOut(rect.CenterPoint().x,rect.TopLeft().y,str);
 			pDC->SelectObject(prevFont);
@@ -3348,7 +3394,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			//pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3384,7 +3430,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 			if(pDoc->m_bFlagPartEdit){
 				pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3410,7 +3456,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				}
 				pDC->SetBkColor(RGB(255,255,255));
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3438,7 +3484,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			//pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3476,7 +3522,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 			if(pDoc->m_bFlagPartEdit){
 				pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3505,7 +3551,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3534,7 +3580,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			//pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3576,7 +3622,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				//pDC->Rectangle(rect);
 				//}
 			}
-			CString str;str.Format("%i",nIndex);
+			CString str;str.Format(_T("%i"),nIndex);
 			pDC->TextOut(rect.CenterPoint().x,rect.TopLeft().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3606,7 +3652,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%i",nIndex);
+			CString str;str.Format(_T("%i"),nIndex);
 			pDC->TextOut(rect.CenterPoint().x,rect.TopLeft().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;
@@ -3635,7 +3681,7 @@ void CDraftDrawView::DrawBorder(CDC *pDC){
 				pDC->SetBkColor(RGB(255,255,255));
 				//pDC->FillRect(rect,&brush);
 			}
-			CString str;str.Format("%c",nIndex);
+			CString str;str.Format(_T("%c"),nIndex);
 			//pDC->TextOut(rect.TopLeft().x,rect.CenterPoint().y,str);
 			pDC->SelectObject(prevFont);
 			nIndex++;

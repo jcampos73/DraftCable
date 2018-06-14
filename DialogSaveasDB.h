@@ -36,7 +36,7 @@ public:
 
 // Implementation
 protected:
-	HTREEITEM AddOneItem(HTREEITEM hParent, LPSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data = 0);
+	HTREEITEM AddOneItem(HTREEITEM hParent, LPWSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data = 0);
 	HTREEITEM hHD;
 	HTREEITEM hRoot;
 	void AddTreeViewItems(HTREEITEM hitem = NULL);

@@ -11,7 +11,7 @@
 /*AfxFuncname		global function*/
 
 //Global strings
-CString g_sDCableBaseDir=".\\";
+CString g_sDCableBaseDir=_T(".\\");
 CString g_sConnectString;
 
 //Global db conection to load units for example
@@ -21,7 +21,7 @@ CDatabase g_db;
 ULONG_PTR g_gdiplusToken;
 
 //Goblal current part library
-CString g_sCurrentLibrary="Standard100";
+CString g_sCurrentLibrary=_T("Standard100");
 
 //Funtionality of following structures should be derived to database
 //******************************************************************************	
@@ -84,11 +84,11 @@ MPI_Open().
 	CString m_sMsg;
 
 	DWORD Reserved=0;
-	ErrorCode=MPI_SetChannel("CBU","USB",&Reserved);
+	ErrorCode=MPI_SetChannel(_T("CBU"),_T("USB"),&Reserved);
 
 	if(ErrorCode){
 		MPI_GetLastError (&ErrorCode, ErrorMessage);
-		m_sMsg.Format("Error=%i: ",ErrorCode);
+		m_sMsg.Format(_T("Error=%i: "),ErrorCode);
 		m_sMsg+=ErrorMessage;
 /*
 		SendDlgItemMessage(IDC_LIST1,LB_ADDSTRING,0,(LPARAM)m_sMsg.GetBuffer(0));
@@ -99,8 +99,8 @@ MPI_Open().
 	}
 
 
-	char PasswordType[] = "PASSWORD_ID1";
-	char AccessMode[] = "READ";
+	char PasswordType[] = _T("PASSWORD_ID1");
+	char AccessMode[] = _T("READ");
 	//CustomerID	69012
 	//CustomerName	CRWeb
 	//Project		2016
@@ -116,7 +116,7 @@ MPI_Open().
 
 	if(ErrorCode){
 		MPI_GetLastError (&ErrorCode, ErrorMessage);
-		m_sMsg.Format("Error=%i: ",ErrorCode);
+		m_sMsg.Format(_T("Error=%i: "),ErrorCode);
 		m_sMsg+=ErrorMessage;
 /*
 		SendDlgItemMessage(IDC_LIST1,LB_ADDSTRING,0,(LPARAM)m_sMsg.GetBuffer(0));
@@ -131,7 +131,7 @@ MPI_Open().
 
 	if(ErrorCode){
 		MPI_GetLastError (&ErrorCode, ErrorMessage);
-		m_sMsg.Format("Error=%i: ",ErrorCode);
+		m_sMsg.Format(_T("Error=%i: "),ErrorCode);
 		m_sMsg+=ErrorMessage;
 /*
 		SendDlgItemMessage(IDC_LIST1,LB_ADDSTRING,0,(LPARAM)m_sMsg.GetBuffer(0));
@@ -145,7 +145,7 @@ MPI_Open().
 
 	if(ErrorCode){
 		MPI_GetLastError (&ErrorCode, ErrorMessage);
-		m_sMsg.Format("Error=%i: ",ErrorCode);
+		m_sMsg.Format(_T("Error=%i: "),ErrorCode);
 		m_sMsg+=ErrorMessage;
 /*
 		SendDlgItemMessage(IDC_LIST1,LB_ADDSTRING,0,(LPARAM)m_sMsg.GetBuffer(0));
@@ -155,7 +155,7 @@ MPI_Open().
 		return FALSE;
 	}
 
-	m_sMsg="Key accessed successfully!";
+	m_sMsg=_T("Key accessed successfully!");
 /*
 	SendDlgItemMessage(IDC_LIST1,LB_ADDSTRING,0,(LPARAM)m_sMsg.GetBuffer(0));
 	m_sMsg.ReleaseBuffer();
@@ -164,11 +164,11 @@ MPI_Open().
 
 #endif
 
-	g_sDCableBaseDir=AfxGetApp()->GetProfileString("Settings","BaseDir",".\\");
+	g_sDCableBaseDir=AfxGetApp()->GetProfileString(_T("Settings"),_T("BaseDir"),_T(".\\"));
 
-	g_sConnectString=AfxGetApp()->GetProfileString("Settings","ConnectString","");
+	g_sConnectString=AfxGetApp()->GetProfileString(_T("Settings"),_T("ConnectString"),_T(""));
 
-	afxWinwordPath=AfxGetApp()->GetProfileString("Settings","WinwordPath","C:\\Archivos de programa\\Microsoft Office\\Office");
+	afxWinwordPath=AfxGetApp()->GetProfileString(_T("Settings"),_T("WinwordPath"),_T("C:\\Archivos de programa\\Microsoft Office\\Office"));
 
 	return TRUE;
 }
@@ -198,11 +198,11 @@ void AfxInitGlobal(){
 	nCount=AfxGetConnectorCount();
 
 	//Allocates memory, check it is deallocated!
-	TABLE_PIN_LABEL=new LPSTR[nCount];
+	TABLE_PIN_LABEL=new LPWSTR[nCount];
 
 	for(int i=0;i<nCount;i++){
 
-		TABLE_PIN_LABEL[i]=new char[MAX_PATH];
+		TABLE_PIN_LABEL[i]=new TCHAR[MAX_PATH];
 	}
 
 	AfxGetConnector(TABLE_PIN_LABEL,nCount,MAX_PATH);
@@ -322,9 +322,9 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 		//Access database
 		//**********************************************************************
 		//**********************************************************************
-		std::string sFileDsn=std::string(g_sDCableBaseDir)+std::string(DCABLE_DATABASEDIR)+std::string("dc.dsn");
-		//std::string sConnect="";
-		std::string sNameConnector;
+		std::wstring sFileDsn=std::wstring(g_sDCableBaseDir)+std::wstring(DCABLE_DATABASEDIR)+std::wstring(_T("dc.dsn"));
+		//std::wstring sConnect=_T("");
+		std::wstring sNameConnector;
 
 		char buffer[MAX_PATH];
 
@@ -339,7 +339,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 		CRecordset rsConnector(&db);
 
 		/*
-		rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbCables ORDER BY iIdCable ASC");
+		rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbCables ORDER BY iIdCable ASC"));
 
 		while((!rsConnector.IsBOF())&&(!rsConnector.IsEOF())){
 
@@ -348,8 +348,8 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 			rsConnector.GetFieldValue(nIndex,str);
 			sNameConnector=str;
 
-			if(sNameConnector.find("txt")==std::string::npos){
-				sNameConnector+=".txt";
+			if(sNameConnector.find(_T("txt"))==std::wstring::npos){
+				sNameConnector+=_T(".txt");
 			}
 
 			
@@ -357,7 +357,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 			HANDLE hFind;
 
 			CString sPath=DCABLE_CONNECTORDIR;
-			sPath+=sNameConnector.c_str();//"*.txt";
+			sPath+=sNameConnector.c_str();//_T("*.txt");
 
 			int nCount=0;
 
@@ -375,7 +375,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 					//Count pin number
 					//This will not be neccesary when derived to database
 					//**********************************************************
-					FILE *fin=fopen(sPath,"r");
+					FILE *fin=fopen(sPath,_T("r"));
 					
 					while(fgets(buffer,MAX_PATH,fin)!=NULL){
 						if(strlen(buffer)>1)
@@ -399,7 +399,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 
 			conninfo infoConn;
 			infoConn.nCountWire=nCount-1;
-			rsConnector.GetFieldValue("bLogical",str);
+			rsConnector.GetFieldValue(_T("bLogical"),str);
 			infoConn.bLogical=atoi(str);
 			if(infoConn.bLogical){
 				int debug=0;
@@ -428,7 +428,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 		HANDLE hFind;
 
 		CString sPath = AfxGetCablePath();//DCABLE_CABLEDIR;
-		sPath+="*.txt";
+		sPath+=_T("*.txt");
 
 		hFind=FindFirstFile(sPath,&FindFileData);
 
@@ -442,7 +442,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 					//Count wire number
 					//This will not be neccesary when derived to database
 					//**********************************************************
-					FILE *fin = fopen(AfxGetCablePath() + sName, "r");
+					FILE *fin = _wfopen(AfxGetCablePath() + sName, _T("r"));
 					int nCount=0;
 					while(fgets(buffer,MAX_PATH,fin)!=NULL){
 						if(strlen(buffer)>1)
@@ -469,7 +469,7 @@ int AfxGetCables(LPTSTR	*lpCableList,int nCount,int nMaxLen){
 		int i;
 		for(i=0;((i<nCount)&&(i<afxCableList.GetSize()));i++){
 			CString sName=afxCableList[i].Left(nMaxLen);
-			strcpy(lpCableList[i],sName);
+			wcscpy(lpCableList[i], sName);
 		}
 
 		return i;
@@ -501,33 +501,33 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 		//Access database
 		//**********************************************************************
 		//**********************************************************************
-		std::string sFileDsn=std::string(g_sDCableBaseDir)+std::string(DCABLE_DATABASEDIR)+std::string("dc.dsn");
-		//std::string sConnect="";
-		std::string sNameConnector;
+		std::wstring sFileDsn=std::wstring(g_sDCableBaseDir)+std::wstring(DCABLE_DATABASEDIR)+std::wstring(_T("dc.dsn"));
+		//std::wstring sConnect=_T("");
+		std::wstring sNameConnector;
 
 		char buffer[MAX_PATH];
 
 /*
-		FILE *fin=fopen(sFileDsn.c_str(),"r");
+		FILE *fin=fopen(sFileDsn.c_str(),_T("r"));
 
 		//Constructs connection string
 		while(fgets(buffer,MAX_PATH,fin)!=NULL){
 
-			std::string sBuffer(buffer);
+			std::wstring sBuffer(buffer);
 
 			if(sBuffer[0]=='['){
 				continue;
 			}
 
 			int nIndex;
-			while((nIndex=sBuffer.find_first_of("[]\n\r")) >=0){
-				sBuffer.replace(nIndex,1,"");
+			while((nIndex=sBuffer.find_first_of(_T("[]\n\r"))) >=0){
+				sBuffer.replace(nIndex,1,_T(""));
 
 			}
 
 
 			if(sConnect.length()>0){
-				sConnect+=";";
+				sConnect+=_T(";");
 			}
 
 
@@ -548,7 +548,7 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 
 		CRecordset rsConnector(&db);
 
-		rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbConnector ORDER BY iIdConnector ASC");
+		rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbConnector ORDER BY iIdConnector ASC"));
 
 		while((!rsConnector.IsBOF())&&(!rsConnector.IsEOF())){
 
@@ -557,8 +557,8 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 			rsConnector.GetFieldValue(nIndex,str);
 			sNameConnector=str;
 
-			if(sNameConnector.find("txt")==std::string::npos){
-				sNameConnector+=".txt";
+			if(sNameConnector.find(_T("txt"))==std::wstring::npos){
+				sNameConnector+=_T(".txt");
 			}		
 
 		//**********************************************************************
@@ -569,7 +569,7 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 			HANDLE hFind;
 
 			CString sPath = AfxGetConnectorPath();//DCABLE_CONNECTORDIR;
-			sPath+=sNameConnector.c_str();//"*.txt";
+			sPath+=sNameConnector.c_str();//_T("*.txt");
 
 
 			int nCount=0;
@@ -589,7 +589,7 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 					//Count pin number
 					//This will not be neccesary when derived to database
 					//**********************************************************
-					FILE *fin=fopen(sPath,"r");
+					FILE *fin=_wfopen(sPath,_T("r"));
 					
 					while(fgets(buffer,MAX_PATH,fin)!=NULL){
 						if(strlen(buffer)>1)
@@ -614,15 +614,15 @@ int AfxGetConnector(LPTSTR	*lpConnectorList,int nCount,int nMaxLen){
 
 			conninfo infoConn;
 			infoConn.nCountWire=nCount-1;
-			rsConnector.GetFieldValue("bLogical",str);
-			infoConn.bLogical=atoi(str);
+			rsConnector.GetFieldValue(_T("bLogical"),str);
+			infoConn.bLogical=_wtoi(str);
 			if(infoConn.bLogical){
 				int debug=0;
 			}
 
 			nIndex=0;
 			rsConnector.GetFieldValue(nIndex,str);
-			int idata=atoi(str);
+			int idata=_wtoi(str);
 idata=afxConnectorList.GetSize()-1;
 			g_mapIdConnInfo[idata]=infoConn;
 
@@ -642,7 +642,7 @@ idata=afxConnectorList.GetSize()-1;
 		int i;
 		for(i=0;((i<nCount)&&(i<afxConnectorList.GetSize()));i++){
 			CString sName=afxConnectorList[i].Left(nMaxLen);
-			strcpy(lpConnectorList[i],sName);
+			wcscpy(lpConnectorList[i], sName);
 		}
 
 		return i;
@@ -716,33 +716,33 @@ int g_GetConnectString(LPTSTR lpConnStr,int nMaxLen){
 
 #define _DCABLE_CONNSTRING_REGISTER
 #ifndef _DCABLE_CONNSTRING_REGISTER
-	std::string sFileDsn=std::string(g_sDCableBaseDir)+std::string(DCABLE_DATABASEDIR)+std::string("dc.dsn");
-	std::string sConnect="";
-	std::string sNameConnector;
+	std::wstring sFileDsn=std::wstring(g_sDCableBaseDir)+std::wstring(DCABLE_DATABASEDIR)+std::wstring(_T("dc.dsn"));
+	std::wstring sConnect=_T("");
+	std::wstring sNameConnector;
 
 
-	FILE *fin=fopen(sFileDsn.c_str(),"r");
+	FILE *fin=fopen(sFileDsn.c_str(),_T("r"));
 
 
 	char buffer[MAX_PATH];
 	//Constructs connection string
 	while(fgets(buffer,MAX_PATH,fin)!=NULL){
 
-		std::string sBuffer(buffer);
+		std::wstring sBuffer(buffer);
 
 		if(sBuffer[0]=='['){
 			continue;
 		}
 
 		int nIndex;
-		while((nIndex=sBuffer.find_first_of("[]\n\r")) >=0){
-			sBuffer.replace(nIndex,1,"");
+		while((nIndex=sBuffer.find_first_of(_T("[]\n\r"))) >=0){
+			sBuffer.replace(nIndex,1,_T(""));
 
 		}
 
 
 		if(sConnect.length()>0){
-			sConnect+=";";
+			sConnect+=_T(";");
 		}
 
 
@@ -757,9 +757,9 @@ int g_GetConnectString(LPTSTR lpConnStr,int nMaxLen){
 	return strlen(lpConnStr);
 #else
 
-	strncpy(lpConnStr,g_sConnectString,nMaxLen);
+	wcsncpy(lpConnStr, g_sConnectString, nMaxLen);
 	lpConnStr[nMaxLen-1]=0;
-	return strlen(lpConnStr);
+	return wcslen(lpConnStr);
 #endif
 }
 
@@ -817,7 +817,7 @@ void _doFixDataBase()
 
 	TRY{
 		CString query;
-		query.Format("SELECT iIdPart FROM tbPart WHERE nNamePart LIKE '%s' ORDER BY iIdPart ASC", "blank");
+		query.Format(_T("SELECT iIdPart FROM tbPart WHERE nNamePart LIKE '%s' ORDER BY iIdPart ASC"), _T("blank"));
 
 		rsPart.Open(CRecordset::forwardOnly, query);
 
@@ -827,13 +827,13 @@ void _doFixDataBase()
 			rsPart.GetFieldValue(nIndex, strIdPart);
 
 			CString deleteQuery;
-			deleteQuery.Format("DELETE FROM tbPart WHERE nNamePart LIKE '%s' AND iIdPart NOT IN (%s)", "blank", strIdPart);
+			deleteQuery.Format(_T("DELETE FROM tbPart WHERE nNamePart LIKE '%s' AND iIdPart NOT IN (%s)"), _T("blank"), strIdPart);
 			db.ExecuteSQL(deleteQuery);
 		}
 	}
 	CATCH_ALL(e)
 	{
-		char msg[255];
+		TCHAR msg[255];
 		e->GetErrorMessage(msg, 255);
 		int stop = 1;
 	}

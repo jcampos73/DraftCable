@@ -22,7 +22,7 @@ extern UTILSCPP_API int nUtilsCPP;
 
 UTILSCPP_API int fnUtilsCPP(void);
 
-UTILSCPP_API void regex(std::string str);
+UTILSCPP_API void regex(std::wstring str);
 
-UTILSCPP_API int split(std::string s,LPTSTR *sa,int nmax);
+UTILSCPP_API int split(std::wstring s,LPTSTR *sa,int nmax);
 

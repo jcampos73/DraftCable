@@ -81,7 +81,7 @@ extern CString g_sCurrentLibrary;
 #define DCABLE_CABLEDIR		"Cables\\"
 #define DCABLE_CONNECTORDIR	"Connector\\"
 
-#define DCABLE_DATABASEDIR	"db\\"
+#define DCABLE_DATABASEDIR	_T("db\\")
 
 #define DCABLE_RACKDIR	".\\Rack\\"
 

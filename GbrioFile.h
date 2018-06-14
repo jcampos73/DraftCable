@@ -92,7 +92,8 @@ typedef struct labeltag{
 			lf.lfClipPrecision=2;
 			lf.lfQuality=1;
 			lf.lfPitchAndFamily=34;
-			strcpy(lf.lfFaceName,"Arial");
+			//strcpy(lf.lfFaceName,"Arial");
+			wcscpy(lf.lfFaceName, _T("Arial"));
 			font->CreateFontIndirect(&lf);
 			iSize=-lf.lfHeight-3;
 		}

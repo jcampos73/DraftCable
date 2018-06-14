@@ -13,19 +13,22 @@ CConnectorTool::~CConnectorTool()
 {
 }
 
-void CConnectorTool::MoveTo(CPoint point)
+CRect CConnectorTool::MoveTo(CPoint point)
 {
-
+	return CRect(0, 0, 0, 0);
 }
 
-void CConnectorTool::MouseDown(CPoint point)
+CRect CConnectorTool::MouseDown(CPoint point)
 {
 	__DoState(point, ddcEventMouseDown);
+
+	return CRect(0, 0, 0, 0);
 }
 
-void CConnectorTool::MouseUp(CPoint point)
+CRect CConnectorTool::MouseUp(CPoint point)
 {
 	__DoState(point, ddcEventMouseUp);
+	return CRect(0, 0, 0, 0);
 }
 
 void CConnectorTool::__DoState(CPoint point, EventType eventType)

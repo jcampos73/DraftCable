@@ -16,7 +16,7 @@
 #define SHAPECONTAINER_CONNECTING_PIN_UNIT	0
 #define SHAPECONTAINER_CONNECTING_PIN_WIRE	1
 
-extern char **TABLE_PIN_LABEL;
+extern TCHAR **TABLE_PIN_LABEL;
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeUnit object

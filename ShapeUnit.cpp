@@ -18,15 +18,15 @@
 
 
 
-char **TABLE_PIN_LABEL;
+TCHAR **TABLE_PIN_LABEL;
 
 //First implementation of TABLE_PIN_LABEL, before was unified with
 //afxConnectorList in AfxInitGlobal
 //keeped as reference
 /*
 char TABLE_PIN_LABEL[][256]={
-"CANON_CD30",
-"RJ45_516"
+_T("CANON_CD30"),
+_T("RJ45_516")
 };
 */
 
@@ -84,7 +84,7 @@ m_ShapeNumber=0;
 		CLIP_DEFAULT_PRECIS,       // nClipPrecision
 		DEFAULT_QUALITY,           // nQuality
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-		"Arial");                  // lpszFacename
+		_T("Arial"));                  // lpszFacename
 
 #define _MAXPOINTBUF_DRAFTCABLE		256
 	m_pPBuffer=(CPoint *)GlobalAlloc(GMEM_ZEROINIT,sizeof(CPoint)*_MAXPOINTBUF_DRAFTCABLE);
@@ -205,7 +205,7 @@ CShape& CShapeUnit::operator++( ){
 	strFile=strFile.Right(strFile.GetLength()-strFile.Find('.')-1);
 
 	CString str=strFile.Left(strFile.Find('.'));
-	str+="%i";
+	str+=_T("%i");
 	m_strIdent.Format(str,m_uiPartnumber);
 
 
@@ -248,7 +248,7 @@ void CShapeUnit::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 //Temporally dissabled
 /*
-		if(str.CompareNoCase("TB")==0){
+		if(str.CompareNoCase(_T("TB"))==0){
 
 			if(mf_cbPatchPEdit!=NULL){
 
@@ -268,7 +268,7 @@ void CShapeUnit::OnLButtonDblClk(UINT nFlags, CPoint point)
 			for(int i=0;i<m_LabelsCount;i++){
 				CString str=*m_pLabels[i]->sname;
 				str.MakeUpper();
-				if(str.CompareNoCase("TITLE=")==0){
+				if(str.CompareNoCase(_T("TITLE="))==0){
 					dPart.m_strName=*m_pLabels[i]->slabel;
 					break;
 				}
@@ -282,7 +282,7 @@ void CShapeUnit::OnLButtonDblClk(UINT nFlags, CPoint point)
 			for(i=0;i<m_LabelsCount;i++){
 				CString str=*m_pLabels[i]->sname;
 				str.MakeUpper();
-				if(str.CompareNoCase("TITLE=")==0){//if(str.Find("TITLE")>=0){
+				if(str.CompareNoCase(_T("TITLE="))==0){//if(str.Find(_T("TITLE"))>=0){
 					*m_pLabels[i]->slabel=dPart.m_strName;
 					*m_pLabels[i]->rect=CRect(m_pLabels[i]->rect->TopLeft(),CSize(0,0));
 					break;
@@ -315,7 +315,7 @@ BOOL CShapeUnit::IsTB(){
 		str=str.Left(nIndex);
 	}
 
-	if(str.CompareNoCase("TB")==0){
+	if(str.CompareNoCase(_T("TB"))==0){
 		return TRUE;
 	}
 
@@ -408,13 +408,13 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 			//Check if it is a vertical label
 			if(m_pLabels[i]->bver){
 
-				CString stlabel="";
+				CString stlabel=_T("");
 				CSize szac=CSize(0,0);
 
 				for(int j=0;j<m_pLabels[i]->slabel->GetLength();j++){
 					
 					//Add line breaks except for 1st character
-					if(j)stlabel+="\n";
+					if(j)stlabel+=_T("\n");
 					stlabel+=m_pLabels[i]->slabel[0][j];
 
 					//Get space occupied by single character
@@ -464,7 +464,7 @@ void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 		//debug
 		//pDC->FrameRect(m_pLabels[i]->rect,&CBrush(RGB(255,0,0)));
 
-		CString stlabel="";
+		CString stlabel=_T("");
 
 		//redundant block?
 		if(m_pLabels[i]->bver){
@@ -597,9 +597,9 @@ void CShapeUnit::Serialize( CArchive& archive )
 
 		//loop
 		int nCount=0;
-		CString prevStrIdent = "";
+		CString prevStrIdent = _T("");
 		int prevTypePin = -1;
-		CString prevLabelName = "";
+		CString prevLabelName = _T("");
 		if(!m_bFlagPartEdit)
 			archive>>nCount;
 		//archive>>nCount;
@@ -878,21 +878,21 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 			}
 
 			//Delete contents of temporal table
-			g_db.ExecuteSQL("DELETE FROM tbPartTemp");
+			g_db.ExecuteSQL(_T("DELETE FROM tbPartTemp"));
 
 			//Insert properties in db
 			CString str;
-			CString strSQL="INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')";
+			CString strSQL=_T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')");
 
-			str.Format(strSQL,"ID",m_uiShapeId);
+			str.Format(strSQL,_T("ID"),m_uiShapeId);
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL,"Width0",m_Rect0.Width());
+			str.Format(strSQL,_T("Width0"),m_Rect0.Width());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL,"Height0",m_Rect0.Height());
+			str.Format(strSQL,_T("Height0"),m_Rect0.Height());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL,"Width",m_Rect.Width());
+			str.Format(strSQL,_T("Width"),m_Rect.Width());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL,"Height",m_Rect.Height());
+			str.Format(strSQL,_T("Height"),m_Rect.Height());
 			g_db.ExecuteSQL(str);
 
 #define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
@@ -907,7 +907,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				str = *m_pLabels[i]->slabel;
 				CString seperator = _T("\n");
 
-				if (str.Find("\n") > 0){
+				if (str.Find(_T("\n")) > 0){
 					int position = 0;
 					CString token;
 
@@ -916,7 +916,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					{
 						if (token.Find(_T(":")) > 0){
 
-							CString strUmlLabelName = token.Left(token.Find(":"));
+							CString strUmlLabelName = token.Left(token.Find(_T(":")));
 							void *ptr;
 							if (mapLabelNameTypeToKeysvalues.Lookup(*m_pLabels[i]->sname, ptr) == FALSE){
 								mapLabelNameTypeToKeysvalues[*m_pLabels[i]->sname] = new CMapStringToString();
@@ -949,7 +949,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				//Empty title dont allowed
 				if(str.GetLength()>0){
 					CString str1;
-					strSQL="INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
+					strSQL=_T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')");
 					str1.Format(strSQL,str,*m_pLabels[i]->slabel);
 					g_db.ExecuteSQL(str1);
 				}
@@ -974,7 +974,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 					((CMapStringToString*)ptr)->GetNextAssoc(pos1, key1, value1);
 
 					CString str1;
-					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s:%s','%s')";
+					strSQL = _T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s:%s','%s')");
 					str1.Format(strSQL, key, key1, value1);
 					g_db.ExecuteSQL(str1);
 
@@ -1001,7 +1001,7 @@ BOOL CShapeUnit::OnCommand( WPARAM wParam, LPARAM lParam ){
 				}
 
 				//Query database
-				strSQL="SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
+				strSQL=_T("SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId");
 				CRecordset rsTemp(&g_db);
 				rsTemp.Open(NULL/*CRecordset::forwardOnly*/, strSQL);
 
@@ -1039,13 +1039,13 @@ BOOL CShapeUnit::CreateNGear(LPRECT lpRect,int nCount,float percDeep /*=25.0*/){
 	m_uiShapeType=uiShapeType;
 	m_pPoints=(int **)GlobalAlloc(GMEM_ZEROINIT,sizeof(int*)*_DEFAULTMAXPLINE_DRAFTCABLE);
 	m_pLabels=(label **)GlobalAlloc(GMEM_ZEROINIT,sizeof(label*)*_DEFAULTMAXPLINE_DRAFTCABLE);
-	CString str;str.Format("%i",idata);
-	label *lbl=new label(str,0,CRect(0,0,0,0),"NSIDES");
+	CString str;str.Format(_T("%i"),idata);
+	label *lbl=new label(str,0,CRect(0,0,0,0),_T("NSIDES"));
 	m_pLabels[0]=lbl;
 	m_PointspCount=1;
 
-	str.Format("%i",idata1);
-	lbl=new label(str,0,CRect(0,20,0,0),"DEEP");
+	str.Format(_T("%i"),idata1);
+	lbl=new label(str,0,CRect(0,20,0,0),_T("DEEP"));
 	m_pLabels[1]=lbl;
 	m_LabelsCount=2;
 
@@ -1069,13 +1069,13 @@ BOOL CShapeUnit::CreateNCross(LPRECT lpRect,int nCount,float percDeep /*=25.0*/)
 	m_pPoints=(int **)GlobalAlloc(GMEM_ZEROINIT,sizeof(int*)*_DEFAULTMAXPLINE_DRAFTCABLE);
 
 	m_pLabels=(label **)GlobalAlloc(GMEM_ZEROINIT,sizeof(label*)*_DEFAULTMAXPLINE_DRAFTCABLE);
-	CString str;str.Format("%i",idata);
-	label *lbl=new label(str,0,CRect(0,0,0,0),"NSIDES");
+	CString str;str.Format(_T("%i"),idata);
+	label *lbl=new label(str,0,CRect(0,0,0,0),_T("NSIDES"));
 	m_pLabels[0]=lbl;
 	m_PointspCount=1;
 
-	str.Format("%i",idata1);
-	lbl=new label(str,0,CRect(0,20,0,0),"DEEP");
+	str.Format(_T("%i"),idata1);
+	lbl=new label(str,0,CRect(0,20,0,0),_T("DEEP"));
 	m_pLabels[1]=lbl;
 	m_LabelsCount=2;
 
@@ -1100,15 +1100,15 @@ BOOL CShapeUnit::CreateNStar(LPRECT lpRect,int nCount,float percDeep /*=25.0*/){
 
 	m_pLabels=(label **)GlobalAlloc(GMEM_ZEROINIT,sizeof(label*)*_DEFAULTMAXPLINE_DRAFTCABLE);
 
-	CString str;str.Format("%i",idata);
-	label *lbl=new label(str,0,CRect(0,0,0,0),"NSIDES");
+	CString str;str.Format(_T("%i"),idata);
+	label *lbl=new label(str,0,CRect(0,0,0,0),_T("NSIDES"));
 	m_pLabels[0]=lbl;
 	
 	m_PointspCount=1;
 
 
-	str.Format("%i",idata1);
-	lbl=new label("15",0,CRect(0,20,0,0),"DEEP");
+	str.Format(_T("%i"),idata1);
+	lbl=new label(_T("15"),0,CRect(0,20,0,0),_T("DEEP"));
 	m_pLabels[1]=lbl;
 	m_LabelsCount=2;
 
@@ -1129,8 +1129,8 @@ BOOL CShapeUnit::Create(LPRECT lpRect,int nCount,int uiShapeType){
 
 	m_pLabels=(label **)GlobalAlloc(GMEM_ZEROINIT,sizeof(label*)*_DEFAULTMAXPLINE_DRAFTCABLE);
 
-	CString str;str.Format("%i",idata);
-	label *lbl=new label(str,0,CRect(0,0,0,0),"NSIDES");
+	CString str;str.Format(_T("%i"),idata);
+	label *lbl=new label(str,0,CRect(0,0,0,0),_T("NSIDES"));
 	m_pLabels[0]=lbl;
 	
 	m_PointspCount=1;
@@ -1302,7 +1302,7 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 			CString str = *m_pLabels[i]->sname;
 			str.MakeUpper();
 
-			rsTemp->GetFieldValue("cNombre", strName);
+			rsTemp->GetFieldValue(_T("cNombre"), strName);
 
 			void *ptr = NULL;
 			if (str.Compare(strName) == 0 &&
@@ -1310,14 +1310,14 @@ void CShapeUnit::_DoProcessUmlLabels(CRecordset *rsTemp, CMapStringToPtr* mapLab
 				ptr != NULL
 				){
 				//Iterate map
-				CString label = "";
+				CString label = _T("");
 				POSITION pos = ((CMapStringToString*)(*mapLabelTypeToKeysvalues)[strName])->GetStartPosition();
 				while (pos != NULL)
 				{
 					CString key, value;
 					((CMapStringToString*)(*mapLabelTypeToKeysvalues)[strName])->GetNextAssoc(pos, key, value);
-					if (label != ""){
-						label += "\n";
+					if (label != _T("")){
+						label += _T("\n");
 					}
 					CString str; str.Format(_T("%s:%s"), key, value);
 					label += str;
@@ -1358,7 +1358,7 @@ void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapL
 			//For UML Classes
 			//UML class attributes should have the form "UML:"
 			if (strName.Find(_T(":")) > 0){
-				CString strUmlLabelName = strName.Left(strName.Find(":"));
+				CString strUmlLabelName = strName.Left(strName.Find(_T(":")));
 				void *ptr;
 				if (mapLabelTypeToKeysvalues->Lookup(strUmlLabelName, ptr) == FALSE){
 					(*mapLabelTypeToKeysvalues)[strUmlLabelName] = new CMapStringToString();
@@ -1379,10 +1379,10 @@ void CShapeUnit::_DoProcessDlgPartProp(CRecordset *rsTemp, CMapStringToPtr *mapL
 						*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
 
 						//Process parameters
-						if (strName.Compare("NSIDES") == 0){
+						if (strName.Compare(_T("NSIDES")) == 0){
 							bFlagModified = true;
 						}
-						else if (strName.Compare("DEEP") == 0){
+						else if (strName.Compare(_T("DEEP")) == 0){
 							bFlagModified = true;
 						}
 
@@ -1407,13 +1407,13 @@ void CShapeUnit::_DoProcessModifiedShapes(BOOL bFlagModified)
 		for (int i = 0; i<m_LabelsCount; i++){
 			CString str = *m_pLabels[i]->sname;
 			str.MakeUpper();
-			if (str.Compare("NSIDES") == 0){
+			if (str.Compare(_T("NSIDES")) == 0){
 
-				idata = atoi(*m_pLabels[i]->slabel);
+				idata = _wtoi(*m_pLabels[i]->slabel);
 			}
-			else if (str.Compare("DEEP") == 0){
+			else if (str.Compare(_T("DEEP")) == 0){
 
-				idata1 = atoi(*m_pLabels[i]->slabel);
+				idata1 = _wtoi(*m_pLabels[i]->slabel);
 			}
 		}
 
@@ -1464,10 +1464,10 @@ CShapePin::CShapePin(UINT uiPinnumber,UINT uiPos,DWORD dwStyle,cmddeque *cmddq /
 	m_szSize=CSize(5,5);
 	m_dwStyle=dwStyle;
 	if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-		m_strIdent.Format("J%i",m_uiPinnumber);
+		m_strIdent.Format(_T("J%i"),m_uiPinnumber);
 	}
 	else{
-		m_strIdent.Format("P%i",m_uiPinnumber);
+		m_strIdent.Format(_T("P%i"),m_uiPinnumber);
 	}
 
 	//3rd
@@ -1488,7 +1488,7 @@ CShapePin::CShapePin(UINT uiPinnumber,UINT uiPos,DWORD dwStyle,cmddeque *cmddq /
 		CLIP_DEFAULT_PRECIS,       // nClipPrecision
 		DEFAULT_QUALITY,           // nQuality
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-		"Arial");                  // lpszFacename
+		_T("Arial"));                  // lpszFacename
 
 }
 
@@ -1510,10 +1510,10 @@ CShapePin::CShapePin(CShapePin& ShPin):CShapeContainer(ShPin){
 	m_szSize=CSize(5,5);
 	m_dwStyle=ShPin.m_dwStyle;
 	if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-		m_strIdent.Format("J%i",m_uiPinnumber);
+		m_strIdent.Format(_T("J%i"),m_uiPinnumber);
 	}
 	else{
-		m_strIdent.Format("P%i",m_uiPinnumber);
+		m_strIdent.Format(_T("P%i"),m_uiPinnumber);
 	}
 
 	//3rd
@@ -1534,7 +1534,7 @@ CShapePin::CShapePin(CShapePin& ShPin):CShapeContainer(ShPin){
 		CLIP_DEFAULT_PRECIS,       // nClipPrecision
 		DEFAULT_QUALITY,           // nQuality
 		DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-		"Arial");                  // lpszFacename
+		_T("Arial"));                  // lpszFacename
 	m_TypePin = ShPin.m_TypePin;
 }
 
@@ -1563,10 +1563,10 @@ CShape& CShapePin::operator=( const CShape& Sh ){
 	m_uiPos=pShPin->m_uiPos;
 	m_dwStyle=pShPin->m_dwStyle;
 	if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-		m_strIdent.Format("J%i",m_uiPinnumber);
+		m_strIdent.Format(_T("J%i"),m_uiPinnumber);
 	}
 	else{
-		m_strIdent.Format("P%i",m_uiPinnumber);
+		m_strIdent.Format(_T("P%i"),m_uiPinnumber);
 	}
 
 	//3rd
@@ -1581,10 +1581,10 @@ CShape& CShapePin::operator=( const CShape& Sh ){
 CShape& CShapePin::operator++( ){
 	m_uiPinnumber++;
 	if(m_dwStyle&SHAPEUNIT_PINTYPE_JACK){
-		m_strIdent.Format("J%i",m_uiPinnumber);
+		m_strIdent.Format(_T("J%i"),m_uiPinnumber);
 	}
 	else{
-		m_strIdent.Format("P%i",m_uiPinnumber);
+		m_strIdent.Format(_T("P%i"),m_uiPinnumber);
 	}
 	return *this;
 }
@@ -1768,7 +1768,7 @@ void CShapePin::OnDraw(CDC *pDC){
 			{
 			CString str;
 			CPoint point=rect.CenterPoint()+CPoint(2*offset_x,2*offset_y)-CPoint(m_szSize.cx*.5,m_szSize.cy*.5);
-			str.Format("%02i",m_uiPinnumber);
+			str.Format(_T("%02i"),m_uiPinnumber);
 			pDC->TextOut(point.x,point.y,str);
 			}
 			*/
@@ -1793,7 +1793,7 @@ void CShapePin::OnDraw(CDC *pDC){
 			{
 			CString str;
 			CPoint point=rect.TopLeft()+CPoint(m_szSize.cx*.5,m_szSize.cy*.5);
-			str.Format("%02i",m_uiPinnumber);
+			str.Format(_T("%02i"),m_uiPinnumber);
 			pDC->TextOut(point.x,point.y,str);
 			}
 			*/
@@ -1872,16 +1872,16 @@ void CShapePin::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 		CString sConnect=TABLE_PIN_LABEL[m_TypePin];
 
-		//sConnect+=".txt";
+		//sConnect+=_T(".txt");
 
 		CCableEdit dialog(sConnect,TRUE);
 
 		//07/01/2006
 		CString strName;
 		if(m_bJack)
-			strName.Format("J%i",m_uiPinnumber);
+			strName.Format(_T("J%i"),m_uiPinnumber);
 		else
-			strName.Format("P%i",m_uiPinnumber);
+			strName.Format(_T("P%i"),m_uiPinnumber);
 		dialog.m_strName=m_strIdent;//strName;
 
 		if(dialog.DoModal()==IDOK){
@@ -1892,7 +1892,7 @@ void CShapePin::OnLButtonDblClk(UINT nFlags, CPoint point)
 			dialog.m_strName.MakeUpper();
 			char c;
 			int n;
-			if(sscanf(dialog.m_strName,"%c%i",&c,&n)!=EOF){
+			if (swscanf(dialog.m_strName, _T("%c%i"), &c, &n) != EOF){
 				if(c=='J'){
 					m_bJack=TRUE;
 					m_uiPinnumber=n;
@@ -1906,7 +1906,7 @@ void CShapePin::OnLButtonDblClk(UINT nFlags, CPoint point)
 			else{
 				m_bJack=FALSE;
 				m_uiPinnumber=1;
-				m_strIdent="P1";
+				m_strIdent=_T("P1");
 			}
 		}
 
@@ -2126,17 +2126,17 @@ void CShapeWire::OnLButtonDblClk(UINT nFlags, CPoint point)
 		}
 
 		if(pShLast){
-			CString sConnect = "";
+			CString sConnect = _T("");
 			CShape *pSh=(CShape *)((CShapeContainer*)pShFirst)->m_obarrShapearr.GetAt(0);
 			
 			//check pin is of type 'TB'
 			if(((CShapePin*)pSh->m_pshChildConn)->m_TypePin>=0){
 				sConnect=TABLE_PIN_LABEL[((CShapePin*)pSh->m_pshChildConn)->m_TypePin];
-				if(sConnect.CompareNoCase("TB.txt")==0){
+				if(sConnect.CompareNoCase(_T("TB.txt"))==0){
 
 					int uiShFirst=pSh->m_pshConn->m_uiShapeId;
 
-					if(m_strIdent!=""){
+					if(m_strIdent!=_T("")){
 						SDisplayPatchPProp(m_strIdent);
 						return;
 					}
@@ -2151,11 +2151,11 @@ void CShapeWire::OnLButtonDblClk(UINT nFlags, CPoint point)
 			//check pin is of type 'TB'
 			if(((CShapePin*)pSh->m_pshChildConn)->m_TypePin>=0){
 				sConnect=TABLE_PIN_LABEL[((CShapePin*)pSh->m_pshChildConn)->m_TypePin];
-				if(sConnect.CompareNoCase("TB.txt")==0){
+				if(sConnect.CompareNoCase(_T("TB.txt"))==0){
 
 					int uiShLast=pSh->m_pshConn->m_uiShapeId;
 
-					if(m_strIdent!=""){
+					if(m_strIdent!=_T("")){
 						SDisplayPatchPProp(m_strIdent);
 						return;
 					}
@@ -2169,7 +2169,7 @@ void CShapeWire::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 WIRE_EDIT_NORMAL:
 		//Normal behaviour
-		CString str="cable516.txt";
+		CString str=_T("cable516.txt");
 		if(!m_strTypeIdent.IsEmpty()){
 			str=m_strTypeIdent;
 		}
@@ -2263,22 +2263,22 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 			}
 
 			//Delete contents of temporal table
-			g_db.ExecuteSQL("DELETE FROM tbPartTemp");
+			g_db.ExecuteSQL(_T("DELETE FROM tbPartTemp"));
 
 			//Insert properties in db
 			CString str;
-			CString strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')";
+			CString strSQL = _T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%i')");
 
 
-			str.Format(strSQL, "ID", m_uiShapeId);
+			str.Format(strSQL, _T("ID"), m_uiShapeId);
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL, "Width0", m_Rect0.Width());
+			str.Format(strSQL, _T("Width0"), m_Rect0.Width());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL, "Height0", m_Rect0.Height());
+			str.Format(strSQL, _T("Height0"), m_Rect0.Height());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL, "Width", m_Rect.Width());
+			str.Format(strSQL, _T("Width"), m_Rect.Width());
 			g_db.ExecuteSQL(str);
-			str.Format(strSQL, "Height", m_Rect.Height());
+			str.Format(strSQL, _T("Height"), m_Rect.Height());
 			g_db.ExecuteSQL(str);
 #define DRAFTCABLE_PARTPROP_PROGRAMATICALLY			5
 
@@ -2287,15 +2287,15 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 			for (i = 0; i<m_LabelsCount; i++){
 				str = *m_pLabels[i]->sname;
 				str.MakeUpper();
-				if (0){//(str.Find("TITLE")>=0){
-					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
-					str.Format(strSQL, "Title", *m_pLabels[i]->slabel);
+				if (0){//(str.Find(_T("TITLE"))>=0){
+					strSQL = _T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')");
+					str.Format(strSQL, _T("Title"), *m_pLabels[i]->slabel);
 					g_db.ExecuteSQL(str);
 					//break;
 				}
 				else if (str.GetLength()>0){
 					CString str1;
-					strSQL = "INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')";
+					strSQL = _T("INSERT INTO tbPartTemp (cNombre,cValor) VALUES ('%s','%s')");
 					str1.Format(strSQL, str, *m_pLabels[i]->slabel);
 					g_db.ExecuteSQL(str1);
 				}
@@ -2304,14 +2304,14 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 
 			/*
 			CRecordset rsPartTemp(&db);
-			rsPartTemp.m_strFilter="bRack<>0";
-			rsPartTemp.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+			rsPartTemp.m_strFilter=_T("bRack<>0");
+			rsPartTemp.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 			*/
 
 			g_db.Close();
 
 			CDialogPartProp dialog;
-			/*dialog.m_sText.Format("Id=%i",m_uiShapeId);*/
+			/*dialog.m_sText.Format(_T("Id=%i"),m_uiShapeId);*/
 			if (dialog.DoModal() == IDOK){
 
 				if (!g_db.IsOpen()){
@@ -2321,7 +2321,7 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 					g_db.OpenEx(sConnect);
 				}
 
-				strSQL = "SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId";
+				strSQL = _T("SELECT cNombre,cValor FROM tbPartTemp ORDER BY iId");
 				CRecordset rsTemp(&g_db);
 
 				rsTemp.Open(CRecordset::forwardOnly, strSQL);
@@ -2338,20 +2338,20 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 						str = *m_pLabels[i]->sname;
 						str.MakeUpper();
 
-						rsTemp.GetFieldValue("cNombre", strName);
+						rsTemp.GetFieldValue(_T("cNombre"), strName);
 
 						if (str.Compare(strName) == 0){
 							str = *m_pLabels[i]->slabel;
-							rsTemp.GetFieldValue("cValor", strValue);
+							rsTemp.GetFieldValue(_T("cValor"), strValue);
 							if (str.Compare(strValue)){
 								*m_pLabels[i]->slabel = strValue;
 								*m_pLabels[i]->rect = CRect(m_pLabels[i]->rect->TopLeft(), CSize(0, 0));
 
 								//Process parameters
-								if (strName.Compare("NSIDES") == 0){
+								if (strName.Compare(_T("NSIDES")) == 0){
 									bFlagModified = true;
 								}
-								else if (strName.Compare("DEEP") == 0){
+								else if (strName.Compare(_T("DEEP")) == 0){
 									bFlagModified = true;
 								}
 
@@ -2373,13 +2373,13 @@ BOOL CShapeWire::OnCommand(WPARAM wParam, LPARAM lParam){
 					for (int i = 0; i<m_LabelsCount; i++){
 						CString str = *m_pLabels[i]->sname;
 						str.MakeUpper();
-						if (str.Compare("NSIDES") == 0){
+						if (str.Compare(_T("NSIDES")) == 0){
 
-							idata = atoi(*m_pLabels[i]->slabel);
+							idata = _wtoi(*m_pLabels[i]->slabel);
 						}
-						else if (str.Compare("DEEP") == 0){
+						else if (str.Compare(_T("DEEP")) == 0){
 
-							idata1 = atoi(*m_pLabels[i]->slabel);
+							idata1 = _wtoi(*m_pLabels[i]->slabel);
 						}
 					}
 
@@ -2403,7 +2403,7 @@ void CShapeWire::SerializeGbr(CGbrioFile &gbrfile)
 void CShapeWire::Serialize( CArchive& archive )
 {
 	//dbug
-	if(m_strIdent.CompareNoCase("1234")==0){
+	if(m_strIdent.CompareNoCase(_T("1234"))==0){
 		int i=0;
 	}
 
@@ -2432,7 +2432,7 @@ void CShapeWire::Serialize( CArchive& archive )
 
 void CShapeWire::SerializeDdw(CDdwioFile &ddwfile)
 {
-	ddwfile.WriteUnit("*wire",&m_Rect,std::string(m_strIdent+","+m_strTypeIdent).c_str());
+	ddwfile.WriteUnit(_T("*wire"),&m_Rect,std::wstring(m_strIdent+_T(",")+m_strTypeIdent).c_str());
 }
 
 void CShapeWire::RepositionPins(){
@@ -2465,13 +2465,13 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 
 	m_sUnitName=lpUnitName;
 	CString str=strFile.Left(strFile.Find('.'));
-	str+="%i";
+	str+=_T("%i");
 	m_strIdent.Format(str,m_uiPartnumber);
 
 	//To load parts from db
 	//CArchiveDb ardb(NULL,CArchive::load   );
 	//CDatabase db;
-	std::stringstream* sout;
+	std::wstringstream* sout;
 	BOOL bFlagDb=TRUE;//Set to true if part is stored in database
 	BOOL bFlagDbEnable=TRUE;//Set to true if database storage is enabled
 
@@ -2491,8 +2491,8 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 
 		CRecordset rsConnector(&g_db);
 
-		rsConnector.m_strFilter="nNamePart='"+CString(strFile)+"' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='"+strLib+"')";
-		rsConnector.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+		rsConnector.m_strFilter=_T("nNamePart='")+CString(strFile)+_T("' AND iIdLib IN (SELECT iIdLib FROM tbLibrary WHERE nNameLib='")+strLib+_T("')");
+		rsConnector.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbPart"));
 		
 		CString str;
 		if(!rsConnector.IsEOF()){
@@ -2501,14 +2501,14 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 			//******************************************************************
 			//******************************************************************
 			CDBVariant dbTextBin;
-			rsConnector.GetFieldValue("bTextBin",str);
+			rsConnector.GetFieldValue(_T("bTextBin"),str);
 
-			if(str.Compare("1")==0){
+			if(str.Compare(_T("1"))==0){
 
 				BYTE *pStorage = NULL;
 
 				CDBVariant dbTextPart;
-				rsConnector.GetFieldValue("bTextPart",dbTextPart);
+				rsConnector.GetFieldValue(_T("bTextPart"),dbTextPart);
 
 				if(dbTextPart.m_dwType!=DBVT_BINARY){
 					return NULL;
@@ -2552,13 +2552,13 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 
 			bFlagDb=TRUE;
 
-			rsConnector.GetFieldValue("nTextPart",str);
+			rsConnector.GetFieldValue(_T("nTextPart"),str);
 		}
 
 
-		sout= new std::stringstream(ios_base::in);
+		sout= new std::wstringstream(ios_base::in);
 
-		sout->str(std::string(str));
+		sout->str(std::wstring(str));
 
 	}
 
@@ -2582,8 +2582,8 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 		else{
 
 			m_bFlagFileOpen=TRUE;
-			if(!funit.Open(strFile/*lpUnitName*/,CFile::modeRead|CFile::typeText)){
-				::AfxMessageBox("No se puede cargar.",MB_ICONSTOP|MB_OK);
+			if(!funit.Open(strFile, CFile::modeRead|CFile::typeText)){
+				::AfxMessageBox(_T("No se puede cargar."),MB_ICONSTOP|MB_OK);
 				return NULL;
 			}
 		}
@@ -2591,7 +2591,7 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 
 	CString stlabel;
 	CString stline;
-	std::string stdline;
+	std::wstring stdline;
 
 	if(bStaticBehave==FALSE){
 
@@ -2600,13 +2600,13 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 			*sout>>stdline;
 			stline=CString(stdline.c_str());
 			if(stline.IsEmpty() || sout->eof()){
-				::AfxMessageBox("Archivo vacío.",MB_ICONSTOP|MB_OK);
+				::AfxMessageBox(_T("Archivo vacío."),MB_ICONSTOP|MB_OK);
 				return NULL;
 			}
 		}
 		else{
 			if(!funit.ReadString(stline)){
-				::AfxMessageBox("Archivo vacío.",MB_ICONSTOP|MB_OK);
+				::AfxMessageBox(_T("Archivo vacío."),MB_ICONSTOP|MB_OK);
 				return NULL;
 			}
 		}
@@ -2624,7 +2624,7 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 //::AfxMessageBox(strdebug,MB_ICONINFORMATION|MB_OK);
 
 		//process polyline
-		if(!stline.CompareNoCase("[polyline]")){
+		if(!stline.CompareNoCase(_T("[polyline]"))){
 
 			//POLYLINE LOOP
 			
@@ -2648,15 +2648,15 @@ CObject *CShapeUnit::LoadUnit(LPCTSTR lpUnitName,CArchive *ar)
 
 				CString stdata=CutString(stline);
 
-				int idata=atoi(stdata.GetBuffer(255));
+				int idata = _wtoi(stdata.GetBuffer(255));
 
 //CString strdebug;
-//strdebug.Format("%i",idata);
+//strdebug.Format(_T("%i"),idata);
 //::AfxMessageBox(strdebug,MB_ICONINFORMATION|MB_OK);
 
 				m_pPoints[indexpline]=(int *)GlobalAlloc(GMEM_ZEROINIT,sizeof(int)*2*(idata+1));
 if(m_pPoints[indexpline]==NULL){
-	//strdebug="NULL";
+	//strdebug=_T("NULL");
 	//::AfxMessageBox(strdebug,MB_ICONSTOP|MB_OK);
 }
 				m_pPoints[indexpline][0]=idata;
@@ -2665,7 +2665,7 @@ if(m_pPoints[indexpline]==NULL){
 				int index=1;
 				while(stdata.IsEmpty()==FALSE){
 
-					idata=atoi(stdata.GetBuffer(255));
+					idata=_wtoi(stdata.GetBuffer(255));
 
 					m_pPoints[indexpline][index]=idata;
 
@@ -2692,7 +2692,7 @@ if(m_pPoints[indexpline]==NULL){
 		}//end if process polyline
 
 		//process label
-		if(!stline.CompareNoCase("[label]")){
+		if(!stline.CompareNoCase(_T("[label]"))){
 
 			if(bStaticBehave==FALSE){
 				if(bFlagDb&&bFlagDbEnable){
@@ -2733,18 +2733,18 @@ if(m_pPoints[indexpline]==NULL){
 
 				//read rectangle
 				CString stdata=CutString(stline);
-				int idata=atoi(stdata.GetBuffer(255));
+				int idata = _wtoi(stdata.GetBuffer(255));
 				int l=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata = _wtoi(stdata.GetBuffer(255));
 				int t=idata;
 				stdata=CutString(stline);
 				stdata=CutString(stline);
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata = _wtoi(stdata.GetBuffer(255));
 				int r=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata = _wtoi(stdata.GetBuffer(255));
 				int b=idata;
 
 				pLabel->rect=new CRect(l,t,l,t);//new CRect(l,t,r,b);
@@ -2780,7 +2780,7 @@ if(m_pPoints[indexpline]==NULL){
 						*sout>>stdline;
 						stline=CString(stdline.c_str());
 						if(sout->eof()){
-							stline = "";
+							stline = _T("");
 						}
 					}
 					else{
@@ -2793,9 +2793,9 @@ if(m_pPoints[indexpline]==NULL){
 					ar->ReadString(stline);
 				}
 
-				idata=atoi(CutString(stline).GetBuffer(255));
+				idata = _wtoi(CutString(stline).GetBuffer(255));
 				pLabel->bver=idata;
-				idata=atoi(CutString(stline).GetBuffer(255));
+				idata = _wtoi(CutString(stline).GetBuffer(255));
 				pLabel->iSize=idata;
 
 				//read font
@@ -2817,7 +2817,7 @@ pLabel->font->CreateFont(
    CLIP_DEFAULT_PRECIS,       // nClipPrecision
    DEFAULT_QUALITY,           // nQuality
    DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-   "Arial");                 // lpszFacename
+   _T("Arial"));                 // lpszFacename
 
 */
 
@@ -2836,7 +2836,7 @@ pLabel->font->CreateFont(
 				lf.lfClipPrecision=2;
 				lf.lfQuality=1;
 				lf.lfPitchAndFamily=34;
-				strcpy(lf.lfFaceName,"Arial");
+				wcscpy(lf.lfFaceName,_T("Arial"));
 
 				pLabel->font=new CFont();
 				pLabel->font->CreateFontIndirect(&lf);
@@ -2851,7 +2851,7 @@ pLabel->font->CreateFont(
 						*sout>>stdline;
 						stline=CString(stdline.c_str());
 						if(sout->eof()){
-							stline = "";
+							stline = _T("");
 						}
 					}
 					else{
@@ -2871,7 +2871,7 @@ pLabel->font->CreateFont(
 		
 		//process pin
 		//=================================================================
-		if(!stline.CompareNoCase("[pin]")){
+		if(!stline.CompareNoCase(_T("[pin]"))){
 
 			if(bFlagDb&&bFlagDbEnable){
 				*sout>>stdline;
@@ -2892,28 +2892,28 @@ pLabel->font->CreateFont(
 
 				//read pin
 				CString stdata=CutString(stline);
-				int idata=atoi(stdata.GetBuffer(255));
+				int idata=_wtoi(stdata.GetBuffer(255));
 				int x=idata;							//X location
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int y=idata;							//Y location
 
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				UINT uiPinnumber=idata;					//Pin number
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				UINT uiPinpos=idata;					//Pin position
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				DWORD dwStyle=idata;					//Style
 				/*stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				BOOL bJack=idata;					
 				dwStyle|=SHAPEUNIT_PINTYPE_JACK*bJack;	//Jack flag
 				*/
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int iIndexType=idata;					//Index of pin type
 
 				CShapePin *pShpin=new CShapePin(uiPinnumber,uiPinpos,dwStyle);
@@ -2947,7 +2947,7 @@ pLabel->font->CreateFont(
 
 		
 		//process rectangle
-		if(!stline.CompareNoCase("[rectangle]")){
+		if(!stline.CompareNoCase(_T("[rectangle]"))){
 
 			if(bFlagDb&&bFlagDbEnable){
 				*sout>>stdline;
@@ -2966,17 +2966,17 @@ pLabel->font->CreateFont(
 
 				//read rectangle
 				CString stdata=CutString(stline);
-				int idata=atoi(stdata.GetBuffer(255));
+				int idata=_wtoi(stdata.GetBuffer(255));
 				int x1=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int y1=idata;
 
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int x2=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int y2=idata;
 
 				m_Rect=CRect(x1,y1,x2,y2);
@@ -2995,7 +2995,7 @@ pLabel->font->CreateFont(
 		}// end if rectangle
 		
 		//process ellipse
-		if(!stline.CompareNoCase("[ellipse]")){
+		if(!stline.CompareNoCase(_T("[ellipse]"))){
 
 			if(bFlagDb&&bFlagDbEnable){
 				*sout>>stdline;
@@ -3016,17 +3016,17 @@ pLabel->font->CreateFont(
 
 				//read rectangle
 				CString stdata=CutString(stline);
-				int idata=atoi(stdata.GetBuffer(255));
+				int idata=_wtoi(stdata.GetBuffer(255));
 				int x1=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int y1=idata;
 
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int x2=idata;
 				stdata=CutString(stline);
-				idata=atoi(stdata.GetBuffer(255));
+				idata=_wtoi(stdata.GetBuffer(255));
 				int y2=idata;
 
 				//m_Rect=CRect(x1,y1,x2,y2);
@@ -3039,8 +3039,8 @@ pLabel->font->CreateFont(
 				stdata=CShapeUnit::CutString(stline);
 				if(!stdata.IsEmpty()){
 					pSh->m_bTransparent=FALSE;
-					char   *stopstring;
-					int idata=strtol(stdata,&stopstring,16);
+					TCHAR   *stopstring;
+					int idata=wcstol(stdata,&stopstring,16);
 					pSh->m_crFill=idata;
 				}
 
@@ -3089,7 +3089,7 @@ pLabel->font->CreateFont(
 	}
 
 
-	//::AfxMessageBox("Cargado.",MB_ICONINFORMATION|MB_OK);
+	//::AfxMessageBox(_T("Cargado."),MB_ICONINFORMATION|MB_OK);
 	return pObject;
 }
 
@@ -3128,7 +3128,7 @@ CString CShapeUnit::CutString(CString &strtext)
 	if(index==-1){
 		//simple row
 		CString strfield=strtext;
-		strtext="";
+		strtext=_T("");
 		return strfield;
 	}
 	else if(index==0){
@@ -3187,7 +3187,7 @@ CShapeLabel::CShapeLabel(label *lpLbl/*=NULL*/,LPRECT lpRect/*=NULL*/,UINT nId/*
 	   CLIP_DEFAULT_PRECIS,       // nClipPrecision
 	   DEFAULT_QUALITY,           // nQuality
 	   DEFAULT_PITCH | FF_SWISS,  // nPitchAndFamily
-	   "Arial");                 // lpszFacename
+	   _T("Arial"));                 // lpszFacename
 	*/
 }
 
@@ -3208,7 +3208,7 @@ BOOL CShapeLabel::Create(LPRECT lpRect,LPCTSTR lpszText,int nSize,BOOL bVer){
 	lf.lfClipPrecision=2;
 	lf.lfQuality=1;
 	lf.lfPitchAndFamily=34;
-	strcpy(lf.lfFaceName,"Arial");
+	wcscpy(lf.lfFaceName,_T("Arial"));
 
 	m_Label.font=new CFont();
 	m_Label.font->CreateFontIndirect(&lf);
@@ -3261,15 +3261,15 @@ CShape& CShapeLabel::operator++( ){
 
 	CString sLabel=*m_Label.slabel,sCount;
 
-	int i=sLabel.FindOneOf("0123456789");
+	int i=sLabel.FindOneOf(_T("0123456789"));
 
 	int count=0;
 	if(i>0){
-		count=atoi(sLabel.Right(sLabel.GetLength()-i));
+		count=_wtoi(sLabel.Right(sLabel.GetLength()-i));
 		sLabel=sLabel.Left(i);
 	}
 	count++;
-	sCount.Format("%i",count);
+	sCount.Format(_T("%i"),count);
 
 	*m_Label.slabel=sLabel+sCount;
 	return *this;
@@ -3306,14 +3306,14 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 		if (m_Label.bver){
 
 			//Local variables
-			CString stlabel = "";
+			CString stlabel = _T("");
 			CSize szac = CSize(0, 0);
 
 			//Check if label has not been initialized
 			if (!m_bIni){
 				for (int i = 0; i<m_Label.slabel->GetLength(); i++){
 
-					if (i)stlabel += "\n";
+					if (i)stlabel += _T("\n");
 					stlabel += m_Label.slabel[0][i];
 				}
 				*m_Label.slabel = stlabel;
@@ -3340,7 +3340,7 @@ void CShapeLabel::ResizeAuto(CDC *pDC)
 		else{
 			//Check if label has not been initialized
 			if (!m_bIni){
-				m_Label.slabel->Replace("\n", "");
+				m_Label.slabel->Replace(_T("\n"), _T(""));
 				m_bIni = TRUE;
 			}
 
@@ -3418,7 +3418,7 @@ void CShapeLabel::OnDraw(CDC *pDC){
 			pDC->SelectObject(prevPen);
 		}
 
-		CString stlabel="";
+		CString stlabel=_T("");
 
 		//Redundant block?
 		if(m_Label.bver){
@@ -3513,7 +3513,7 @@ void CShapeLabel::Serialize( CArchive& archive )
 		lf.lfClipPrecision=2;
 		lf.lfQuality=1;
 		lf.lfPitchAndFamily=34;
-		strcpy(lf.lfFaceName,"Arial");
+		wcscpy(lf.lfFaceName,_T("Arial"));
 
 		m_Label.font=new CFont();
 		m_Label.font->CreateFontIndirect(&lf);
@@ -3528,18 +3528,18 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	//Sample text line in svg file
 	//<text x="1165" y="922" font-family="sans - serif" font-size="10px" fill="black">PROY</text>
 
-	CString x = archive.m_xmlDocPtr->GetAttrib("x");
-	CString y = archive.m_xmlDocPtr->GetAttrib("y");
-	CString fontFamiliy = archive.m_xmlDocPtr->GetAttrib("font-family");
-	CString fontSize = archive.m_xmlDocPtr->GetAttrib("font-size");
-	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
+	CString x = archive.m_xmlDocPtr->GetAttrib(_T("x"));
+	CString y = archive.m_xmlDocPtr->GetAttrib(_T("y"));
+	CString fontFamiliy = archive.m_xmlDocPtr->GetAttrib(_T("font-family"));
+	CString fontSize = archive.m_xmlDocPtr->GetAttrib(_T("font-size"));
+	CString fill = archive.m_xmlDocPtr->GetAttrib(_T("fill"));
 	CString text = archive.m_xmlDocPtr->GetData();
 
 	//Replace 'px' with regular expressions
 	int nPos = 0;
 	int nReplaced = 0;
 	CRegExp r;
-	CString sSearchExp = "^[0-9]+";
+	CString sSearchExp = _T("^[0-9]+");
 	LPTSTR str = (LPTSTR)(LPCTSTR)fontSize;
 	int iFontSize = AFX_FONT_NORMAL_DEFAULT_HEIGHT;
 
@@ -3547,10 +3547,10 @@ void CShapeLabel::SerializeXml(CXMLArchive& archive)
 	if ((nPos = r.RegFind((LPTSTR)str)) != -1)
 	{
 		fontSize = fontSize.Mid(nPos, r.GetFindLen());
-		iFontSize = -atoi(fontSize) - 3;
+		iFontSize = -_wtoi(fontSize) - 3;
 	}
 
-	CRect rect(CPoint(atoi(x), atoi(y)), CPoint(atoi(x), atoi(y)));
+	CRect rect(CPoint(_wtoi(x), _wtoi(y)), CPoint(_wtoi(x), _wtoi(y)));
 
 	this->Create(rect, text, iFontSize, FALSE);
 	this->Unselect();
@@ -3586,7 +3586,7 @@ void CShapeLabel::OnLButtonDblClk(UINT nFlags, CPoint point)
 		CDialogText dlgText;
 		dlgText.m_bVertical = m_Label.bver;
 		dlgText.m_sAlias = *m_Label.slabel;
-		dlgText.m_sName = "";//*m_Label.sname;
+		dlgText.m_sName = _T("");//*m_Label.sname;
 		dlgText.m_iSize = m_Label.iSize;
 
 		if(dlgText.DoModal()==IDOK){
@@ -3611,7 +3611,7 @@ void CShapeLabel::OnLButtonDblClk(UINT nFlags, CPoint point)
 			lf.lfClipPrecision=2;
 			lf.lfQuality=1;
 			lf.lfPitchAndFamily=34;
-			strcpy(lf.lfFaceName,"Arial");
+			wcscpy(lf.lfFaceName,_T("Arial"));
 
 			delete(m_Label.font);
 			m_Label.font=new CFont();
@@ -3839,7 +3839,7 @@ void CShapeBus::SerializeDdw(CDdwioFile &ddwfile)
 		p[i]=CPoint(m_dwarrPointarr[i])+m_Rect.TopLeft();
 	}
 
-	ddwfile.WriteUnit("*bus",p,count,std::string(m_strIdent+","+m_strTypeIdent).c_str());
+	ddwfile.WriteUnit(_T("*bus"),p,count,std::wstring(m_strIdent+_T(",")+m_strTypeIdent).c_str());
 
 	delete(p);
 }

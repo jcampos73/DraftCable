@@ -58,7 +58,7 @@ CSize CDib::GetDimensions()
 	return CSize((int) m_lpBMIH->biWidth, (int) m_lpBMIH->biHeight);
 }
 
-BOOL CDib::AttachMapFile(const char* strPathname, BOOL bShare) // para lectura
+BOOL CDib::AttachMapFile(const TCHAR* strPathname, BOOL bShare) // para lectura
 {
 	// si abrimos el mismo archivo dos veces, Windows lo trata como si fueran
 	// 2 archivos distintos. No funciona con archivos BMP extraños en los
@@ -88,7 +88,7 @@ BOOL CDib::AttachMapFile(const char* strPathname, BOOL bShare) // para lectura
 	return TRUE;
 }
 
-BOOL CDib::CopyToMapFile(const char* strPathname)
+BOOL CDib::CopyToMapFile(const TCHAR* strPathname)
 {
 	// copia el DIB en un nuevo archivo, libera los punteros antes 
 	// si se ha utilizado previamente CreateSection, el HBITMAP será NULL (y no utilizable)

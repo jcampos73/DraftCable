@@ -60,7 +60,7 @@ int CDialogGraphDen::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CRect rect;
 	GetClientRect(rect);
 
-	m_pGDView->Create(NULL,"MyView",WS_CHILD|WS_VISIBLE|WS_BORDER,rect,this,1000);
+	m_pGDView->Create(NULL,_T("MyView"),WS_CHILD|WS_VISIBLE|WS_BORDER,rect,this,1000);
 	m_pGDView->m_pShArray=m_pShArray;
 	
 	return 0;

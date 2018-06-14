@@ -83,7 +83,7 @@ BOOL CImporter::__DoProcessNode(CShapeUnit*& pShUnit)
 
 		//Debug
 		TRACE(_T("Importing part %s.\n"), (LPCTSTR)(pShUnit->m_sUnitName));
-		if (pShUnit->m_sUnitName=="Inductor w/Core"){
+		if (pShUnit->m_sUnitName==_T("Inductor w/Core")){
 			int stop = 1;
 		}
 
@@ -142,7 +142,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 	TRY
 	{
 		//Get position of polygon
-		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CString pos = m_xmlDocPtr->GetAttrib(_T("pos"));
 		CPoint point0 = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
 
@@ -155,8 +155,8 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 		CArray<CPoint, CPoint> ptArray;
 		while (m_xmlDocPtr->FindElem(m_strTCSymbolNodeGeomPolygonPointLabel))
 		{
-			CString pos = m_xmlDocPtr->GetAttrib("pos");
-			int arc = atoi(m_xmlDocPtr->GetAttrib("arc"));
+			CString pos = m_xmlDocPtr->GetAttrib(_T("pos"));
+			int arc = _wtoi(m_xmlDocPtr->GetAttrib(_T("arc")));
 			if (arc > STRAIGHT_SEGMENT){//Greater than 0 is an Arc: 1=CCW, 2=CW
 				//Create ellipse arc or end Polyline
 				if (ptArray.GetCount() >= 2){
@@ -164,7 +164,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 				}
 
 				//Add point to array
-				CPoint point = GetPointFromStr(pos, ",", m_scale);
+				CPoint point = GetPointFromStr(pos, _T(","), m_scale);
 				ptArray.Add(point0 + point);
 
 				//Now create the arc
@@ -188,7 +188,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 			}
 			else{
 				//Add point to array
-				CPoint point = GetPointFromStr(pos, ",", m_scale);
+				CPoint point = GetPointFromStr(pos, _T(","), m_scale);
 				ptArray.Add(point0 + point);
 			}
 		}
@@ -200,7 +200,7 @@ BOOL CImporter::__DoProcessPolygon(CObArray* pobarrShapearr)
 	}
 	CATCH_ALL(e)
 	{
-		char msg[1024];
+		TCHAR msg[1024];
 		e->GetErrorMessage(msg, 1024);
 		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
 	}
@@ -218,18 +218,18 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 	{
 		//<PIN pos='70.00000,37.00000' which='0' elec='4' direction='1' part='0' number='2' show='0' length='15' number_pos='0' centre_name='0'></PIN>
 		//Get position of pin
-		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CString pos = m_xmlDocPtr->GetAttrib(_T("pos"));
 		//If 1 means NOT output, for example
-		CString which = m_xmlDocPtr->GetAttrib("which");
-		CString elec = m_xmlDocPtr->GetAttrib("elec");
+		CString which = m_xmlDocPtr->GetAttrib(_T("which"));
+		CString elec = m_xmlDocPtr->GetAttrib(_T("elec"));
 		//1 = S; 0 = N; 3 = E; 2 = W
-		CString direction = m_xmlDocPtr->GetAttrib("direction");
-		CString part = m_xmlDocPtr->GetAttrib("part");
-		CString number = m_xmlDocPtr->GetAttrib("number");
-		CString show = m_xmlDocPtr->GetAttrib("show");
-		CString length = m_xmlDocPtr->GetAttrib("length");
-		CString number_pos = m_xmlDocPtr->GetAttrib("number_pos");
-		CString centre_name = m_xmlDocPtr->GetAttrib("centre_name");
+		CString direction = m_xmlDocPtr->GetAttrib(_T("direction"));
+		CString part = m_xmlDocPtr->GetAttrib(_T("part"));
+		CString number = m_xmlDocPtr->GetAttrib(_T("number"));
+		CString show = m_xmlDocPtr->GetAttrib(_T("show"));
+		CString length = m_xmlDocPtr->GetAttrib(_T("length"));
+		CString number_pos = m_xmlDocPtr->GetAttrib(_T("number_pos"));
+		CString centre_name = m_xmlDocPtr->GetAttrib(_T("centre_name"));
 
 		//Start to process
 		CPoint point0 = GetPointFromStr(pos);
@@ -239,20 +239,20 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 		//We can not snap here becouse we are going to snap in post processing imported shapes
 		//for normalization to bounding rectangle
 		//SnapToGrid(&point0, m_szGrid);
-		CShapePin* pSh = new CShapePin(atoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
+		CShapePin* pSh = new CShapePin(_wtoi(number), _DRAFTDRAW_SEL_RESIZING_RECT_S, SHAPEUNIT_PINTYPE_WIRE);
 		//Just becouse we don't want empty rectangles
 		pSh->m_Rect = CRect(point0, point0 + CPoint(1, 1));
 		pSh->Unselect();
 		pobarrShapearr->Add(pSh);
 
 		//Get pin length normalized to DraftCable
-		int l = atoi(length) * m_scale / COOR_TO_PIN_LENGTH;
+		int l = _wtoi(length) * m_scale / COOR_TO_PIN_LENGTH;
 		CSize sz(DCABLE_PIN_WIDTH, DCABLE_PIN_HEIGHT);
 		CPoint ptOffset = CPoint(-l, 0);
 		CPoint ptOffset0 = ptOffset;
 
 		//Process orientation
-		__DoProcessPinOrientation(atoi(direction), l, sz, ptOffset, ptOffset0);
+		__DoProcessPinOrientation(_wtoi(direction), l, sz, ptOffset, ptOffset0);
 	
 		//Create pin line
 		CArray<CPoint, CPoint> ptArray;
@@ -281,7 +281,7 @@ BOOL CImporter::__DoProcessPin(CObArray* pobarrShapearr)
 	}
 	CATCH_ALL(e)
 	{
-		char msg[1024];
+		TCHAR msg[1024];
 		e->GetErrorMessage(msg, 1024);
 		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
 	}
@@ -295,18 +295,18 @@ BOOL CImporter::__DoProcessEllipse(CObArray* pobarrShapearr)
 	TRY
 	{
 		//Get position of polygon
-		CString pos = m_xmlDocPtr->GetAttrib("pos");
+		CString pos = m_xmlDocPtr->GetAttrib(_T("pos"));
 		CPoint point0 = GetPointFromStr(pos);
 		point0 = CPoint(point0.x * m_scale, point0.y * m_scale);
 
 		//Add point to array
 		CArray<CPoint, CPoint> ptArray;
-		CString a = m_xmlDocPtr->GetAttrib("a");
-		CPoint point = GetPointFromStr(a, ",", m_scale);
+		CString a = m_xmlDocPtr->GetAttrib(_T("a"));
+		CPoint point = GetPointFromStr(a, _T(","), m_scale);
 		ptArray.Add(point0 + point);
 
-		CString b = m_xmlDocPtr->GetAttrib("b");
-		point = GetPointFromStr(b, ",", m_scale);
+		CString b = m_xmlDocPtr->GetAttrib(_T("b"));
+		point = GetPointFromStr(b, _T(","), m_scale);
 		ptArray.Add(point0 + point);
 
 		CShape* pSh = NULL;
@@ -316,7 +316,7 @@ BOOL CImporter::__DoProcessEllipse(CObArray* pobarrShapearr)
 	}
 	CATCH_ALL(e)
 	{
-		char msg[1024];
+		TCHAR msg[1024];
 		e->GetErrorMessage(msg, 1024);
 		AfxMessageBox(msg, MB_OK | MB_ICONEXCLAMATION, -1);
 	}
@@ -418,7 +418,7 @@ void CImporter::__DoProcessPinOrientation(int direction, int l, CSize sz, CPoint
 
 void CImporter::__DoLoadRawData(LPCTSTR lpszPathName)
 {
-	FILE *f = fopen(lpszPathName, "rb");
+	FILE *f = _wfopen(lpszPathName, _T("rb"));
 
 	// reading data - zlib will detect if zipped or not...
 	TCHAR tInString[4096];
@@ -454,20 +454,20 @@ void CImporter::__DoLoadRawData(LPCTSTR lpszPathName)
 	m_bOpened = m_xmlDocPtr->SetDoc(sLoaded.c_str());
 }
 
-POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= ","*/, float scale /*= 0.0f*/)
+POINT CImporter::GetPointFromStr(LPCTSTR pos, LPCTSTR delimiter /*= _T(",")*/, float scale /*= 0.0f*/)
 {
-	int idata = CDraftDrawDoc::Split(pos, ",", NULL, 0);
+	int idata = CDraftDrawDoc::Split(pos, _T(","), NULL, 0);
 	LPTSTR *sa = new LPTSTR[idata];
 	for (int i = 0; i<idata; i++){
 		sa[i] = new TCHAR[255];
 	}
-	CDraftDrawDoc::Split(pos, ",", sa, idata);
+	CDraftDrawDoc::Split(pos, _T(","), sa, idata);
 	if (idata >= 2){
-		int x = atoi(sa[0]);
-		int y = atoi(sa[1]);
+		int x = _wtoi(sa[0]);
+		int y = _wtoi(sa[1]);
 		if (scale != 0.0f){
-			x = round(atof(sa[0]) * scale);
-			y = round(atof(sa[1]) * scale);
+			x = round(_wtof(sa[0]) * scale);
+			y = round(_wtof(sa[1]) * scale);
 		}
 		CPoint point(x, y);
 		return point;

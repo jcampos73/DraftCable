@@ -12,7 +12,7 @@ void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, CDWordArray& avalue)
 		value.ReleaseBuffer();
 
 		//all this loop should be replaced by a regular expression search engine
-		std::string svalue(value);
+		std::wstring svalue(value);
 
 		int idata1,idata2=0;
 		int index=0;
@@ -24,20 +24,20 @@ void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, CDWordArray& avalue)
 			bFlag=false;
 
 			do{
-				idata1=svalue.find_first_of("0123456789",idata2);
+				idata1=svalue.find_first_of(_T("0123456789"),idata2);
 				first=svalue[idata1]-'0';
 
 				if(idata1==std::string::npos){
 					break;
 				}
 
-				idata1=svalue.find_first_of("-",idata1);
+				idata1=svalue.find_first_of(_T("-"),idata1);
 
 				if(idata1==std::string::npos){
 					break;
 				}
 
-				idata1=svalue.find_first_of("0123456789",idata1);
+				idata1=svalue.find_first_of(_T("0123456789"),idata1);
 				last=svalue[idata1]-'0';
 
 				if(idata1==std::string::npos){
@@ -57,14 +57,14 @@ void AFXAPI DDX_Text(CDataExchange* pDX, int nIDC, CDWordArray& avalue)
 			}while(0);
 
 			do{
-				idata1=svalue.find_first_of("0123456789",idata2);
+				idata1=svalue.find_first_of(_T("0123456789"),idata2);
 				first=svalue[idata1]-'0';
 
 				if(idata1==std::string::npos){
 					break;
 				}
 
-				idata1=svalue.find_first_of(",",idata1);
+				idata1=svalue.find_first_of(_T(","),idata1);
 
 				if(idata1==std::string::npos){
 					break;

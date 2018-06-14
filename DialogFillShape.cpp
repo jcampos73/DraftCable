@@ -122,8 +122,8 @@ BOOL CDialogFillShape::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	GetDlgItem(IDC_FRONT_COLOR)->SetWindowText("");
-	GetDlgItem(IDC_BGND_COLOR)->SetWindowText("");
+	GetDlgItem(IDC_FRONT_COLOR)->SetWindowText(_T(""));
+	GetDlgItem(IDC_BGND_COLOR)->SetWindowText(_T(""));
 
 	SetColor(m_crCurrent);
 	SetColorBgnd(m_crCurrentBgnd);

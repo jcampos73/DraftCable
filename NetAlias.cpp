@@ -63,7 +63,7 @@ void CNetAlias::OnOK()
 
 	m_cbSize.GetWindowText(str);
 
-	m_iSize=atoi(str);
+	m_iSize=_wtoi(str);
 
 	CDialog::OnOK();
 }

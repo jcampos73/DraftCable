@@ -111,7 +111,7 @@ void CDialogText::OnChangeFont()
 	lf.lfClipPrecision=2;
 	lf.lfQuality=1;
 	lf.lfPitchAndFamily=34;
-	strcpy(lf.lfFaceName,"Arial");
+	wcscpy(lf.lfFaceName,_T("Arial"));
 
 	static DWORD rgbCurrent;   // current text color
 	//HFONT hfont, hfontPrev;
@@ -131,7 +131,7 @@ void CDialogText::OnChangeFont()
 		//rgbCurrent= cf.rgbColors;
 		//rgbPrev = SetTextColor(hdc, rgbCurrent);
 
-		m_sFont.Format("%s, %i",lf.lfFaceName,cf.iPointSize/10);
+		m_sFont.Format(_T("%s, %i"), lf.lfFaceName, cf.iPointSize / 10);
 
 		m_iSize=cf.iPointSize/10;
 

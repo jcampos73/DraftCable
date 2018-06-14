@@ -14,26 +14,26 @@
 #include "DraftDrawDoc.h"
 
 omobject g_OMObjectTable[]={
-	{ddcParam,"parameter",0},
-	{ddcBlockBegin,"begin",0},
-	{ddcBlockEnd,"end",0},
-	{ddcVar,"var",0},
-	{ddcNew,"new",0},
-	{ddcObject1ActiveSheet,"ActiveSheet",1},
-	{ddcObject1ActiveDocument,"ActiveDocument",1},
-	{ddcObject4Shapes,"Shapes",4},
-	{ddcObject4Selection,"Selection",4},
-	{ddcObject4Stack, "Stack", 4 },
-	{ddcObject5AddShape,"AddShape",5},
-	{ddcObject5SelectShape,"Select",5},
-	{ddcObject5DeleteShape,"Delete",5},
-	{ddcObject5ShapeRange,"ShapeRange",5},
-	{ddcObject5CountShapes, "Count", 5 },
-	{ddcObject6IncrementLeft,"IncrementLeft",6},
-	{ddcObject6IncrementTop,"IncrementTop",6},
-	{ddcObject6ScaleWidth,"ScaleWidth",6},
-	{ddcObject6ScaleHeight,"ScaleHeight",6},
-	{ddcObjectNull,"",-1}
+	{ddcParam,_T("parameter"),0},
+	{ddcBlockBegin,_T("begin"),0},
+	{ddcBlockEnd,_T("end"),0},
+	{ddcVar,_T("var"),0},
+	{ddcNew,_T("new"),0},
+	{ddcObject1ActiveSheet,_T("ActiveSheet"),1},
+	{ddcObject1ActiveDocument,_T("ActiveDocument"),1},
+	{ddcObject4Shapes,_T("Shapes"),4},
+	{ddcObject4Selection,_T("Selection"),4},
+	{ ddcObject4Stack, _T("Stack"), 4 },
+	{ddcObject5AddShape,_T("AddShape"),5},
+	{ddcObject5SelectShape,_T("Select"),5},
+	{ddcObject5DeleteShape,_T("Delete"),5},
+	{ddcObject5ShapeRange,_T("ShapeRange"),5},
+	{ddcObject5CountShapes, _T("Count"), 5 },
+	{ddcObject6IncrementLeft,_T("IncrementLeft"),6},
+	{ddcObject6IncrementTop,_T("IncrementTop"),6},
+	{ddcObject6ScaleWidth,_T("ScaleWidth"),6},
+	{ddcObject6ScaleHeight,_T("ScaleHeight"),6},
+	{ddcObjectNull,_T(""),-1}
 };
 
 //Construtor
@@ -46,7 +46,7 @@ cmddeque::cmddeque(int nSize /*= 1024*/){
 }
 
 //Add a command to the queue
-void cmddeque::push_cmd(std::string strComm,std::string strCommUndo,bool bModified /*=false*/){
+void cmddeque::push_cmd(std::wstring strComm,std::wstring strCommUndo,bool bModified /*=false*/){
 
 	//Check index is not at the end
 	if(m_nIndexCommQue!=m_dqCommands.size()){
@@ -58,7 +58,7 @@ void cmddeque::push_cmd(std::string strComm,std::string strCommUndo,bool bModifi
 			idata=m_dqCommands.size()-m_nIndexCommQue;
 		}
 		if(idata>0){
-			std::deque<std::string>::iterator it=m_dqCommands.end()-idata;
+			std::deque<std::wstring>::iterator it=m_dqCommands.end()-idata;
 			m_dqCommands.erase(it,m_dqCommands.end());
 			it=m_dqCommandsUndo.end()-idata;
 			m_dqCommandsUndo.erase(it,m_dqCommandsUndo.end());
@@ -105,7 +105,7 @@ void cmddeque::check_size(){
 		int idata2=0;
 
 		//Parse undo commands
-		std::deque<std::string>::iterator it=m_dqCommandsUndo.end();
+		std::deque<std::wstring>::iterator it=m_dqCommandsUndo.end();
 		int nBlock=1;
 		while(it>m_dqCommandsUndo.begin()&&nBlock>0){
 			it--;
@@ -158,7 +158,7 @@ void cmddeque::reset_modifiedflag(){
 		int idata2=0;
 
 		//Parse redo commands
-		std::deque<std::string>::iterator it=m_dqCommands.begin()+m_nIndexCommQue;
+		std::deque<std::wstring>::iterator it=m_dqCommands.begin()+m_nIndexCommQue;
 		int nBlock=1;
 		while(it<m_dqCommands.end()&&nBlock>0){
 			it++;
@@ -179,7 +179,7 @@ OMParser::OMParser (){
 //Return codes (ms-dos convention):
 //0	OK
 //1 Error
-int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NULL*/, int count /*=0*/){
+int OMParser::OMParse(std::wstring sCommand, int flags/*=0*/, TCHAR* output /*=NULL*/, int count /*=0*/){
 
 	//Local variables
 	std::list<omobject> liTargetObject;
@@ -192,16 +192,16 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 	//operators: .()=
 	//**************************************************************************
 	omobject Ob;
-	std::string sCommBuf=sCommand;
+	std::wstring sCommBuf=sCommand;
 	int nStart=0;
 	if(sCommBuf.length()>0 && sCommBuf[0]=='\"'){
-		nStart=sCommBuf.find_first_of("\",1");
+		nStart=sCommBuf.find_first_of(_T("\",1"));
 	}
-	std::size_t nIndex=sCommBuf.find_first_of(".()=",nStart);
-	while(nIndex!=std::string::npos){
-		std::string sOb=sCommBuf.substr(0,nIndex);
+	std::size_t nIndex=sCommBuf.find_first_of(_T(".()="),nStart);
+	while(nIndex!=std::wstring::npos){
+		std::wstring sOb=sCommBuf.substr(0,nIndex);
 		if(sCommBuf[nIndex]==')'){
-			sOb="("+sOb;
+			sOb=_T("(")+sOb;
 			if(nIndex<sCommBuf.length()-1){
 				nIndex++;
 			}
@@ -213,9 +213,9 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 		//Add to list to process
 		liTargetObject.push_back(Ob);
 		if(sCommBuf.length()>0 && sCommBuf[0]=='\"'){
-			nStart=sCommBuf.find_first_of("\"",1);
+			nStart=sCommBuf.find_first_of(_T("\""),1);
 		}
-		nIndex=sCommBuf.find_first_of(".()=",nStart);
+		nIndex=sCommBuf.find_first_of(_T(".()="),nStart);
 	}
 	//**************************************************************************
 	IdFromName(sCommBuf,&Ob);
@@ -249,7 +249,7 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 		}
 		catch(CException* pe)
 		{
-			char msg[255];
+			TCHAR msg[255];
 			pe->GetErrorMessage(msg, 255);
 			TRACE("Exception in OMParse: " + CString(msg));
 		}
@@ -269,10 +269,10 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 					//It will add a shape that addmit parameters as polylines, etc.
 					CDBVariant *dbvValue=(*lpParameters)[6];
 					CString str=*(*lpParameters)[6]->m_pstring;
-					str.TrimLeft(" ");
-					str.TrimRight(" ");
-					if(m_sblTable.find(std::string(str))!=m_sblTable.end()){
-						lpParam=(std::deque<CDBVariant*> *)m_sblTable[std::string(str)]->lpParam;
+					str.TrimLeft(_T(" "));
+					str.TrimRight(_T(" "));
+					if(m_sblTable.find(std::wstring(str))!=m_sblTable.end()){
+						lpParam=(std::deque<CDBVariant*> *)m_sblTable[std::wstring(str)]->lpParam;
 					}
 				}
 				if(!(flags&OMPF_JUSTSINTACTICAL))pDoc->AddShape((*lpParameters)[0]->m_lVal,
@@ -352,7 +352,7 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 			if (output != NULL){
 				CString result;
 				result.Format(_T("%i"), pDoc->m_pObArray->GetCount());
-				strcpy(output, result.GetBuffer(count));
+				wcscpy(output, result.GetBuffer(count));
 			}
 			break;
 		case ddcObject6IncrementLeft:
@@ -373,14 +373,14 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 			iObPrev=ddcVar;
 			CDBVariant *variant=(*lpParameters)[0];
 			CString str=*variant->m_pstring;
-			std::map<std::string,omobject*>::iterator it=m_sblTable.find(std::string(str));
+			std::map<std::wstring,omobject*>::iterator it=m_sblTable.find(std::wstring(str));
 			if(it!=m_sblTable.end()){
 				omObj=it->second;
 			}
 			else{
 				omObj=new omobject;
-				strncpy(omObj->sLabel,str,MAX_PATH);
-				m_sblTable[std::string(str)]=omObj;
+				wcsncpy(omObj->sLabel, str, MAX_PATH);
+				m_sblTable[std::wstring(str)]=omObj;
 			}
 			}break;
 		case ddcNew:
@@ -409,7 +409,7 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 							result += line;
 							pSh = (CShape *)pDoc->NextObject(index);
 						}
-						strcpy(output, result.GetBuffer(count));
+						wcscpy(output, result.GetBuffer(count));
 					}
 				}
 			}
@@ -444,7 +444,7 @@ int OMParser::OMParse(std::string sCommand, int flags/*=0*/, TCHAR* output /*=NU
 }
 
 //Obtain commands from name
-BOOL OMParser::IdFromName(std::string sName,omobject *lpOb){
+BOOL OMParser::IdFromName(std::wstring sName,omobject *lpOb){
 
 	int nIndex=0;
 	BOOL bResult=FALSE;
@@ -460,68 +460,68 @@ BOOL OMParser::IdFromName(std::string sName,omobject *lpOb){
 
 		//store parameters
 		CDBVariant *dbvValue;
-		int nIndex=sName.find_first_of(",");
-		std::string sValue;
-		if(nIndex!=std::string::npos){
+		int nIndex=sName.find_first_of(_T(","));
+		std::wstring sValue;
+		if(nIndex!=std::wstring::npos){
 			sValue=sName.substr(0,nIndex);
 			sName=sName.substr(nIndex+1,sName.length()-nIndex-1);
 		}
 		else{
 			sValue=sName;
-			sName="";
+			sName=_T("");
 		}
 		while(sValue.length()>0){
 
 			dbvValue=new CDBVariant;
-			if(sValue.find_first_not_of(" -+0123456789")==std::string::npos){
+			if(sValue.find_first_not_of(_T(" -+0123456789"))==std::wstring::npos){
 				dbvValue->m_dwType=DBVT_LONG;
-				dbvValue->m_lVal=atoi(sValue.c_str());
+				dbvValue->m_lVal=_wtoi(sValue.c_str());
 			}
 			else{
 				dbvValue->m_dwType=DBVT_STRING;
 				CString *pstr=new CString(sValue.c_str());
-				pstr->TrimLeft("\"");
-				pstr->TrimRight("\"");
+				pstr->TrimLeft(_T("\""));
+				pstr->TrimRight(_T("\""));
 				dbvValue->m_pstring=pstr;
 				
 			}
 			((std::deque<CDBVariant*>*)lpOb->lpParam)->push_back(dbvValue);
 
-			nIndex=sName.find_first_of(",");
-			if(nIndex!=std::string::npos){
+			nIndex = sName.find_first_of(_T(","));
+			if(nIndex!=std::wstring::npos){
 				sValue=sName.substr(0,nIndex);
 				sName=sName.substr(nIndex+1,sName.length()-nIndex-1);
 			}
 			else{
 				sValue=sName;
-				sName="";
+				sName = _T("");
 			}
 		}
 
 		//prepare for normal flow
-		sName="parameter";
+		sName=_T("parameter");
 	}
 
 
 	//Objects normal flow
-	std::string sParam;
-	int index1=sName.find(" ");
-	if(index1!=std::string::npos){
-		int index2=sName.find_first_not_of(" ",index1);
-		if(index2!=std::string::npos){
+	std::wstring sParam;
+	int index1=sName.find(_T(" "));
+	if(index1!=std::wstring::npos){
+		int index2=sName.find_first_not_of(_T(" "),index1);
+		if(index2!=std::wstring::npos){
 			sParam=sName.substr(index2,sName.length()-index2);
 		}
 		sName=sName.substr(0,index1);
 	}
 	while(g_OMObjectTable[nIndex].iObject!=ddcObjectNull){
-		if(strcmp(g_OMObjectTable[nIndex].sLabel,sName.c_str())==0){
+		if (wcscmp(g_OMObjectTable[nIndex].sLabel, sName.c_str()) == 0){
 			bResult=TRUE;
 			break;
 		}
 		nIndex++;
 	}
 	lpOb->iObject=g_OMObjectTable[nIndex].iObject;
-	strcpy(lpOb->sLabel,g_OMObjectTable[nIndex].sLabel);
+	wcscpy(lpOb->sLabel, g_OMObjectTable[nIndex].sLabel);
 	lpOb->iLevel=g_OMObjectTable[nIndex].iLevel;
 	if(sParam.length()>0){
 

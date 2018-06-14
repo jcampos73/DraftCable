@@ -57,7 +57,7 @@ void CDialogSaveasDB::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 	if(hitem==NULL){
 
 		//Add root component
-		hRoot=AddOneItem(NULL, "DB", 
+		hRoot=AddOneItem(NULL, _T("DB"), 
 			(HTREEITEM)TVI_LAST, iDB,TRUE);
 
 		//1ST QUERY: QUERY LIBRARIES
@@ -72,15 +72,15 @@ void CDialogSaveasDB::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 		//Query libraries
 		CRecordset rsLib(&g_db);
 		rsLib.m_strSort="nNameLib ASC";
-		rsLib.Open(CRecordset::forwardOnly,"SELECT * FROM tbLibrary");
+		rsLib.Open(CRecordset::forwardOnly,_T("SELECT * FROM tbLibrary"));
 		
 		//Iterate libraries
 		while(!rsLib.IsEOF()){
 			//Get library
 			CString str,strName;
-			rsLib.GetFieldValue("nNameLib",strName);
+			rsLib.GetFieldValue(_T("nNameLib"),strName);
 			strName.ReleaseBuffer();
-			rsLib.GetFieldValue("iIdLib",str);
+			rsLib.GetFieldValue(_T("iIdLib"), str);
 
 			//Add item to tree
 			hHD=AddOneItem(hRoot, strName.GetBuffer(0), 
@@ -92,17 +92,17 @@ void CDialogSaveasDB::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 			CRecordset rsPart(&g_db);
 			rsPart.m_strFilter="iIdLib="+str;
 			rsPart.m_strSort="nNamePart ASC";
-			rsPart.Open(CRecordset::forwardOnly,"SELECT * FROM tbPart");
+			rsPart.Open(CRecordset::forwardOnly, _T("SELECT * FROM tbPart"));
 
 			//Iterate throw parts
 			while(!rsPart.IsEOF()){
 				//Get Part
 				CString str;
-				rsPart.GetFieldValue("nNamePart",strName);				
-				rsPart.GetFieldValue("bRackType",str);
+				rsPart.GetFieldValue(_T("nNamePart"), strName);
+				rsPart.GetFieldValue(_T("bRackType"), str);
 
 				//Check it it is normal part or rack
-				if(atoi(str)){
+				if(_wtoi(str)){
 					AddOneItem(hHD, strName.GetBuffer(0), 
 								(HTREEITEM)TVI_LAST, iPartRack,TRUE,0);
 				}
@@ -157,7 +157,7 @@ void CDialogSaveasDB::AddTreeViewItems(HTREEITEM hitem /*= NULL*/)
 //iImage	index of image
 //bChildren	true if has any children
 //data		data associated with item
-HTREEITEM CDialogSaveasDB::AddOneItem(HTREEITEM hParent, LPSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data/*=0*/)
+HTREEITEM CDialogSaveasDB::AddOneItem(HTREEITEM hParent, LPWSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data/*=0*/)
 {
 	HTREEITEM hItem;       // return value
 	TV_ITEM tvI;           // item structure
@@ -223,7 +223,7 @@ BOOL CDialogSaveasDB::OnInitDialog()
 	AddTreeViewItems();
 
 	//Parse filter string
-	std::string str=m_ofn.lpstrFilter;
+	std::wstring str=m_ofn.lpstrFilter;
 	//std::list<std::string> lstr;
 	CString cstr=_DRAFTCABLE_DOC_FILTER_STR;
 
@@ -320,7 +320,7 @@ void CDialogSaveasDB::OnOK()
 
 	//Check is a library is selected
 	if(m_Lib.IsEmpty()){
-		AfxMessageBox("Debe seleccionar una librería de la base de datos.",MB_OK|MB_ICONINFORMATION,-1);
+		AfxMessageBox(_T("Debe seleccionar una librería de la base de datos."),MB_OK|MB_ICONINFORMATION,-1);
 		return;
 
 	}

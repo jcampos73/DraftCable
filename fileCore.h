@@ -40,17 +40,17 @@ extern BOOL g_bFlagDbEnable;//Set to true if database storage is enabled
 		if(g_bFlagDb&&g_bFlagDbEnable){\
 			CString stdline;\
 			g_parTheArch->ReadString(stdline);\
-			strncpy(buffer,stdline,255);\
+			wcsncpy(buffer,stdline,255);\
 			buffer[254]=0;\
 			if(stdline.GetLength()==0) return FALSE;\
 		}\
-		else if(!fgets(buffer,255,fini)){\
+		else if(!fgetws(buffer,255,fini)){\
 			buffer[0]=0;\
 			return FALSE;\
 		}\
-		pchar=strchr(buffer,'\n');\
+		pchar=wcschr(buffer,'\n');\
 		if(!pchar){\
-			pchar=&buffer[strlen(buffer)];\
+			pchar=&buffer[wcslen(buffer)];\
 		}\
 		*pchar=0;\
 		if(buffer[0]=='[') return FALSE;\
@@ -76,13 +76,13 @@ extern BOOL g_bFlagDbEnable;//Set to true if database storage is enabled
 //As it causes not loading of repeated unis from project files,
 //last if was commented.
 #define DD_GETS1(buffer,retval){\
-		if(!fgets(buffer,255,fini)){\
+		if(!fgetws(buffer,255,fini)){\
 			buffer[0]=0;\
 			return retval;\
 		}\
-		pchar=strchr(buffer,'\n');\
+		pchar=wcschr(buffer,'\n');\
 		if(!pchar){\
-			pchar=&buffer[strlen(buffer)];\
+			pchar=&buffer[wcslen(buffer)];\
 		}\
 		*pchar=0;\
 		/*if(buffer[0]=='[') */return retval;\
@@ -96,22 +96,22 @@ void AddString(CComboBox *pcombo, CComboBox *pcombo1, CString *psText=NULL);
 void FPrintF(CString stlabel, CComboBox *pcombo);
 void SPrintF(CStringArray *psArr,CString stlabel, CComboBox *pcombo);
 
-BOOL DDXF_Spare(BOOL bStore,char *buffer);
-BOOL DDXS_Spare(BOOL bStore,char *buffer);
+BOOL DDXF_Spare(BOOL bStore,TCHAR *buffer);
+BOOL DDXS_Spare(BOOL bStore,TCHAR *buffer);
 
-BOOL DDXF_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox);
-BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox);
+BOOL DDXF_ComboBox(BOOL bStore,TCHAR *buffer,CString sLabel, CComboBox *pComboBox);
+BOOL DDXS_ComboBox(BOOL bStore,TCHAR *buffer,CString sLabel, CComboBox *pComboBox);
 
-BOOL DDXF_FrmRect(BOOL bStore,char *buffer,CShapeFrmRect **shFrmRect);
-BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse);
-BOOL DDXF_Polyline(BOOL bStore,char *buffer,CShape **shPolyline);
-BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel);
-BOOL DDXF_Pin(BOOL bStore,char *buffer,CShapePin **shPin);
-BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit);
-BOOL DDXF_Wire(BOOL bStore,char *buffer,CShapeWire **shWire);
-BOOL DDXF_Bus(BOOL bStore,char *buffer,CShapeBus **shWire);
-BOOL DDXF_Connect(BOOL bStore,char *buffer,mapShapeIdtoObj_t *pMapShapeIdtoObj);
-BOOL DDXF_Sheet(BOOL bStore,char *buffer);
+BOOL DDXF_FrmRect(BOOL bStore,TCHAR *buffer,CShapeFrmRect **shFrmRect);
+BOOL DDXF_Ellipse(BOOL bStore,TCHAR *buffer,CShapeEllipse **shEllipse);
+BOOL DDXF_Polyline(BOOL bStore,TCHAR *buffer,CShape **shPolyline);
+BOOL DDXF_Label(BOOL bStore,TCHAR *buffer,CShapeLabel **shLabel);
+BOOL DDXF_Pin(BOOL bStore,TCHAR *buffer,CShapePin **shPin);
+BOOL DDXF_Unit(BOOL bStore,TCHAR *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit);
+BOOL DDXF_Wire(BOOL bStore,TCHAR *buffer,CShapeWire **shWire);
+BOOL DDXF_Bus(BOOL bStore,TCHAR *buffer,CShapeBus **shWire);
+BOOL DDXF_Connect(BOOL bStore,TCHAR *buffer,mapShapeIdtoObj_t *pMapShapeIdtoObj);
+BOOL DDXF_Sheet(BOOL bStore,TCHAR *buffer);
 
 //GDI PLUS FUNCTIONS
 //Save a bitmap using a instaled code

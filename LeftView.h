@@ -49,7 +49,7 @@ protected:
 
 // Generated message map functions
 protected:
-	HTREEITEM AddOneItem(HTREEITEM hParent, LPSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data = 0);
+	HTREEITEM AddOneItem(HTREEITEM hParent, LPTSTR szText, HTREEITEM hInsAfter, int iImage, BOOL bChildren, DWORD data = 0);
 	HTREEITEM hHD;
 	HTREEITEM hRoot;
 	void AddTreeViewItems(HTREEITEM hitem = NULL);

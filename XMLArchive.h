@@ -32,11 +32,11 @@ namespace std
 #define XMLCLASSNODE /*{*/ CXMLArchive& xmlArchive = static_cast<CXMLArchive&>(ar); \
 						xmlArchive.GetNode(_T("svg")/*GetActualClass()->m_lpszClassName*/);
 #define XMLDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
-	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName);}}
+	if (nodePtr != NULL) {nodePtr->DataNode(_T(#attrName), attrName);}}
 #define XMLDATA2(attrName, pObjs, pCount) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
-	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, attrName, pObjs, pCount);}}
+	if (nodePtr != NULL) {nodePtr->DataNode(_T(#attrName), attrName, pObjs, pCount);}}
 #define XMLINTDATA(attrName) { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
-	if (nodePtr != NULL) {nodePtr->DataNode(#attrName, (int&)(attrName));}}
+	if (nodePtr != NULL) {nodePtr->DataNode(_T(#attrName), (int&)(attrName));}}
 #define XMLENDNODE { CXMLArchiveNode* nodePtr = xmlArchive.GetCurrentNode();\
 	if (nodePtr != NULL) {nodePtr->Close(); }}}
 

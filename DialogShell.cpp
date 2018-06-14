@@ -44,7 +44,7 @@ void CDialogShell::OnOK()
 	CString text;
 	m_ecShell.GetWindowText(text);
 
-	std::string sCommand((LPCTSTR)text);
+	std::wstring sCommand((LPCTSTR)text);
 
 	TCHAR buffer[255];
 	BOOL bResult = theApp.m_OMParser.OMParse(sCommand, 0, buffer, 255) > 0;
@@ -61,7 +61,7 @@ BOOL CDialogShell::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	m_ecShell.SetWindowText("ActiveSheet.Shapes.Count");
+	m_ecShell.SetWindowText(_T("ActiveSheet.Shapes.Count"));
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE

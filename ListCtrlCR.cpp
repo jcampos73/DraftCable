@@ -40,6 +40,6 @@ int CALLBACK CListCtrlCR::CompareProcAlphDesc(LPARAM lParam1, LPARAM lParam2, LP
    CString    strItem1 = pListCtrl->GetItemText(lParam1, 0);
    CString    strItem2 = pListCtrl->GetItemText(lParam2, 0);
 
-   return strcmp(strItem2, strItem1);
+   return wcscmp(strItem2, strItem1);
 }
 

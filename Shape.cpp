@@ -211,6 +211,22 @@ CShape& CShape::operator++( ){
 	return *this;
 }
 
+BOOL CShape::PtInRect(CPoint point)
+{
+	BOOL result;
+	CRect rect = m_Rect;
+	rect.NormalizeRect();
+
+	if (rect.PtInRect(point) == TRUE){
+		result = TRUE;
+	}
+	else
+	{
+		result = FALSE;
+	}
+
+	return result;
+}
 /////////////////////////////////////////////////////////////////////////////
 // CShape message handlers
 
@@ -407,12 +423,12 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			if(pcmdDeque){
 				if(m_Mode!=_DRAFTDRAW_MODE_SEL){
 					CString str;
-					str.Format("ActiveSheet.Shapes(%i).Select(1)",
+					str.Format(_T("ActiveSheet.Shapes(%i).Select(1)"),
 						m_uiShapeId);
-					std::string strComm=str;
+					std::wstring strComm=str;
 					
-					str.Format("ActiveSheet.Shapes(%i).Select(0)",m_uiShapeId);
-					std::string strCommUndo=str;
+					str.Format(_T("ActiveSheet.Shapes(%i).Select(0)"),m_uiShapeId);
+					std::wstring strCommUndo=str;
 
 					pcmdDeque->push_cmd(strComm,strCommUndo);
 				}
@@ -518,42 +534,42 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 			GetData(saData);
 			if(saData.GetSize()==0){
 
-				str.Format("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i).Select",
+				str.Format(_T("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i).Select"),
 					m_uiShapeType,
 					m_Rect.left,
 					m_Rect.top,
 					m_Rect.right,
 					m_Rect.bottom,
 					m_uiShapeId);
-				std::string strComm=str;
+				std::wstring strComm=str;
 				
-				str.Format("ActiveSheet.Shapes(%i).Select.Delete",m_uiShapeId);
-				std::string strCommUndo=str;
+				str.Format(_T("ActiveSheet.Shapes(%i).Select.Delete"),m_uiShapeId);
+				std::wstring strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo,true);
 			}
 			else{
-				pcmdDeque->push_cmd("begin","end",true);
+				pcmdDeque->push_cmd(_T("begin"), _T("end"), true);
 
-				str="";
+				str=_T("");
 				for(int i=0;i<saData.GetSize();i++){
 					CString strAux;
 					if(str.GetLength()>0){
-						str+=",";
+						str+=_T(",");
 					}
-					strAux.Format("%s",saData[i]);
+					strAux.Format(_T("%s"),saData[i]);
 					//Autodetect strings
-					if(std::string(strAux).find_first_not_of(" -+0123456789")!=std::string::npos){
-						strAux="\""+strAux+"\"";
+					if(std::wstring(strAux).find_first_not_of(_T(" -+0123456789"))!=std::wstring::npos){
+						strAux=_T("\"")+strAux+_T("\"");
 					}
 					str+=strAux;
 				}
-				str="var data=new Array("+str+")";
-				std::string strComm=str;
-				std::string strCommUndo="";
+				str=_T("var data=new Array(")+str+_T(")");
+				std::wstring strComm=str;
+				std::wstring strCommUndo=_T("");
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 
-				str.Format("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i, data).Select",
+				str.Format(_T("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i, data).Select"),
 					m_uiShapeType,
 					m_Rect.left,
 					m_Rect.top,
@@ -561,12 +577,12 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 					m_Rect.bottom,
 					m_uiShapeId);
 				strComm=str;
-				str.Format("ActiveSheet.Shapes(%i).Select.Delete",m_uiShapeId);
+				str.Format(_T("ActiveSheet.Shapes(%i).Select.Delete"),m_uiShapeId);
 				strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 
-				pcmdDeque->push_cmd("end","begin");
+				pcmdDeque->push_cmd(_T("end"),_T("begin"));
 			}
 		}
 		//**********************************************************************
@@ -612,59 +628,59 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 			m_Rect=m_RectLast;
 
 			//Push commands
-			pcmdDeque->push_cmd("begin","end",true);
+			pcmdDeque->push_cmd(_T("begin"), _T("end"), true);
 
 			CString str;
 
 			if(incrementH!=0){
-				str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 					m_uiShapeId,
 					incrementH);
-				std::string strComm=str;
+				std::wstring strComm=str;
 
-				str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 					m_uiShapeId,
 					-incrementH);
-				std::string strCommUndo=str;
+				std::wstring strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 			}
 
 			if(incrementV!=0){
-				str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 					m_uiShapeId,
 					incrementV);
-				std::string strComm=str;
+				std::wstring strComm=str;
 
-				str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 					m_uiShapeId,
 					-incrementV);
-				std::string strCommUndo=str;
+				std::wstring strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 			}
 
-			str.Format("Selection.ShapeRange.ScaleWidth(%i,%i,%i)",
+			str.Format(_T("Selection.ShapeRange.ScaleWidth(%i,%i,%i)"),
 				idataH,
 				ddcFalse,
 				nScaleH);
-			std::string strComm=str;
+			std::wstring strComm=str;
 
-			str.Format("Selection.ShapeRange.ScaleWidth(%i,%i,%i)",
+			str.Format(_T("Selection.ShapeRange.ScaleWidth(%i,%i,%i)"),
 				-idataH,
 				ddcFalse,
 				nScaleH);
-			std::string strCommUndo=str;
+			std::wstring strCommUndo=str;
 
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
-			str.Format("Selection.ShapeRange.ScaleHeight(%i,%i,%i)",
+			str.Format(_T("Selection.ShapeRange.ScaleHeight(%i,%i,%i)"),
 				idataV,
 				ddcFalse,
 				nScaleV);
 			strComm=str;
 
-			str.Format("Selection.ShapeRange.ScaleHeight(%i,%i,%i)",
+			str.Format(_T("Selection.ShapeRange.ScaleHeight(%i,%i,%i)"),
 				-idataV,
 				ddcFalse,
 				nScaleV);
@@ -672,7 +688,7 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
-			pcmdDeque->push_cmd("end","begin");
+			pcmdDeque->push_cmd(_T("end"),_T("begin"));
 		}
 		//**********************************************************************
 		//Added 27/01/2004
@@ -692,37 +708,37 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 		//**********************************************************************
 		if(pcmdDeque){
 
-			pcmdDeque->push_cmd("begin","end",true);
+			pcmdDeque->push_cmd(_T("begin"),_T("end"),true);
 
 			int idata=rect.left-m_RectLast.left;
 			CString str;
-			str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+			str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 				m_uiShapeId,
 				idata);
-			std::string strComm=str;
+			std::wstring strComm=str;
 
-			str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+			str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 				m_uiShapeId,
 				-idata);
-			std::string strCommUndo=str;
+			std::wstring strCommUndo=str;
 
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
 			idata=rect.top-m_RectLast.top;
 
-			str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+			str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 				m_uiShapeId,
 				idata);
 			strComm=str;
 
-			str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+			str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 				m_uiShapeId,
 				-idata);
 			strCommUndo=str;
 
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
-			pcmdDeque->push_cmd("end","begin");
+			pcmdDeque->push_cmd(_T("end"),_T("begin"));
 		}
 		//**********************************************************************
 		//Added 27/01/2004
@@ -753,37 +769,37 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 
 			if(pcmdDeque){
 
-				pcmdDeque->push_cmd("begin","end",true);
+				pcmdDeque->push_cmd(_T("begin"),_T("end"),true);
 
 				int idata=rect.left-m_RectLast.left;
 				CString str;
-				str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 					m_uiShapeId,
 					idata);
-				std::string strComm=str;
+				std::wstring strComm=str;
 
-				str.Format("ActiveSheet.Shapes(%i).IncrementLeft(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementLeft(%i)"),
 					m_uiShapeId,
 					-idata);
-				std::string strCommUndo=str;
+				std::wstring strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 
 				idata=rect.top-m_RectLast.top;
 
-				str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 					m_uiShapeId,
 					idata);
 				strComm=str;
 
-				str.Format("ActiveSheet.Shapes(%i).IncrementTop(%i)",
+				str.Format(_T("ActiveSheet.Shapes(%i).IncrementTop(%i)"),
 					m_uiShapeId,
 					-idata);
 				strCommUndo=str;
 
 				pcmdDeque->push_cmd(strComm,strCommUndo);
 
-				pcmdDeque->push_cmd("end","begin");
+				pcmdDeque->push_cmd(_T("end"),_T("begin"));
 			}
 
 			//**********************************************************************
@@ -957,23 +973,23 @@ void CShape::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 			CStringArray saData;
 			GetData(saData);
 
-			pcmdDeque->push_cmd("begin","end",true);
+			pcmdDeque->push_cmd(_T("begin"),_T("end"),true);
 
-			str="";
+			str=_T("");
 			for(int i=0;i<saData.GetSize();i++){
 				CString strAux;
 				if(str.GetLength()>0){
-					str+=",";
+					str+=_T(",");
 				}
-				strAux.Format("%s",saData[i]);
+				strAux.Format(_T("%s"),saData[i]);
 				str+=strAux;
 			}
-			str="var data=new Array("+str+")";
-			std::string strComm=str;
-			std::string strCommUndo="";
+			str=_T("var data=new Array(")+str+_T(")");
+			std::wstring strComm=str;
+			std::wstring strCommUndo=_T("");
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
-			str.Format("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i, data).Select",
+			str.Format(_T("ActiveSheet.Shapes.AddShape(%i, %i, %i, %i, %i, %i, data).Select"),
 				m_uiShapeType,
 				m_Rect.left,
 				m_Rect.top,
@@ -981,12 +997,12 @@ void CShape::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 				m_Rect.bottom,
 				m_uiShapeId);
 			strComm=str;
-			str.Format("ActiveSheet.Shapes(%i).Select.Delete",m_uiShapeId);
+			str.Format(_T("ActiveSheet.Shapes(%i).Select.Delete"),m_uiShapeId);
 			strCommUndo=str;
 
 			pcmdDeque->push_cmd(strComm,strCommUndo);
 
-			pcmdDeque->push_cmd("end","begin");
+			pcmdDeque->push_cmd(_T("end"),_T("begin"));
 
 		}
 		break;
@@ -1948,11 +1964,11 @@ void CShapeRule::OnDraw(CDC *pDC)
 		CLIP_DEFAULT_PRECIS,		// nClipPrecision
 		DEFAULT_QUALITY,			// nQuality
 		DEFAULT_PITCH | FF_SWISS,	// nPitchAndFamily
-		"Arial");					// lpszFacename
+		_T("Arial"));					// lpszFacename
 	CString strLabel;
 	int height=m_Rect.Height();
 	int width=m_Rect.Width();
-	strLabel.Format("%.0f(%i,%i)",m_dfD,width,height);
+	strLabel.Format(_T("%.0f(%i,%i)"), m_dfD, width, height);
 	CFont *font_prev=pDC->SelectObject(&font);
 	SIZE sz;
 	GetTextExtentPoint32(pDC->m_hDC, strLabel, strLabel.GetLength(), &sz);
@@ -2351,7 +2367,7 @@ BOOL CShapeContainer::OnCommand( WPARAM wParam, LPARAM lParam ){
 	case ID_DEBUG_EDIT_SHPINFO:
 		if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
 			CDialogDebugShpInfo dialog;
-			dialog.m_sText.Format("Id=%i",m_uiShapeId);
+			dialog.m_sText.Format(_T("Id=%i"),m_uiShapeId);
 			dialog.DoModal();
 			return TRUE;
 		}
@@ -3405,17 +3421,17 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive, CShape*** pCreated /*= N
 	//Sample path line in svg file
 	//<path d="M 995 1040 L 995 910 Z" stroke="#000" fill="none"/>
 
-	CString d = archive.m_xmlDocPtr->GetAttrib("d");
-	CString stroke = archive.m_xmlDocPtr->GetAttrib("stroke");
-	CString fill = archive.m_xmlDocPtr->GetAttrib("fill");
+	CString d = archive.m_xmlDocPtr->GetAttrib(_T("d"));
+	CString stroke = archive.m_xmlDocPtr->GetAttrib(_T("stroke"));
+	CString fill = archive.m_xmlDocPtr->GetAttrib(_T("fill"));
 
 	//Parse d
 	//Tokenize
 	CString resToken;
 	int curPos = 0;
 	resToken = d.Tokenize(_T(" ,"), curPos);
-	CString x_str = "";
-	CString y_str = "";
+	CString x_str = _T("");
+	CString y_str = _T("");
 
 	//Point counter
 	int countPoint = 0;
@@ -3426,25 +3442,25 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive, CShape*** pCreated /*= N
 	while (resToken != _T(""))
 	{
 		
-		if (resToken.MakeUpper() == "M" ||
-			resToken.MakeUpper() == "L" ||
-			resToken.MakeUpper() == "C" ||//Cubic
-			resToken.MakeUpper() == "Z"){
-			if (x_str != "" && y_str!= ""){
+		if (resToken.MakeUpper() == _T("M") ||
+			resToken.MakeUpper() == _T("L") ||
+			resToken.MakeUpper() == _T("C") ||//Cubic
+			resToken.MakeUpper() == _T("Z")){
+			if (x_str != _T("") && y_str!= _T("")){
 				if (arrPoints2.GetCount()>0){
 					arrPoints.Add(arrPoints2[arrPoints2.GetCount()-1]);
 					arrPoints2.RemoveAll();
 				}
 				else{
-					arrPoints.Add(CPoint(atoi(x_str), atoi(y_str)));
+					arrPoints.Add(CPoint(_wtoi(x_str), _wtoi(y_str)));
 				}
-				x_str = "";
-				y_str = "";
+				x_str = _T("");
+				y_str = _T("");
 				countPoint++;
 			}
 
 			//New polyline
-			if (resToken.MakeUpper() == "Z"){
+			if (resToken.MakeUpper() == _T("Z")){
 				if (pCreated != NULL && pCount != NULL){
 					LPPOINT pPoints = new POINT[countPoint];
 
@@ -3471,19 +3487,19 @@ void CShapePolyline::SerializeXml(CXMLArchive& archive, CShape*** pCreated /*= N
 				}
 			}
 		}
-		else if (x_str == "")
+		else if (x_str == _T(""))
 		{
 			x_str = resToken;
 		}
-		else if (y_str == "")
+		else if (y_str == _T(""))
 		{
 			y_str = resToken;
 		}
 		else
 		{
-			arrPoints2.Add(CPoint(atoi(x_str), atoi(y_str)));
+			arrPoints2.Add(CPoint(_wtoi(x_str), _wtoi(y_str)));
 			x_str = resToken;
-			y_str = "";
+			y_str = _T("");
 		}
 
 		resToken = d.Tokenize(_T(" ,"), curPos);
@@ -3700,8 +3716,8 @@ void CShape::Serialize( CArchive& archive )
 		//CString sVer="1.05";	//added 'TB' serialization in CDocument
 		//CString sVer="1.06";	//added 'TB' serialization in CDocument with support for 'TB' associated to wires
 		//CString m_sVer = "1.07";	//serialization of fill colors (front & background)
-		CString m_sVer = "1.08";	//serialization of fill colors (blend positions & factors)
-		m_fVer = atof(m_sVer);
+		CString m_sVer = _T("1.08");	//serialization of fill colors (blend positions & factors)
+		m_fVer = _wtof(m_sVer);
 		archive << m_sVer;
 		int idata = 9;
 		archive << idata;
@@ -3742,7 +3758,7 @@ void CShape::Serialize( CArchive& archive )
 		//float fVer;
 		int nCount;
 		archive >> m_sVer;
-		m_fVer=atof(m_sVer);
+		m_fVer = _wtof(m_sVer);
 		archive >> nCount;
 		archive >> m_Rect;
 		archive >> m_Mode;

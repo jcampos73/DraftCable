@@ -125,66 +125,63 @@ void SPrintF(CStringArray *psArr,CString stlabel, CComboBox *pcombo)
 	stlabel=stlabel.Left(index);
 
 	stlabel1=stlabel+" data]\n";
-	//fprintf(fini,"%s\n",stlabel1);
+	//fwprintf(fini,"%s\n",stlabel1);
 	psArr->Add(stlabel1);
 
 	for(int i=0;i<pcombo->GetCount();i++){
 
 
 		pcombo->GetLBText(i,stlabel1);
-		//fprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
+		//fwprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
 		stlabel1+="\n";
 		psArr->Add(stlabel1);
 
 	}
 
 	stlabel1=stlabel+" select]\n";
-	//fprintf(fini,"%s\n",stlabel1);
+	//fwprintf(fini,"%s\n",stlabel1);
 	psArr->Add(stlabel1);
 
 	pcombo->GetWindowText(stlabel1);
-	//fprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
+	//fwprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
 	stlabel1+="\n";
 	psArr->Add(stlabel1);
 
 }
 
 
-void FPrintF(CString stlabel, CComboBox *pcombo)
+void fwprintf(CString stlabel, CComboBox *pcombo)
 {
-
 	CString stlabel1;
 	int index=stlabel.Find(']');
 	stlabel=stlabel.Left(index);
 
 	stlabel1=stlabel+" data]";
-	fprintf(fini,"%s\n",stlabel1);
+	fwprintf(fini,_T("%s\n"),stlabel1);
 
 	for(int i=0;i<pcombo->GetCount();i++){
 
-
 		pcombo->GetLBText(i,stlabel1);
-		fprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
-
+		fwprintf(fini, _T("%s\n"), stlabel1/*.GetBuffer(0)*/);
 	}
 
 	stlabel1=stlabel+" select]";
-	fprintf(fini,"%s\n",stlabel1);
+	fwprintf(fini, _T("%s\n"), stlabel1);
 
 	pcombo->GetWindowText(stlabel1);
-	fprintf(fini,"%s\n",stlabel1/*.GetBuffer(0)*/);
+	fwprintf(fini, _T("%s\n"), stlabel1/*.GetBuffer(0)*/);
 
 }
 
 //void AFXAPI DDX_LBString( CDataExchange* pDX, int nIDC, CString& value );
 
-BOOL DDXF_Pin(BOOL bStore,char *buffer,CShapePin **shPin){
+BOOL DDXF_Pin(BOOL bStore,TCHAR *buffer,CShapePin **shPin){
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[pin]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[pin]")))){
 			return result;
 		}
 
@@ -197,19 +194,19 @@ BOOL DDXF_Pin(BOOL bStore,char *buffer,CShapePin **shPin){
 		s1=CShapeUnit::CutString(str);
 		s2=CShapeUnit::CutString(str);
 
-		CRect rect/*(*shPin)->m_Rect*/=CRect(CPoint(atoi(s1),atoi(s2)),CSize(1,1));
+		CRect rect=CRect(CPoint(_wtoi(s1),_wtoi(s2)),CSize(1,1));
 		s1=CShapeUnit::CutString(str);
-		UINT uiPinnumber/*(*shPin)->m_uiPinnumber*/=atoi(s1);
+		UINT uiPinnumber=_wtoi(s1);
 		s1=CShapeUnit::CutString(str);
-		UINT uiPos/*(*shPin)->m_uiPos*/=atoi(s1);
+		UINT uiPos=_wtoi(s1);
 		s1=CShapeUnit::CutString(str);
-		DWORD dwStyle/*(*shPin)->m_dwStyle*/=atoi(s1);
+		DWORD dwStyle=_wtoi(s1);
 
 		*shPin=new CShapePin(uiPinnumber,uiPos,dwStyle);
 		(*shPin)->m_Rect=rect;
 
 		s1=CShapeUnit::CutString(str);
-		(*shPin)->m_TypePin=atoi(s1);
+		(*shPin)->m_TypePin=_wtoi(s1);
 
 		result=TRUE;
 	}
@@ -217,15 +214,16 @@ BOOL DDXF_Pin(BOOL bStore,char *buffer,CShapePin **shPin){
 	return result;
 }
 
-BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel){
+BOOL DDXF_Label(BOOL bStore,TCHAR *buffer,CShapeLabel **shLabel){
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[label]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[label]")))){
 			return result;
 		}
+
 		DD_GETS(buffer);
 
 		//declarations
@@ -243,8 +241,8 @@ BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel){
 			/*CShapeUnit::CutString(str);
 			CShapeUnit::CutString(str);*/
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
 
 		shLabel[0]->m_Label.rect=new CRect(points[0],points[0]);//points[1]);
@@ -258,13 +256,13 @@ BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel){
 		//read label flag vertical
 		DD_GETS(buffer);
 		str=CString(buffer);
-		if(CShapeUnit::CutString(str)/*CString(buffer)*/=="0"){
+		if(CShapeUnit::CutString(str)/*CString(buffer)*/==_T("0")){
 			shLabel[0]->m_Label.bver=FALSE;
 		}
 		else{
 			shLabel[0]->m_Label.bver=TRUE;
 		}
-		int idata=atoi(CShapeUnit::CutString(str).GetBuffer(255));
+		int idata=_wtoi(CShapeUnit::CutString(str).GetBuffer(255));
 		shLabel[0]->m_Label.iSize=idata;
 
 
@@ -282,7 +280,7 @@ BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel){
 		lf.lfClipPrecision=2;
 		lf.lfQuality=1;
 		lf.lfPitchAndFamily=34;
-		strcpy(lf.lfFaceName,"Arial");
+		wcscpy(lf.lfFaceName,_T("Arial"));
 
 		shLabel[0]->m_Label.font=new CFont();
 		shLabel[0]->m_Label.font->CreateFontIndirect(&lf);
@@ -293,25 +291,24 @@ BOOL DDXF_Label(BOOL bStore,char *buffer,CShapeLabel **shLabel){
 	return result;
 }
 
-BOOL DDXF_FrmRect(BOOL bStore,char *buffer,CShapeFrmRect **shFrmRect)
+BOOL DDXF_FrmRect(BOOL bStore,TCHAR *buffer,CShapeFrmRect **shFrmRect)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
-
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[rectangle]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[rectangle]")))){
 
 			return result;
 		}
 
-		/*while(*/DD_GETS(buffer);//fgets(buffer,255,fini);/*!=NULL){*/
-		pchar=strchr(buffer,'\n');
+		/*while(*/DD_GETS(buffer);//fgetws(buffer,255,fini);/*!=NULL){*/
+		pchar=wcschr(buffer,'\n');
 		if(!pchar){
 
-			pchar=&buffer[strlen(buffer)];
+			pchar=&buffer[wcslen(buffer)];
 		}
 		*pchar=0;
 
@@ -320,10 +317,9 @@ BOOL DDXF_FrmRect(BOOL bStore,char *buffer,CShapeFrmRect **shFrmRect)
 		//declarations
 		CString str(buffer),s1,s2;
 
-
 		/*
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 		*/
 
 		POINT *points=new POINT[2/*count*/];
@@ -342,8 +338,8 @@ BOOL DDXF_FrmRect(BOOL bStore,char *buffer,CShapeFrmRect **shFrmRect)
 			s1=CShapeUnit::CutString(str);
 			s2=CShapeUnit::CutString(str);
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
 
 		shFrmRect[0]->m_Rect=CRect(points[0],points[1]);
@@ -352,32 +348,30 @@ BOOL DDXF_FrmRect(BOOL bStore,char *buffer,CShapeFrmRect **shFrmRect)
 
 		/*}*/
 
-
 	}
 
 	return result;
 
 }
 
-BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse)
+BOOL DDXF_Ellipse(BOOL bStore,TCHAR *buffer,CShapeEllipse **shEllipse)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
-
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[ellipse]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[ellipse]")))){
 
 			return result;
 		}
 
-		/*while(*/DD_GETS(buffer);//fgets(buffer,255,fini);/*!=NULL){*/
-		pchar=strchr(buffer,'\n');
+		/*while(*/DD_GETS(buffer);//fgetws(buffer,255,fini);/*!=NULL){*/
+		pchar=wcschr(buffer,'\n');
 		if(!pchar){
 
-			pchar=&buffer[strlen(buffer)];
+			pchar=&buffer[wcslen(buffer)];
 		}
 		*pchar=0;
 
@@ -389,7 +383,7 @@ BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse)
 
 		/*
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 		*/
 
 		POINT *points=new POINT[2/*count*/];
@@ -408,8 +402,8 @@ BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse)
 			s1=CShapeUnit::CutString(str);
 			s2=CShapeUnit::CutString(str);
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
 
 		shEllipse[0]->m_Rect=CRect(points[0],points[1]);
@@ -417,8 +411,8 @@ BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse)
 		s1=CShapeUnit::CutString(str);
 		if(!s1.IsEmpty()){
 			shEllipse[0]->m_bTransparent=FALSE;
-			char   *stopstring;
-			int idata=strtol(s1,&stopstring,16);
+			TCHAR   *stopstring;
+			int idata=wcstol(s1,&stopstring,16);
 			shEllipse[0]->m_crFill=idata;
 		}
 
@@ -433,27 +427,26 @@ BOOL DDXF_Ellipse(BOOL bStore,char *buffer,CShapeEllipse **shEllipse)
 
 }
 
-BOOL DDXF_Polyline(BOOL bStore,char *buffer,CShape **shShape)
+BOOL DDXF_Polyline(BOOL bStore,TCHAR *buffer,CShape **shShape)
 {
 
-	char *pchar;
+	TCHAR *pchar;
 
 	BOOL result=FALSE;
-
 
 	if(bStore==FALSE){
 
 
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[polyline]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer, _T("[polyline]")))){
 
 			return result;
 		}
 
-		///*while(*/fgets(buffer,255,fini);/*!=NULL){*/
-		//pchar=strchr(buffer,'\n');
+		///*while(*/fgetws(buffer,255,fini);/*!=NULL){*/
+		//pchar=wcschr(buffer,'\n');
 		//if(!pchar){
 
-		//	pchar=&buffer[strlen(buffer)];
+		//	pchar=&buffer[wcslen(buffer)];
 		//}
 		//*pchar=0;
 
@@ -465,7 +458,7 @@ DD_GETS(buffer);
 
 
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 
 		if(count<=2){
 
@@ -476,8 +469,8 @@ DD_GETS(buffer);
 				s1=CShapeUnit::CutString(str);
 				s2=CShapeUnit::CutString(str);
 
-				points[i].x=atoi(s1);
-				points[i].y=atoi(s2);
+				points[i].x=_wtoi(s1);
+				points[i].y=_wtoi(s2);
 			}
 
 			*shShape[0]->m_Rect=CRect(points[0],points[1]);
@@ -502,8 +495,8 @@ DD_GETS(buffer);
 				s1=CShapeUnit::CutString(str);
 				s2=CShapeUnit::CutString(str);
 
-				points[i].x=atoi(s1);
-				points[i].y=atoi(s2);
+				points[i].x=_wtoi(s1);
+				points[i].y=_wtoi(s2);
 			}
 
 			shPolyline->Create(points,count);
@@ -521,10 +514,10 @@ DD_GETS(buffer);
 
 }
 
-BOOL DDXF_Spare(BOOL bStore,char *buffer)
+BOOL DDXF_Spare(BOOL bStore,TCHAR *buffer)
 {
 
-	char *pchar;
+	TCHAR *pchar;
 
 	BOOL result=FALSE;
 
@@ -534,16 +527,16 @@ BOOL DDXF_Spare(BOOL bStore,char *buffer)
 
 		if(buffer[0]=='['){
 
-			char *cresult;
-			cresult=fgets(buffer,255,fini);
+			TCHAR *cresult;
+			cresult=fgetws(buffer,255,fini);
 
 			while(cresult!=NULL){
-				pchar=strchr(buffer,'\n');
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
 
-				cresult=fgets(buffer,255,fini);
+				cresult=fgetws(buffer,255,fini);
 			}
 
 			if(!cresult){
@@ -562,22 +555,19 @@ BOOL DDXF_Spare(BOOL bStore,char *buffer)
 
 }
 
-BOOL DDXS_Spare(BOOL bStore,char *buffer)
+BOOL DDXS_Spare(BOOL bStore,TCHAR *buffer)
 {
-
-	char *pchar;
+	TCHAR *pchar;
 
 	BOOL result=FALSE;
 
-
 	if(bStore==FALSE){
-
 
 		if(buffer[0]=='['){
 
 			if(sini_index<sini.GetSize()){
 
-				strcpy(buffer,sini.GetAt(sini_index));
+				wcscpy(buffer,sini.GetAt(sini_index));
 			}
 			else{
 
@@ -585,15 +575,15 @@ BOOL DDXS_Spare(BOOL bStore,char *buffer)
 			}
 			sini_index++;
 
-			while(strlen(buffer)!=0){
-				pchar=strchr(buffer,'\n');
+			while(wcslen(buffer)!=0){
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
 
 				if(sini_index<sini.GetSize()){
 
-					strcpy(buffer,sini.GetAt(sini_index));
+					wcscpy(buffer,sini.GetAt(sini_index));
 				}
 				else{
 
@@ -614,14 +604,11 @@ BOOL DDXS_Spare(BOOL bStore,char *buffer)
 
 }
 
-BOOL DDXF_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox)
+BOOL DDXF_ComboBox(BOOL bStore,TCHAR *buffer,CString sLabel, CComboBox *pComboBox)
 {
-
-
-	char *pchar;
+	TCHAR *pchar;
 
 	BOOL result=FALSE;
-
 
 	if(bStore==FALSE){
 
@@ -629,10 +616,10 @@ BOOL DDXF_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 		CString slabel1=slabel+" data]";
 		CString slabel2=slabel+" select]";
 
-		if(strcmpi(buffer,slabel1)==0){
+		if(wcscmp(buffer,slabel1)==0){
 
-			while(fgets(buffer,255,fini)!=NULL){
-				pchar=strchr(buffer,'\n');
+			while (fgetws(buffer, 255, fini) != NULL){
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
@@ -645,10 +632,10 @@ BOOL DDXF_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 
 		}
 
-		if(strcmpi(buffer,slabel2)==0){
+		if(wcscmp(buffer,slabel2)==0){
 
-			while(fgets(buffer,255,fini)!=NULL){
-				pchar=strchr(buffer,'\n');
+			while (fgetws(buffer, 255, fini) != NULL){
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
@@ -666,14 +653,11 @@ BOOL DDXF_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 	return result;
 }
 
-BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox)
+BOOL DDXS_ComboBox(BOOL bStore,TCHAR *buffer,CString sLabel, CComboBox *pComboBox)
 {
-
-
-	char *pchar;
+	TCHAR *pchar;
 
 	BOOL result=FALSE;
-
 
 	if(bStore==FALSE){
 
@@ -681,11 +665,11 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 		CString slabel1=slabel+" data]";
 		CString slabel2=slabel+" select]";
 
-		if(strcmpi(buffer,slabel1)==0){
+		if(wcscmp(buffer,slabel1)==0){
 
 			if(sini_index<sini.GetSize()){
 
-				strcpy(buffer,sini.GetAt(sini_index));
+				wcscpy(buffer,sini.GetAt(sini_index));
 			}
 			else{
 
@@ -693,8 +677,8 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 			}
 			sini_index++;
 
-			while(strlen(buffer)!=0){
-				pchar=strchr(buffer,'\n');
+			while(wcslen(buffer)!=0){
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
@@ -703,7 +687,7 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 
 				if(sini_index<sini.GetSize()){
 
-					strcpy(buffer,sini.GetAt(sini_index));
+					wcscpy(buffer,sini.GetAt(sini_index));
 				}
 				else{
 
@@ -718,11 +702,11 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 
 		}
 
-		if(strcmpi(buffer,slabel2)==0){
+		if(wcscmp(buffer,slabel2)==0){
 
 			if(sini_index<sini.GetSize()){
 
-				strcpy(buffer,sini.GetAt(sini_index));
+				wcscpy(buffer,sini.GetAt(sini_index));
 			}
 			else{
 
@@ -730,8 +714,8 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 			}
 			sini_index++;
 
-			while(strlen(buffer)!=0){
-				pchar=strchr(buffer,'\n');
+			while(wcslen(buffer)!=0){
+				pchar=wcschr(buffer,'\n');
 				*pchar=0;
 
 				if(buffer[0]=='[') break;
@@ -740,7 +724,7 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 
 				if(sini_index<sini.GetSize()){
 
-					strcpy(buffer,sini.GetAt(sini_index));
+					wcscpy(buffer,sini.GetAt(sini_index));
 				}
 				else{
 
@@ -760,10 +744,10 @@ BOOL DDXS_ComboBox(BOOL bStore,char *buffer,CString sLabel, CComboBox *pComboBox
 	return result;
 }
 
-BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit)
+BOOL DDXF_Unit(BOOL bStore,TCHAR *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
@@ -772,7 +756,7 @@ BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit
 
 			return result;
 		}
-		if(strcmpi(buffer,"[label]")==0){
+		if(wcscmp(buffer,_T("[label]"))==0){
 
 			return result;
 		}
@@ -789,14 +773,12 @@ BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit
 			sName=lpszNamePrev;
 		}
 
-
 		//declarations
 		CString str(buffer),s1,s2;
 
-
 		/*
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 		*/
 
 		POINT *points=new POINT[2/*count*/];
@@ -815,22 +797,13 @@ BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit
 			s1=CShapeUnit::CutString(str);
 			s2=CShapeUnit::CutString(str);
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
 
 		CObject *pobj=shUnit[0]->LoadUnit(sName);
 
-		/*
-		if(pobj==NULL){
-			delete(shUnit[0]);
-			return FALSE;
-		}
-		*/
-
 		shUnit[0]->m_Rect=CRect(points[0],points[1]);
-
-
 
 		while(1){
 
@@ -838,46 +811,31 @@ BOOL DDXF_Unit(BOOL bStore,char *buffer,LPCTSTR lpszNamePrev,CShapeUnit **shUnit
 
 		}
 
-
-
-
 		result=TRUE;
-
-		/*}*/
-
-
 	}
 
 	return result;
 
 }
 
-BOOL DDXF_Wire(BOOL bStore,char *buffer,CShapeWire **shWire)
+BOOL DDXF_Wire(BOOL bStore,TCHAR *buffer,CShapeWire **shWire)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
 
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[*wire]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[*wire]")))){
 
 			return result;
 		}
 
-
 		DD_GETS(buffer);
-
 
 		//declarations
 		CString str(buffer),s1,s2;
-
-
-		/*
-		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
-		*/
 
 		POINT *points=new POINT[2/*count*/];
 
@@ -895,10 +853,9 @@ BOOL DDXF_Wire(BOOL bStore,char *buffer,CShapeWire **shWire)
 			s1=CShapeUnit::CutString(str);
 			s2=CShapeUnit::CutString(str);
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
-
 
 		shWire[0]->m_Rect=CRect(points[0],points[1]);
 
@@ -914,47 +871,37 @@ BOOL DDXF_Wire(BOOL bStore,char *buffer,CShapeWire **shWire)
 
 
 		result=TRUE;
-
-		/*}*/
-
-
 	}
 
 	return result;
 
 }
 
-BOOL DDXF_Bus(BOOL bStore,char *buffer,CShapeBus **shWire)
+BOOL DDXF_Bus(BOOL bStore,TCHAR *buffer,CShapeBus **shWire)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
-
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[*bus]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[*bus]")))){
 
 			return result;
 		}
 
-
 		DD_GETS(buffer);
-
 
 		//declarations
 		CString str(buffer),s1,s2;
 
-
 		/*
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 		*/
 
-
-
 		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
+		int count=_wtoi(s1);
 
 		POINT *points=new POINT[count];
 
@@ -972,8 +919,8 @@ BOOL DDXF_Bus(BOOL bStore,char *buffer,CShapeBus **shWire)
 			s1=CShapeUnit::CutString(str);
 			s2=CShapeUnit::CutString(str);
 
-			points[i].x=atoi(s1);
-			points[i].y=atoi(s2);
+			points[i].x=_wtoi(s1);
+			points[i].y=_wtoi(s2);
 		}
 
 		shPolyline->Create(points,count);
@@ -1006,51 +953,34 @@ BOOL DDXF_Bus(BOOL bStore,char *buffer,CShapeBus **shWire)
 
 }
 
-BOOL DDXF_Connect(BOOL bStore,char *buffer,mapShapeIdtoObj_t *pMapShapeIdtoObj)
+BOOL DDXF_Connect(BOOL bStore,TCHAR *buffer,mapShapeIdtoObj_t *pMapShapeIdtoObj)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
-
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[*connection]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[*connection]")))){
 
 			return result;
 		}
 
-
 		DD_GETS(buffer);
-
 
 		//declarations
 		CString str(buffer),s1,s2;
 
-
-		/*
-		s1=CShapeUnit::CutString(str);
-		int count=atoi(s1);
-		*/
-
-
-
 		int ish1,ishchild1,ish2,ishchild2;
 
-
-		
-
 		s1=CShapeUnit::CutString(str);
-		ish1=atoi(s1);
+		ish1=_wtoi(s1);
 		s1=CShapeUnit::CutString(str);
-		ishchild1=atoi(s1);
+		ishchild1=_wtoi(s1);
 		s1=CShapeUnit::CutString(str);
-		ish2=atoi(s1);
+		ish2=_wtoi(s1);
 		s1=CShapeUnit::CutString(str);
-		ishchild2=atoi(s1);
-
-
-
+		ishchild2=_wtoi(s1);
 
 		mapShapeIdtoObj_t::iterator it1=pMapShapeIdtoObj->find(ish1);
 
@@ -1098,26 +1028,20 @@ BOOL DDXF_Connect(BOOL bStore,char *buffer,mapShapeIdtoObj_t *pMapShapeIdtoObj)
 
 }
 
-BOOL DDXF_Sheet(BOOL bStore,char *buffer)
+BOOL DDXF_Sheet(BOOL bStore,TCHAR *buffer)
 {
 	//locals
-	char *pchar;
+	TCHAR *pchar;
 	BOOL result=FALSE;
 
 	if(bStore==FALSE){
 
-
-		if((buffer[0]=='[')&&(strcmpi(buffer,"[*SHEET]"))){
+		if((buffer[0]=='[')&&(wcscmp(buffer,_T("[*SHEET]")))){
 
 			return result;
 		}
 
-		
-
 		DD_GETS1(buffer,TRUE);
-
-		
-
 
 	}
 
@@ -1184,8 +1108,7 @@ int savebmp(HBITMAP hbm,HPALETTE hpal,const wchar_t *lpszCodec,LPCTSTR lpszPath)
 
    #endif
 
-   stat = image->Save(wszPath, &encoderClsid, NULL);
-   //stat = image->Save(L"sample.gif", &encoderClsid, NULL);
+	stat = image->Save(lpszPath, &encoderClsid, NULL);
 
    if(stat == Ok)
       printf("Bird.png was saved successfully\n");
@@ -1195,8 +1118,4 @@ int savebmp(HBITMAP hbm,HPALETTE hpal,const wchar_t *lpszCodec,LPCTSTR lpszPath)
    delete image;
    //GdiplusShutdown(gdiplusToken);
    return 0;
-
-
-
-	return 0;
 }

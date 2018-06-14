@@ -56,7 +56,7 @@ void CGraphDView::OnDraw(CDC* pDC)
 
 				COLORREF color=RGB(nCount*128/10,128-nCount*128/10,0);
 				pDC->FillRect(rect,&CBrush(color));
-				CString str;str.Format("%i",nCount);
+				CString str;str.Format(_T("%i"),nCount);
 				COLORREF prevColor=pDC->SetBkColor(color);
 				pDC->DrawText(str,rect,DT_CENTER|DT_VCENTER|DT_SINGLELINE);
 				pDC->SetBkColor(prevColor);

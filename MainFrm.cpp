@@ -375,7 +375,7 @@ void CMainFrame::OnUpdateTool(CCmdUI *pCmdUI){
 void CMainFrame::OnUpdateCoor(CCmdUI *pCmdUI){
 	//FindView(theApp.pDocTemplate,TRUE);//skip left/tree view
 
-	m_strCoor.Format("(X,Y) = (%i,%i)",g_iX,g_iY);
+	m_strCoor.Format(_T("(X,Y) = (%i,%i)"),g_iX,g_iY);
 
     pCmdUI->Enable();
 
@@ -523,8 +523,8 @@ void CMainFrame::OnToolbarDropDown(NMHDR* pnmtb, LRESULT *plr)
 	pPopup->DeleteMenu(0,MF_BYPOSITION);
 	//pPopup->AppendMenu(MF_STRING,ID_0_1,"Info");
 
-	std::deque<std::string>::iterator it;
-	std::deque<std::string> *pDeque;
+	std::deque<std::wstring>::iterator it;
+	std::deque<std::wstring> *pDeque;
 
 	//if(pnmtb->iItem==ID_EDIT_REDO){
 	if(pnmtb->idFrom==ID_EDIT_REDO){
