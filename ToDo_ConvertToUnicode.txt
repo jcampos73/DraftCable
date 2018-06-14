@@ -1,0 +1,37 @@
+strcpy(lf.lfFaceName,"Arial");
+wcscpy(lf.lfFaceName,_T("Arial"));
+wcsncpy
+
+strcmp
+wcscmp
+
+atoi->_wtoi
+afof->_wtof
+fopen->_wfopen
+
+Esta funcionando en Notepad++
+search for : (\"[^\"]*\")
+ 
+replace with : _T(\0)
+_T\(\1\)
+
+https://stackoverflow.com/questions/402283/stdwstring-vs-stdstring
+
+std::string -> std::wstring
+
+"begin"),"end"
+
+strlen wcslen
+
+LPSTR LPWSTR
+
+fprintf fwprintf
+
+fgets fgetws
+
+strchr wcschr
+
+sscanf, swscanf
+
+What are TCHAR, WCHAR, LPSTR, LPWSTR, LPCTSTR (etc.)?
+https://www.codeproject.com/Articles/76252/What-are-TCHAR-WCHAR-LPSTR-LPWSTR-LPCTSTR-etc
