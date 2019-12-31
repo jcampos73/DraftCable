@@ -1,0 +1,23 @@
+#pragma once
+#include "AbstractTool.h"
+class CConnectorTool : public CAbstractTool
+{
+public:
+	CConnectorTool();
+	DECLARE_SERIAL(CConnectorTool);
+	~CConnectorTool();
+public:
+<<<<<<< HEAD
+	virtual CRect MoveTo(UINT nFlags, CPoint point);
+=======
+	virtual CRect MoveTo(CPoint point);
+>>>>>>> bba861997b0572ebf3598afc6c764581e4e204b6
+	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseUp(CPoint point);
+protected:
+	enum Status { ddcStatusBeginConnect = 0, ddcStatusConnecting } m_Status;
+	virtual void __DoState(CPoint point, EventType eventType);
+	void __DoStateBeginConnect(CPoint point, EventType eventType);
+	void __DoStateConnecting(CPoint point, EventType eventType);
+	BOOL __DoConnectShapes(CPoint point);
+};
