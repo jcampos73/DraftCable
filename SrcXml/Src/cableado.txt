@@ -1,0 +1,4 @@
+18;101;Flex STP CAT 5E PG;J2;;Standard1;Standard1;RACK;RACK;BusPanel.txt;;;CableVGA;4;
+18;2;Flex STP CAT 5E PG;J1;J1;Standard1;Standard1;RACK;RACK;SUCKO.txt;BusPanel.txt;;Cable220Vac;4;
+18;1;Flex STP CAT 5E PG;J2;;Standard1;Standard1;RACK;RACK;SUCKO.txt;;;Cable220Vac;4;
+

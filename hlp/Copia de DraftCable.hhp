@@ -1,0 +1,176 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=DraftCable.chm
+Contents file=Table of Contents.hhc
+Default topic=html\intro.htm
+Display compile progress=No
+Index file=DraftCable.hhk
+Language=0xc0a Español (alfabetización internacional)
+Title=Draft Cable CAD para Telecomunicaciones
+
+
+[FILES]
+html\afxc0wc8.htm
+html\afxc0c4l.htm
+html\afxc49x0.htm
+html\afxc0853.htm
+html\afxc9ctz.htm
+html\afxc181c.htm
+html\afxc72d3.htm
+html\afxc14vb.htm
+html\afxc8rhq.htm
+html\afxc31ym.htm
+html\afxc45r9.htm
+html\afxc9y05.htm
+html\afxc30hf.htm
+html\afxc0qss.htm
+html\afxc48h1.htm
+html\afxc590x.htm
+html\afxc7d4k.htm
+html\afxc8zxr.htm
+html\afxc1cof.htm
+html\afxc3ewk.htm
+html\afxc7yt5.htm
+html\afxc67ad.htm
+html\afxc8ble.htm
+html\afxc9jci.htm
+html\afxc6tv6.htm
+html\afxc72ya.htm
+html\afxc0xpz.htm
+html\afxc9u5h.htm
+html\afxc3zz9.htm
+html\afxc3at6.htm
+html\afxc1304.htm
+html\afxc4mn9.htm
+html\afxc5ph0.htm
+html\afxc9sz0.htm
+html\afxc85dk.htm
+html\afxc1tk7.htm
+html\afxc9vp0.htm
+html\afxc9ysw.htm
+html\afxc4r72.htm
+html\afxc1g4z.htm
+html\afxc8eed.htm
+html\afxc57j9.htm
+html\afxc1vqd.htm
+html\afxc6ztx.htm
+html\afxc33uf.htm
+html\afxc6t2v.htm
+html\afxc0085.htm
+html\afxc5tr9.htm
+html\afxc1sj8.htm
+html\afxc71o2.htm
+html\afxc369g.htm
+html\afxc465u.htm
+html\afxc4ajo.htm
+html\afxc2nac.htm
+html\afxc121x.htm
+html\afxc8asl.htm
+html\afxc56lw.htm
+html\afxc214i.htm
+html\afxc2fsc.htm
+html\afxc0l7p.htm
+html\afxc48o5.htm
+html\afxc31id.htm
+html\afxc5zol.htm
+html\afxc9b3o.htm
+html\afxp225w.htm
+html\afxp5hf8.htm
+html\afxp86av.htm
+html\afxp7q2f.htm
+html\afxp3i9e.htm
+html\afxp0434.htm
+html\afxp0vjk.htm
+html\afxp42b4.htm
+html\editor_planos.htm
+html\diseños.htm
+html\entorno.htm
+html\sic.htm
+html\ayuda_uso.htm
+html\intro.htm
+html\empezar_gen_hojascabl.htm
+html\empezar_dis_rack.htm
+html\empezar_dis_patchp.htm
+html\empezar_dis_cabl.htm
+
+[ALIAS]
+main_index = html\afxc0wc8.htm
+menu_file = html\afxc0c4l.htm
+menu_edit = html\afxc49x0.htm
+menu_view = html\afxc0853.htm
+menu_window = html\afxc9ctz.htm
+menu_help = html\afxc181c.htm
+hid_file_new = html\afxc72d3.htm
+afx_hidd_newtypedlg = html\afxc14vb.htm
+hid_file_open = html\afxc8rhq.htm
+afx_hidd_fileopen = html\afxc31ym.htm
+hid_file_close = html\afxc45r9.htm
+hid_file_save = html\afxc9y05.htm
+hid_file_save_as = html\afxc30hf.htm
+hid_file_send_mail = html\afxc0qss.htm
+afx_hidd_filesave = html\afxc48h1.htm
+hid_file_mru_file1 = html\afxc590x.htm
+hid_app_exit = html\afxc7d4k.htm
+hid_edit_undo = html\afxc8zxr.htm
+hid_edit_redo = html\afxc1cof.htm
+hid_edit_cut = html\afxc3ewk.htm
+hid_edit_copy = html\afxc7yt5.htm
+hid_edit_paste = html\afxc67ad.htm
+hid_view_toolbar = html\afxc8ble.htm
+afx_hidw_toolbar = html\afxc9jci.htm
+hid_view_status_bar = html\afxc6tv6.htm
+afx_hidw_status_bar = html\afxc72ya.htm
+hid_window_new = html\afxc0xpz.htm
+hid_window_cascade = html\afxc9u5h.htm
+hid_window_tile = html\afxc3zz9.htm
+hid_window_tile_horz = html\afxc3at6.htm
+hid_window_tile_vert = html\afxc1304.htm
+hid_window_arrange = html\afxc4mn9.htm
+hid_window_split = html\afxc5ph0.htm
+hid_window_all = html\afxc9sz0.htm
+hid_help_index = html\afxc85dk.htm
+hid_help_using = html\afxc1tk7.htm
+hid_app_about = html\afxc9vp0.htm
+hid_context_help = html\afxc9ysw.htm
+hid_ht_caption = html\afxc4r72.htm
+scrollbars = html\afxc1g4z.htm
+hid_sc_size = html\afxc8eed.htm
+hid_sc_move = html\afxc57j9.htm
+hid_sc_minimize = html\afxc1vqd.htm
+hid_sc_maximize = html\afxc6ztx.htm
+hid_sc_nextwindow = html\afxc33uf.htm
+hid_sc_prevwindow = html\afxc6t2v.htm
+hid_sc_close = html\afxc0085.htm
+hid_sc_restore = html\afxc5tr9.htm
+hid_sc_tasklist = html\afxc1sj8.htm
+hid_view_ruler = html\afxc71o2.htm
+afx_hidd_font = html\afxc369g.htm
+afx_hidd_color = html\afxc465u.htm
+hid_edit_find = html\afxc4ajo.htm
+afx_hidd_find = html\afxc2nac.htm
+hid_edit_replace = html\afxc121x.htm
+afx_hidd_replace = html\afxc8asl.htm
+hid_edit_repeat = html\afxc56lw.htm
+hid_edit_clear = html\afxc214i.htm
+hid_edit_clear_all = html\afxc2fsc.htm
+hid_next_pane = html\afxc0l7p.htm
+hid_prev_pane = html\afxc48o5.htm<BR/>
+hidr_convertype = html\afxc31id.htm
+hidr_doc1type = html\afxc31id.htm
+hid_ht_nowhere = html\afxc5zol.htm
+afx_hidp_default = html\afxc9b3o.htm
+hid_file_print = html\afxp225w.htm
+afx_hidd_print = html\afxp5hf8.htm
+afx_hidd_printdlg = html\afxp86av.htm
+hid_file_print_preview = html\afxp7q2f.htm
+afx_hidw_preview_bar = html\afxp3i9e.htm
+hid_file_print_setup = html\afxp0434.htm
+afx_hidd_printsetup = html\afxp0vjk.htm
+hid_file_page_setup = html\afxp42b4.htm
+
+[MAP]
+#include ..\..\..\..\..\Archivos de programa\Microsoft Visual Studio\VC98\MFC\include\afxhelp.h
+#include DraftCable.h
+
+[INFOTYPES]
+

@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="ImageType" value="Folder">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Empezando...">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Introducci&oacute;n">
+			<param name="Local" value="html\intro.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Uso de la ayuda">
+			<param name="Local" value="html\ayuda_uso.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Entorno de Trabajo">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Entorno de trabajo">
+			<param name="Local" value="html\entorno.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Barras de Herramientas">
+			<param name="Local" value="html\barras_herr.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Zona de trabajo con planos">
+			<param name="Local" value="html\zona_t_planos.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Editor de Regletas">
+			<param name="Local" value="html\editor_regletas.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Generador de documentaci&oacute;n">
+			<param name="Local" value="html\generador_doc.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Como hacer...">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Como hacer...">
+			<param name="Local" value="html\afxc0wc8.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Men&uacute; Archivo">
+			<param name="Local" value="html\afxc0c4l.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Men&uacute; Edici&oacute;n">
+			<param name="Local" value="html\afxc49x0.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Men&uacute; Ver">
+			<param name="Local" value="html\afxc0853.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Men&uacute; Ventana">
+			<param name="Local" value="html\afxc9ctz.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Men&uacute; Ayuda">
+			<param name="Local" value="html\afxc181c.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Trabajo con Dise&ntilde;os">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Nuevo Dise&ntilde;o">
+			<param name="Local" value="html\nuevo_dis.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="A&ntilde;adir Hojas al Dise&ntilde;o">
+			<param name="Local" value="html\hojas_dis.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Crear Componentes Nuevos">
+			<param name="Local" value="html\crear_componentes_dis.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Crear Alzados de los Racks">
+			<param name="Local" value="html\crear_alzados_dis.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Generar la Documentaci&oacute;n de Salida">
+			<param name="Local" value="html\generar_doc_dis.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Editor de Planos">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Editor de Planos">
+			<param name="Local" value="html\editor_planos.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Moverse por la Zona de Trabajo">
+			<param name="Local" value="html\moverse_z_trabajo.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Trabajo con Componentes">
+			<param name="Local" value="html\trabajo_componentes.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Trabajo con Cables">
+			<param name="Local" value="html\trabajo_cables.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Trabajo con Buses">
+			<param name="Local" value="html\trabajo_buses.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Trabajo con Puertos">
+			<param name="Local" value="html\trabajo_puertos.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Generador de Documentaci&oacute;n">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Introducci&oacute;n">
+			<param name="Local" value="html\intro_gendoc.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Plantillas">
+			<param name="Local" value="html\platillas_gendoc.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Sistema de Informaci&oacute;n de Componentes">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Introducci&oacute;n">
+			<param name="Local" value="html\intro_sic.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="SIC">
+			<param name="Local" value="html\sic.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Bibliotecas">
+			<param name="Local" value="html\lib_sic.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Instalaci&oacute;n de Draftcable">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Instalaci&oacute;n">
+			<param name="Local" value="html\instalacion.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Pasos de la Instalaci&oacute;n">
+			<param name="Local" value="html\pasos_inst.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Instalaci&oacute;n de Trabajo">
+			<param name="Local" value="html\estaciones_inst.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Instalaci&oacute;n Llave Hardware">
+			<param name="Local" value="html\key_inst.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Arquitectura de Draftcable">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Introducci&oacute;n">
+			<param name="Local" value="html\arquitectura.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Componentes">
+			<param name="Local" value="html\componentes_arquitec.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Documentaci&oacute;n de Administrador">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Documentaci&oacute;n del Administrador de Draftcable">
+			<param name="Local" value="html\intro_adm.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Privilegios">
+			<param name="Local" value="html\privilegios_adm.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Recuperaci&oacute;n de Bases de Datos">
+			<param name="Local" value="html\db_adm.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Recomendaciones hardware">
+			<param name="Local" value="html\hwd_adm.htm">
+			</OBJECT>
+	</UL>
+</UL>
+</BODY></HTML>

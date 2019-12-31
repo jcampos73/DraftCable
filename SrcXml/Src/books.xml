@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<?xml-stylesheet type="text/xsl" href="show_book.xsl"?>-->
+<!--<!DOCTYPE catalog SYSTEM "catalog.dtd">-->
+<!--catalog last updated 2000-11-01-->
+<catalog xmlns="">
+  <book id="bk101">
+     <author>&#71;ambardella, Matthew</author>
+     <title>XML Developer's &#x47;uide</title>
+     <genre>Computer</genre>
+     <price>44.95</price>
+     <publish_date>2000-10-01</publish_date>
+     <description><![CDATA[An in-depth look at creating applications with XML, using <, >,]]> and &amp;.</description>
+  </book>
+  <book id="bk109">
+     <author>Kress, Peter</author>
+     <title>Paradox Lost</title>
+     <genre>Science Fiction</genre>
+     <price>6.95</price>
+     <publish_date>2000-11-02</publish_date>
+     <description>After an inadvertant trip through a Heisenberg Uncertainty Device, James Salway discovers the problems of being quantum.</description>
+  </book>
+</catalog>

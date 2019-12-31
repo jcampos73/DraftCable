@@ -1,0 +1,469 @@
+15/05/2004
+==========
+- Incluir un botón deshacer.
+
+- No se puede guardar una Unit después de editarla hay que guardarla con un nombre
+distinto.
+
+- Botón imprimir en el diálogo de edición de cables y conectores.
+
+- Al crear nuevos pines, los pines de Units ya creadas se desordenan.
+SOLUCIONADO; se crea un tabla tbConnector en la base de datos 'dc' con un
+identificador y el nombre del conector. Ahora los conectores se ordenan por
+número de identificador.
+
+- Unit: chasis_fa24v. Cuando se guarda un plano con este tipo de Unit. Si estaban conectados
+los pines de la salida 4 aparecen conectados los de la 2, al cargar el plano,
+y los de la 5 se corresponden con los de la 3.
+(!!!)SOLUCIONADO: EN PARTE. Porque las Unit que contienen elipses, como los dibujos
+de los tornillos, contienen los pines y las elipses en el mismo array, por lo que
+al edit estas Unit, SIEMPRE SE DEBEN GUARDAR EN DISCO PRIMERO LOS PINES. Para que al
+cargarlas otra vez los pines queden en las primeras posiciones del array y coincida
+las posición en el array con la variable miembro de CShapePin m_uiPinnumber. 
+
+- Wires: cuando se dibujan cables, hay que volver a pulsar el botón wire para dibujar uno
+nuevo. El programa parece no detectar que se ha acabado de dibujar un cable.
+Además, siempre que se esté dibujando el rimer segmento de un nuevo cable,
+se debería indicar (en la barra de estado por ejemplo).
+
+- Wires: cuando se dibujan wires, el mouse pointer no cambia al situarse sobre las
+scroll bars (se debería incluir un scroll automático al acercarse al borde?).
+
+- Unit: incluir la unidad conector fuera de plano para poner dibujar los cables
+a los repartidores generales.
+
+- (!!!)Motor ficheros: ATENCIÓN. No se puede grabar ficheros .ddw con Units iguales en la forma:
+[tb.ddw]
+120,100,120,100
+120,100,180,100
+
+ya que al cargarlos se produce error. De momento hay que escribir
+[tb.ddw]
+120,100,120,100
+[tb.ddw]
+120,100,180,100
+
+pero el motor de escritura no lo tiene en cuenta y hay que retocar los fichero .ddw a mano.
+
+- Wires: no se guarda ni la etiqueta, ni el tipo de cable en disco.
+
+- Wires: sólo se propaga (y hay fallos) la etiqueta a lo largo del cable.
+
+- IDE: establecer un directorio por defecto tipo MyProjects para los planos.
+
+16/05/2004
+==========
+
+- Para dimensionar los racks partimos de las siguientes conevenciones:
+
+1U de altura =(aprox) 1,75"
+anchura = 19"
+
+Si 1U son 2 unidades de cuadricula (igual a 20 unidades en la coordenada y, diseño inicial de DraftCable),
+19"" serán aproximadamente 22 unidades de la cuadrícula.
+
+22/05/2004
+==========
+
+-Convendría evitar que se guardaran formas con dimensiones nulas (por ejemplo, rectángulos vacíos como
+consecuencia de un funcionamiento deficiente de la herramienta de dibujo).
+
+-Motor selección:
+No es fácil mover (y no cambiar el tamaño de las formas pequeñas).
+Cuando hay formas grandes debajo de una forma casi siempre se selecciona la forma que esta debajo. Esto
+resulta especialmente molesto al editar formas, porque el marco queda debajo y se suele seleccionar
+el marco en lugar que las subformas que alberga.
+Si se hace click por error en una forma con la herramienta insertar seleccionada ocurren
+comportamientos extraños (tiene que estar seleccionada la forma?).
+
+-Motor copia:
+Cuando se copia una forma y luego se le cambia el tamaño, al hacer paste, se pega una forma con el
+tamaño ya cambiado.
+Parece que al intentar hacer paste de un label se produce una excepción.
+
+07/08/2004
+==========
+
+-Se empieza a diseñar el 'Object Model' para DraftCable con objeto
+de implementar el BOTON DESHACER y el BOTON REHACER, que requieren un historial:
+
+Application
+     |
+     Document
+	    |
+        Sheet
+		  |
+          Selection
+		  |   |
+		  |   ShapeRange
+          |
+          Shape
+		  |
+		  Shapes(Collection)
+		  |
+		  Document(Hierarchical Block)
+
+10/08/2004
+==========
+
+MUY IMPORTANTE!!!Los componentes que se guardan en la base de datos no pueden tener espacios en las
+etiquetas 'labels', porque el operador '>>' que se utiliza para leer la columna que describe
+el componente 'nTextPart' separa las palabras.
+
+14/08/2004
+==========
+
+MUY IMPORTANTE!!!En la función CDdwioFile.WriteLabel, hay un bloque marcado con
+//---------
+//---------
+Que elimina los saltos de línea del texto ('Label' verticales). Este bloque debe eliminarse y el render
+de las 'Label' cambiarse para permitir manejar 'Label' de varias líneas.
+
+15/08/2004
+==========
+
+BUG: Para trazar un nuevo cable hay que pulsar el botón de cable, parece que no
+funciona la función 'Repeat Previous Placement'.
+
+17/08/2004
+==========
+
+MUY IMPORTANTE! La función CShapeWire::RepositionPins debe eliminarse y para ello la posición de los pines de
+los 'Wire' no debe actualizarse cada vez que se dibuja el 'Wire'.
+Se llama a RepositionPins en CDrafDrawView::OnLButtonUp para conectar con el segmento anterior.
+Los pines de 'Wire' deben no actualizarse en el dibujo como los pines de 'Unit'.
+
+MUY IMPORTANTE! Las 'Unit' también sufren el problema del reposicionamiento de pines.
+
+SOLUCIONADO: Se hacen los rectángulos de conexion de pines relativos a la Shape padre
+(utilizando CShapeContainer::GetParent) en el momento del dibujo y se tratan como relativos
+a partir de ese moemento.
+La función CShapeWire::RepositionPins se mantiene de momento aunque se eliminará.
+
+17/10/2004
+==========
+
+UI: Crear un menú insetar con las opciones correspondientes de las barras de herramientas.
+
+UI: El menú contextual que aparece al hacer clic en un componente está desfasado.
+
+MUY IMPORTANTE! BUG: Como los componentes se cargan al diseño desde la base de datos, si se edita un componente
+en un diseño, afectaría incluso ha diseños previos. Habría que hacer las siguientes modificaciones:
+1.Guardar todos los componentes que se utilizan en un proyecto junto con el proyecto.
+2.Preguntar cuando se edita un componente si se hará sobre la base de datos o en local (nivel de proyecto, no de hoja). En ambos casos advertir
+si hay varias instancias del componente en las hojas del diseño. Si se edita en la base de datos hay que advertir
+además que el cambio afectará a todas las estaciones de trabajo.
+3.Cuando se carga un diseño, advertir si tiene componentes que se han modificado con posterioridad en la
+base de datos. Esta advertencia podría deshabilitarse con un checkbox en Configuración.
+
+UI: No existe la guía para "doblar esquinas" en los cables.
+
+MUY IMPORTANTE! BUG: No está implementada la funcionalidad para insertar bloques funcionales, ya sean hojas
+del mismo diseño u otros diseños completos. La herramienta tendría que reconocer los puertos no conectados a otros
+elementos de la hoja o diseño como los puntos de conexión del bloque funcional.
+
+UI: Faltan los tool-tips de las barras de herramientas.
+
+MUY IMPORTANTE! BUG: La estructura actual de la clase document no soporta diseños de varias hojas.
+Se realizará introduciendo en cada elemento (lParam) del arbol de CLeftView correspondiente a una hoja
+(nivel inferior al diseño)
+el HWND de la clase correspondiente a la clase CDraftDrawView, a partir de la vista es muy fácil
+obtener el documento.
+De esta manera el arbol almacena toda la información del diseño (no hacen falta variables/arrays)
+lo único que hay que hacer luego es serializarlo / deserializarlo.
+En la primera hoja del diseño se puede dejar el árbol visible y reducirlo al mínimo en las demás.
+
+Implementar una función en CLeftView del tipo
+int FindItem( TVFINDINFO* pFindInfo, int nStart = -1 ) const;
+análoga a la función de los CListCtrl para encontrar elementos a partir del  lParam.
+Esta función sería de utilidad en la funcionalidad del árbol de CLeftView para soportar la estructura
+de datos del diseño.
+
+21/10/2004
+==========
+
+BUG: DRAWING ENG: TEXT:
+1.Falla portapapeles al pegar labels.
+2.Repetición de insertar labels no conserva font.
+3.Incluir un check box para indicar si se quiere numeración automática.
+
+UI: Incluir distribución / alineación automática de objetos.
+
+BUG: ENVIRONMENT ENGINE: No se puede cargar proyectos que no estén en .\Src
+
+MUY IMPORTANTE! COMPROBAR! Los pines deben guardarse consecutivamente en las Unit, porque
+cuando se carga un diseño desde disco la función de reconexión busca los pines de forma
+consecutiva: las subshapes de las Unit se numeran incrementalmente según se cargan
+las Unit.
+
+MUY IMPORTANTE! A veces se guardan Units con coordenadas negativas, lo que provoca que el
+marco quede descentrado. Hay que ver como manejar shapes con coordenadas negativas.
+
+22/10/2004
+==========
+
+BUSES:
+1.No se guardan los buses.
+2.No se guardan junctions.
+3.No se conectan junctions (ni al cable, ni al bus).
+4.No se dibujan bien junctions (el marco para situarlas funciona mal).
+
+PORTS:
+1.La etiqueta de los ports no aparece centrada.
+2.Al volver a cargar los ports la etiqueta queda en vertical.
+
+MUY IMPORTANTE! El programa no avisa cuando se ha modificado el documento.
+
+WIRES:
+1.La etiqueta de los cables no se posiciona bien y tiene un font pequeño.
+2.Al volver a cargar la hoja la etiqueta queda en vertical.
+3.Cuando se crean nuevos cables desde el dialogo de edicion de cables y se salvan no estan disponibles
+de manera inmediata (hay que reiniciar) y si no se salvan no avisa?
+
+CUSTOM PROPERTIES:
+1.Implementar un custom text en las shapes que permita añadir etiquetas con un doble click
+cuando las shape se insertan en el dibujo (también se podría hacer doble click sobre la
+propia etiqueta).
+2.Insertar zonas que se repiten para, por ejemplo, llenar chasis de tarjetas.
+3.Tambien seria interesante introducir conectores dinamicos que puedan intercambiarse al
+insertar las units, para implementar casos especiales como los GeBit de los FibreArrays
+que permiten utilizar cables de: cobre, fibra multi-modo y fibra mono-modo (según la distancia
+entre servidores y switches, por ejemplo).
+
+MUY IMPORTANTE! Solucionar el tema de que se seleccione la imagen que esta debajo.
+
+24/10/2004
+==========
+
+1.No se pueden colocar etiquetas verticales en las unit nuevas.
+
+2.Las líneas inclinadas no deben seleccionarse como rectángulos.
+
+06/11/2004
+==========
+
+1.Los segmentos ya trazados de las polylines desaparecen cuando se esta dibujando. Para corregirlo:
+1ST LOOP ONDRAW: Dibuja en el buffer las shapes que no esten en modo seleccion (m_Mode==1):
+   Hay que dibujar tambien los segmentos ya trazados de las polylines aunque tengan m_Mode==0.
+
+2ND LOOP ONDRAW: Dibuja en el buffer las shapes que esten en modo seleccion (m_Mode==0).
+   Las polylines solo deben dibujar el ultimo segmento.
+
+08/11/2004
+==========
+
+MOTOR DE FICHEROS: BUSES:
+1. Al cargarse los buses debe crearse el correspondiente polyline.
+
+15/11/2004
+==========
+
+MOTOR GRAFICO
+1. Introducir junctions para buses.
+
+16/11/2004
+==========
+
+MUY IMPORTANTE! Es necesario implementar un library manager para cargar las shapes para su edición.
+
+17/11/2003
+==========
+
+Hay que incluir gdiplus en el entorno de desarrollo.
+
+
+MUY IMPORTANTE!El sistema que cuenta los pines en afxgetwire/atxgetconnector debe ser mas intligente para no incluir las ultimas lineas
+si son retornos de carro.
+
+Seria bueno incluir un diagrama del conector en los dialogos de conectores.
+
+
+MUY IMPORTANTE!No se propaga por el cable el cambio de tipo de cable.
+
+20/11/2004
+==========
+
+1.Los conectores siguen identificándose por el ordinal de carga desde el directorio de conectores.
+En los siguientes sitios:
+1.1. Combobox de asignación de tipo de conector.
+1.2. Mapa de identificadores a estructuras de información de conectores (g_mapIdConnInfo).
+
+MOTOR GRAFICO
+1.Se podría incluir un botón para sincronizar / desincronizar el zoom de todas las hojas del plano.
+De tal forma que, el nivel de zoom aplicado a una hoja, se propague a las demás.
+
+23/11/2004
+==========
+
+ENVIRONMENT ENGINE
+1.Implementar la función OnNewDocumentPart() para crear nuevos PARTS.
+
+15/12/2004
+==========
+
+ENVIRONMENT ENGINE
+1.Introducir posibilidad de grabar o eliminar 1 sola hoja de plano.
+2.Posibilidad de plantillas: por ejemplo para que aparezca el bloque de título o no.
+
+16/12/2004
+==========
+
+SIC
+1.Podría interesante dotar al diálogo SIC de un menú para tener disponible
+el menú File>New... para poder elegir entre plantillas de componentes.
+
+28/12/2004
+==========
+
+HERRAMIENTA DE ALZADOS
+1.Incluir en el editor de piezas un ábaco que calcule la altura en U's de la pieza según la escala.
+La escala puede ser un parámetro de configuración de la aplicación.
+2.Incluir la posibilidad de guardar una pieza como rack e incluir en ese caso un campo
+para indicar el número de U's utilizables.
+3.El ábaco y la base de datos deben admitir alturas decimales (por ejemplo 1,5 U's).
+
+UI: DISEÑO DEL EXPLORADOR DE PROYECTOS
+Ver Referencia DraftDraw > Arquitectura > Motor de Aplicación > Explorador de Proyectos.
+
+31/12/2004
+==========
+
+MOTOR GRÁFICO
+1.Hay que incluir un menú imagen con las obciones habituales: rotar, invertir, distribuir,
+hacer del mismo tamaño, etc.
+
+01/01/2005
+==========
+
+MOTOR GRÁFICO: DISEÑO MENÚ IMAGEN
+1.Situar justo antes del menú herramientas.
+2.Opciones:
+Imagen > Invertir horizontal
+Imagen > Invertir vertical
+Imagen > Rotar 90 grados
+
+MOTOR GRÁFICO
+
+Se propone incluir una hoja de propiedades para las unit tipo DataGrid.
+Este datagrid podrá presentar las opciones de manera alfabética o por categorías
+(de manera similar al Visual Basic).
+Las variables del datagrid (tipo, valor por omisión) se seleccionarían en el editor de componentes.
+Podría condicionarse el dibujo de ciertos elementos al valor de propiedades tipo SI/NO.
+De esta manera un bastidor para 16 tarjetas podría presentar todas las tarjetas, algunas
+o ninguna. Cada tarjeta (por ejemplo una línea y una etiqueta) tendría asociado
+el correspondiente valor boolean en la lista de propiedades (el valor estaría asociado a la línea
+y a la etiqueta).
+
+ENVIRONMENT ENGINE
+1.(!!!)Incluir un botón repetir último comando.
+
+MOTOR GRÁFICO
+1.Incluir un catálogo de formas básicas o autoformas como MS Word. Podría incluirse en el
+menú imagen o en el menú insertar. Para este tipo de formas sería interesante el botón
+repetir último comando.
+2.En modo edición, este tipo de autoformas podrían incluir soporte para comandos
+para introducir manejadores para variar la relación de aspecto (grosor de flechas de bloque,
+por ejemplo) o para rotar, etc.
+
+02/01/2005
+==========
+
+MOTOR GRÁFICO
+1.Deberían incluirse etiquetas curvas (tipo etiqueta de CD)
+o tipo 3D (planas pero con el texto en un plano con perspectiva, por ejemplo).
+
+26/01/2005
+==========
+
+Lo primer incluir una función SetSizes para CShArray que será llamada cuando se cambie el tamaño del
+documento.
+
+03/02/2005
+==========
+
+Hay que instalar VSS.
+
+09/02/2005
+==========
+
+La distribución de cables para el plano de ejemplo RisPacsStd es la siguiente
+(podría guardarse con el esquemático e incluso imprimirse en el plano -> asociar con una shape 'virtual'):
+
+100 LAN
+200 Periféricos KVM
+300 Periféricos KVM más externos hacia operador.
+400 Vac
+150 Fibrechannel: servers-cabinas
+800 Fibrechannel: internal
+	Ethernet cruzado entre servidores cluster.
+
+22/03/2005
+==========
+
+MOTOR GRÁFICO
+1.Al hacer un place de un part, no está alianeado con el cursor.
+2.Todos los tipos de zoom parcen estar desalineados.
+3.Eliminar todas las shape con con pines fuera del marco porque no se redibujan bien al
+trazar cables.
+4.Al insetar un part parcialmente fuera de la hoja, ya no se puede mover más.
+5.No se dibjan bien los texto multilínea.
+
+ENVIRONMENT ENGINE
+1.El diálogo place tiene que tener memoria para recordar la última librería seleccionada.
+MUY IMPORTANTE! 2.Incluir un log. Se puede implementar con una clas CLogFile que pueda reutilizarse en
+otros proyectos.
+3.En la barra de estado, donde aparece "Preparado", puede aparecer mensaje de
+"Archivo guardado" o "No es necesario guardar", según el caso, cuando se pulse "Guardar".
+
+MOTOR DE OBJETOS
+1.Al editar las etiquetas verticales aparecen unos feos caracteres en el diálogo.
+2.Habrían que incluir check boxes en las listas de conectores de las part (al hacer docle click sobre una)
+para que pudieran ocultarse ciertos conectores.
+3.Quizá en un futuro puedan añadirse conectores a las parts de forma dinámica.
+Estos conectores se distribuirían automáticamente según subáreas prdefinidas en las parts.
+
+28/03/2005
+==========
+
+SOLUCIONADO (se deja la macro) MUY IMPORTANTE! Hay que unificar las cadenas de filtro de tipos de fichero. Actualmente están en 2 sitios:
+1.Un #define en el fichero de inclusión de la case documneto,
+2.Una variable miembro estática de la clase documento.
+
+24/09/2005
+==========
+
+Implementar una pantalla de splash que sea un pocker de ases con las caracteristicas principales del programa.
+
+
+25/09/2005
+==========
+
+Incorporar plantillas para generar etiquetas adesivas de cables.
+
+01/10/2005
+==========
+
+Introducir un botón 3D para añadir 3D a las shapes. Podría aplicarse incluso a los engranajes.
+Introducir un comando para cambiar el borde de los objetos y poder introducir border dobles, por ejemplo.
+Implementar la tecla SHIFT (para seleccionar varias shapes a la vez) y la tecla CTRL para copiar shapes
+arrastrando y soltando.
+
+
+02/10/2005
+==========
+
+Los rangos de cables a utilizar en el esquemático podrían guardarse con él y editarse con un diálogo.
+Como ejemplo podríamos tener el siguiente:
+
+100		LAN
+200		Periféricos KVM
+300		Periféricos KVM más externos (dirección hacia operador)
+400		220 Vac
+150		Fibrechannel server - cabinas
+800		Fibrechhannel entre cabinas
+		Ethernet cruzado entre servidores cluster
+
+13/01/2006
+==========
+
+Podrían pintarse cables con distintos colores en el plano, según tipo.

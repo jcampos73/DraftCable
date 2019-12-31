@@ -1,0 +1,8 @@
+1;  CLK+
+2;  CLK-
+3;  RxD+
+4;  TxD+
+5;  TxD-
+6;  RxD-
+7;  INT+
+8;  INT-

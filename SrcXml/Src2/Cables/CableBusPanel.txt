@@ -1,0 +1,9 @@
+1; BL/NJA; CLK+; 3
+2; NJA/BL; CLK-; 6
+3; BL/VE; RxD+; 4
+4; AZ/BL; TxD+; 5
+5; BL/AZ; TxD-; 7
+6; VE/BL; RxD-; 8
+7; BL/MA; INT+; 1
+8; MA/BL; INT-; 2
+

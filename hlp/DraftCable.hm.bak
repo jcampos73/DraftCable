@@ -1,0 +1,114 @@
+// MAKEHELP.BAT generated Help Map file.  Used by DRAFTCABLE.HPJ. 
+ 
+// Commands (ID_* and IDM_*) 
+HID_VIEW_ARRANGE                        0x1007F
+HID_EDITTB1                             0x10408
+HID_DELTB1                              0x10409
+HID_NEWTB1                              0x1040A
+HID_NEWTB2                              0x1040B
+HID_EDITTB2                             0x1040C
+HID_DELTB2                              0x1040D
+HID_CHANGE_FONT                         0x10412
+HID_BUTTON_RECT                         0x18003
+HID_NEXT_FIELD                          0x18003
+HID_BUTTON_ELLIPSE                      0x18004
+HID_OK                                  0x18004
+HID_BUTTON_SELECT                       0x18005
+HID_CANCEL                              0x18005
+HID_BUTTON_LINE                         0x18006
+HID_BUTTON_ARC                          0x18007
+HID_BUTTON_BOARD                        0x18008
+HID_PLACE_PART                          0x18009
+HID_PLACE_WIRE                          0x1800A
+HID_PLACE_BUSENTRY                      0x1800B
+HID_SELECT_NET                          0x1800C
+HID_ZOOM_IN                             0x1800D
+HID_ZOOM_OUT                            0x1800E
+HID_EDIT_PART                           0x1800F
+HID_SNAP_TOGRID                         0x18010
+HID_PLACE_NETALIAS                      0x18011
+HID_PLACE_PIN                           0x18012
+HID_BUTTON_POLYLINE                     0x18013
+HID_ARCHIVO_GENCABLE                    0x18014
+HID_ESCAPE                              0x18015
+HID_ROTATE                              0x18016
+HID_TOOL_OPTION_PAGE                    0x18017
+HID_FILE_NEW_COMPONENTE                 0x18018
+HID_BUTTON32793                         0x18019
+HID_TOOL_CONFIG                         0x1801B
+HID_ORDER_TOP                           0x1801C
+HID_ORDER_BOTTOM                        0x1801D
+HID_SUP                                 0x1801E
+HID_EDIT_NETALIAS                       0x1801F
+HID_EDIT_RACK                           0x18021
+HID_FILE_NEW_RACK                       0x18022
+HID_PLACE_CHASSIS                       0x18023
+HID_SNAP_TOGRID2                        0x18024
+HID_FILE_NEW_PATCHP                     0x18025
+HID_BUTTON_RULE                         0x18026
+HID_ZOOM_ALL                            0x18027
+HID_ZOOM_AREA                           0x1802A
+HID_BUTTON32811                         0x1802B
+HID_BUTTON32812                         0x1802C
+HID_ZOOM_CURSORPLUS                     0x1802D
+HID_ZOOM_CURSORMINUS                    0x1802E
+HID_PLACE_BUS                           0x1802F
+HID_PLACE_NOCON                         0x18030
+HID_PLACE_PORT                          0x18033
+HID_PLACE_TEXT                          0x18035
+HID_PLACE_PICTURE                       0x18036
+HID_FILE_NEW_SHEET                      0x18039
+HID_DEBUG_EDIT_SHPINFO                  0x1803A
+HID_0_1                                 0x18041
+HID_PLACE_BUSJUNC                       0x18042
+HID_TOOL_SIC                            0x18044
+HID_PLACE_PORTRIGHT                     0x18047
+HID_IMG_ROTATE                          0x18048
+HID_IMG_FLIPHORZ                        0x18049
+HID_IMG_FLIPVERT                        0x1804A
+HID_IMG_POLYGONPOPUP                    0x1804B
+HID_EDIT_PROPERTIES                     0x1804C
+HID_EDIT_TB                             0x1804D
+HID_BUTTON_CURVE                        0x1804E
+HID_INDICATOR_TOOL                      0x1E706
+HID_INDICATOR_COOR                      0x1E707
+HID_INDICATOR_MODE                      0x1E708
+ 
+// Prompts (IDP_*) 
+ 
+// Resources (IDR_*) 
+HIDR_MAINFRAME                          0x20080
+HIDR_DRAFTDTYPE                         0x20081
+HIDR_DRAWING                            0x20082
+HIDR_PLACE                              0x2008D
+HIDR_PLACE1                             0x2008E
+HIDR_CONTEXT                            0x20090
+HIDR_PATCHPTYPE                         0x20091
+HIDR_DEBUG_CONTEXT                      0x200A9
+HIDR_EDITDROPDOWN                       0x200AA
+HIDR_CABLEDIT                           0x200CA
+HIDR_MAINFRAME1                         0x200CB
+HIDR_FOLDERTABS                         0x2F232
+ 
+// Dialogs (IDD_*) 
+HIDD_ABOUTBOX                           0x20064
+HIDD_TBEDIT_FORM                        0x20065
+HIDD_CABLEDIT                           0x20081
+HIDD_NETALIAS                           0x20092
+HIDD_PIN                                0x20093
+HIDD_PLACEPART                          0x20094
+HIDD_PARTEDIT                           0x20095
+HIDD_PAGESIZE                           0x2009C
+HIDD_CONFIG                             0x2009D
+HIDD_SAVEAS                             0x200A0
+HIDD_PAGEGRID                           0x200A2
+HIDD_PATCHPPROP                         0x200A3
+HIDD_TEXT                               0x200A4
+HIDD_PLACEPART2                         0x200A7
+HIDD_DEBUG_SHPINFO                      0x200AA
+HIDD_NAME                               0x200AB
+HIDD_NETLIST                            0x200AC
+HIDD_SAVEASDB                           0x200BB
+HIDD_PARTPROP                           0x200C2
+ 
+// Frame Controls (IDW_*) 

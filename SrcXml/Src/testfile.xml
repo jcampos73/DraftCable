@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<!--<?xml-stylesheet type="text/xsl" href="show_book.xsl"?>-->
+<!--<!DOCTYPE catalog SYSTEM "catalog.dtd">-->
+<!--catalog last updated 2000-11-01-->
+<catalog xmlns="">
+	<cable id="">
+		<cable_num>101</cable_num>
+		<cable_tipo>Flex STP CAT 5E PG</cable_tipo>
+		<pj_de>J2</pj_de>
+		<de_conector>J2</de_conector>
+		<pj_a></pj_a>
+		<a_conector></a_conector>
+		<de_equipo>Standard1</de_equipo>
+		<a_equipo>Standard1</a_equipo>
+		<de_situadoen>RACK</de_situadoen>
+		<a_situadoen>RACK</a_situadoen>
+		<de_conectortipo>BusPanel.txt</de_conectortipo>
+		<a_conectortipo></a_conectortipo>
+		<clongi></clongi>
+		<cpar>4</cpar>
+		<wire>
+			<pin_de>1</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> RED</funcion>
+			<pin_a> 1</pin_a>
+		</wire>
+		<wire>
+			<pin_de>2</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> GREEN</funcion>
+			<pin_a> 2</pin_a>
+		</wire>
+		<wire>
+			<pin_de>3</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> BLUE</funcion>
+			<pin_a> 3</pin_a>
+		</wire>
+		<wire>
+			<pin_de>4</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> ID2</funcion>
+			<pin_a> 4</pin_a>
+		</wire>
+		<wire>
+			<pin_de>5</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> GND</funcion>
+			<pin_a> 5</pin_a>
+		</wire>
+		<wire>
+			<pin_de>6</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> RGND</funcion>
+			<pin_a> 6</pin_a>
+		</wire>
+		<wire>
+			<pin_de>7</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> GGND</funcion>
+			<pin_a> 7</pin_a>
+		</wire>
+		<wire>
+			<pin_de>8</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> BGND</funcion>
+			<pin_a> 8</pin_a>
+		</wire>
+		<wire>
+			<pin_de>9</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> KEY</funcion>
+			<pin_a> 9</pin_a>
+		</wire>
+		<wire>
+			<pin_de>10</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> SGND</funcion>
+			<pin_a> 10</pin_a>
+		</wire>
+		<wire>
+			<pin_de>11</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> ID0</funcion>
+			<pin_a> 11</pin_a>
+		</wire>
+		<wire>
+			<pin_de>12</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> ID1/SDA</funcion>
+			<pin_a> 12</pin_a>
+		</wire>
+		<wire>
+			<pin_de>13</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> HSYNC/CSYNC</funcion>
+			<pin_a> 13</pin_a>
+		</wire>
+		<wire>
+			<pin_de>14</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> VSYNC</funcion>
+			<pin_a> 14</pin_a>
+		</wire>
+		<wire>
+			<pin_de>15</pin_de>
+			<ref_hilo> </ref_hilo>
+			<funcion> ID3/SCL</funcion>
+			<pin_a> 15</pin_a>
+		</wire>
+	</cable>
+	<cable id="">
+		<cable_num>2</cable_num>
+		<cable_tipo>Flex STP CAT 5E PG</cable_tipo>
+		<pj_de>J1</pj_de>
+		<de_conector>J1</de_conector>
+		<pj_a>J1</pj_a>
+		<a_conector>J1</a_conector>
+		<de_equipo>Standard1</de_equipo>
+		<a_equipo>Standard1</a_equipo>
+		<de_situadoen>RACK</de_situadoen>
+		<a_situadoen>RACK</a_situadoen>
+		<de_conectortipo>SUCKO.txt</de_conectortipo>
+		<a_conectortipo>BusPanel.txt</a_conectortipo>
+		<clongi></clongi>
+		<cpar></cpar>
+		<wire>
+			<pin_de>1</pin_de>
+			<ref_hilo> AZUL</ref_hilo>
+			<funcion> LIVE</funcion>
+			<pin_a> 1</pin_a>
+		</wire>
+		<wire>
+			<pin_de>2</pin_de>
+			<ref_hilo> MARRON</ref_hilo>
+			<funcion> NEUTRAL</funcion>
+			<pin_a> 2</pin_a>
+		</wire>
+		<wire>
+			<pin_de>3</pin_de>
+			<ref_hilo> AMA/VER</ref_hilo>
+			<funcion> GND</funcion>
+			<pin_a> 3</pin_a>
+		</wire>
+	</cable>
+	<cable id="">
+		<cable_num>1</cable_num>
+		<cable_tipo>Flex STP CAT 5E PG</cable_tipo>
+		<pj_de>J2</pj_de>
+		<de_conector>J2</de_conector>
+		<pj_a></pj_a>
+		<a_conector></a_conector>
+		<de_equipo>Standard1</de_equipo>
+		<a_equipo>Standard1</a_equipo>
+		<de_situadoen>RACK</de_situadoen>
+		<a_situadoen>RACK</a_situadoen>
+		<de_conectortipo>SUCKO.txt</de_conectortipo>
+		<a_conectortipo></a_conectortipo>
+		<clongi></clongi>
+		<cpar></cpar>
+		<wire>
+			<pin_de>1</pin_de>
+			<ref_hilo> AZUL</ref_hilo>
+			<funcion> LIVE</funcion>
+			<pin_a> 1</pin_a>
+		</wire>
+		<wire>
+			<pin_de>2</pin_de>
+			<ref_hilo> MARRON</ref_hilo>
+			<funcion> NEUTRAL</funcion>
+			<pin_a> 2</pin_a>
+		</wire>
+		<wire>
+			<pin_de>3</pin_de>
+			<ref_hilo> AMA/VER</ref_hilo>
+			<funcion> GND</funcion>
+			<pin_a> 3</pin_a>
+		</wire>
+	</cable>
+</catalog>

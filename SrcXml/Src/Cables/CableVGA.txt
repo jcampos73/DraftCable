@@ -1,0 +1,16 @@
+1; ; RED; 1
+2; ; GREEN; 2
+3; ; BLUE; 3
+4; ; ID2; 4
+5; ; GND; 5
+6; ; RGND; 6
+7; ; GGND; 7
+8; ; BGND; 8
+9; ; KEY; 9
+10; ; SGND; 10
+11; ; ID0; 11
+12; ; ID1/SDA; 12
+13; ; HSYNC/CSYNC; 13
+14; ; VSYNC; 14
+15; ; ID3/SCL; 15
+

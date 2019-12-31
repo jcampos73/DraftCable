@@ -1,0 +1,6 @@
+1; DATA
+2; N/C
+3; GND
+4; VCC
+5; CLK
+6; N/C

@@ -1,0 +1,11 @@
+2014/07/23
+
+This file is intended to contain test procedure for producing each release.
+
+DRAWING ENGINE
+
+1. Draw a rectangle in the middle of the screen
+
+FUNCTIONAL
+
+1. Place a DVD Player and a Power Strip in the middle of the screen

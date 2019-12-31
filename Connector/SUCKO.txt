@@ -1,0 +1,4 @@
+1; LIVE
+2; NEUTRAL
+3; GND
+
