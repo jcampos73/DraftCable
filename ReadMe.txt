@@ -1,3 +1,8 @@
+Important:
+Modify .\reg\dc.reg
+To point to your directory. Replace <my base dir> con your setting.
+Exceute dc.reg to introduce setting in Register.
+
 DraftCable 1.09
 26/11/2014
 ==========
