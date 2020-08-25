@@ -12,7 +12,7 @@ public:
 
 public:
 	virtual CRect MoveTo(UINT nFlags, CPoint point);
-	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseDown(UINT nFlags, CPoint point);
 	virtual CRect MouseUp(CPoint point);
 protected:
 	enum EventType { ddcEventMouseDown, ddcEventMouseUp };
@@ -21,6 +21,6 @@ protected:
 	virtual CRect DeselectAll();
 	virtual CShape* GetCurrentShape();
 	virtual void _DoAddNewShapeToStack(UINT nFlags, CPoint point);
-	virtual CShape* __DoCreateNewItem(CPoint point);
+	virtual CShape* _DoCreateNewItem(CPoint point);
 	virtual void __DoState(CPoint point, EventType eventType);
 };

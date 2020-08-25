@@ -18,9 +18,11 @@
 //Tools
 #include "SelectionTool.h"
 #include "PenTool.h"
+#include "ConnectorTool.h"
 
 #define TEST_PENTOOL
 #define TEST_SELTOOL
+//#define TEST_CONNTOOL
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -957,17 +959,23 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 #ifdef TEST_SELTOOL
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
-		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
+		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseDown(nFlags, point);
 		if (!rect_union.IsRectEmpty())
 		{
 			_SetUpdateRect(rect_union);
 		}
 		return;
-		return;
 	}
 #endif
 #ifdef TEST_PENTOOL
-	else if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(nFlags, point);
+		return;
+	}
+#endif
+#ifdef TEST_CONNTOOL
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool))) {
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
 		return;
@@ -1271,7 +1279,14 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
-
+		//return;
+	}
+#endif
+#ifdef TEST_CONNTOOL
+	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool))) {
+		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
+		((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
+		return;
 	}
 #endif
 
@@ -1303,7 +1318,8 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	BOOL bConnectionTmp=FALSE;//set when a connection is pending
 	CShapeContainer *pShContConnect=NULL;
 
-	///STATUS MACHINE CONNECT
+	//STATUS MACHINE CONNECT
+	//Execution end here if we are creating a new wire left click in the unit pin and release the button in the same point
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE && pDoc->m_pSh->IsKindOf(RUNTIME_CLASS(CShapeWire)))
 		//Loop
 		while(index<pDoc->m_pObArray->GetSize()){

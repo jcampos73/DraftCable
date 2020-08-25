@@ -10,7 +10,7 @@ public:
 	~CPenTool();
 public:
 	virtual CRect MoveTo(UINT nFlags, CPoint point);
-	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseDown(UINT nFlags, CPoint point);
 	virtual CRect MouseUp(CPoint point);
 protected:
 	enum Status { ddcStatusNothingDrawing = 0, ddcStatusBeginPolyDrawing, ddcStatusPolyDrawing, ddcStatusPenDrawing } m_Status;

@@ -16,7 +16,7 @@ CAbstractTool::~CAbstractTool()
 }
 
 CRect CAbstractTool::MoveTo(UINT nFlags, CPoint point) { return new CRect(0, 0, 0, 0); }
-CRect CAbstractTool::MouseDown(CPoint point) { return new CRect(0, 0, 0, 0); }
+CRect CAbstractTool::MouseDown(UINT nFlags, CPoint point) { return new CRect(0, 0, 0, 0); }
 CRect CAbstractTool::MouseUp(CPoint point) { return new CRect(0, 0, 0, 0); }
 
 //Deselect all the shapes
@@ -74,7 +74,7 @@ void CAbstractTool::_DoAddNewShapeToStack(UINT nFlags, CPoint point)
 }
 
 //Create new item and add to stack
-CShape* CAbstractTool::__DoCreateNewItem(CPoint point)
+CShape* CAbstractTool::_DoCreateNewItem(CPoint point)
 {
 	//Create a new shape
 	int index;

@@ -43,21 +43,7 @@ CRect CPenTool::MoveTo(UINT nFlags, CPoint point)
 
 			if (pDoc->m_iToolSel != _TOOLROTATE_DRAFTCABLE){
 				pSh->OnMouseMove(0, point);
-				//Check if shape is beeing moved out of sheet
-				//2014/04/10
-				//This is not correct since if shape is placed initially out (or partially out) of design area will not work
-				//-------------------------------------------
-				//if (!pSh->m_Rect.IsRectEmpty()){
-				//	CRect rect1;
-				//	rect1.IntersectRect(rcSheet, pSh->m_Rect);
-				//	if (rect1 != pSh->m_Rect){
-				//		//pSh->m_Rect=prev_rect;
-				//		//2014/04/10
-				//		//As a solution to above comment, we apply following code
-				//		DoPreventShpOutSchem(pSh, rcSheet);
-				//	}
-				//}
-				//-------------------------------------------
+
 				//Recover saved rectangle
 				pSh->m_Mode = prev_mode;
 			}
@@ -80,7 +66,7 @@ CRect CPenTool::MoveTo(UINT nFlags, CPoint point)
 	return rect_union;
 }
 
-CRect CPenTool::MouseDown(CPoint point)
+CRect CPenTool::MouseDown(UINT nFlags, CPoint point)
 {
 	__DoState(point, ddcEventMouseDown);
 
@@ -123,11 +109,7 @@ void CPenTool::__DoState(CPoint point, EventType eventType)
 			break;
 	}
 
-
-	if (eventType == ddcEventMouseDown){
-		m_ptMouseDownPrev = point;
-	}
-	else if (eventType == ddcEventMouseUp){
+	if (eventType == ddcEventMouseUp){
 		m_Status = ddcStatusNothingDrawing;
 	}
 }
@@ -147,17 +129,33 @@ void CPenTool::__DoStateBeginPoly(CPoint point, EventType eventType)
 void CPenTool::__DoStateDrawing(CPoint point, EventType eventType)
 {
 	CShape *pSh = NULL;
+	pSh = GetCurrentShape();
+
 	if (m_ptMouseDownPrev != point){
 		switch (m_Status)
 		{
 		case ddcStatusPenDrawing:
-			////We are done
-			//pSh = __DoCreateNewItem(point);
+		{
+			//We are done
+			//pShSel = pSh;
+			//Keep former position rectangle to erase
+			CRect rect2;
+			rect2 = pSh->m_RectLast;
+			rect2.InflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
+			//rect_union2.UnionRect(rect_union2, rect2);
+			//Pass event to shape
+			pSh->OnLButtonUp(0, point);
+			//Current position to erase
+			CRect rect;
+			pSh->GetSizingRect(rect);
+			//bRedrawAll |= _DoAddToUpdateRect(rect_union, rect);
+
+			//pSh = _DoCreateNewItem(point);
 			//pSh->OnLButtonDown(0, point);
+		}
 			break;
 		case ddcStatusPolyDrawing:
 			//Pass event to shape
-			pSh = GetCurrentShape();
 			pSh->OnLButtonDown(0, point);
 			break;
 		}

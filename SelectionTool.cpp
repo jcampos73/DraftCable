@@ -53,33 +53,32 @@ CRect CSelectionTool::MoveTo(UINT nFlags, CPoint point)
 	return RectMult;
 }
 
-CRect CSelectionTool::MouseDown(CPoint point)
+CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 {
 	CRect RectMult(0, 0, 0, 0);
 	int status = ddcStatusNothingSelected;
-	//Select shape in point
-	//We need a iterator to go though all the shapes in that region of the screen
 
-#ifndef DRAFTCABLE_MFC_CONTAINER_WRAP
+	__DoState(point, ddcEventMouseDown);
 
-	//1.Iterate all shapes
+	m_ptMouseDownPrev = point;
+
+	//Iterate all shapes
 	int index;
 	CShape *pSh = (CShape *)pDoc->LastObject(index);
 	pSh = (CShape *)pDoc->PrevObject(index);
 	while (status == ddcStatusNothingSelected && pSh != NULL){
-		//Test if shape is selected
 
 		if (pSh->PtInRect(point))
 		{
 			status = ddcStatusSomeSelected;
 
-			//pSh->OnLButtonDown(0, point);
-			if (pSh->IsSelected()){
+			//Select shape
+			if (!pSh->IsSelected()){
 
-			}
-			else
-			{
-				RectMult = DeselectAll();
+				if (!(nFlags & MK_CONTROL))
+				{
+					RectMult = DeselectAll();
+				}
 				if (m_pObListSel->Find(pSh) == false){
 					m_pObListSel->AddHead(pSh);
 				}
@@ -87,29 +86,34 @@ CRect CSelectionTool::MouseDown(CPoint point)
 
 				RectMult.UnionRect(RectMult, pSh->m_Rect);
 			}
+			else if(nFlags & MK_CONTROL)
+			{
+				//Deselect
+				pSh->Unselect();
+				POSITION pos = m_pObListSel->Find(pSh);
+				if (pos)
+				{
+					m_pObListSel->RemoveAt(pos);
+				}
+			}
 		}
 
 		pSh = (CShape *)pDoc->PrevObject(index);
 	}//End while
 
-#endif
+	RectMult = _DoCreateSelectionRectangle(status, point, RectMult);
 
-#ifdef DRAFTCABLE_MFC_CONTAINER_WRAP
-	//With for...
-	//for (ListIter it = ListIter(m_pObList); it != ListIter(); ++it)
-	ListIter it = ListIter(m_pObList);
-	while (status == ddcStatusNothingSelected && it != ListIter())
-	{
-		//Test if shape is selected
-		((CShape*)(*it))->OnLButtonDown(0, point);
-		if (((CShape*)(*it))->IsSelected()){
-			status = ddcStatusSomeSelected;
-		}
-		//Next shape
-		++it;
-	}
-#endif
+	return RectMult;
+}
 
+//int CSelectionTool::_DoToggleSelect(CPoint point)
+//{
+//	int status = ddcStatusNothingSelected;
+//	return status;
+//}
+
+CRect CSelectionTool::_DoCreateSelectionRectangle(int status, CPoint point, CRect RectMult)
+{
 	//If no shape selected start a selection rectangle
 	if (status == ddcStatusNothingSelected)
 	{
@@ -217,6 +221,14 @@ CRect CSelectionTool::MouseUp(CPoint point)
 	}
 
 	return RectMult;
+}
+
+void CSelectionTool::__DoState(CPoint point, EventType eventType)
+{
+	switch (m_Status) {
+		case ddcStatusSomeSelected:
+		break;
+	}
 }
 
 void CSelectionTool::_AddToSelectedArray(CShape *pSh)

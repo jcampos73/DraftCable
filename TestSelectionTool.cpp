@@ -17,5 +17,5 @@ void CTestSelectionTool::Event_WithValidPoint_MovesShape()
 	CPoint point;
 	CSelectionTool selectionTool;
 
-	selectionTool.MouseDown(point);
+	selectionTool.MouseDown(0, point);
 }

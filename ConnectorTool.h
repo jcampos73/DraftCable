@@ -8,7 +8,7 @@ public:
 	~CConnectorTool();
 public:
 	virtual CRect MoveTo(UINT nFlags, CPoint point);
-	virtual CRect MouseDown(CPoint point);
+	virtual CRect MouseDown(UINT nFlags, CPoint point);
 	virtual CRect MouseUp(CPoint point);
 protected:
 	enum Status { ddcStatusBeginConnect = 0, ddcStatusConnecting } m_Status;
