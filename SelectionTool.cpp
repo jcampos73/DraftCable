@@ -2,8 +2,6 @@
 #include "SelectionTool.h"
 #include "ShArrayIterator.h"
 
-//#define DRAFTCABLE_MFC_CONTAINER_WRAP
-
 IMPLEMENT_SERIAL(CSelectionTool,CAbstractTool, 1)
 
 CSelectionTool::CSelectionTool()
@@ -70,7 +68,7 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 
 		if (pSh->PtInRect(point))
 		{
-			status = ddcStatusSomeSelected;
+			status = ddcStatusDragging;
 
 			//Select shape
 			if (!pSh->IsSelected()){
@@ -106,12 +104,6 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 	return RectMult;
 }
 
-//int CSelectionTool::_DoToggleSelect(CPoint point)
-//{
-//	int status = ddcStatusNothingSelected;
-//	return status;
-//}
-
 CRect CSelectionTool::_DoCreateSelectionRectangle(int status, CPoint point, CRect RectMult)
 {
 	//If no shape selected start a selection rectangle
@@ -136,7 +128,7 @@ CRect CSelectionTool::_DoCreateSelectionRectangle(int status, CPoint point, CRec
 	}
 	else
 	{
-		m_Status = ddcStatusSomeSelected;
+		m_Status = ddcStatusDragging;
 	}
 
 	return RectMult;
@@ -226,7 +218,7 @@ CRect CSelectionTool::MouseUp(CPoint point)
 void CSelectionTool::__DoState(CPoint point, EventType eventType)
 {
 	switch (m_Status) {
-		case ddcStatusSomeSelected:
+		case ddcStatusDragging:
 		break;
 	}
 }

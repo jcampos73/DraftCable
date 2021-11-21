@@ -11,7 +11,7 @@ public:
 	virtual CRect MouseDown(UINT nFlags, CPoint point);
 	virtual CRect MouseUp(CPoint point);
 protected:
-	enum Status { ddcStatusNothingSelected = 0, ddcStatusSomeSelected, ddcStatusCreatingSelectionRect } m_Status;
+	enum Status { ddcStatusNothingSelected = 0, ddcStatusDragging, ddcStatusCreatingSelectionRect } m_Status;
 	CRect m_rect;
 
 	virtual void __DoState(CPoint point, EventType eventType);
