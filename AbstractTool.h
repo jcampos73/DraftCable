@@ -1,5 +1,6 @@
 #pragma once
 #include "DraftDrawDoc.h"
+#include "MouseState.h"
 class CAbstractTool : public CObject
 {
 public:
@@ -17,10 +18,12 @@ public:
 protected:
 	enum EventType { ddcEventMouseDown, ddcEventMouseUp };
 	CPoint m_ptMouseDownPrev;
+	MouseState *m_mouseState;
 
 	virtual CRect DeselectAll();
 	virtual CShape* GetCurrentShape();
 	virtual void _DoAddNewShapeToStack(UINT nFlags, CPoint point);
 	virtual CShape* _DoCreateNewItem(CPoint point);
 	virtual void __DoState(CPoint point, EventType eventType);
+	virtual void MouseStateDown();
 };

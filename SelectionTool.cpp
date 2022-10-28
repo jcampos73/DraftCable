@@ -11,6 +11,7 @@ CSelectionTool::CSelectionTool()
 
 CSelectionTool::~CSelectionTool()
 {
+
 }
 
 CRect CSelectionTool::MoveTo(UINT nFlags, CPoint point)
@@ -66,9 +67,15 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 	pSh = (CShape *)pDoc->PrevObject(index);
 	while (status == ddcStatusNothingSelected && pSh != NULL){
 
+		//Check if we have to select the shape
 		if (pSh->PtInRect(point))
 		{
 			status = ddcStatusDragging;
+			//It is better to manage everything with the mouse state. For example
+			//If moving event and state is MouseDown, either 
+			//1.Dragging shapes if the selected shapes array has something
+			//2.We are creating a selection rectangle, if selectected shapes array is empty
+			MouseStateDown();
 
 			//Select shape
 			if (!pSh->IsSelected()){
@@ -86,7 +93,7 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 			}
 			else if(nFlags & MK_CONTROL)
 			{
-				//Deselect
+				//Toggle
 				pSh->Unselect();
 				POSITION pos = m_pObListSel->Find(pSh);
 				if (pos)
@@ -94,6 +101,39 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 					m_pObListSel->RemoveAt(pos);
 				}
 			}
+		}
+		else if (pSh->m_Mode == _DRAFTDRAW_MODE_DRW)
+		{
+			int i = 0;
+			if (!pSh->m_bNoResize)
+				while (pSh->m_MarkerArray[i]) {
+
+					//15/08/2004
+					//This line copes with the fact that line are allway drawn from NW corner to SE corner.
+					//When line is completely horizontal or vertical, NE marker is hit first than SE,
+					//becouse NW<SE.
+					//SW/NW case has been added as a safety measure.
+					if (!pSh->m_bLineResize || (i != _DRAFTDRAW_SEL_RESIZING_RECT_NE && i != _DRAFTDRAW_SEL_RESIZING_RECT_SW)) {
+
+						if (pSh->m_MarkerArray[i]->PtInRect(point) == TRUE) {
+
+							pSh->m_Point = point;
+
+							pSh->m_Mode = _DRAFTDRAW_MODE_SEL;
+							pSh->m_RectLast = pSh->m_Rect;
+							pSh->m_TypeSelect = _DRAFTDRAW_SEL_RESIZING_RECT;
+							pSh->m_VectorSelect = i;
+							SetCursor(pSh->m_pCursorArray[i]);
+
+							status = ddcStatusDragging;
+							RectMult = _DoCreateSelectionRectangle(status, point, RectMult);
+
+							return RectMult;
+						}
+					}
+
+					i++;
+				}
 		}
 
 		pSh = (CShape *)pDoc->PrevObject(index);

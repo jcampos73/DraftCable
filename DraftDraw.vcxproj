@@ -420,6 +420,8 @@
     <ClCompile Include="ConnectorTool.cpp" />
     <ClCompile Include="DialogShell.cpp" />
     <ClCompile Include="DraftDrawTest.cpp" />
+    <ClCompile Include="MouseDragState.cpp" />
+    <ClCompile Include="MouseState.cpp" />
     <ClCompile Include="PenTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
@@ -1111,6 +1113,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractTool.h" />
+    <ClInclude Include="MouseDragState.h" />
+    <ClInclude Include="MouseState.h" />
     <ClInclude Include="cboxcall.h" />
     <ClInclude Include="ConnectorTool.h" />
     <ClInclude Include="DialogShell.h" />

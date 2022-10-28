@@ -8,11 +8,13 @@ IMPLEMENT_SERIAL(CAbstractTool, CObject, 1)
 CAbstractTool::CAbstractTool()
 {
 	//m_pObListSel = new CObList();
+	m_mouseState = new MouseState();
 }
 
 CAbstractTool::~CAbstractTool()
 {
 	//delete(m_pObListSel);
+	delete(m_mouseState);
 }
 
 CRect CAbstractTool::MoveTo(UINT nFlags, CPoint point) { return new CRect(0, 0, 0, 0); }
@@ -123,4 +125,14 @@ CShape* CAbstractTool::_DoCreateNewItem(CPoint point)
 void CAbstractTool::__DoState(CPoint point, EventType eventType)
 {
 	//To be overriden
+}
+
+void CAbstractTool::MouseStateDown()
+{
+	MouseState* pState = m_mouseState->MouseDown();
+	if (pState != m_mouseState)
+	{
+		delete(m_mouseState);
+		m_mouseState = pState;
+	}
 }

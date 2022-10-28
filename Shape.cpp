@@ -745,6 +745,7 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 		//Move shape in screen array
 		//**********************************************************************
 		//**********************************************************************
+		m_RectLast = m_Rect;
 		break;
 
 
