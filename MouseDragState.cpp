@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MouseDragState.h"
 
+IMPLEMENT_DYNCREATE(MouseDragState, MouseState)
+
 MouseDragState::MouseDragState()
 {
 }
@@ -14,7 +16,7 @@ MouseState* MouseDragState::MouseDown()
 	return this;
 }
 
-void MouseDragState::MouseUp()
+MouseState* MouseDragState::MouseUp()
 {
-
+	return new MouseState();
 }

@@ -2,6 +2,8 @@
 #include "MouseState.h"
 #include "MouseDragState.h"
 
+IMPLEMENT_DYNCREATE(MouseState, CObject)
+
 MouseState::MouseState()
 {
 }
@@ -15,7 +17,7 @@ MouseState* MouseState::MouseDown()
 	return new MouseDragState();
 }
 
-void MouseState::MouseUp()
+MouseState* MouseState::MouseUp()
 {
-
+	return this;
 }

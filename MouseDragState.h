@@ -6,8 +6,9 @@ class MouseDragState : public MouseState {
 public:
 	MouseDragState();
 	~MouseDragState();
+	DECLARE_DYNCREATE(MouseDragState)
 
 	virtual MouseState* MouseDown();
 
-	virtual void MouseUp();
+	virtual MouseState* MouseUp();
 };

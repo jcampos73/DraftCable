@@ -429,6 +429,7 @@
     <ClCompile Include="Markup.cpp" />
     <ClCompile Include="RegExp.cpp" />
     <ClCompile Include="SelectionTool.cpp" />
+    <ClCompile Include="ShapeSelection.cpp" />
     <ClCompile Include="ShArrayIterator.cpp" />
     <ClCompile Include="StringEx.cpp" />
     <ClCompile Include="SvgioFile.cpp" />
@@ -1128,6 +1129,7 @@
     <ClInclude Include="Markup.h" />
     <ClInclude Include="RegExp.h" />
     <ClInclude Include="SelectionTool.h" />
+    <ClInclude Include="ShapeSelection.h" />
     <ClInclude Include="ShArrayIterator.h" />
     <ClInclude Include="StringEx.h" />
     <ClInclude Include="SvgioFile.h" />

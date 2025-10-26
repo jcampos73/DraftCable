@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SelectionTool.h"
 #include "ShArrayIterator.h"
+#include "MouseDragState.h"
 
 IMPLEMENT_SERIAL(CSelectionTool,CAbstractTool, 1)
 
@@ -17,6 +18,12 @@ CSelectionTool::~CSelectionTool()
 CRect CSelectionTool::MoveTo(UINT nFlags, CPoint point)
 {
 	CRect RectMult(0, 0, 0, 0);
+
+	//New mechanism
+	if (!m_mouseState->IsKindOf(RUNTIME_CLASS(MouseDragState)))
+	{
+		return RectMult;
+	}
 
 	if (nFlags & MK_LBUTTON)
 	{
@@ -211,6 +218,7 @@ CRect CSelectionTool::MouseUp(CPoint point)
 			RectMult.UnionRect(RectMult, pSh->m_Rect);
 			_RemoveFromSelectedArray(pSh);
 
+			//Delete the selection rectangle
 			pDoc->DeleteObject(-1);
 			pDoc->m_iToolSel = _TOOLSELECT_DRAFTCABLE;
 

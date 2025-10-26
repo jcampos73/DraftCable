@@ -271,6 +271,9 @@
     <ClCompile Include="MouseDragState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ShapeSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DraftDraw.rc">
@@ -546,6 +549,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MouseDragState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeSelection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
