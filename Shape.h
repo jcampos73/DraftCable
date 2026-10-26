@@ -14,8 +14,8 @@
 
 #include "XMLArchive.h"
 
-#define _DRAFTDRAW_MODE_SEL					0		//When we select a shape and we don't realease the left button
-#define _DRAFTDRAW_MODE_DRW					1
+#define _DRAFTDRAW_MODE_ACTIVE					0		//Active interaction: creating, moving or resizing
+#define _DRAFTDRAW_MODE_IDLE					1		//No active interaction; the shape may remain selected
 
 #define _DRAFTDRAW_SEL_SIZING_RECT			0		//Normal draw
 //#define _DRAFTDRAW_SEL_SIZING_LINE			1

@@ -64,7 +64,7 @@ CShape::CShape(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=NULL*/)
 	m_uiShapeId=0;
 	m_Type = _DRAFTDRAW_ELEVATION_DRAW_DISABLE;
 	m_TypeSelect = _DRAFTDRAW_SEL_SIZING_RECT;
-	m_Mode = _DRAFTDRAW_MODE_SEL;
+	m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 
 	//2.Flags defaults
 	m_bNoResize=FALSE;
@@ -117,7 +117,7 @@ CShape::CShape(CShape& Sh){
 
 	m_Type = _DRAFTDRAW_ELEVATION_DRAW_DISABLE;
 	m_TypeSelect = _DRAFTDRAW_SEL_SIZING_RECT;
-	m_Mode = _DRAFTDRAW_MODE_SEL;
+	m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 
 	//Flags
 	m_bNoResize=FALSE;
@@ -384,7 +384,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 
 	m_Point=point;
 
-	if(m_Mode==_DRAFTDRAW_MODE_DRW){
+	if(m_Mode==_DRAFTDRAW_MODE_IDLE){
 
 		i=0;
 		if(!m_bNoResize)
@@ -399,7 +399,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 
 				if(m_MarkerArray[i]->PtInRect(point)==TRUE){
 
-					m_Mode=_DRAFTDRAW_MODE_SEL;
+					m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 					m_RectLast=m_Rect;
 					m_TypeSelect=_DRAFTDRAW_SEL_RESIZING_RECT;
 					m_VectorSelect=i;
@@ -421,7 +421,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			//******************************************************************
 
 			if(pcmdDeque){
-				if(m_Mode!=_DRAFTDRAW_MODE_SEL){
+				if(m_Mode!=_DRAFTDRAW_MODE_ACTIVE){
 					CString str;
 					str.Format(_T("ActiveSheet.Shapes(%i).Select(1)"),
 						m_uiShapeId);
@@ -435,7 +435,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 
 			//******************************************************************
-			m_Mode=_DRAFTDRAW_MODE_SEL;
+			m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 			m_RectLast=m_Rect;
 			m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 
@@ -454,7 +454,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			(point.y>=point1.y)&&
 			(point.y<point2.y)){
 
-				m_Mode=_DRAFTDRAW_MODE_SEL;
+				m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 				m_RectLast=m_Rect;
 				m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 
@@ -468,7 +468,7 @@ void CShape::OnLButtonDown(UINT nFlags, CPoint point)
 			(point.x>=point1.x)&&
 			(point.x<point2.x)){
 
-				m_Mode=_DRAFTDRAW_MODE_SEL;
+				m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 				m_RectLast=m_Rect;
 				m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 
@@ -516,15 +516,15 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 	//CShape::OnLButtonUp(UINT nFlags, CPoint point);
 
 
-	//m_Mode=_DRAFTDRAW_MODE_DRW;
+	//m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 	SetCursor(m_pCursorArray[9]);
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 	switch(m_TypeSelect){
 
 	case _DRAFTDRAW_SEL_SIZING_RECT:
 
-		m_Mode=_DRAFTDRAW_MODE_DRW;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		//Added 27/11/2004
 		//Add to command queue shape creation
 		//**********************************************************************
@@ -590,7 +590,7 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 
 	case _DRAFTDRAW_SEL_RESIZING_RECT:
 
-		m_Mode=_DRAFTDRAW_MODE_DRW;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 		m_Rect.NormalizeRect();
 		//Added 29/11/2004
@@ -699,7 +699,7 @@ void CShape::OnLButtonUp(UINT nFlags, CPoint point)
 
 	case _DRAFTDRAW_SEL_MOVING_RECT:
 
-		m_Mode=_DRAFTDRAW_MODE_DRW;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		CRect rect=m_Rect;
 		//31/01/2005
 		m_Rect=m_RectLast;
@@ -844,7 +844,7 @@ void CShape::OnMouseMove(UINT nFlags, CPoint point)
 	m_Rect.NormalizeRect();
 	*/
 
-	if(m_Mode==_DRAFTDRAW_MODE_SEL){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 
 
 		switch(m_TypeSelect){
@@ -1012,7 +1012,7 @@ void CShape::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags){
 
 void CShape::OnDraw(CDC *pDC)
 {
-	if(m_Mode == _DRAFTDRAW_MODE_SEL){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		//Check if it is a line, polyline or whatever that is drawn using segments
 		if(!m_bLineResize){
@@ -1134,7 +1134,7 @@ void CShape::OnDraw(CDC *pDC)
 			pDC->LineTo(P2);
 			}
 		}
-	}//end if mode _DRAFTDRAW_MODE_SEL
+	}//end if mode _DRAFTDRAW_MODE_ACTIVE
 	else if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
 
 		int i=0;
@@ -1188,12 +1188,12 @@ void CShape::GetSizingRect( CRect &rect ) const{
 //Select shape
 void CShape::Select(BOOL bSelect/*=TRUE*/){
 	if(bSelect){
-		m_Mode=_DRAFTDRAW_MODE_DRW;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 		PlaceSelectRect(m_MarkerArray,&m_Rect,( ( (CDraftDrawApp*)AfxGetApp() )->GetActiveViewProp()).cx*_DRAFTDRAW_SEL_SIZEREL);//_DRAFTDRAW_SEL_SIZE);
 	}
 	else{
-		m_Mode=_DRAFTDRAW_MODE_DRW;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		m_TypeSelect=_DRAFTDRAW_SEL_RESIZING_RECT;
 	}
 }
@@ -1201,12 +1201,12 @@ void CShape::Select(BOOL bSelect/*=TRUE*/){
 //Is shape selected?
 BOOL CShape::IsSelected(){
 
-	return ((m_Mode==_DRAFTDRAW_MODE_SEL)|(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT)|(m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT));
+	return ((m_Mode==_DRAFTDRAW_MODE_ACTIVE)|(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT)|(m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT));
 }
 
 //Unselect shape
 void CShape::Unselect(){
-	this->m_Mode=_DRAFTDRAW_MODE_DRW;
+	this->m_Mode=_DRAFTDRAW_MODE_IDLE;
 	this->m_TypeSelect=_DRAFTDRAW_SEL_SIZING_RECT;
 }
 
@@ -1528,7 +1528,7 @@ void CShapeRect::OnLButtonUp(UINT nFlags, CPoint point)
 
 void CShapeRect::OnDraw(CDC *pDC)
 {
-	if(m_Mode==_DRAFTDRAW_SEL_SIZING_RECT){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 		if(m_bGroup){
 			//Don't draw anything in this case
 		}
@@ -1644,7 +1644,7 @@ void CShapeEllipse::OnMouseMove(UINT nFlags, CPoint point)
 */
 void CShapeEllipse::OnDraw(CDC *pDC)
 {
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 		//Draw in current position
 
 		if(m_TypeSelect!=_DRAFTDRAW_SEL_RESIZING_RECT){
@@ -1894,7 +1894,7 @@ void CShapeRule::OnMouseMove(UINT nFlags, CPoint point)
 {
 	CShape::OnMouseMove(nFlags, point);
 
-	if(m_Mode==_DRAFTDRAW_MODE_SEL){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 
 		int height=m_Rect.Height();
 		int width=m_Rect.Width();
@@ -1940,7 +1940,7 @@ void CShapeRule::OnDraw(CDC *pDC)
 	CPoint pt21=pt-CSize(m_offset3,m_offset4);
 	CPoint pt22=pt-CSize(m_offset1,m_offset2);
 
-	//if(!m_Mode==_DRAFTDRAW_MODE_SEL){
+	//if(!m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 	pDC->MoveTo(pt11);
 	pDC->LineTo(m_Rect.TopLeft());
 	pDC->LineTo(pt12);
@@ -2145,7 +2145,7 @@ void CShapeArc::OnDraw(CDC *pDC)
 	//To draw selections
 	CShape::OnDraw(pDC);
 
-	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){
+	if((m_Mode == _DRAFTDRAW_MODE_ACTIVE)&&(!m_Rect.IsRectEmpty())){
 
 		//Do draw ellipse
 		_DrawEllipse(pDC);
@@ -2987,7 +2987,7 @@ void CShapeBoard::OnLButtonDown(UINT nFlags, CPoint point)
 	//CShape::OnLButtonDown(UINT nFlags, CPoint point);
 	int i;
 
-	if(m_Mode==_DRAFTDRAW_MODE_DRW){
+	if(m_Mode==_DRAFTDRAW_MODE_IDLE){
 
 		if(m_Rect.PtInRect(point)==TRUE){
 
@@ -3025,7 +3025,7 @@ void CShapeBoard::OnLButtonUp(UINT nFlags, CPoint point)
 
 	// code afecting bounding rectangle can be place in base class
 	//CShape::OnLButtonUp(UINT nFlags, CPoint point);
-	m_Mode=_DRAFTDRAW_MODE_DRW;
+	m_Mode=_DRAFTDRAW_MODE_IDLE;
 	int i=0;
 	while(m_MarkerArray[i]){
 
@@ -3044,7 +3044,7 @@ void CShapeBoard::OnMouseMove(UINT nFlags, CPoint point)
 	// code afecting bounding rectangle can be placed in base class
 	//CShape::OnMouseMove(UINT nFlags, CPoint point);
 
-	if(m_Mode==_DRAFTDRAW_MODE_SEL){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 	switch(m_TypeSelect){
 
 	case _DRAFTDRAW_SEL_SIZING_RECT:
@@ -3141,7 +3141,7 @@ void CShapeBoard::OnMouseMove(UINT nFlags, CPoint point)
 
 void CShapeBoard::OnDraw(CDC *pDC){
 
-	if((!m_Mode)&&(!m_Rect.IsRectEmpty())){
+	if((m_Mode == _DRAFTDRAW_MODE_ACTIVE)&&(!m_Rect.IsRectEmpty())){
 
 		CShape::OnDraw(pDC);
 	}
@@ -3302,11 +3302,11 @@ void CShapePolyline::OnLButtonDown(UINT nFlags, CPoint point){
 
 	DWORD dwPoint=MAKELONG(point.x,point.y);
 
-	if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
+	if((m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 		if(m_dwarrPointarr.GetSize()>1){
 			m_dwarrPointarr.Add(dwPoint);
 			CShape::OnLButtonUp(nFlags,point);
-			m_Mode=_DRAFTDRAW_MODE_SEL;
+			m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 		}
 		else{
 			m_dwarrPointarr.Add(dwPoint);
@@ -3318,7 +3318,7 @@ void CShapePolyline::OnLButtonDown(UINT nFlags, CPoint point){
 
 void CShapePolyline::OnLButtonUp(UINT nFlags, CPoint point){
 
-	if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
+	if((m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&(m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 
 /*
 		//This code creates a strange behaviour while drawing, but only with first segment?
@@ -3333,7 +3333,7 @@ void CShapePolyline::OnLButtonUp(UINT nFlags, CPoint point){
 		SetStatus(status);
 
 	}
-	else if((m_Mode==_DRAFTDRAW_MODE_SEL)&&(m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT)){
+	else if((m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&(m_TypeSelect==_DRAFTDRAW_SEL_RESIZING_RECT)){
 		if(m_Rect!=m_Rect0){
 			CRect rectTemp=m_Rect;
 			m_Rect.NormalizeRect();
@@ -3577,7 +3577,7 @@ void CShapePolyline::SerializeSvg(CSvgioFile &svgfile)
 
 void CShapePolyline::OnDraw(CDC *pDC){
 
-	if(m_Mode==_DRAFTDRAW_MODE_SEL){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 
 		//07/12/2004
 		//This draw in selected mode was commented since a buffer is used to draw shapes.
@@ -4020,7 +4020,7 @@ m_Rect0=m_Rect;
 		m_dwarrPointarr0.Add(MAKELONG(point.x,point.y));
 	}
 
-	m_Mode=_DRAFTDRAW_MODE_DRW;//!
+	m_Mode=_DRAFTDRAW_MODE_IDLE;//!
 
 	return TRUE;
 }
@@ -4440,7 +4440,7 @@ END_MESSAGE_MAP()
 void CShapeZoomRect::OnDraw(CDC *pDC)
 {
 
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShape::OnDraw(pDC);
 	}
@@ -4509,7 +4509,7 @@ END_MESSAGE_MAP()
 void CShapePicture::OnDraw(CDC *pDC)
 {
 
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShape::OnDraw(pDC);
 	}
@@ -4648,7 +4648,7 @@ END_MESSAGE_MAP()
 
 void CShapeCurve::OnDraw(CDC* pDC){
 
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShapePolyline::OnDraw(pDC);
 	}
@@ -4748,7 +4748,7 @@ END_MESSAGE_MAP()
 
 void CShapePolyArc::OnDraw(CDC* pDC){
 
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShapePolyline::OnDraw(pDC);
 	}

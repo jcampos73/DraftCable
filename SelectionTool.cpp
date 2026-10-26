@@ -41,7 +41,7 @@ CRect CSelectionTool::MoveTo(UINT nFlags, CPoint point)
 
 			int prev_mode = pSh->m_Mode;
 			CRect prev_rect = pSh->m_Rect;
-			pSh->m_Mode = 0;
+			pSh->m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 
 			pSh->OnMouseMove(0, point);
 
@@ -109,7 +109,7 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 				}
 			}
 		}
-		else if (pSh->m_Mode == _DRAFTDRAW_MODE_DRW)
+		else if (pSh->m_Mode == _DRAFTDRAW_MODE_IDLE)
 		{
 			int i = 0;
 			if (!pSh->m_bNoResize)
@@ -126,7 +126,7 @@ CRect CSelectionTool::MouseDown(UINT nFlags, CPoint point)
 
 							pSh->m_Point = point;
 
-							pSh->m_Mode = _DRAFTDRAW_MODE_SEL;
+							pSh->m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 							pSh->m_RectLast = pSh->m_Rect;
 							pSh->m_TypeSelect = _DRAFTDRAW_SEL_RESIZING_RECT;
 							pSh->m_VectorSelect = i;

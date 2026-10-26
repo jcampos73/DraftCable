@@ -39,7 +39,7 @@ CRect CPenTool::MoveTo(UINT nFlags, CPoint point)
 			pShMove = pSh;
 			int prev_mode = pSh->m_Mode;
 			CRect prev_rect = pSh->m_Rect;
-			pSh->m_Mode = 0;
+			pSh->m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 
 			if (pDoc->m_iToolSel != _TOOLROTATE_DRAFTCABLE){
 				pSh->OnMouseMove(0, point);

@@ -217,7 +217,7 @@ CShape& CShapeUnit::operator++( ){
 
 void CShapeUnit::OnLButtonUp(UINT nFlags, CPoint point){
 
-	if(m_Mode==_DRAFTDRAW_MODE_SEL&&!m_bNoResize){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE&&!m_bNoResize){
 		m_Rect.NormalizeRect();
 		Resize();
 	}
@@ -229,7 +229,7 @@ void CShapeUnit::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
 	if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){//if(!m_Mode){
-		m_Mode=1;
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 		CString strFile=m_sUnitName;
 		//get libray name
@@ -326,7 +326,7 @@ BOOL CShapeUnit::IsTB(){
 void CShapeUnit::DoDraw(CDC *pDC, CRect rect1){
 
 	//Resize while drawing shape
-	if(m_Mode==_DRAFTDRAW_MODE_SEL&&!m_bNoResize){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE&&!m_bNoResize){
 		Resize();
 	}
 
@@ -503,7 +503,7 @@ void CShapeUnit::OnDraw(CDC *pDC){
 	//of its functionality (mainly polyline implementation) and should be solved
 
 	//Call base class for drawing sizing handles
-	if(m_Mode==_DRAFTDRAW_MODE_SEL){
+	if(m_Mode==_DRAFTDRAW_MODE_ACTIVE){
 
 		//Redraw shape in current place
 		if(m_TypeSelect==_DRAFTDRAW_SEL_MOVING_RECT){
@@ -1847,7 +1847,7 @@ void CShapePin::OnMouseMove(UINT nFlags, CPoint point){
 void CShapePin::OnLButtonDown(UINT nFlags, CPoint point){
 
 
-	if((m_Mode)&&(m_rectConect.PtInRect(CPoint(point  -GetParent()->m_Rect.TopLeft()) ))
+	if((m_Mode != _DRAFTDRAW_MODE_ACTIVE)&&(m_rectConect.PtInRect(CPoint(point  -GetParent()->m_Rect.TopLeft()) ))
 		//10/12/2004
 		//To prevent pins to get connected when part edition mode is active.
 		&&GetParent()!=this){
@@ -1866,8 +1866,8 @@ void CShapePin::OnLButtonDown(UINT nFlags, CPoint point){
 void CShapePin::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
-	if(!m_Mode){
-		m_Mode=1;
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 
 		CString sConnect=TABLE_PIN_LABEL[m_TypePin];
@@ -1992,7 +1992,7 @@ void CShapePin::SerializeSvg(CSvgioFile &svgfile)
 BOOL CShapePin::PtInRect(LPPOINT point,CShapeContainer** lpSh){
 
 	CPoint point0=GetParent()->m_Rect.TopLeft();
-	if((m_Mode)&&(m_rectConect.PtInRect(CPoint(CPoint(*point) - point0) ))
+	if((m_Mode != _DRAFTDRAW_MODE_ACTIVE)&&(m_rectConect.PtInRect(CPoint(CPoint(*point) - point0) ))
 		//10/12/2004
 		//To prevent pins to get connected when part edition mode is active.
 		&&GetParent()!=this){
@@ -2075,7 +2075,7 @@ CShapeWire::CShapeWire(LPRECT lpRect/*=NULL*/,UINT nId/*=0*/,cmddeque *cmddq /*=
 	for(int i=0;i<2;i++){
 
 		CShapePin *psh=new CShapePin(i,0,1);
-		psh->m_Mode=1;
+		psh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		psh->SetParent(this);
 		psh->m_uiShapeId=i+1;
 		m_obarrShapearr.Add(psh);
@@ -2106,8 +2106,8 @@ CShapeWire::~CShapeWire()
 void CShapeWire::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
-	if(!m_Mode){
-		m_Mode=1;
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 		//Check for a bridge
 		CShape *pShFirst=GetFirstChainItem();
@@ -2918,7 +2918,7 @@ pLabel->font->CreateFont(
 
 				CShapePin *pShpin=new CShapePin(uiPinnumber,uiPinpos,dwStyle);
 				pShpin->m_bFixed=TRUE;
-				pShpin->m_Mode=1;
+				pShpin->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				pShpin->m_rectPin+=CPoint(x,y);
 				pShpin->m_TypePin=iIndexType;
 
@@ -3032,7 +3032,7 @@ pLabel->font->CreateFont(
 				//m_Rect=CRect(x1,y1,x2,y2);
 				CShapeEllipse *pSh=new CShapeEllipse();
 				pSh->m_Rect=CRect(x1,y1,x2,y2);
-				pSh->m_Mode=1;
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				m_obarrShapearr.Add(pSh);
 
 				//Fill color
@@ -3396,11 +3396,11 @@ void CShapeLabel::OnDraw(CDC *pDC){
 		}
 	}
 
-	if((!m_Mode) && m_Rect.IsRectEmpty()){
+	if((m_Mode == _DRAFTDRAW_MODE_ACTIVE) && m_Rect.IsRectEmpty()){
 		//Resize label to fit text
 		ResizeAuto(pDC);
 	}
-	else if((!m_Mode)&&(!m_Rect.IsRectEmpty())){
+	else if((m_Mode == _DRAFTDRAW_MODE_ACTIVE)&&(!m_Rect.IsRectEmpty())){
 
 		CShape::OnDraw(pDC);
 	}
@@ -3580,8 +3580,8 @@ void CShapeLabel::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	CShape::OnLButtonDown(nFlags,point);
 
-	if(!m_Mode){
-		m_Mode=1;
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
+		m_Mode=_DRAFTDRAW_MODE_IDLE;
 		//Edit label
 		CDialogText dlgText;
 		dlgText.m_bVertical = m_Label.bver;
@@ -3673,7 +3673,7 @@ void CShapeFrmRect::SerializeDdw(CDdwioFile &ddwfile)
 void CShapeFrmRect::OnDraw(CDC *pDC)
 {
 
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShape::OnDraw(pDC);
 	}
@@ -3753,7 +3753,7 @@ void CShapeJunction::SerializeDdw(CDdwioFile &ddwfile)
 
 void CShapeJunction::OnDraw(CDC *pDC)
 {
-	if(!m_Mode){
+	if(m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 		CShape::OnDraw(pDC);
 	}

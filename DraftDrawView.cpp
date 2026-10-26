@@ -339,7 +339,7 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 		//Check if shape allows partial redraw (like polylines).
 		//If so, keep mode & rectangle.
 		//Then calculate temporal rectangle and change mode.
-		if(pSh->m_Mode == _DRAFTDRAW_MODE_SEL &&
+		if(pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE &&
 			pSh->m_TypeSelect == _DRAFTDRAW_SEL_SIZING_RECT &&
 			pSh->m_bAllowsPartialDraw){
 			//Keep mode & rectangle
@@ -350,12 +350,12 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 			CRect rect;
 			pSh->GetRectTemp(rect);
 			pSh->m_Rect=rect;
-			pSh->m_Mode=_DRAFTDRAW_MODE_DRW;
+			pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 			bFlagModeChanged=TRUE;
 		}
 
 		//Check if the shape is not selected
-		if(pSh->m_Mode != _DRAFTDRAW_MODE_SEL){
+		if(pSh->m_Mode != _DRAFTDRAW_MODE_ACTIVE){
 
 			//if pSh->m_Rect intersect m_RectDraw it has to been drawn in pDC1
 			CRect rect1,rectInter,rectInter1;
@@ -551,7 +551,7 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 		pSh->SetProyect(0,0,1);
 
 		//If shape is not selected continue to next shape
-		if(pSh->m_Mode){
+		if(pSh->m_Mode != _DRAFTDRAW_MODE_ACTIVE){
 			pSh=(CShape *)pDoc->NextObject(index);
 			continue;
 		}
@@ -1101,7 +1101,7 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 
 				pSh->OnLButtonDown(nFlags, point);
 				
-				if (pSh->m_Mode == _DRAFTDRAW_MODE_SEL){
+				if (pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 					POSITION pos = m_ObListSel.Find(pSh);
 					if (pos == NULL)
@@ -1762,7 +1762,7 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 				pShMove=pSh;
 				int prev_mode=pSh->m_Mode;
 				CRect prev_rect=pSh->m_Rect;
-				pSh->m_Mode=0;
+				pSh->m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 
 				if(pDoc->m_iToolSel!=_TOOLROTATE_DRAFTCABLE){
 					pSh->OnMouseMove(nFlags, point);
@@ -1827,7 +1827,7 @@ void CDraftDrawView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	CShape *pSh=(CShape *)pDoc->FirstObject(index);
 	pSh=(CShape *)pDoc->NextObject(index);
 	while(pSh){
-		if((pSh->m_Mode==_DRAFTDRAW_MODE_SEL)&&
+		if((pSh->m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&
 			(pSh->m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 
 			index_keep=index-1;
@@ -1871,11 +1871,11 @@ void CDraftDrawView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			if(pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE){
 
 				pSh->OnKeyDown(nChar,nRepCnt,nFlags);
-				pSh->m_Mode=_DRAFTDRAW_MODE_DRW;				
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;				
 			}
 			else{
 
-				//pSh->m_Mode=_DRAFTDRAW_MODE_DRW;
+				//pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				pDoc->DeleteObject(index_keep);
 				pDoc->m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
 			}
@@ -1959,7 +1959,7 @@ int idata_deb=pDoc->m_pObArray->GetSize();
 
 		pSh->OnLButtonDown(nFlags, point);
 
-		if(!pSh->m_Mode){
+		if(pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 			flag_return=true;
 			if(DRAFTCABLE_SELECT_INV){
@@ -2399,7 +2399,7 @@ int idata_deb=pDoc->m_pObArray->GetSize();
 			//create new label
 			CShapeLabel *pShlabel=new CShapeLabel();
 			pShlabel->m_pCursorArray=pDoc->m_CursorArray;
-			pShlabel->m_Mode=1;
+			pShlabel->m_Mode=_DRAFTDRAW_MODE_IDLE;
 			pShlabel->m_Label.bver=pShCont->m_bVertical;//true;
 			pShlabel->m_Label.slabel=new CString(pSh->m_strIdent);
 			pShlabel->m_Label.sname=new CString(pSh->m_strIdent);
@@ -2576,7 +2576,7 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 
 		//Iterate all the shapes
 		while(pSh){
-			if((pSh->m_Mode==_DRAFTDRAW_MODE_SEL)&&
+			if((pSh->m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&
 				(pSh->m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 				rect=pSh->m_Rect;
 				index_keep=index-1;
@@ -2591,7 +2591,7 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 			if(pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE){
 				pSh->OnLButtonDblClk(nFlags, point);
 				pSh->OnKeyDown(27,0,0);
-				pSh->m_Mode=_DRAFTDRAW_MODE_DRW;							
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;							
 			}
 		}
 
@@ -2673,7 +2673,7 @@ void CDraftDrawView::OnEscape()
 
 	//Iterate all the shapes
 	while(pSh){
-		if((pSh->m_Mode==_DRAFTDRAW_MODE_SEL)&&
+		if((pSh->m_Mode==_DRAFTDRAW_MODE_ACTIVE)&&
 			(pSh->m_TypeSelect==_DRAFTDRAW_SEL_SIZING_RECT)){
 			rect=pSh->m_Rect;
 			index_keep=index-1;
@@ -2693,7 +2693,7 @@ void CDraftDrawView::OnEscape()
 		//End polyline drawing delting current segment
 		if(pDoc->m_iToolType==_TOOLTYPEPOLY_DRAFTCABLE){
 			pSh->OnKeyDown(27,0,0);
-			pSh->m_Mode=_DRAFTDRAW_MODE_DRW;
+			pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		}
 		else{
 			if (pSh->m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT){
@@ -2701,7 +2701,7 @@ void CDraftDrawView::OnEscape()
 				pSh->Select(FALSE);
 			}
 			else{
-				//pSh->m_Mode=_DRAFTDRAW_MODE_DRW;
+				//pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				//Deletes current segment
 				pDoc->DeleteObject(index_keep);
 				//pDoc->m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
@@ -3250,7 +3250,7 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 					pSh1=NULL;
 				}
 				if((pShPin->m_bConect)&&(pSh1)&&(pSh1->IsKindOf(RUNTIME_CLASS(CShapeWire))) ){
-					pSh1->m_Mode=_DRAFTDRAW_MODE_DRW;
+					pSh1->m_Mode=_DRAFTDRAW_MODE_IDLE;
 					pSh1->m_TypeSelect=_DRAFTDRAW_SEL_MOVING_RECT;
 					PlaceSelectRect(pSh1->m_MarkerArray,&pSh1->m_Rect,( ( (CDraftDrawApp*)AfxGetApp() )->GetActiveViewProp()).cx*_DRAFTDRAW_SEL_SIZEREL);//_DRAFTDRAW_SEL_SIZE);
 				}

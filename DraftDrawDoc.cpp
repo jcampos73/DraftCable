@@ -232,7 +232,7 @@ BOOL CDraftDrawDoc::OnNewDocument()
 
 	pShUnit->m_pCursorArray=m_CursorArray;
 	pShUnit->pcmdDeque = cmdDeque;
-	pShUnit->m_Mode=_DRAFTDRAW_MODE_DRW;
+	pShUnit->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 	pShUnit->m_Rect+=(m_szDesign-pShUnit->m_Rect.Size()-CSize(DCABLE_GRIDX_DEFAULT,DCABLE_GRIDY_DEFAULT));
 
@@ -826,7 +826,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 			for(int i=(nIndex0+1);i<=nIndex;i++){
 				CShape *pSh=(CShape *)(*m_pObArray)[i];
 				pSh->m_pCursorArray=m_CursorArray;
-				pSh->m_Mode=1;
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 			}
 
 
@@ -883,7 +883,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							sTrackName=shShapeUnit->m_sUnitName;
 
 							shShapeUnit->m_pCursorArray=m_CursorArray;
-							shShapeUnit->m_Mode=1;
+							shShapeUnit->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeUnit->mf_cbPatchPEdit=SDisplayPatchPProp;
 
 							nIndex=AddObject(shShapeUnit);
@@ -901,7 +901,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=1;
 
 							shShapeWire->m_pCursorArray=m_CursorArray;
-							shShapeWire->m_Mode=1;
+							shShapeWire->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeWire);
 							m_MapShapeIdtoObj[nIndex]=shShapeWire;
@@ -918,7 +918,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=4;
 
 							shShapeBus->m_pCursorArray=m_CursorArray;
-							shShapeBus->m_Mode=1;
+							shShapeBus->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeBus);
 							m_MapShapeIdtoObj[nIndex]=shShapeBus;
@@ -946,7 +946,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=3;
 
 							shShapeLabel->m_pCursorArray=m_CursorArray;
-							shShapeLabel->m_Mode=1;
+							shShapeLabel->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeLabel);
 							m_MapShapeIdtoObj[nIndex]=shShapeLabel;
@@ -964,7 +964,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							sTrackName=shShapeUnit->m_sUnitName;
 
 							shShapeUnit->m_pCursorArray=m_CursorArray;
-							shShapeUnit->m_Mode=1;
+							shShapeUnit->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeUnit->mf_cbPatchPEdit=SDisplayPatchPProp;
 
 							nIndex=AddObject(shShapeUnit);
@@ -975,7 +975,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=1;
 
 							shShapeWire->m_pCursorArray=m_CursorArray;
-							shShapeWire->m_Mode=1;
+							shShapeWire->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeWire);
 							m_MapShapeIdtoObj[nIndex]=shShapeWire;
@@ -985,7 +985,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=4;
 
 							shShapeBus->m_pCursorArray=m_CursorArray;
-							shShapeBus->m_Mode=1;
+							shShapeBus->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeBus);
 							m_MapShapeIdtoObj[nIndex]=shShapeBus;
@@ -999,7 +999,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=3;
 
 							shShapeLabel->m_pCursorArray=m_CursorArray;
-							shShapeLabel->m_Mode=1;
+							shShapeLabel->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 							nIndex=AddObject(shShapeLabel);
 							m_MapShapeIdtoObj[nIndex]=shShapeLabel;
@@ -1186,7 +1186,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=0;
 
 							shShapePolyline->m_pCursorArray=m_CursorArray;
-							shShapePolyline->m_Mode=1;
+							shShapePolyline->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapePolyline->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapePolyline);
@@ -1202,7 +1202,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=1;
 
 							shShapeFrmRect->m_pCursorArray=m_CursorArray;
-							shShapeFrmRect->m_Mode=1;
+							shShapeFrmRect->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeFrmRect->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeFrmRect);
@@ -1219,7 +1219,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=2;
 
 							shShapeLabel->m_pCursorArray=m_CursorArray;
-							shShapeLabel->m_Mode=1;
+							shShapeLabel->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeLabel->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeLabel);
@@ -1235,7 +1235,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=3;
 
 							shShapePin->m_pCursorArray=m_CursorArray;
-							shShapePin->m_Mode=1;
+							shShapePin->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapePin->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapePin);
@@ -1251,7 +1251,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=4;
 
 							shShapeEllipse->m_pCursorArray=m_CursorArray;
-							shShapeEllipse->m_Mode=1;
+							shShapeEllipse->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeEllipse->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeEllipse);
@@ -1268,7 +1268,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=0;
 
 							shShapePolyline->m_pCursorArray=m_CursorArray;
-							shShapePolyline->m_Mode=1;
+							shShapePolyline->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapePolyline->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapePolyline);
@@ -1278,7 +1278,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=1;
 
 							shShapeFrmRect->m_pCursorArray=m_CursorArray;
-							shShapeFrmRect->m_Mode=1;
+							shShapeFrmRect->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeFrmRect->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeFrmRect);
@@ -1288,7 +1288,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=2;
 
 							shShapeLabel->m_pCursorArray=m_CursorArray;
-							shShapeLabel->m_Mode=1;
+							shShapeLabel->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeLabel->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeLabel);
@@ -1298,7 +1298,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=3;
 
 							shShapePin->m_pCursorArray=m_CursorArray;
-							shShapePin->m_Mode=1;
+							shShapePin->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapePin->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapePin);
@@ -1308,7 +1308,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 							track=4;
 
 							shShapeEllipse->m_pCursorArray=m_CursorArray;
-							shShapeEllipse->m_Mode=1;
+							shShapeEllipse->m_Mode=_DRAFTDRAW_MODE_IDLE;
 							shShapeEllipse->m_Rect+=CPoint(100,100);
 
 							AddObject(shShapeEllipse);
@@ -1344,7 +1344,7 @@ void CDraftDrawDoc::Serialize(CArchive& ar)
 				ar>>pSh;
 
 				pSh->m_pCursorArray=m_CursorArray;
-				pSh->m_Mode=1;
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 
 				nIndex=AddObject(pSh);
 				m_MapShapeIdtoObj[nIndex]=pSh;
@@ -2328,7 +2328,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			ShPoly.GetPoints((LPPOINT)&pShUnit->m_pPoints[0][1],idata);
 			pShUnit->SetupBuffers(CRect(0,0,150,150));
 			m_pSh->m_pCursorArray=m_CursorArray;
-			//m_pSh->m_Mode=_DRAFTDRAW_MODE_SEL;//!create polyline puts shape in drawing mode
+			//m_pSh->m_Mode=_DRAFTDRAW_MODE_ACTIVE;//!create polyline puts shape in drawing mode
 			m_iCursor=10;
 
 			m_iToolSel=_TOOLPLACE_DRAFTCABLE;
@@ -2813,7 +2813,7 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 					
 					CShapeFrmRect *pSh=new CShapeFrmRect(NULL,0,cmdDeque);
 					pSh->m_Rect=CRect(200,200,400,350);
-					pSh->m_Mode=1;
+					pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 					pSh->m_pCursorArray=m_CursorArray;
 					//m_pObArray->Add(pSh);
 					AddObject(pSh);
@@ -4153,7 +4153,7 @@ void CDraftDrawDoc::OnEditPaste()
 			CObject *pObject=runtime->CreateObject();
 			CShape *pSh1=(CShape *)pObject;
 			pSh1->m_Rect=pSh->m_Rect+m_ptPasteOffset;
-			pSh1->m_Mode=1;
+			pSh1->m_Mode=_DRAFTDRAW_MODE_IDLE;
 			pSh1->m_pCursorArray=m_CursorArray;
 			rect0+=CPoint(DCABLE_GRIDX_DEFAULT*5,DCABLE_GRIDY_DEFAULT*5);
 			AddObject(pSh1);
@@ -5622,7 +5622,7 @@ void CDraftDrawDoc::OnNewDocumentPart(){
 			
 			CShapeFrmRect *pSh=new CShapeFrmRect(NULL,0,cmdDeque);
 			pSh->m_Rect=CRect(200,200,400,350);
-			pSh->m_Mode=1;
+			pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 			pSh->m_pCursorArray=m_CursorArray;
 			m_pObArray->Add(pSh);
 			
@@ -5758,7 +5758,7 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 	case ddcShapeNGear:
 		pSh=new CShapeUnit(NULL,0,cmdDeque);
 		pSh->m_pCursorArray=m_CursorArray;
-		pSh->m_Mode=1;
+		pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		((CShapeUnit*)pSh)->CreateNGear(CRect(left,top,right,bottom),6,25.0);
 		((CShapeUnit*)pSh)->SetupBuffers(CRect(0,0,150,150));
 		pSh->m_Rect=CRect(left,top,right,bottom);
@@ -5767,7 +5767,7 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 	case ddcShapeNCross:
 		pSh=new CShapeUnit(NULL,0,cmdDeque);
 		pSh->m_pCursorArray=m_CursorArray;
-		pSh->m_Mode=1;
+		pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		((CShapeUnit*)pSh)->CreateNCross(CRect(left,top,right,bottom),6,25.0);
 		((CShapeUnit*)pSh)->SetupBuffers(CRect(0,0,150,150));
 		pSh->m_Rect=CRect(left,top,right,bottom);
@@ -5776,7 +5776,7 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 	case ddcShapeNStar:
 		pSh=new CShapeUnit(NULL,0,cmdDeque);
 		pSh->m_pCursorArray=m_CursorArray;
-		pSh->m_Mode=1;
+		pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		((CShapeUnit*)pSh)->CreateNStar(CRect(left,top,right,bottom),6,40.0);
 		((CShapeUnit*)pSh)->SetupBuffers(CRect(0,0,150,150));
 		pSh->m_Rect=CRect(left,top,right,bottom);
@@ -5788,7 +5788,7 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 	case ddcShapeOctogon:
 		pSh=new CShapeUnit(NULL,0,cmdDeque);
 		pSh->m_pCursorArray=m_CursorArray;
-		pSh->m_Mode=1;
+		pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		((CShapeUnit*)pSh)->Create(CRect(left,top,right,bottom),idata,dwType);
 		((CShapeUnit*)pSh)->SetupBuffers(CRect(0,0,150,150));
 		pSh->m_Rect=CRect(left,top,right,bottom);
@@ -5814,13 +5814,13 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 			case ddcShapePolyline:
 				pSh=new CShapePolyline(NULL,0,cmdDeque);
 				pSh->m_pCursorArray=m_CursorArray;
-				pSh->m_Mode=1;
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				((CShapePolyline*)pSh)->Create(points,index);
 				break;
 			case ddcShapeCurve:
 				pSh=new CShapeCurve(NULL,0,cmdDeque);
 				pSh->m_pCursorArray=m_CursorArray;
-				pSh->m_Mode=1;
+				pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				((CShapeCurve*)pSh)->Create(points,index);
 				break;
 			}
@@ -5868,7 +5868,7 @@ int CDraftDrawDoc::AddShape(DWORD dwType,int left,int top,int right,int bottom,D
 	if(pSh!=NULL){
 		int nIndex=0;
 		pSh->m_pCursorArray=m_CursorArray;
-		pSh->m_Mode=1;
+		pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 		mapShapeIdtoObj_t::iterator it=m_pmapShapeIdtoObj->find(dwId);
 		if(it==m_pmapShapeIdtoObj->end()){
 			nIndex=AddObject(pSh);
@@ -6708,7 +6708,7 @@ CRect CDraftDrawDoc::ResetAllDrwOpe()
 	CShape *pSh = (CShape *)this->FirstObject(index);
 	pSh = (CShape *)this->NextObject(index);
 	while (pSh){
-		if ((pSh->m_Mode == _DRAFTDRAW_MODE_SEL) &&
+		if ((pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE) &&
 			(pSh->m_TypeSelect == _DRAFTDRAW_SEL_SIZING_RECT)){
 			rect = pSh->m_Rect;
 			index_keep = index - 1;
@@ -6728,7 +6728,7 @@ CRect CDraftDrawDoc::ResetAllDrwOpe()
 		//End polyline drawing delting current segment
 		if (this->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE){
 			pSh->OnKeyDown(27, 0, 0);
-			pSh->m_Mode = _DRAFTDRAW_MODE_DRW;
+			pSh->m_Mode = _DRAFTDRAW_MODE_IDLE;
 		}
 		else{
 			if (pSh->m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT){
@@ -6736,7 +6736,7 @@ CRect CDraftDrawDoc::ResetAllDrwOpe()
 				pSh->Select(FALSE);
 			}
 			else{
-				//pSh->m_Mode=_DRAFTDRAW_MODE_DRW;
+				//pSh->m_Mode=_DRAFTDRAW_MODE_IDLE;
 				//Deletes current segment
 				this->DeleteObject(index_keep);
 				//pDoc->m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
