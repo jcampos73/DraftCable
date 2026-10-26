@@ -31,25 +31,17 @@ CRect CPenTool::MoveTo(UINT nFlags, CPoint point)
 	pSh = (CShape *)pDoc->NextObject(index);
 
 	while (pSh){
-		POSITION pos = m_pObListSel->Find(pSh);
-		if (pSh->IsSelected()
-			|| (pSh->m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT && pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE)
-			){
+		if (pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE){
 
 			pShMove = pSh;
 			int prev_mode = pSh->m_Mode;
 			CRect prev_rect = pSh->m_Rect;
 			pSh->m_Mode = _DRAFTDRAW_MODE_ACTIVE;
 
-			if (pDoc->m_iToolSel != _TOOLROTATE_DRAFTCABLE){
-				pSh->OnMouseMove(0, point);
+			pSh->OnMouseMove(0, point);
 
-				//Recover saved rectangle
-				pSh->m_Mode = prev_mode;
-			}
-			else{
-				pSh->OnRotate(0, point);
-			}
+			//Recover saved rectangle
+			pSh->m_Mode = prev_mode;
 			CRect rect;
 			pSh->GetSizingRect(rect);
 

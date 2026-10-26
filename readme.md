@@ -8,9 +8,10 @@ Este inventario describe las herramientas de interacción y colocación presente
 
 | Clase | Función | Uso del stack y la selección | Integración actual |
 |---|---|---|---|
-| `CAbstractTool` | Base común: `MouseDown`, `MoveTo`, `MouseUp`, deselección y utilidades de creación. No es una herramienta elegible en la interfaz. | `DeselectAll` recorre `m_pObListSel`; `GetCurrentShape` obtiene el último objeto del documento; `_DoAddNewShapeToStack` comprueba `m_ObArray` e inserta mediante `AddObject`. | Base de las tres herramientas siguientes. Archivos `AbstractTool.h/.cpp`. |
+| `CAbstractTool` | Base común: `MouseDown`, `MoveTo`, `MouseUp`, deselección y utilidades de creación. No es una herramienta elegible en la interfaz. | `DeselectAll` recorre `m_pObListSel`; `GetCurrentShape` obtiene el último objeto del documento; `_DoAddNewShapeToStack` comprueba `m_ObArray` e inserta mediante `AddObject`. | Base de las cuatro herramientas siguientes. Archivos `AbstractTool.h/.cpp`. |
 | `CSelectionTool` | Selección por clic, selección con Ctrl, selección por rectángulo, movimiento y redimensionado mediante marcadores. | Busca candidatos en el documento; mueve y finaliza el gesto recorriendo `m_pObListSel`. El rectángulo auxiliar todavía se añade al documento y se retira mediante `DeleteObject(-1)`. | Delegación de pulsación, movimiento y suelta activada mediante `TEST_SELTOOL`; la vista retorna tras delegar. Archivos `SelectionTool.h/.cpp`. |
-| `CPenTool` | Dibujo de formas y colocación de componentes. También conserva ramas de manipulación, incluida rotación según `m_iToolSel`, y estados para dibujo por puntos. | `MoveTo` recorre el documento y filtra por `IsSelected()`; el resultado de `m_pObListSel->Find` no se utiliza. Identifica la forma actual mediante el último objeto y utiliza `m_pSh` para la creación. | Delegación activada mediante `TEST_PENTOOL`. En la suelta, la vista continúa además por el procesamiento antiguo. Archivos `PenTool.h/.cpp`. |
+| `CPenTool` | Dibujo de formas y colocación de componentes. Mantiene estados para dibujo por puntos; la rotación interactiva se gestiona en `CRotationTool`. | `MoveTo` recorre el documento y actualiza únicamente las formas con `m_Mode == _DRAFTDRAW_MODE_ACTIVE`; no utiliza `IsSelected()` ni busca en la lista de selección para decidir el movimiento. Identifica la forma actual mediante el último objeto y utiliza `m_pSh` para la creación. | Delegación activada mediante `TEST_PENTOOL`. En la suelta, la vista continúa además por el procesamiento antiguo. Archivos `PenTool.h/.cpp`. |
+| `CRotationTool` | Rotación interactiva de la selección existente, reutilizando `CShape::OnRotate`. | Recorre `m_pObListSel`; no busca por `IsSelected()`, no inserta objetos auxiliares ni depende del último objeto del stack. | `ID_BUTTON_ROTATE` crea la herramienta; la vista delega pulsación, movimiento y suelta. Archivos `RotationTool.h/.cpp`. |
 | `CConnectorTool` | Inicio de conexiones, enlace de extremos y creación de sucesivos tramos de cable. | Busca destinos en el documento y añade nuevos `CShapeWire`; utiliza `m_pSh` y el último objeto como referencias de trabajo. | La clase se compila y se instancia al elegir cable, pero `TEST_CONNTOOL` está comentado: la vista conserva el procesamiento de los eventos de conexión. Archivos `ConnectorTool.h/.cpp`. |
 
 Las opciones `TEST_SELTOOL`, `TEST_PENTOOL` y `TEST_CONNTOOL` se encuentran al principio de `DraftDrawView.cpp`. Describen qué rutas de delegación están habilitadas en este código fuente.
@@ -36,7 +37,7 @@ Las opciones `TEST_SELTOOL`, `TEST_PENTOOL` y `TEST_CONNTOOL` se encuentran al p
 | Texto y etiqueta o alias | `ID_PLACE_TEXT`, `ID_PLACE_NETALIAS` | Prepara un `CShapeLabel` con sus propiedades de texto y orientación. |
 | Imagen | `ID_PLACE_PICTURE` | Crea un `CShapePicture`, permite elegir el archivo y lo añade al documento para colocarlo. |
 | Regla de medición | `ID_BUTTON_RULE` | Prepara un `CShapeRule`; no existe una clase `RuleTool` separada. |
-| Rotación interactiva | `ID_BUTTON_ROTATE` | Cambia `m_iToolSel` sin sustituir `m_tooSel`. Hay ramas de rotación en la vista y en `CPenTool`; la ruta depende de la herramienta que permanezca instalada. |
+| Rotación interactiva | `ID_BUTTON_ROTATE` | Crea un `CRotationTool` y sustituye `m_tooSel`; trabaja sobre la selección existente mediante pulsación, arrastre y suelta. |
 | Pan o desplazamiento de la vista | `ID_BUTTON_PAN` | `_DoPanMove` modifica el desplazamiento de la vista; no necesita una forma auxiliar. |
 | Zoom con cursor, acercar o alejar | `ID_ZOOM_CURSORPLUS`, `ID_ZOOM_CURSORMINUS` | Selecciona el modo de zoom; el procesamiento correspondiente permanece en la vista. |
 | Zoom por área | `ID_ZOOM_AREA` | Prepara un `CShapeZoomRect`; el procesamiento antiguo de la vista calcula el zoom y retira el auxiliar mediante `DeleteObject(-1)`. |
@@ -88,8 +89,99 @@ Estas son las combinaciones de uso habitual observadas en el código, no una enu
 
 `MODE_ACTIVE` (`0`) expresa interacción activa y `MODE_IDLE` (`1`) indica que la forma está fuera de la operación activa, aunque puede seguir seleccionada. La selección persistente también se representa mediante `m_TypeSelect`, y `CSelectionTool` mantiene las referencias a las formas seleccionadas en `m_pObListSel`.
 
+## Usos de `IsSelected()`
+
+Se han localizado 11 llamadas no comentadas en cinco archivos, además de la declaración en `Shape.h`, la definición en `Shape.cpp` y una llamada comentada en `ConnectorTool.cpp`. Las filas con dos llamadas se indican expresamente. El inventario describe las rutas presentes en el código; no presupone que todas se ejecuten en cada interacción.
+
+| Lugar | Para qué lo utiliza | Llamadas |
+|---|---|---|
+| `CSelectionTool::MouseDown` (`SelectionTool.cpp`) | Distinguir si la forma pulsada ya estaba seleccionada y gestionar la selección y Ctrl. | 1 |
+| `CSelectionTool::_AddToSelectedArray` (`SelectionTool.cpp`) | Decidir si añade la forma a `m_pObListSel`, incluida la selección por rectángulo y el auxiliar. | 1 |
+| `CDraftDrawView::OnLButtonUp` (`DraftDrawView.cpp`) | Enviar la suelta a las formas consideradas seleccionadas en el recorrido antiguo. | 1 |
+| `CDraftDrawView::OnMouseMove` (`DraftDrawView.cpp`) | Filtrar las formas que actualiza mediante movimiento o dimensionado en el recorrido antiguo; la rotación utiliza `CRotationTool`. | 1 |
+| `CDraftDrawView::_AddToSelectedArray` (`DraftDrawView.cpp`) | Incorporar formas a la lista de selección. | 1 |
+| `CDraftDrawDoc::MoveShapes` y `ScaleShapes` (`DraftDrawDoc.cpp`) | Elegir sobre qué formas actúan los comandos colectivos de movimiento y escala. | 2 |
+| Ambas variantes de `CShape::Move` (`Shape.cpp`) | Recolocar los marcadores de selección después de cambiar la geometría. | 2 |
+| Listado de objetos de `OMParser` (`OMParser.cpp`) | Mostrar `Selected=...`, con ramas para unidades y otras formas. | 2 |
+| **Total** | | **11** |
+
+### Significado actual
+
+La implementación de `CShape::IsSelected()` devuelve verdadero si se cumple cualquiera de estas condiciones:
+
+```cpp
+m_Mode == _DRAFTDRAW_MODE_ACTIVE
+m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT
+m_TypeSelect == _DRAFTDRAW_SEL_RESIZING_RECT
+```
+
+La implementación combina esas comparaciones mediante `|`. Este cuadro documenta su comportamiento sin modificarlo.
+
+Actualmente se mezclan dos preguntas: si la forma pertenece a la selección y si participa en una operación. Por ejemplo, una forma recién construida con `m_Mode == _DRAFTDRAW_MODE_ACTIVE` ya devuelve verdadero, aunque no haya sido seleccionada por el usuario.
+
+Los usos tienen finalidades distintas: `CSelectionTool` gestiona la selección, la vista y el documento conservan recorridos colectivos, y `CShape::Move` actualiza sus marcadores. `CPenTool` ya no utiliza `IsSelected()`: actualiza únicamente formas en `ACTIVE`. Cambiar el significado de `IsSelected()` requiere revisar por separado las rutas que todavía lo utilizan.
+
+## Herramienta de rotación
+
+`CRotationTool`, declarada en `RotationTool.h` e implementada en `RotationTool.cpp`, deriva de `CAbstractTool` y gestiona la rotación interactiva de la selección existente. El comando `ID_BUTTON_ROTATE` la instala en `m_tooSel`; `CDraftDrawView` le entrega los eventos. La rotación ya no depende de una rama de `CPenTool::MoveTo`.
+
+### Responsabilidades y métodos
+
+| Método | Responsabilidad |
+|---|---|
+| `MouseDown` | Finaliza cualquier gesto anterior, comprueba `m_pObListSel`, guarda el punto inicial y `m_RectLast`, y pone las formas en `ACTIVE`. No selecciona nuevas formas. |
+| `MoveTo` | Durante un arrastre y con el botón izquierdo pulsado, recorre `m_pObListSel`, llama a `CShape::OnRotate` y acumula la región de repintado anterior y posterior al giro. |
+| `MouseUp` | Finaliza el gesto mediante `FinishDrag`. |
+| `FinishDrag` | Devuelve las formas a `IDLE`, mantiene la selección y marca el documento como modificado si ha cambiado algún ángulo. También lo utiliza el destructor. |
+| `AddUpdateRect` | Obtiene el rectángulo envolvente mediante `GetSizingRect`, añade el margen de repintado y lo acumula. Actualmente no lo recorta a los límites de la hoja. |
+
+La herramienta utiliza `m_bDragging` y `m_bChanged` para controlar su gesto. Trabaja directamente con la lista de selección prestada por la vista; no busca formas mediante `IsSelected()`, no añade objetos auxiliares al stack ni utiliza su última posición para identificar el objeto de trabajo.
+
+### Uso y estados
+
+1. Seleccionar una o varias formas con `CSelectionTool`.
+2. Activar el botón de rotación (`ID_BUTTON_ROTATE`).
+3. Pulsar y arrastrar horizontalmente: cada actualización con desplazamiento a la derecha aplica +5 grados; a la izquierda, -5 grados. El movimiento exclusivamente vertical no modifica el ángulo.
+4. Soltar para finalizar. Las formas vuelven a `IDLE` y permanecen en la selección.
+
+| Momento | Estado de las formas |
+|---|---|
+| Seleccionadas antes del gesto | `IDLE`; continúan en la lista de selección. |
+| Durante el gesto de rotación | `ACTIVE`; `OnRotate` actualiza el ángulo y la matriz. |
+| Después de soltar o finalizar el gesto | `IDLE`; conservan el ángulo alcanzado y la selección. |
+
+El pivote utilizado para dibujar cada forma es su propio centro; no se introduce un pivote común para el grupo. Sin selección la herramienta no realiza cambios.
+
+La vista captura el ratón durante el gesto para recibir la suelta fuera del área cliente. La pérdida de captura finaliza el gesto. Escape también lo finaliza, conserva el ángulo alcanzado y vuelve a selección. Al sustituir la herramienta, su destructor cierra un gesto pendiente.
+
+### Separación entre interacción y dibujo
+
+El recorrido de actualización es `CRotationTool::MoveTo` → `CShape::OnRotate` → `CShape::Rotate`. Este último actualiza `m_fAngle` y los coeficientes `m_eM11`, `m_eM12`, `m_eM21` y `m_eM22`. La herramienta no transforma los puntos mediante `DoRotate` ni recalcula los conexionados.
+
+El dibujo del giro corresponde a `CDraftDrawView::DoWorldTransform`, que aplica la matriz al contexto gráfico recibido, alrededor del centro de la forma. No dibuja por sí mismo: la forma se pinta después mediante `OnDraw`.
+
+Para comprobar el dibujo en el buffer se ha añadido una aplicación local de la transformación en las dos llamadas operativas a `OnDraw(pDC1)`:
+
+| Ruta de `CDraftDrawView::OnDraw` | Uso |
+|---|---|
+| Primer recorrido, formas en `IDLE` | Repintado parcial de las formas que intersectan la región actualizada. Incluye formas seleccionadas que ya no se están arrastrando. |
+| Segundo recorrido, formas en `ACTIVE` | Dibujo durante creación, movimiento, redimensionado o rotación. |
+
+En ambas rutas se guarda el estado de `pDC1` con `SaveDC`, se activa `GM_ADVANCED`, se llama a `DoWorldTransform(pSh, pDC1->m_hDC)`, se dibuja y se restaura el contexto con `RestoreDC`. La transformación utiliza las coordenadas locales que la vista ya prepara para el buffer. Esta prueba solo cambia el dibujo; no modifica la geometría ni las relaciones de conexión.
+
+El repintado completo de las formas en `IDLE` mantiene su ruta directa a `pDC`. Los giros fijos del menú de las formas son comandos independientes de esta herramienta.
+
+### Alcance de la verificación
+
+Se ha comprobado la compilación Debug Win32 y el comportamiento de la herramienta con sustitutos de los límites MFC: selección vacía, varias formas, pasos angulares, movimiento vertical, botón suelto, arrastres repetidos y cierre por destrucción.
+
+En las pruebas visuales anteriores al cambio local de `pDC1` se observaron formas sin giro visible y alteraciones de la cuadrícula. La prueba de transformación local compila, pero su resultado visual posterior no se ha confirmado aquí; tampoco se ha validado una rotación correcta para todas las clases de formas, rellenos, imágenes o elementos conectados.
+
+No se ha añadido deshacer de rotación ni cambiado la serialización. La separación de la herramienta y el soporte gráfico del giro son aspectos distintos y deben comprobarse por separado.
+
 ## Referencias en el código
 
 - `Shape.h`: definición de las constantes.
 - `Shape.cpp`: constructor de `CShape`, `OnLButtonDown`, `OnMouseMove`, `OnLButtonUp`, `Select`, `Unselect` e `IsSelected`.
 - `SelectionTool.cpp` y `PenTool.cpp`: actualización de las formas durante la interacción.
+- `RotationTool.h/.cpp`: herramienta de rotación y ciclo del gesto; `DraftDrawView.cpp`: entrega de eventos y transformación de los contextos de dibujo.

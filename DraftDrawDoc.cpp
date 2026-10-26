@@ -39,6 +39,7 @@
 
 //Tools
 #include "SelectionTool.h"
+#include "RotationTool.h"
 #include "PenTool.h"
 #include "ConnectorTool.h"
 
@@ -2386,6 +2387,9 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 			m_iToolSel=_TOOLROTATE_DRAFTCABLE;
 			m_iToolType=_TOOLTYPENORMAL_DRAFTCABLE;
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CRotationTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
 			hCursor=::SetCursor(m_CursorArray[14]);
 			m_iCursor=14;
 			return TRUE;

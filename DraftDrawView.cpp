@@ -17,6 +17,7 @@
 
 //Tools
 #include "SelectionTool.h"
+#include "RotationTool.h"
 #include "PenTool.h"
 #include "ConnectorTool.h"
 
@@ -44,6 +45,7 @@ BEGIN_MESSAGE_MAP(CDraftDrawView, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
+	ON_WM_CAPTURECHANGED()
 	ON_WM_KEYDOWN()
 	ON_WM_SETCURSOR()
 	ON_WM_RBUTTONDOWN()
@@ -432,7 +434,16 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 				}
 
 				//Draw shape in buffer
+				// Keep the shape transform local to this buffer draw.
+				int savedBufferDC = pDC1->SaveDC();
+				if (savedBufferDC != 0)
+				{
+					pDC1->SetGraphicsMode(GM_ADVANCED);
+					DoWorldTransform(pSh, pDC1->m_hDC);
+				}
 				pSh->OnDraw(pDC1);
+				if (savedBufferDC != 0)
+					pDC1->RestoreDC(savedBufferDC);
 
 				//Restore previous values
 				pSh->m_Rect=rect_abs;
@@ -580,7 +591,16 @@ void CDraftDrawView::OnDraw(CDC* pDC)
 			pSh->m_RectLast=CRect(ptXYRelativeLast,pSh->m_RectLast.Size());
 
 			//Draw shape
+			// Keep the shape transform local to this buffer draw.
+			int savedBufferDC = pDC1->SaveDC();
+			if (savedBufferDC != 0)
+			{
+				pDC1->SetGraphicsMode(GM_ADVANCED);
+				DoWorldTransform(pSh, pDC1->m_hDC);
+			}
 			pSh->OnDraw(pDC1);
+			if (savedBufferDC != 0)
+				pDC1->RestoreDC(savedBufferDC);
 
 			//Restore previous values
 			//pSh->m_Rect=rect_abs;
@@ -956,6 +976,20 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	//=======================================================
 
 	//New state pattern tests
+	if (pDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
+	{
+		CAbstractTool* tool = (CAbstractTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseDown(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+		{
+			SetCapture();
+			_SetUpdateRect(updateRect);
+		}
+		return;
+	}
+
 #ifdef TEST_SELTOOL
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
@@ -1264,6 +1298,20 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	SnapToGrid(&point);
 	//=======================================================
 
+	if (pDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
+	{
+		CAbstractTool* tool = (CAbstractTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseUp(point);
+		if (GetCapture() == this)
+			ReleaseCapture();
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		pDoc->SetCursor();
+		return;
+	}
+
 #ifdef TEST_SELTOOL
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
@@ -1348,7 +1396,6 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	//STATUS MACHINE SELECT
 	if(pDoc->m_iToolSel==_TOOLPLACE_DRAFTCABLE
 		|| pDoc->m_iToolSel==_TOOLSELECT_DRAFTCABLE
-		|| pDoc->m_iToolSel==_TOOLROTATE_DRAFTCABLE
 		){
 		pSh=(CShape *)pDoc->FirstObject(index);
 		pSh=(CShape *)pDoc->NextObject(index);
@@ -1636,6 +1683,21 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	CScrollView::OnLButtonUp(nFlags, point);
 }
 
+void CDraftDrawView::OnCaptureChanged(CWnd* pWnd)
+{
+	CDraftDrawDoc* pDoc = GetDocument();
+	if (pDoc->m_tooSel != NULL &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
+	{
+		CAbstractTool* tool = (CAbstractTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseUp(CPoint(0, 0));
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+	}
+	CScrollView::OnCaptureChanged(pWnd);
+}
+
 void CDraftDrawView::_DoPanMove(CPoint point)
 {
 	CDraftDrawDoc* pDoc = GetDocument();
@@ -1715,6 +1777,17 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	//=======================================================
 	_DoMappingEngine(point);
 	//=======================================================
+	if (pDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
+	{
+		CAbstractTool* tool = (CAbstractTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MoveTo(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		return;
+	}
+
 #ifdef TEST_SELTOOL
 	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
@@ -1764,29 +1837,24 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 				CRect prev_rect=pSh->m_Rect;
 				pSh->m_Mode=_DRAFTDRAW_MODE_ACTIVE;
 
-				if(pDoc->m_iToolSel!=_TOOLROTATE_DRAFTCABLE){
-					pSh->OnMouseMove(nFlags, point);
-					//Check if shape is beeing moved out of sheet
-					//2014/04/10
-					//This is not correct since if shape is placed initially out (or partially out) of design area will not work
-					//-------------------------------------------
-					if(!pSh->m_Rect.IsRectEmpty()){
-						CRect rect1;
-						rect1.IntersectRect(rcSheet,pSh->m_Rect);
-						if(rect1!=pSh->m_Rect){
-							//pSh->m_Rect=prev_rect;
-							//2014/04/10
-							//As a solution to above comment, we apply following code
-							DoPreventShpOutSchem(pSh, rcSheet);
-						}
+				pSh->OnMouseMove(nFlags, point);
+				//Check if shape is beeing moved out of sheet
+				//2014/04/10
+				//This is not correct since if shape is placed initially out (or partially out) of design area will not work
+				//-------------------------------------------
+				if(!pSh->m_Rect.IsRectEmpty()){
+					CRect rect1;
+					rect1.IntersectRect(rcSheet,pSh->m_Rect);
+					if(rect1!=pSh->m_Rect){
+						//pSh->m_Rect=prev_rect;
+						//2014/04/10
+						//As a solution to above comment, we apply following code
+						DoPreventShpOutSchem(pSh, rcSheet);
 					}
-					//-------------------------------------------
-					//Recover saved rectangle
-					pSh->m_Mode=prev_mode;
 				}
-				else{
-					pSh->OnRotate(nFlags, point);
-				}
+				//-------------------------------------------
+				//Recover saved rectangle
+				pSh->m_Mode=prev_mode;
 				CRect rect;
 				pSh->GetSizingRect(rect);
 
@@ -2662,6 +2730,20 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 
 void CDraftDrawView::OnEscape() 
 {
+	CDraftDrawDoc* rotationDoc = GetDocument();
+	if (rotationDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE &&
+		((CAbstractTool*)rotationDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
+	{
+		CAbstractTool* tool = (CAbstractTool*)rotationDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseUp(CPoint(0, 0));
+		if (GetCapture() == this)
+			ReleaseCapture();
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
+		return;
+	}
 	//Local variables
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
