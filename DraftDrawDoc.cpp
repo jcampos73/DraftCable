@@ -41,6 +41,7 @@
 #include "SelectionTool.h"
 #include "RotationTool.h"
 #include "PenTool.h"
+#include "PolyTool.h"
 #include "ConnectorTool.h"
 
 #ifdef _DEBUG
@@ -2404,6 +2405,10 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 		case ID_BUTTON_POLYLINE:
 
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CPolyTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
+
 			m_pSh=new CShapePolyline(NULL,0,cmdDeque);
 			m_pSh->m_pCursorArray=m_CursorArray;
 
@@ -2415,6 +2420,10 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 
 		case ID_BUTTON_CURVE:
 
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CPolyTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
+
 			m_pSh=new CShapeCurve(NULL,0,cmdDeque);
 			m_pSh->m_pCursorArray=m_CursorArray;
 
@@ -2425,6 +2434,10 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			return TRUE;
 
 		case ID_BUTTON_POLYARC:
+
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CPolyTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
 
 			m_pSh=new CShapePolyArc(NULL,0,cmdDeque);
 			m_pSh->m_pCursorArray=m_CursorArray;
@@ -2579,6 +2592,10 @@ BOOL CDraftDrawDoc::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERIN
 			m_iToolSel=_TOOLPLACE_DRAFTCABLE;
 			m_iToolType=_TOOLTYPEPOLY_DRAFTCABLE;
 			m_iCursor=10;
+
+			if (m_tooSel != NULL) delete((CAbstractTool*)m_tooSel);
+			m_tooSel = (LPUNKNOWN)new CPolyTool();
+			((CAbstractTool*)m_tooSel)->pDoc = this;
 
 			m_pSh=new CShapeBus(NULL,0,cmdDeque);
 			m_pSh->m_pCursorArray=m_CursorArray;

@@ -423,6 +423,7 @@
     <ClCompile Include="MouseDragState.cpp" />
     <ClCompile Include="MouseState.cpp" />
     <ClCompile Include="PenTool.cpp" />
+    <ClCompile Include="PolyTool.cpp" />
     <ClCompile Include="RotationTool.cpp" />
     <ClCompile Include="Point3D.cpp" />
     <ClCompile Include="DialogFillShape.cpp" />
@@ -1124,6 +1125,7 @@
     <ClInclude Include="DraftDrawTest.h" />
     <ClInclude Include="mpi.h" />
     <ClInclude Include="PenTool.h" />
+    <ClInclude Include="PolyTool.h" />
     <ClInclude Include="RotationTool.h" />
     <ClInclude Include="Point3D.h" />
     <ClInclude Include="DialogFillShape.h" />

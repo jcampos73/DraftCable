@@ -13,11 +13,10 @@ public:
 	virtual CRect MouseDown(UINT nFlags, CPoint point);
 	virtual CRect MouseUp(CPoint point);
 protected:
-	enum Status { ddcStatusNothingDrawing = 0, ddcStatusBeginPolyDrawing, ddcStatusPolyDrawing, ddcStatusPenDrawing } m_Status;
+	enum Status { ddcStatusNothingDrawing = 0, ddcStatusPenDrawing = 3 } m_Status;
 	LinkType m_LinkType;
 
 	virtual void __DoState(CPoint point, EventType eventType);
-	void __DoStateBeginPoly(CPoint point, EventType eventType);
 	void __DoStateDrawing(CPoint point, EventType eventType);
 	BOOL __DoAddToUpdateRect(CRect& rectUpdate, CRect rectToAdd);
 };

@@ -1544,6 +1544,8 @@ STRINGTABLE
 BEGIN
     ID_VIEW_GRAPH_DEN       "Muestra el gráfico de densidad\nGráfico de densidad"
     ID_BUTTON_POLYARC       "Dibuja varios arcos concatenadas\nPoliarco"
+    ID_BUTTON_ROTATE        "Gira las formas seleccionadas\nRotar"
+    ID_BUTTON_PAN           "Desplaza la vista arrastrando con el ratón\nDesplazar vista"
 END
 
 #endif    // Spanish (Spain, International Sort) resources

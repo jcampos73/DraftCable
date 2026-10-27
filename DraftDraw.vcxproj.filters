@@ -256,6 +256,9 @@
     <ClCompile Include="PenTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PolyTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="AbstractTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -525,6 +528,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PenTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AbstractTool.h">

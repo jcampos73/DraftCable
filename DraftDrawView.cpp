@@ -19,11 +19,12 @@
 #include "SelectionTool.h"
 #include "RotationTool.h"
 #include "PenTool.h"
+#include "PolyTool.h"
 #include "ConnectorTool.h"
 
 #define TEST_PENTOOL
 #define TEST_SELTOOL
-//#define TEST_CONNTOOL
+#define TEST_CONNTOOL
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -990,8 +991,25 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 		return;
 	}
 
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool)))
+	{
+		CPolyTool* tool = (CPolyTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseDown(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		return;
+	}
+
+	// Legacy fallback for poly placement without a CPolyTool.
+	BOOL bPolyPlacement = pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE;
+
 #ifdef TEST_SELTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseDown(nFlags, point);
 		if (!rect_union.IsRectEmpty())
@@ -1002,16 +1020,25 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 #endif
 #ifdef TEST_PENTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool)) &&
+		!((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(nFlags, point);
 		return;
 	}
 #endif
 #ifdef TEST_CONNTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool))) {
-		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
-		((CAbstractTool*)pDoc->m_tooSel)->MouseDown(point);
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		(pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE ||
+		 pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE) &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool)))
+	{
+		CConnectorTool* tool = (CConnectorTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseDown(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
 		return;
 	}
 #endif
@@ -1312,8 +1339,26 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 		return;
 	}
 
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool)))
+	{
+		CPolyTool* tool = (CPolyTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseUp(point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		pDoc->SetCursor();
+		return;
+	}
+
+	// Legacy fallback for poly placement without a CPolyTool.
+	BOOL bPolyPlacement = pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE;
+
 #ifdef TEST_SELTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
 		if (!rect_union.IsRectEmpty())
@@ -1324,16 +1369,26 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 #endif
 #ifdef TEST_PENTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool)) &&
+		!((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
 		//return;
 	}
 #endif
 #ifdef TEST_CONNTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool))) {
-		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
-		((CAbstractTool*)pDoc->m_tooSel)->MouseUp(point);
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		(pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE ||
+		 pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE) &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool)))
+	{
+		CConnectorTool* tool = (CConnectorTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseUp(point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		pDoc->SetCursor();
 		return;
 	}
 #endif
@@ -1788,8 +1843,39 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 		return;
 	}
 
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool)))
+	{
+		CPolyTool* tool = (CPolyTool*)pDoc->m_tooSel;
+		CRect updateRect = tool->MoveTo(nFlags, point);
+		CShapePolyline* poly = tool->GetPoly();
+		// Preserve the existing sheet-boundary adjustment in the view.
+		if (poly != NULL && !poly->m_Rect.IsRectEmpty())
+		{
+			CRect sheet, inside;
+			GetSheetArea(sheet);
+			inside.IntersectRect(sheet, poly->m_Rect);
+			if (inside != poly->m_Rect)
+			{
+				DoPreventShpOutSchem(poly, sheet);
+				CRect rect;
+				poly->GetSizingRect(rect);
+				_DoAddToUpdateRect(updateRect, rect);
+			}
+		}
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		return;
+	}
+
+	// Legacy fallback for poly placement without a CPolyTool.
+	BOOL bPolyPlacement = pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE;
+
 #ifdef TEST_SELTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CSelectionTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MoveTo(nFlags, point);
 		if (!rect_union.IsRectEmpty())
@@ -1800,13 +1886,30 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 #endif
 #ifdef TEST_PENTOOL
-	if (((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool))){
+	if (!bPolyPlacement &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPenTool)) &&
+		!((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool))){
 		((CAbstractTool*)pDoc->m_tooSel)->m_pObListSel = &this->m_ObListSel;
 		CRect rect_union = ((CAbstractTool*)pDoc->m_tooSel)->MoveTo(nFlags, point);
 		if (!rect_union.IsRectEmpty())
 		{
 			_SetUpdateRect(rect_union);
 		}
+		return;
+	}
+#endif
+
+#ifdef TEST_CONNTOOL
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		(pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE ||
+		 pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE) &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool)))
+	{
+		CConnectorTool* tool = (CConnectorTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MoveTo(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
 		return;
 	}
 #endif
@@ -2437,6 +2540,19 @@ void CDraftDrawView::OnLButtonDblClk(UINT nFlags, CPoint point)
 	}
 	//=======================================================
 
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool)))
+	{
+		CPolyTool* tool = (CPolyTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->MouseDblClk(nFlags, point);
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
+		return;
+	}
+
 int idata_deb=pDoc->m_pObArray->GetSize();
 	bool flag_return=false,flag_return1=false;
 	int index;
@@ -2747,6 +2863,33 @@ void CDraftDrawView::OnEscape()
 	//Local variables
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		pDoc->m_iToolType == _TOOLTYPEPOLY_DRAFTCABLE &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CPolyTool)))
+	{
+		CPolyTool* tool = (CPolyTool*)pDoc->m_tooSel;
+		tool->m_pObListSel = &m_ObListSel;
+		CRect updateRect = tool->Finish();
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
+		return;
+	}
+
+#ifdef TEST_CONNTOOL
+	if (pDoc->m_iToolSel == _TOOLPLACE_DRAFTCABLE &&
+		(pDoc->m_iToolType == _TOOLTYPECHAININI_DRAFTCABLE ||
+		 pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE) &&
+		((CAbstractTool*)pDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CConnectorTool)))
+	{
+		CConnectorTool* tool = (CConnectorTool*)pDoc->m_tooSel;
+		CRect updateRect = tool->Cancel();
+		if (!updateRect.IsRectEmpty())
+			_SetUpdateRect(updateRect);
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
+		return;
+	}
+#endif
 	CRect rect;
 	int index;
 	int index_keep=-1;
