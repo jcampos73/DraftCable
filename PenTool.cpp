@@ -31,7 +31,9 @@ CRect CPenTool::MoveTo(UINT nFlags, CPoint point)
 	pSh = (CShape *)pDoc->NextObject(index);
 
 	while (pSh){
-		if (pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE){
+		if (pSh->m_Mode == _DRAFTDRAW_MODE_ACTIVE
+			|| (pSh->m_TypeSelect == _DRAFTDRAW_SEL_MOVING_RECT
+				&& pDoc->m_iToolType == _TOOLTYPECHAIN_DRAFTCABLE)) {
 
 			pShMove = pSh;
 			int prev_mode = pSh->m_Mode;
