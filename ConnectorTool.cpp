@@ -186,8 +186,62 @@ void CConnectorTool::__DoLinkPin(int indexPin, CShapeContainer* targetPin)
 {
 	CShapeContainer* wirePin = (CShapeContainer*)(*m_pWire)[indexPin];
 	m_pWire->LinkShapes(targetPin, wirePin);
+	if (indexPin == SHAPECONTAINER_CONNECTING_PIN_UNIT)
+		__DoSelectCableFromPin(targetPin);
 	// Preserve the legacy cleanup of the parent's temporary connection.
 	targetPin->GetParent()->m_pshChildConn = NULL;
+}
+
+void CConnectorTool::__DoSelectCableFromPin(CShapeContainer* sourcePin)
+{
+	// An explicit choice on this segment takes precedence over defaults.
+	if (m_pWire == NULL || sourcePin == NULL || !m_pWire->m_strTypeIdent.IsEmpty())
+		return;
+
+	CShape* parent = sourcePin->GetParent();
+	if (parent != NULL && parent->IsKindOf(RUNTIME_CLASS(CShapeWire)))
+	{
+		// Continuations and starts at existing wire ends retain the cable type.
+		m_pWire->m_strTypeIdent = parent->m_strTypeIdent;
+		return;
+	}
+
+	if (!sourcePin->IsKindOf(RUNTIME_CLASS(CShapePin)) || TABLE_PIN_LABEL == NULL)
+		return;
+	int type = ((CShapePin*)sourcePin)->m_TypePin;
+	if (type < 0 || type >= AfxGetConnectorCount())
+		return;
+	CString connector = TABLE_PIN_LABEL[type];
+	if (connector.IsEmpty())
+		return;
+	if (connector.Right(4).CompareNoCase(_T(".txt")) != 0)
+		connector += _T(".txt");
+
+	CString config = g_sDCableBaseDir + _T("ConnectorCableDefaults.ini");
+	TCHAR configPath[MAX_PATH];
+	DWORD length = GetFullPathName(config, MAX_PATH, configPath, NULL);
+	if (length == 0 || length >= MAX_PATH)
+		return;
+	TCHAR value[MAX_PATH];
+	length = GetPrivateProfileString(_T("DefaultCable"), connector, _T(""),
+		value, MAX_PATH, configPath);
+	if (length == 0 || length >= MAX_PATH - 1)
+		return;
+	CString cable = value;
+	cable.TrimLeft();
+	cable.TrimRight();
+	if (cable.IsEmpty() || cable.FindOneOf(_T("\\/:*?")) >= 0 ||
+		cable.Right(4).CompareNoCase(_T(".txt")) != 0)
+		return;
+
+	// Use the actual file name casing, also used by the existing cable list.
+	WIN32_FIND_DATA data;
+	HANDLE file = FindFirstFile(AfxGetCablePath() + cable, &data);
+	if (file == INVALID_HANDLE_VALUE)
+		return;
+	FindClose(file);
+	if (!(data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+		m_pWire->m_strTypeIdent = data.cFileName;
 }
 
 void CConnectorTool::__DoUpdatePinRects()

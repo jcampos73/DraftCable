@@ -186,3 +186,19 @@ No se ha añadido deshacer de rotación ni cambiado la serialización. La separa
 - `Shape.cpp`: constructor de `CShape`, `OnLButtonDown`, `OnMouseMove`, `OnLButtonUp`, `Select`, `Unselect` e `IsSelected`.
 - `SelectionTool.cpp` y `PenTool.cpp`: actualización de las formas durante la interacción.
 - `RotationTool.h/.cpp`: herramienta de rotación y ciclo del gesto; `DraftDrawView.cpp`: entrega de eventos y transformación de los contextos de dibujo.
+
+## Selección inicial del tipo de cable
+
+`CConnectorTool` puede asignar un cable predeterminado al iniciar desde un pin de componente. Las asociaciones están en `ConnectorCableDefaults.ini`, dentro del directorio base configurado de DraftCable. La sección `[DefaultCable]` utiliza nombres de archivo de conector, con extensión `.txt`, y nombres de archivo de cable de `Cables/`; no utiliza índices numéricos de la base.
+
+El INI incluido activa siete asociaciones del XU4200: alimentación AC/DC, LAN, audio TX/RX y control extendido TX/RX. RF N/BNC y E1 permanecen manuales por sus distintas opciones de extremo o cruce. El conector Ethernet estándar tampoco recibe por defecto el cable de la radio: su asignación 2–9 → 1–8 tiene un sentido definido.
+
+- Solo se aplica al pin de origen y cuando el tramo todavía no tiene tipo. Una elección explícita conserva prioridad.
+- Una continuación o un inicio desde un extremo de cable existente hereda su `m_strTypeIdent`, incluido el caso vacío. Todos los nuevos tramos conservan así la selección de su tramo anterior.
+- Conectar el destino no sustituye el tipo ni invierte la asignación de contactos. Dibujar desde espacio libre mantiene el comportamiento manual.
+- Un INI ausente, una asociación vacía, un tipo de pin inválido o un archivo de cable inexistente dejan el comportamiento anterior. Los nombres de cable se toman con la escritura real del archivo para coincidir con el catálogo existente.
+- La selección es un valor inicial modificable mediante las propiedades actuales del cable. La regla no valida el conexionado eléctrico completo entre equipos.
+
+Se reutiliza `CShape::m_strTypeIdent`, que ya se guarda en el documento; no se cambia el formato de las formas. La nueva regla se invoca en `CConnectorTool::__DoLinkPin` únicamente para el extremo inicial, conservando el enlace y la limpieza que ya hacía ese método.
+
+Verificación: pruebas nativas de los ciclos de la herramienta, siete asociaciones, continuidad por varios tramos, elección manual, inicio desde cable existente, destino, cancelación, borrado externo, alternativas del INI y serialización. Pendiente la comprobación interactiva del usuario sobre un esquema real.

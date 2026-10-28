@@ -1,0 +1,4 @@
+1;DC_POS_19_32V
+2;DC_NEG_GND
+3;NC
+

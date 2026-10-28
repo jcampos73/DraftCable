@@ -36,6 +36,7 @@ private:
 	void __DoBeginSegment(CPoint point, CShapeContainer* sourcePin = NULL);
 	void __DoMoveTo(UINT nFlags, CPoint point);
 	void __DoLinkPin(int indexPin, CShapeContainer* targetPin);
+	void __DoSelectCableFromPin(CShapeContainer* sourcePin);
 	void __DoUpdatePinRects();
 	void __DoAddToUpdateRect(CShape* shape);
 
