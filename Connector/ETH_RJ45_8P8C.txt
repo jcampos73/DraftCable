@@ -1,0 +1,9 @@
+1;PAIR_A+
+2;PAIR_A-
+3;PAIR_B+
+4;PAIR_C+
+5;PAIR_C-
+6;PAIR_B-
+7;PAIR_D+
+8;PAIR_D-
+

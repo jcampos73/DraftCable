@@ -191,7 +191,9 @@ No se ha añadido deshacer de rotación ni cambiado la serialización. La separa
 
 `CConnectorTool` puede asignar un cable predeterminado al iniciar desde un pin de componente. Las asociaciones están en `ConnectorCableDefaults.ini`, dentro del directorio base configurado de DraftCable. La sección `[DefaultCable]` utiliza nombres de archivo de conector, con extensión `.txt`, y nombres de archivo de cable de `Cables/`; no utiliza índices numéricos de la base.
 
-El INI incluido activa siete asociaciones del XU4200: alimentación AC/DC, LAN, audio TX/RX y control extendido TX/RX. RF N/BNC y E1 permanecen manuales por sus distintas opciones de extremo o cruce. El conector Ethernet estándar tampoco recibe por defecto el cable de la radio: su asignación 2–9 → 1–8 tiene un sentido definido.
+El INI incluido activa siete asociaciones del XU4200: alimentación AC/DC, LAN, audio TX/RX y control extendido TX/RX. RF N/BNC y E1 permanecen manuales por sus distintas opciones de extremo o cruce. El tipo anterior `ETH_RJ45_100BTX.txt` tampoco recibe por defecto el cable de la radio: su asignación 2–9 → 1–8 tiene un sentido definido.
+
+Para la pieza `Comms.R&S RS5400` se añaden dos asociaciones: `ETH_RJ45_8P8C.txt` → `ETH_RJ45_STRAIGHT_T568B.txt` e `IEC_C14_LNPE.txt` → `AC_IEC_C13_LNPE.txt`. Los tres puertos Ethernet usan el latiguillo directo de ocho contactos; las dos alimentaciones usan L/N/PE. MGMT y AC 2 figuran como opcionales. Véase `db/Comms.md` para alcance, fuentes y validación de la pieza.
 
 - Solo se aplica al pin de origen y cuando el tramo todavía no tiene tipo. Una elección explícita conserva prioridad.
 - Una continuación o un inicio desde un extremo de cable existente hereda su `m_strTypeIdent`, incluido el caso vacío. Todos los nuevos tramos conservan así la selección de su tramo anterior.

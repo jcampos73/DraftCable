@@ -1,6 +1,6 @@
 # Comms
 
-Biblioteca de comunicaciones de `db/dc.mdb`. Pieza: **R&S XU4200**.
+Biblioteca de comunicaciones de `db/dc.mdb`. Piezas: **R&S XU4200** y **R&S RS5400**. La descripción inicial corresponde a la radio; el servidor tiene su apartado propio.
 
 Transceptor VHF de la familia Series4200 para control de tráfico aéreo. Frontal esquemático de altavoz, pantalla, teclado y mandos, basado en el [folleto oficial Series4200, páginas 6, 7 y 23](https://scdn.rohde-schwarz.com/ur/pws/dl_downloads/dl_common_library/dl_brochures_and_datasheets/pdf_1/Series4200_bro_en_5213-5700-12_v0800.pdf).
 
@@ -58,6 +58,32 @@ Archivos en `Cables/`, también registrados en `tbCable`. Formato existente: con
 Los cables `1A1` son plantillas de prolongación de una interfaz. No representan por sí solos un enlace funcional entre dos radios ni una asignación a un VCS concreto. El extremo de otro fabricante se debe definir a partir de ese equipo. La variante E1 cruzada es una correspondencia deducida de los pares RX/TX del manual: 2↔5, 3↔6 y sus pantallas 4↔7; no se presenta como una referencia comercial de cable de Rohde & Schwarz.
 
 Los colores solo se indican en la plantilla AC y los identificadores de vivo/pantalla en coaxiales. No se han inventado colores de mazos de audio/control. La longitud, sección, protección, conectores comerciales y límites de potencia/pérdidas de un cable físico no se representan en este formato y dependen de la instalación. Las señales y reservas corresponden a la revisión citada, no a cualquier variante de Series4200.
+
+## R&S RS5400: servidor de radio
+
+Pieza **R&S RS5400** en Comms. Frontal esquemático con dos discos, ventilación e indicadores; referencia de 500 × 140 unidades. Incluye `CShapeFrmRect` y contorno exterior coincidentes con la división J/P de los terminales. Los cinco puntos efectivos de conexión están en la rejilla de 10 × 10; lo que sobresale queda dentro del margen de repintado existente. La cabecera está en `ACTIVE` para la vista previa de biblioteca.
+
+La [documentación oficial del RS5400](https://www.rohde-schwarz.com/us/products/aerospace-defense-security/voice-systems-options/rs-rs5400-radio-server_63493-1136322.html) identifica dos interfaces Ethernet redundantes y una segunda fuente AC opcional. Son interfaces compartidas para los flujos IP, no una toma física por cada radio. Esta pieza representa una configuración esquemática de dos LAN y dos fuentes; la plataforma y sus conectores auxiliares pueden variar entre suministros.
+
+| Terminal | Función | Tipo de conector | Cable inicial automático |
+|---|---|---|---|
+| J1/P1 | LAN A, red VCS | ETH_RJ45_8P8C.txt | ETH_RJ45_STRAIGHT_T568B.txt |
+| J2/P2 | LAN B, segunda red VCS | ETH_RJ45_8P8C.txt | ETH_RJ45_STRAIGHT_T568B.txt |
+| J3/P3 | MGMT, gestión de plataforma opcional | ETH_RJ45_8P8C.txt | ETH_RJ45_STRAIGHT_T568B.txt |
+| P4/J4 | AC 1 | IEC_C14_LNPE.txt | AC_IEC_C13_LNPE.txt |
+| P5/J5 | AC 2, fuente opcional | IEC_C14_LNPE.txt | AC_IEC_C13_LNPE.txt |
+
+J/P1–5 son referencias propias de esta biblioteca, no designadores del fabricante. MGMT representa una interfaz de administración tipo iLO en una plataforma de servidor compatible: el [manual HP ProLiant DL360 G7, identificación del panel posterior](https://images10.newegg.com/User-Manual/User_Manual_59-107-024.pdf) distingue iLO, las NIC y los alojamientos de alimentación. No se pretende enumerar los puertos de servicio de todas las variantes del RS5400. USB, vídeo, serie y NIC adicionales de una plataforma concreta quedan fuera de este símbolo funcional. No es una nueva pieza de rack ni se asigna aquí un modelo físico exacto de servidor.
+
+El conector Ethernet contiene los contactos 1–8 con sus cuatro pares: A=1/2, B=3/6, C=4/5, D=7/8. El latiguillo es directo 1→1 … 8→8, con los colores [T568B documentados por APC](https://www.apc.com/us/en/faqs/FA158594/). Las etiquetas de par no fijan una dirección TX/RX ni garantizan una velocidad de enlace.
+
+La alimentación se modela con entrada IEC C14 y cordón con acoplador C13: L, N y PE. Es una elección de representación para una plataforma AC convencional, no una identificación verificada de todos los suministros RS5400. El [tipo C14 de SCHURTER](https://www.schurter.com/en/datasheet/typ_6067.pdf) documenta esos contactos. El extremo de distribución del cable usa nombres lógicos L/N/PE; no define una clavija de red regional ni una referencia comercial de cordón. Los colores marrón, azul y verde/amarillo son los elegidos para esta plantilla. No se incluyen pantalla RJ45 ni características físicas que el formato actual no representa.
+
+Las dos asociaciones se añaden a `[DefaultCable]` de `ConnectorCableDefaults.ini`; no cambian el código de ConnectorTool ni las siete asociaciones previas. En particular, la XU4200 conserva su cable LAN 2–9 → RJ45 1–8. El cable del servidor es para Ethernet estándar hacia un switch o panel compatible; no debe sustituir al de la radio ni se invierte automáticamente al llegar a ella.
+
+Instalación: dos conectores y dos cables añadidos a sus tablas y carpetas, y una pieza nueva en `tbPart`. Se conservan todos los registros anteriores y sus índices. Reiniciar DraftCable para cargar los nuevos tipos y seleccionar **Comms → R&S RS5400**.
+
+Comprobaciones realizadas sobre copia y después de instalar: carga y dibujo con las clases nativas; contactos y asignaciones leídos por `CCableEdit`; conteos internos de compatibilidad coincidentes entre conector y cable (el contador heredado calcula filas menos uno); rejilla, hit-test y margen de repintado; enlaces recíprocos y desconexión. `CConnectorTool` completa cinco conexiones de prueba con clics ajustados a la rejilla y selecciona el cable previsto en cada origen. Se comprueba también la conservación del nombre de cable al serializarlo y que la XU4200 mantiene sus trece pines alineados y su asociación LAN. Pendiente la prueba interactiva de inserción, movimiento y conexionado del servidor y el guardado/reapertura de un esquema completo. Las conexiones entre dos copias usadas por la prueba verifican el software, no representan una topología eléctrica recomendada.
 
 ## Validación y alcance
 

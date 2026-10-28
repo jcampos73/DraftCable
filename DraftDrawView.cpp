@@ -962,6 +962,12 @@ void CDraftDrawView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	//Store hit point for pan tool
 	m_PointLBD0 = point;
+	// Pan uses client pixels and must not reach the previous shape tool.
+	if (pDoc->m_iToolSel == _TOOLSELECT_PAN)
+	{
+		SetCapture();
+		return;
+	}
 
 	//=======================================================
 	//MAPPING ENGINE
@@ -1311,6 +1317,15 @@ void CDraftDrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	//Local variable
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
+	if (pDoc->m_iToolSel == _TOOLSELECT_PAN)
+	{
+		if (GetCapture() == this)
+		{
+			_DoPanMove(point);
+			ReleaseCapture();
+		}
+		return;
+	}
 	BOOL bRedrawAll = FALSE;
 
 	//=======================================================
@@ -1755,35 +1770,18 @@ void CDraftDrawView::OnCaptureChanged(CWnd* pWnd)
 
 void CDraftDrawView::_DoPanMove(CPoint point)
 {
+	if (point == m_PointLBD0)
+		return;
+
+	// Scroll coordinates are device pixels (MM_TEXT), also when zoomed.
+	CSize offset = m_PointLBD0 - point;
+	OnScrollBy(offset, TRUE);
+	m_PointLBD0 = point;
+
 	CDraftDrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-
-	CPoint pscrollpos = GetScrollPosition();
-
-	int nMapMode;
-	SIZE sizeTotal;
-	SIZE sizePage;
-	SIZE sizeLine;
-	GetDeviceScrollSizes(nMapMode, sizeTotal, sizePage, sizeLine);
-
-	//Move this line to right position
-	CSize szOffset = point - m_PointLBD0;
-
-	int x_offset = min(sizeTotal.cx, pscrollpos.x + szOffset.cx);
-	int y_offset = min(sizeTotal.cy, pscrollpos.y + szOffset.cy);
-	x_offset = max(0, pscrollpos.x + szOffset.cx);
-	y_offset = max(0, pscrollpos.y + szOffset.cy);
-
-	SetScrollPos(SB_HORZ, x_offset, TRUE);
-	SetScrollPos(SB_VERT, y_offset, TRUE);
-
-	CSize szDesign = pDoc->GetSize();
-	CRect rcSheet = CRect(CPoint(0, 0), szDesign);
-	//rcSheet.DeflateRect(DCABLE_GRIDX_DEFAULT, DCABLE_GRIDY_DEFAULT);
-	m_RectDraw = rcSheet;
+	m_RectDraw = CRect(CPoint(0, 0), pDoc->GetSize());
 	Invalidate(FALSE);
-
-	return;
 }
 
 void CDraftDrawView::_DoMappingEngine(CPoint& point)
@@ -1821,10 +1819,11 @@ void CDraftDrawView::OnMouseMove(UINT nFlags, CPoint point)
 	CShape *pShMove = NULL;
 	CRect rect_union = CRect(0, 0, 0, 0);			//Rectangle for repainting
 
-	//Pan tool controler below
-	if ((nFlags&MK_LBUTTON) &&
-		(pDoc->m_iToolSel == _TOOLSELECT_PAN)){
-		_DoPanMove(point);
+	// Pan must consume movement before mapping or shape-tool delegation.
+	if (pDoc->m_iToolSel == _TOOLSELECT_PAN)
+	{
+		if ((nFlags & MK_LBUTTON) && GetCapture() == this)
+			_DoPanMove(point);
 		return;
 	}
 
@@ -2847,6 +2846,13 @@ CShape *pShdeb2=(CShape *)pShWire->m_obarrShapearr[1];
 void CDraftDrawView::OnEscape() 
 {
 	CDraftDrawDoc* rotationDoc = GetDocument();
+	if (rotationDoc->m_iToolSel == _TOOLSELECT_PAN)
+	{
+		if (GetCapture() == this)
+			ReleaseCapture();
+		AfxGetMainWnd()->PostMessage(WM_COMMAND, ID_BUTTON_SELECT);
+		return;
+	}
 	if (rotationDoc->m_iToolSel == _TOOLROTATE_DRAFTCABLE &&
 		((CAbstractTool*)rotationDoc->m_tooSel)->IsKindOf(RUNTIME_CLASS(CRotationTool)))
 	{
